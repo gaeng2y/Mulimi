@@ -10,23 +10,35 @@ import SwiftUI
 import Intents
 
 struct Provider: IntentTimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent())
+    func placeholder(in context: Context) -> DrinkWaterEntry {
+        DrinkWaterEntry(
+            date: Date(),
+            glassesOfWater: Array(repeating: false, count: 8),
+            configuration: ConfigurationIntent()
+        )
     }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration)
+    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DrinkWaterEntry) -> ()) {
+        let entry = DrinkWaterEntry(
+            date: Date(),
+            glassesOfWater: Array(repeating: false, count: 8),
+            configuration: configuration
+        )
         completion(entry)
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+        var entries: [DrinkWaterEntry] = []
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
+            let entry = DrinkWaterEntry(
+                date: entryDate,
+                glassesOfWater: Array(repeating: false, count: 8),
+                configuration: configuration
+            )
             entries.append(entry)
         }
 
@@ -35,8 +47,9 @@ struct Provider: IntentTimelineProvider {
     }
 }
 
-struct SimpleEntry: TimelineEntry {
+struct DrinkWaterEntry: TimelineEntry {
     let date: Date
+    let glassesOfWater: [Bool]
     let configuration: ConfigurationIntent
 }
 
@@ -44,7 +57,17 @@ struct DrinkWaterWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        Text(entry.date, style: .time)
+        VStack {
+            ForEach(0..<entry.glassesOfWater.count) { index in
+                if entry.glassesOfWater[index] {
+                    Rectangle()
+                        .fill(Color.blue)
+                } else {
+                    Rectangle()
+                        .fill(Color.gray)
+                }
+            }
+        }
     }
 }
 
@@ -62,7 +85,13 @@ struct DrinkWaterWidget: Widget {
 
 struct DrinkWaterWidget_Previews: PreviewProvider {
     static var previews: some View {
-        DrinkWaterWidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        DrinkWaterWidgetEntryView(
+            entry: DrinkWaterEntry(
+                date: Date(),
+                glassesOfWater: Array(repeating: false, count: 8),
+                configuration: ConfigurationIntent()
+            )
+        )
+        .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
