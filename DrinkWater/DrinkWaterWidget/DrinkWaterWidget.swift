@@ -72,15 +72,16 @@ struct DrinkWaterWidgetEntryView : View {
                     }
                 }
             }
+			
             
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
                     Text("\(drinkWater)잔")
-                        .fontWeight(.heavy)
-                        .foregroundColor(.blue)
-                        .background(Color.init(.displayP3, white: 1, opacity: 0.3))
+						.font(.title)
+						.foregroundColor(.white)
+						.shadow(color: .black, radius: 3)
                 }
                 .padding(.horizontal)
                 
