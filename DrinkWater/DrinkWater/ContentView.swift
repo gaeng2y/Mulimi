@@ -24,7 +24,7 @@ struct ContentView: View {
                 .font(.largeTitle)
             Button(action: {
                 self.counter += 1
-                WidgetCenter.shared.reloadTimelines(ofKind: "Example2Widget")
+                WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
             }) {
                 Text("Increase Counter")
                     .padding()
