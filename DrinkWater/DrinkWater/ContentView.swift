@@ -9,7 +9,7 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
-    @State private var counter = 0
+    @State private var counter = UserDefaults.shared.integer(forKey: "drinkwater")
     
     var body: some View {
         VStack {
@@ -23,7 +23,9 @@ struct ContentView: View {
             Text("\(counter)잔")
                 .font(.largeTitle)
             Button(action: {
+                guard self.counter < 8 else { return }
                 self.counter += 1
+                UserDefaults.shared.set(self.counter, forKey: "drinkwater")
                 WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
             }) {
                 Text("마시기")
@@ -39,5 +41,14 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension UserDefaults {
+    static var shared: UserDefaults {
+        let combined = UserDefaults.standard
+        let appGroupId = "group.com.gaeng2y.drinkwater"
+        combined.addSuite(named: appGroupId)
+        return combined
     }
 }

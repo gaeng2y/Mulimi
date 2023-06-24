@@ -11,18 +11,45 @@ import Intents
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> DrinkWaterEntry {
-        DrinkWaterEntry(
+        let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
+        print(drinkwater)
+        let glassesOfWater: [Bool] = {
+            var arr = [Bool]()
+            for _ in 0..<drinkwater {
+                arr.append(true)
+            }
+            for _ in 0..<(8 - drinkwater) {
+                arr.append(false)
+            }
+            return arr
+        }()
+        
+        let entry = DrinkWaterEntry(
             date: Date(),
-            glassesOfWater: Array(repeating: false, count: 8),
+            glassesOfWater: glassesOfWater,
             configuration: ConfigurationIntent()
         )
+        return entry
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DrinkWaterEntry) -> ()) {
+        let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
+        print(drinkwater)
+        let glassesOfWater: [Bool] = {
+            var arr = [Bool]()
+            for _ in 0..<drinkwater {
+                arr.append(true)
+            }
+            for _ in 0..<(8 - drinkwater) {
+                arr.append(false)
+            }
+            return arr
+        }()
+        
         let entry = DrinkWaterEntry(
             date: Date(),
-            glassesOfWater: Array(repeating: false, count: 8),
-            configuration: configuration
+            glassesOfWater: glassesOfWater,
+            configuration: ConfigurationIntent()
         )
         completion(entry)
     }
@@ -34,9 +61,21 @@ struct Provider: IntentTimelineProvider {
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+            let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
+            print(drinkwater)
+            let glassesOfWater: [Bool] = {
+                var arr = [Bool]()
+                for _ in 0..<drinkwater {
+                    arr.append(true)
+                }
+                for _ in 0..<(8 - drinkwater) {
+                    arr.append(false)
+                }
+                return arr
+            }()
             let entry = DrinkWaterEntry(
                 date: entryDate,
-                glassesOfWater: Array(repeating: false, count: 8),
+                glassesOfWater: glassesOfWater,
                 configuration: configuration
             )
             entries.append(entry)
@@ -109,7 +148,7 @@ struct DrinkWaterWidget_Previews: PreviewProvider {
         DrinkWaterWidgetEntryView(
             entry: DrinkWaterEntry(
                 date: Date(),
-                glassesOfWater: [true, true, true, true, true, true, true, true],
+                glassesOfWater: [true, true, true, true, true, false, false, false],
                 configuration: ConfigurationIntent()
             )
         )
