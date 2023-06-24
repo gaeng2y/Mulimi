@@ -88,18 +88,8 @@ struct DrinkWaterWidgetEntryView : View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 1) {
-                ForEach(0..<entry.glassesOfWater.count) { index in
-                    if entry.glassesOfWater.reversed()[index] {
-                        Rectangle()
-                            .fill(Color.teal)
-                    } else {
-                        Rectangle()
-                            .fill(Color.white)
-                    }
-                }
-            }
-			
+            let name = "\(drinkWater)"
+            Image(name)
             
             VStack {
                 Spacer()
@@ -136,7 +126,7 @@ struct DrinkWaterWidget_Previews: PreviewProvider {
         DrinkWaterWidgetEntryView(
             entry: DrinkWaterEntry(
                 date: Date(),
-                glassesOfWater: [true, true, true, true, true, false, false, false],
+                glassesOfWater: [false, false, false, false, false, false, false, false],
                 configuration: ConfigurationIntent()
             )
         )
