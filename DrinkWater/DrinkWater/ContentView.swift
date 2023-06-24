@@ -26,7 +26,7 @@ struct ContentView: View {
                 self.counter += 1
                 WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
             }) {
-                Text("Increase Counter")
+                Text("마시기")
                     .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)

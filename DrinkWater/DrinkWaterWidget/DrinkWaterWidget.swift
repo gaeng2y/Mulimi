@@ -55,19 +55,39 @@ struct DrinkWaterEntry: TimelineEntry {
 
 struct DrinkWaterWidgetEntryView : View {
     var entry: Provider.Entry
+    var drinkWater: Int {
+        entry.glassesOfWater.filter { $0 }.count
+    }
 
     var body: some View {
-        VStack {
-            ForEach(0..<entry.glassesOfWater.count) { index in
-                if entry.glassesOfWater[index] {
-                    Rectangle()
-                        .fill(Color.blue)
-                } else {
-                    Rectangle()
-                        .fill(Color.gray)
+        ZStack {
+            VStack(spacing: 1) {
+                ForEach(0..<entry.glassesOfWater.count) { index in
+                    if entry.glassesOfWater.reversed()[index] {
+                        Rectangle()
+                            .fill(Color.teal)
+                    } else {
+                        Rectangle()
+                            .fill(Color.white)
+                    }
                 }
             }
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Text("\(drinkWater)잔")
+                        .fontWeight(.heavy)
+                        .foregroundColor(.blue)
+                        .background(Color.init(.displayP3, white: 1, opacity: 0.3))
+                }
+                .padding(.horizontal)
+                
+            }
+            .padding(.init(top: 0, leading: 0, bottom: 5, trailing: 0))
         }
+        
     }
 }
 
@@ -88,7 +108,7 @@ struct DrinkWaterWidget_Previews: PreviewProvider {
         DrinkWaterWidgetEntryView(
             entry: DrinkWaterEntry(
                 date: Date(),
-                glassesOfWater: Array(repeating: false, count: 8),
+                glassesOfWater: [true, true, true, true, true, true, true, true],
                 configuration: ConfigurationIntent()
             )
         )
