@@ -23,6 +23,7 @@
 		CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536E2A46B1EC007D139B /* DrinkWaterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CECB53742A46B2AF007D139B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53732A46B2AF007D139B /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,7 +67,6 @@
 /* Begin PBXFileReference section */
 		CE22250C2A46AF2100F5DBB9 /* DrinkWater.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrinkWater.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterApp.swift; sourceTree = "<group>"; };
-		CE2225112A46AF2100F5DBB9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CE2225132A46AF2200F5DBB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE2225162A46AF2200F5DBB9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CE22251C2A46AF2200F5DBB9 /* DrinkWaterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkWaterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -83,6 +83,7 @@
 		CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = DrinkWaterWidget.intentdefinition; sourceTree = "<group>"; };
 		CECB53672A46B1EC007D139B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CECB53692A46B1EC007D139B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CECB53732A46B2AF007D139B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,7 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */,
-				CE2225112A46AF2100F5DBB9 /* ContentView.swift */,
+				CECB53732A46B2AF007D139B /* ContentView.swift */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
 			);
@@ -361,9 +362,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE2225122A46AF2100F5DBB9 /* ContentView.swift in Sources */,
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
+				CECB53742A46B2AF007D139B /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +553,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -582,6 +584,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -604,7 +607,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gaeng2y.DrinkWaterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -624,7 +627,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gaeng2y.DrinkWaterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -643,6 +646,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gaeng2y.DrinkWaterUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -661,6 +665,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = gaeng2y.DrinkWaterUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
