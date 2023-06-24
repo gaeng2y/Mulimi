@@ -25,6 +25,9 @@ struct ContentView: View {
             Button(action: {
                 guard self.counter < 8 else { return }
                 self.counter += 1
+                UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
+                    UserDefaults.shared.set(value, forKey: key)
+                }
                 UserDefaults.shared.set(self.counter, forKey: "drinkwater")
                 WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
             }) {
@@ -46,9 +49,8 @@ struct ContentView_Previews: PreviewProvider {
 
 extension UserDefaults {
     static var shared: UserDefaults {
-        let combined = UserDefaults.standard
         let appGroupId = "group.com.gaeng2y.drinkwater"
-        combined.addSuite(named: appGroupId)
-        return combined
+        return UserDefaults(suiteName: appGroupId)!
     }
 }
+

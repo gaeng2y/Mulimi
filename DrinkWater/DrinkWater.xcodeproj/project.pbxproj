@@ -17,15 +17,13 @@
 		CECB535E2A46B1EB007D139B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB535D2A46B1EB007D139B /* SwiftUI.framework */; };
 		CECB53612A46B1EC007D139B /* DrinkWaterWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53602A46B1EC007D139B /* DrinkWaterWidgetBundle.swift */; };
 		CECB53632A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53622A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift */; };
-		CECB53652A46B1EC007D139B /* DrinkWaterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53642A46B1EC007D139B /* DrinkWaterWidget.swift */; };
 		CECB53682A46B1EC007D139B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CECB53672A46B1EC007D139B /* Assets.xcassets */; };
 		CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536E2A46B1EC007D139B /* DrinkWaterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CECB53742A46B2AF007D139B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53732A46B2AF007D139B /* ContentView.swift */; };
-		CECB53772A46C488007D139B /* DrinkWaterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53642A46B1EC007D139B /* DrinkWaterWidget.swift */; };
 		CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53622A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift */; };
-		CECB537A2A46C4A2007D139B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53732A46B2AF007D139B /* ContentView.swift */; };
+		CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53642A46B1EC007D139B /* DrinkWaterWidget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -368,7 +366,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CECB53772A46C488007D139B /* DrinkWaterWidget.swift in Sources */,
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
 				CECB53742A46B2AF007D139B /* ContentView.swift in Sources */,
@@ -398,9 +395,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CECB53612A46B1EC007D139B /* DrinkWaterWidgetBundle.swift in Sources */,
-				CECB537A2A46C4A2007D139B /* ContentView.swift in Sources */,
+				CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */,
 				CECB53632A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
-				CECB53652A46B1EC007D139B /* DrinkWaterWidget.swift in Sources */,
 				CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
