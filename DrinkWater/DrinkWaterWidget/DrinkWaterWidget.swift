@@ -22,16 +22,7 @@ struct Provider: IntentTimelineProvider {
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DrinkWaterEntry) -> ()) {
         let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
         print(drinkwater)
-        let glassesOfWater: [Bool] = {
-            var arr = [Bool]()
-            for _ in 0..<drinkwater {
-                arr.append(true)
-            }
-            for _ in 0..<(8 - drinkwater) {
-                arr.append(false)
-            }
-            return arr
-        }()
+        let glassesOfWater = getGlassesOfWater(with: drinkwater)
         
         let entry = DrinkWaterEntry(
             date: Date(),
@@ -51,16 +42,7 @@ struct Provider: IntentTimelineProvider {
 
             let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
             print(drinkwater)
-            let glassesOfWater: [Bool] = {
-                var arr = [Bool]()
-                for _ in 0..<drinkwater {
-                    arr.append(true)
-                }
-                for _ in 0..<(8 - drinkwater) {
-                    arr.append(false)
-                }
-                return arr
-            }()
+            let glassesOfWater = getGlassesOfWater(with: drinkwater)
             let entry = DrinkWaterEntry(
                 date: entryDate,
                 glassesOfWater: glassesOfWater,
@@ -71,6 +53,17 @@ struct Provider: IntentTimelineProvider {
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
+    }
+    
+    private func getGlassesOfWater(with drinkwater: Int) -> [Bool] {
+        var arr = [Bool]()
+        for _ in 0..<drinkwater {
+            arr.append(true)
+        }
+        for _ in 0..<(8 - drinkwater) {
+            arr.append(false)
+        }
+        return arr
     }
 }
 
