@@ -10,6 +10,16 @@ import SwiftUI
 import Intents
 
 struct Provider: IntentTimelineProvider {
+    private var key: String {
+        let now = Date()
+        let dateFormatter: DateFormatter = {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy-MM-dd"
+            return df
+        }()
+        return dateFormatter.string(from: now)
+    }
+    
     func placeholder(in context: Context) -> DrinkWaterEntry {
         let entry = DrinkWaterEntry(
             date: Date(),
@@ -20,7 +30,7 @@ struct Provider: IntentTimelineProvider {
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DrinkWaterEntry) -> ()) {
-        let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
+        let drinkwater = UserDefaults.shared.integer(forKey: key)
         print(drinkwater)
         let glassesOfWater = getGlassesOfWater(with: drinkwater)
         
@@ -40,7 +50,7 @@ struct Provider: IntentTimelineProvider {
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
 
-            let drinkwater = UserDefaults.shared.integer(forKey: "drinkwater")
+            let drinkwater = UserDefaults.shared.integer(forKey: key)
             print(drinkwater)
             let glassesOfWater = getGlassesOfWater(with: drinkwater)
             let entry = DrinkWaterEntry(

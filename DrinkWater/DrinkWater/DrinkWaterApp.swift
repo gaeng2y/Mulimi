@@ -15,3 +15,13 @@ struct DrinkWaterApp: App {
         }
     }
 }
+
+var key: String {
+    let now = Date()
+    let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        return df
+    }()
+    return dateFormatter.string(from: now)
+}

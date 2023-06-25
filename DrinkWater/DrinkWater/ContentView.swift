@@ -9,8 +9,8 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
-    @State private var counter = UserDefaults.shared.integer(forKey: "drinkwater")
-	@State private var isPresented: Bool = false
+    @State private var counter = UserDefaults.shared.integer(forKey: key)
+    @State private var isPresented: Bool = false
     
     var body: some View {
         VStack {
@@ -25,15 +25,15 @@ struct ContentView: View {
                 .font(.largeTitle)
             Button(action: {
                 guard self.counter < 8 else {
-					isPresented = true
-					return
-				}
-				
+                    isPresented = true
+                    return
+                }
+                
                 self.counter += 1
                 UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
                     UserDefaults.shared.set(value, forKey: key)
                 }
-                UserDefaults.shared.set(self.counter, forKey: "drinkwater")
+                UserDefaults.shared.set(self.counter, forKey: key)
                 WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
             }) {
                 Text("마시기")
@@ -42,9 +42,24 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
-			.alert(isPresented: $isPresented, content: {
-				Alert(title: Text(""), message: Text("지금은 8잔까지만 설정 가능합니다 ㅜㅜ"))}
-			)
+            .alert(isPresented: $isPresented, content: {
+                Alert(title: Text(""), message: Text("지금은 8잔까지만 설정 가능합니다 ㅜㅜ"))}
+            )
+            
+            Button(action: {
+                self.counter = 0
+                UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
+                    UserDefaults.shared.set(value, forKey: key)
+                }
+                UserDefaults.shared.set(self.counter, forKey: key)
+                WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
+            }) {
+                Text("초기화")
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
         }
     }
 }
