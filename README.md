@@ -1,4 +1,7 @@
-https://github.com/gaeng2y/DrinkWater/blob/main/Assets/App_Icon.png?raw=true
+<p align="center">
+    <img src="https://github.com/gaeng2y/DrinkWater/blob/main/Assets/App_Icon.png?raw=true)" width="200px" height="200px" title="Github_Logo"></img>
+<p>
+
 
 # 물마시자
 현대인에게 부족한 수분 보충을 위해 매일 8잔을 마실 수 있도록 체크하기 위해 만들어 보았습니다.
