@@ -21,9 +21,12 @@
 		CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */; };
 		CECB536E2A46B1EC007D139B /* DrinkWaterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		CECB53742A46B2AF007D139B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53732A46B2AF007D139B /* ContentView.swift */; };
+		CECB53742A46B2AF007D139B /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53732A46B2AF007D139B /* MainView.swift */; };
 		CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53622A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift */; };
 		CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53642A46B1EC007D139B /* DrinkWaterWidget.swift */; };
+		CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129A92A4C45860079E416 /* MainTabView.swift */; };
+		CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AB2A4C45F30079E416 /* CalendarView.swift */; };
+		CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AD2A4C47D70079E416 /* DrinkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,9 +86,12 @@
 		CECB53662A46B1EC007D139B /* DrinkWaterWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = DrinkWaterWidget.intentdefinition; sourceTree = "<group>"; };
 		CECB53672A46B1EC007D139B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CECB53692A46B1EC007D139B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CECB53732A46B2AF007D139B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CECB53732A46B2AF007D139B /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		CECB53752A46BE92007D139B /* DrinkWaterWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DrinkWaterWidgetExtension.entitlements; sourceTree = "<group>"; };
 		CECB53762A46C2AC007D139B /* DrinkWater.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DrinkWater.entitlements; sourceTree = "<group>"; };
+		CED129A92A4C45860079E416 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		CED129AB2A4C45F30079E416 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		CED129AD2A4C47D70079E416 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,7 +157,10 @@
 			children = (
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */,
-				CECB53732A46B2AF007D139B /* ContentView.swift */,
+				CED129A92A4C45860079E416 /* MainTabView.swift */,
+				CECB53732A46B2AF007D139B /* MainView.swift */,
+				CED129AD2A4C47D70079E416 /* DrinkView.swift */,
+				CED129AB2A4C45F30079E416 /* CalendarView.swift */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
 			);
@@ -368,7 +377,10 @@
 			files = (
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
-				CECB53742A46B2AF007D139B /* ContentView.swift in Sources */,
+				CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */,
+				CECB53742A46B2AF007D139B /* MainView.swift in Sources */,
+				CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */,
+				CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */,
 				CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
