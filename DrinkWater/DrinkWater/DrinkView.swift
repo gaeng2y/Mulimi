@@ -144,7 +144,7 @@ struct DrinkView: View {
 
 struct DrinkView_Previews: PreviewProvider {
     static var previews: some View {
-        DrinkView(progress: 0.5, startAnimation: 0)
+        DrinkView(progress: 0.5, startAnimation: 10)
     }
 }
 
@@ -156,7 +156,7 @@ struct WaterWave: Shape {
     var offset: CGFloat
     
     // Enabling Animation
-    var animateableData: CGFloat {
+    var animatableData: CGFloat {
         get { offset }
         set { offset = newValue }
     }
