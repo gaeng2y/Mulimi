@@ -9,7 +9,17 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        DrinkView()
+        NavigationStack {
+            DrinkView()
+                .toolbar {
+                    Button {
+                        print("setting")
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+
+                }
+        }
     }
 }
 

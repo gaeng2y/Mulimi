@@ -9,17 +9,19 @@ import SwiftUI
 
 struct MainTabView: View {
     var body: some View {
-        TabView {
-            MainView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                }
-            
-            CalendarView()
-                .tabItem {
-                    Image(systemName: "chart.bar.doc.horizontal")
-                }
-        }
+        MainView()
+//        TabView {
+//            MainView()
+//                .tabItem {
+//                    Image(systemName: "house.fill")
+//                }
+//
+//
+//            CalendarView()
+//                .tabItem {
+//                    Image(systemName: "chart.bar.doc.horizontal")
+//                }
+//        }
     }
 }
 
