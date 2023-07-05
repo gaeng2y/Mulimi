@@ -84,7 +84,7 @@ struct DrinkView: View {
             
                 Text("\(counter)잔")
                     .font(.title)
-                    .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
                 
                 HStack(spacing: 20) {
                     // MARK: 물마시기 버튼
@@ -140,6 +140,6 @@ struct DrinkView: View {
 
 struct DrinkView_Previews: PreviewProvider {
     static var previews: some View {
-        DrinkView()
+        DrinkView(progress: 0, startAnimation: 0)
     }
 }
