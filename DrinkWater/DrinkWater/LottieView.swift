@@ -16,24 +16,24 @@ struct LottieView: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView()
         
-        animationView.animation = LottieAnimation.named(lottieFile)
-        animationView.contentMode = .scaleAspectFill
-        animationView.loopMode = loopMode
+        self.animationView.animation = LottieAnimation.named(lottieFile)
+        self.animationView.contentMode = .scaleAspectFill
+        self.animationView.loopMode = loopMode
         
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(animationView)
+        self.animationView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self.animationView)
         
         NSLayoutConstraint.activate([
-            animationView.topAnchor.constraint(equalTo: view.topAnchor),
-            animationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            animationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            animationView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            self.animationView.topAnchor.constraint(equalTo: view.topAnchor),
+            self.animationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            self.animationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            self.animationView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
         
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
-        animationView.play()
+        self.animationView.play()
     }
 }

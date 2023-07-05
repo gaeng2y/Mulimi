@@ -7,20 +7,6 @@
 
 import SwiftUI
 
-struct FadeInOut: View {
-    var body: some View {
-        VStack {
-            Text("Fade In and Out")
-                .fontWeight(.heavy)
-                .padding()
-
-            FadeInOutView(text: "Fade In and Out", startTime: 0.1).padding()
-
-            FadeInOutView(text: "test", startTime: 1.0).padding()
-        }
-    }
-}
-
 struct FadeInOutView: View {
     @State var characters: Array<String.Element>
     @State var opacity: Double = 0
@@ -53,11 +39,5 @@ struct FadeInOutView: View {
                 opacity = 1
             }
         }
-    }
-}
-
-struct FadeInOutView_Previews: PreviewProvider {
-    static var previews: some View {
-        FadeInOut()
     }
 }
