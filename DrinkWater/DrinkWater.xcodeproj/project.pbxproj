@@ -27,6 +27,12 @@
 		CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129A92A4C45860079E416 /* MainTabView.swift */; };
 		CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AB2A4C45F30079E416 /* CalendarView.swift */; };
 		CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AD2A4C47D70079E416 /* DrinkView.swift */; };
+		CEE66B342A55C729001A1197 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEE66B332A55C729001A1197 /* Lottie */; };
+		CEE66B362A55C826001A1197 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B352A55C826001A1197 /* SplashView.swift */; };
+		CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B382A55C85A001A1197 /* LottieView.swift */; };
+		CEE66B3E2A55C8BE001A1197 /* FadeInOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */; };
+		CEE66B442A55CAB0001A1197 /* bubbles.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE66B432A55CAB0001A1197 /* bubbles.json */; };
+		CEE66B482A55CB91001A1197 /* drink-water.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE66B472A55CB91001A1197 /* drink-water.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +98,11 @@
 		CED129A92A4C45860079E416 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		CED129AB2A4C45F30079E416 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		CED129AD2A4C47D70079E416 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
+		CEE66B352A55C826001A1197 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		CEE66B382A55C85A001A1197 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
+		CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeInOutView.swift; sourceTree = "<group>"; };
+		CEE66B432A55CAB0001A1197 /* bubbles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubbles.json; sourceTree = "<group>"; };
+		CEE66B472A55CB91001A1197 /* drink-water.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "drink-water.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE66B342A55C729001A1197 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,8 +167,12 @@
 		CE22250E2A46AF2100F5DBB9 /* DrinkWater */ = {
 			isa = PBXGroup;
 			children = (
+				CEE66B3C2A55C884001A1197 /* Lottie */,
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */,
+				CEE66B352A55C826001A1197 /* SplashView.swift */,
+				CEE66B382A55C85A001A1197 /* LottieView.swift */,
+				CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */,
 				CED129A92A4C45860079E416 /* MainTabView.swift */,
 				CECB53732A46B2AF007D139B /* MainView.swift */,
 				CED129AD2A4C47D70079E416 /* DrinkView.swift */,
@@ -214,6 +230,15 @@
 			path = DrinkWaterWidget;
 			sourceTree = "<group>";
 		};
+		CEE66B3C2A55C884001A1197 /* Lottie */ = {
+			isa = PBXGroup;
+			children = (
+				CEE66B472A55CB91001A1197 /* drink-water.json */,
+				CEE66B432A55CAB0001A1197 /* bubbles.json */,
+			);
+			path = Lottie;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -232,6 +257,9 @@
 				CECB536D2A46B1EC007D139B /* PBXTargetDependency */,
 			);
 			name = DrinkWater;
+			packageProductDependencies = (
+				CEE66B332A55C729001A1197 /* Lottie */,
+			);
 			productName = DrinkWater;
 			productReference = CE22250C2A46AF2100F5DBB9 /* DrinkWater.app */;
 			productType = "com.apple.product-type.application";
@@ -324,6 +352,9 @@
 				Base,
 			);
 			mainGroup = CE2225032A46AF2100F5DBB9;
+			packageReferences = (
+				CEE66B322A55C729001A1197 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+			);
 			productRefGroup = CE22250D2A46AF2100F5DBB9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -341,7 +372,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE66B482A55CB91001A1197 /* drink-water.json in Resources */,
 				CE2225172A46AF2200F5DBB9 /* Preview Assets.xcassets in Resources */,
+				CEE66B442A55CAB0001A1197 /* bubbles.json in Resources */,
 				CE2225142A46AF2200F5DBB9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -376,9 +409,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
+				CEE66B362A55C826001A1197 /* SplashView.swift in Sources */,
+				CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
 				CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */,
 				CECB53742A46B2AF007D139B /* MainView.swift in Sources */,
+				CEE66B3E2A55C8BE001A1197 /* FadeInOutView.swift in Sources */,
 				CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */,
 				CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */,
 				CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
@@ -816,6 +852,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CEE66B322A55C729001A1197 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CEE66B332A55C729001A1197 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEE66B322A55C729001A1197 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE2225042A46AF2100F5DBB9 /* Project object */;
 }
