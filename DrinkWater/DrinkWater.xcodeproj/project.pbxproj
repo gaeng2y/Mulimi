@@ -27,12 +27,12 @@
 		CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129A92A4C45860079E416 /* MainTabView.swift */; };
 		CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AB2A4C45F30079E416 /* CalendarView.swift */; };
 		CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AD2A4C47D70079E416 /* DrinkView.swift */; };
+		CEE1F32A2A55D96300357463 /* bubble.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE1F3292A55D96300357463 /* bubble.json */; };
 		CEE66B342A55C729001A1197 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEE66B332A55C729001A1197 /* Lottie */; };
 		CEE66B362A55C826001A1197 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B352A55C826001A1197 /* SplashView.swift */; };
 		CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B382A55C85A001A1197 /* LottieView.swift */; };
 		CEE66B3E2A55C8BE001A1197 /* FadeInOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */; };
-		CEE66B442A55CAB0001A1197 /* bubbles.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE66B432A55CAB0001A1197 /* bubbles.json */; };
-		CEE66B482A55CB91001A1197 /* drink-water.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE66B472A55CB91001A1197 /* drink-water.json */; };
+		CEE66B4A2A55D37D001A1197 /* WaterWave.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B492A55D37D001A1197 /* WaterWave.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,11 +98,11 @@
 		CED129A92A4C45860079E416 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		CED129AB2A4C45F30079E416 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		CED129AD2A4C47D70079E416 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
+		CEE1F3292A55D96300357463 /* bubble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble.json; sourceTree = "<group>"; };
 		CEE66B352A55C826001A1197 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		CEE66B382A55C85A001A1197 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeInOutView.swift; sourceTree = "<group>"; };
-		CEE66B432A55CAB0001A1197 /* bubbles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubbles.json; sourceTree = "<group>"; };
-		CEE66B472A55CB91001A1197 /* drink-water.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "drink-water.json"; sourceTree = "<group>"; };
+		CEE66B492A55D37D001A1197 /* WaterWave.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterWave.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +176,7 @@
 				CED129A92A4C45860079E416 /* MainTabView.swift */,
 				CECB53732A46B2AF007D139B /* MainView.swift */,
 				CED129AD2A4C47D70079E416 /* DrinkView.swift */,
+				CEE66B492A55D37D001A1197 /* WaterWave.swift */,
 				CED129AB2A4C45F30079E416 /* CalendarView.swift */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
@@ -233,8 +234,7 @@
 		CEE66B3C2A55C884001A1197 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
-				CEE66B472A55CB91001A1197 /* drink-water.json */,
-				CEE66B432A55CAB0001A1197 /* bubbles.json */,
+				CEE1F3292A55D96300357463 /* bubble.json */,
 			);
 			path = Lottie;
 			sourceTree = "<group>";
@@ -372,10 +372,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEE66B482A55CB91001A1197 /* drink-water.json in Resources */,
 				CE2225172A46AF2200F5DBB9 /* Preview Assets.xcassets in Resources */,
-				CEE66B442A55CAB0001A1197 /* bubbles.json in Resources */,
 				CE2225142A46AF2200F5DBB9 /* Assets.xcassets in Resources */,
+				CEE1F32A2A55D96300357463 /* bubble.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +410,7 @@
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
 				CEE66B362A55C826001A1197 /* SplashView.swift in Sources */,
 				CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */,
+				CEE66B4A2A55D37D001A1197 /* WaterWave.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
 				CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */,
 				CECB53742A46B2AF007D139B /* MainView.swift in Sources */,

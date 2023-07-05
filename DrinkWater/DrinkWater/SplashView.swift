@@ -10,17 +10,19 @@ import SwiftUI
 struct SplashView: View {
     @State private var navigated: Bool = false
     
-    let moveToTimer = Timer.publish(every: 4, on: .main, in: .common)
+    let moveToTimer = Timer.publish(every: 2, on: .main, in: .common)
         .autoconnect()
     
     var body: some View {
         ZStack {
-            Color.black
+            Color("BackgroundColor")
+                .ignoresSafeArea()
             
-            LottieView(lottieFile: "drink-water")
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+            LottieView(lottieFile: "bubble")
+                .ignoresSafeArea()
             
-            FadeInOutView(text: "물리미", startTime: 0.5)
+            
+            FadeInOutView(text: "물리미", startTime: 1)
                 .padding()
                 .font(.title)
                 .foregroundColor(.white)
