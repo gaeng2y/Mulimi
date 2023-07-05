@@ -15,12 +15,8 @@ struct SplashView: View {
     
     var body: some View {
         ZStack {
-            Color("BackgroundColor")
-                .ignoresSafeArea()
-            
             LottieView(lottieFile: "bubble")
                 .ignoresSafeArea()
-            
             
             FadeInOutView(text: "물리미", startTime: 1)
                 .padding()
