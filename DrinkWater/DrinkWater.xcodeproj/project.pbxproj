@@ -13,6 +13,8 @@
 		CE2225212A46AF2200F5DBB9 /* DrinkWaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2225202A46AF2200F5DBB9 /* DrinkWaterTests.swift */; };
 		CE22252B2A46AF2200F5DBB9 /* DrinkWaterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22252A2A46AF2200F5DBB9 /* DrinkWaterUITests.swift */; };
 		CE22252D2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22252C2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift */; };
+		CEB99B872A57096F0061F09E /* bubble_dark.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B852A57096F0061F09E /* bubble_dark.json */; };
+		CEB99B882A57096F0061F09E /* bubble_light.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B862A57096F0061F09E /* bubble_light.json */; };
 		CECB535C2A46B1EB007D139B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB535B2A46B1EB007D139B /* WidgetKit.framework */; };
 		CECB535E2A46B1EB007D139B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB535D2A46B1EB007D139B /* SwiftUI.framework */; };
 		CECB53612A46B1EC007D139B /* DrinkWaterWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53602A46B1EC007D139B /* DrinkWaterWidgetBundle.swift */; };
@@ -27,7 +29,6 @@
 		CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129A92A4C45860079E416 /* MainTabView.swift */; };
 		CED129AC2A4C45F30079E416 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AB2A4C45F30079E416 /* CalendarView.swift */; };
 		CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AD2A4C47D70079E416 /* DrinkView.swift */; };
-		CEE1F32A2A55D96300357463 /* bubble.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE1F3292A55D96300357463 /* bubble.json */; };
 		CEE66B342A55C729001A1197 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEE66B332A55C729001A1197 /* Lottie */; };
 		CEE66B362A55C826001A1197 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B352A55C826001A1197 /* SplashView.swift */; };
 		CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B382A55C85A001A1197 /* LottieView.swift */; };
@@ -83,6 +84,8 @@
 		CE2225262A46AF2200F5DBB9 /* DrinkWaterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkWaterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE22252A2A46AF2200F5DBB9 /* DrinkWaterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterUITests.swift; sourceTree = "<group>"; };
 		CE22252C2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CEB99B852A57096F0061F09E /* bubble_dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_dark.json; sourceTree = "<group>"; };
+		CEB99B862A57096F0061F09E /* bubble_light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_light.json; sourceTree = "<group>"; };
 		CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DrinkWaterWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECB535B2A46B1EB007D139B /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		CECB535D2A46B1EB007D139B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -98,7 +101,6 @@
 		CED129A92A4C45860079E416 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		CED129AB2A4C45F30079E416 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		CED129AD2A4C47D70079E416 /* DrinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkView.swift; sourceTree = "<group>"; };
-		CEE1F3292A55D96300357463 /* bubble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble.json; sourceTree = "<group>"; };
 		CEE66B352A55C826001A1197 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		CEE66B382A55C85A001A1197 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		CEE66B3D2A55C8BE001A1197 /* FadeInOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeInOutView.swift; sourceTree = "<group>"; };
@@ -234,7 +236,8 @@
 		CEE66B3C2A55C884001A1197 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
-				CEE1F3292A55D96300357463 /* bubble.json */,
+				CEB99B852A57096F0061F09E /* bubble_dark.json */,
+				CEB99B862A57096F0061F09E /* bubble_light.json */,
 			);
 			path = Lottie;
 			sourceTree = "<group>";
@@ -372,9 +375,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEB99B882A57096F0061F09E /* bubble_light.json in Resources */,
 				CE2225172A46AF2200F5DBB9 /* Preview Assets.xcassets in Resources */,
 				CE2225142A46AF2200F5DBB9 /* Assets.xcassets in Resources */,
-				CEE1F32A2A55D96300357463 /* bubble.json in Resources */,
+				CEB99B872A57096F0061F09E /* bubble_dark.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,8 +611,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -644,8 +648,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

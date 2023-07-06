@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SplashView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var navigated: Bool = false
     
     let moveToTimer = Timer.publish(every: 2, on: .main, in: .common)
@@ -15,7 +16,8 @@ struct SplashView: View {
     
     var body: some View {
         ZStack {
-            LottieView(lottieFile: "bubble")
+            let fileName = colorScheme == .light ? "bubble_light" : "bubble_dark"
+            LottieView(lottieFile: fileName)
                 .ignoresSafeArea()
             
             FadeInOutView(text: "물리미", startTime: 1)
