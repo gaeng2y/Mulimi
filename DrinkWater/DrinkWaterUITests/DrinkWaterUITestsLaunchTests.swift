@@ -36,5 +36,7 @@ final class DrinkWaterUITestsLaunchTests: XCTestCase {
         attachment.name = "Launch Screen"
         attachment.lifetime = .keepAlways
         add(attachment)
+        
+        snapshot("01LoginScreen")
     }
 }
