@@ -13,6 +13,7 @@
 		CE2225212A46AF2200F5DBB9 /* DrinkWaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2225202A46AF2200F5DBB9 /* DrinkWaterTests.swift */; };
 		CE22252B2A46AF2200F5DBB9 /* DrinkWaterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22252A2A46AF2200F5DBB9 /* DrinkWaterUITests.swift */; };
 		CE22252D2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22252C2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift */; };
+		CE40541C2A5ECE80009BA528 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40541B2A5ECE80009BA528 /* SnapshotHelper.swift */; };
 		CEB99B872A57096F0061F09E /* bubble_dark.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B852A57096F0061F09E /* bubble_dark.json */; };
 		CEB99B882A57096F0061F09E /* bubble_light.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B862A57096F0061F09E /* bubble_light.json */; };
 		CECB535C2A46B1EB007D139B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB535B2A46B1EB007D139B /* WidgetKit.framework */; };
@@ -84,6 +85,7 @@
 		CE2225262A46AF2200F5DBB9 /* DrinkWaterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkWaterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE22252A2A46AF2200F5DBB9 /* DrinkWaterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterUITests.swift; sourceTree = "<group>"; };
 		CE22252C2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CE40541B2A5ECE80009BA528 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		CEB99B852A57096F0061F09E /* bubble_dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_dark.json; sourceTree = "<group>"; };
 		CEB99B862A57096F0061F09E /* bubble_light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_light.json; sourceTree = "<group>"; };
 		CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DrinkWaterWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,6 +207,7 @@
 		CE2225292A46AF2200F5DBB9 /* DrinkWaterUITests */ = {
 			isa = PBXGroup;
 			children = (
+				CE40541B2A5ECE80009BA528 /* SnapshotHelper.swift */,
 				CE22252A2A46AF2200F5DBB9 /* DrinkWaterUITests.swift */,
 				CE22252C2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift */,
 			);
@@ -439,6 +442,7 @@
 			files = (
 				CE22252B2A46AF2200F5DBB9 /* DrinkWaterUITests.swift in Sources */,
 				CE22252D2A46AF2200F5DBB9 /* DrinkWaterUITestsLaunchTests.swift in Sources */,
+				CE40541C2A5ECE80009BA528 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,14 @@ final class DrinkWaterUITestsLaunchTests: XCTestCase {
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
+    
+    override class func setUp() {
+        let app = XCUIApplication()
+        setupSnapshot(app)
+        app.launch()
+        
+        snapshot("0Launch")
+    }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
