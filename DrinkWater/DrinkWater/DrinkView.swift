@@ -9,10 +9,23 @@ import SwiftUI
 import WidgetKit
 
 struct DrinkView: View {
-    @State private var counter = 0
+    @State private var counter = UserDefaults.shared.integer(forKey: key) {
+        willSet {
+            UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
+                UserDefaults.shared.set(value, forKey: key)
+            }
+        }
+        didSet {
+            self.progress = CGFloat(self.counter) / 8
+        }
+    }
     @State private var isPresented: Bool = false
-    @State var progress: CGFloat = 0
-    @State var startAnimation: CGFloat = 0
+    @State var progress: CGFloat = CGFloat(UserDefaults.shared.integer(forKey: key)) / 8
+    @State var startAnimation: CGFloat = 0 {
+        didSet {
+            print(startAnimation)
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -73,9 +86,9 @@ struct DrinkView: View {
                     }
                     .frame(width: size.width, height: size.height, alignment: .center)
                     .onAppear {
-//                        withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
-//                            startAnimation = size.width
-//                        }
+                        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                            startAnimation = size.width
+                        }
                     }
                 }
                 .frame(height: 450)
@@ -95,10 +108,7 @@ struct DrinkView: View {
                         }
                         
                         self.counter += 1
-                        self.progress += 0.125
-                        UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
-                            UserDefaults.shared.set(value, forKey: key)
-                        }
+                        
                         UserDefaults.shared.set(self.counter, forKey: key)
                         WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
                     }) {
@@ -115,10 +125,6 @@ struct DrinkView: View {
                     // MARK: 초기화 버튼
                     Button(action: {
                         self.counter = 0
-                        self.progress = 0
-                        UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
-                            UserDefaults.shared.set(value, forKey: key)
-                        }
                         UserDefaults.shared.set(0, forKey: key)
                         WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
                     }) {
@@ -130,10 +136,6 @@ struct DrinkView: View {
                     }
                 }
             }
-        }
-        .onAppear {
-            self.counter = UserDefaults.shared.integer(forKey: key)
-            self.progress = CGFloat(self.counter / 8)
         }
     }
 }
