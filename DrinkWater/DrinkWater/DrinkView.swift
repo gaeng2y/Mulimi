@@ -86,8 +86,8 @@ struct DrinkView: View {
                     }
                     .frame(width: size.width, height: size.height, alignment: .center)
                     .onAppear {
-                        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-                            startAnimation = size.width
+                        withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
+                            startAnimation = size.width * 0.91094147585
                         }
                     }
                 }
