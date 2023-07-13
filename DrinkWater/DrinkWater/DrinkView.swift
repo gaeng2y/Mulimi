@@ -21,11 +21,7 @@ struct DrinkView: View {
     }
     @State private var isPresented: Bool = false
     @State var progress: CGFloat = CGFloat(UserDefaults.shared.integer(forKey: key)) / 8
-    @State var startAnimation: CGFloat = 0 {
-        didSet {
-            print(startAnimation)
-        }
-    }
+    @State var startAnimation: CGFloat = 0
     
     var body: some View {
         ZStack {
@@ -86,9 +82,9 @@ struct DrinkView: View {
                     }
                     .frame(width: size.width, height: size.height, alignment: .center)
                     .onAppear {
-//                        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-//                            startAnimation = size.width - 35
-//                        }
+                        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                            startAnimation = 360
+                        }
                     }
                 }
                 .frame(height: 450)
