@@ -17,11 +17,14 @@ struct DrinkView: View {
         }
         didSet {
             self.progress = CGFloat(self.counter) / 8
+            self.milliliter = self.counter * 250
         }
     }
     @State private var isPresented: Bool = false
     @State var progress: CGFloat = CGFloat(UserDefaults.shared.integer(forKey: key)) / 8
     @State var startAnimation: CGFloat = 0
+    
+    @State var milliliter = UserDefaults.shared.integer(forKey: key) * 250
     
     var body: some View {
         ZStack {
@@ -91,9 +94,14 @@ struct DrinkView: View {
                 }
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
             
-                Text("\(counter)잔")
-                    .font(.title)
-                    .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
+                HStack {
+                    Text("\(counter)잔")
+                        .font(.title)
+                    
+                    Text("(\(self.getLiter()))")
+                        .font(.body)
+                }
+                .padding(EdgeInsets(top: 30, leading: 0, bottom: 20, trailing: 0))
                 
                 HStack(spacing: 20) {
                     // MARK: 물마시기 버튼
@@ -133,6 +141,11 @@ struct DrinkView: View {
                 }
             }
         }
+    }
+    
+    private func getLiter() -> String {
+        guard self.milliliter >= 1000 else { return "\(self.milliliter)ML"}
+        return "\(Float(self.milliliter) / 1000)L"
     }
 }
 
