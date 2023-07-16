@@ -88,6 +88,7 @@
 		CE40541B2A5ECE80009BA528 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		CEB99B852A57096F0061F09E /* bubble_dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_dark.json; sourceTree = "<group>"; };
 		CEB99B862A57096F0061F09E /* bubble_light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_light.json; sourceTree = "<group>"; };
+		CECACECB2A600FA400956020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CECB53592A46B1EB007D139B /* DrinkWaterWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DrinkWaterWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECB535B2A46B1EB007D139B /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		CECB535D2A46B1EB007D139B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -171,6 +172,7 @@
 		CE22250E2A46AF2100F5DBB9 /* DrinkWater */ = {
 			isa = PBXGroup;
 			children = (
+				CECACECB2A600FA400956020 /* Info.plist */,
 				CEE66B3C2A55C884001A1197 /* Lottie */,
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */,
@@ -611,8 +613,9 @@
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DrinkWater/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "물리미";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -648,8 +651,9 @@
 				DEVELOPMENT_TEAM = 8UV3Y69NB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DrinkWater/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "물리미";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
