@@ -9,7 +9,7 @@ import SwiftUI
 import WidgetKit
 
 struct DrinkView: View {
-    @State private var counter = UserDefaults.shared.integer(forKey: key) {
+    @State private var counter = UserDefaults.shared.integer(forKey: String.glassesOfToday) {
         willSet {
             UserDefaults.standard.dictionaryRepresentation().forEach { (key, value) in
                 UserDefaults.shared.set(value, forKey: key)
@@ -21,10 +21,10 @@ struct DrinkView: View {
         }
     }
     @State private var isPresented: Bool = false
-    @State var progress: CGFloat = CGFloat(UserDefaults.shared.integer(forKey: key)) / 8
+    @State var progress: CGFloat = CGFloat(UserDefaults.shared.integer(forKey: String.glassesOfToday)) / 8
     @State var startAnimation: CGFloat = 0
     
-    @State var milliliter = UserDefaults.shared.integer(forKey: key) * 250
+    @State var milliliter = UserDefaults.shared.integer(forKey: String.glassesOfToday) * 250
     
     var body: some View {
         ZStack {
