@@ -32,6 +32,7 @@
 		CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECB53642A46B1EC007D139B /* DrinkWaterWidget.swift */; };
 		CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129A92A4C45860079E416 /* MainTabView.swift */; };
 		CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED129AD2A4C47D70079E416 /* DrinkView.swift */; };
+		CEDC7D392A794563007E89A9 /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C242A694C69004A9DBC /* UserDefaults+Extensions.swift */; };
 		CEE66B342A55C729001A1197 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEE66B332A55C729001A1197 /* Lottie */; };
 		CEE66B362A55C826001A1197 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B352A55C826001A1197 /* SplashView.swift */; };
 		CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE66B382A55C85A001A1197 /* LottieView.swift */; };
@@ -496,6 +497,7 @@
 				CECB53612A46B1EC007D139B /* DrinkWaterWidgetBundle.swift in Sources */,
 				CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */,
 				CECB53632A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
+				CEDC7D392A794563007E89A9 /* UserDefaults+Extensions.swift in Sources */,
 				CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

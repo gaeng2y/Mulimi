@@ -137,10 +137,3 @@ struct DrinkWaterWidget_Previews: PreviewProvider {
         .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
-
-extension UserDefaults {
-    static var shared: UserDefaults {
-        let appGroupId = "group.com.gaeng2y.drinkwater"
-        return UserDefaults(suiteName: appGroupId)!
-    }
-}

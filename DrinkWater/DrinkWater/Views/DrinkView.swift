@@ -113,7 +113,7 @@ struct DrinkView: View {
                         
                         self.counter += 1
                         
-                        UserDefaults.shared.set(self.counter, forKey: key)
+                        UserDefaults.shared.set(self.counter, forKey: String.glassesOfToday)
                         WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
                     }) {
                         Text("마시기")
@@ -129,7 +129,7 @@ struct DrinkView: View {
                     // MARK: 초기화 버튼
                     Button(action: {
                         self.counter = 0
-                        UserDefaults.shared.set(0, forKey: key)
+                        UserDefaults.shared.set(0, forKey: String.glassesOfToday)
                         WidgetCenter.shared.reloadTimelines(ofKind: "DrinkWaterWidget")
                     }) {
                         Text("초기화")
