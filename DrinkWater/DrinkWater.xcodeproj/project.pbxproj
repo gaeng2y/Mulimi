@@ -230,9 +230,7 @@
 			children = (
 				CE4E5C292A694CA8004A9DBC /* Splash */,
 				CED129A92A4C45860079E416 /* MainTabView.swift */,
-				CECB53732A46B2AF007D139B /* MainView.swift */,
-				CED129AD2A4C47D70079E416 /* DrinkView.swift */,
-				CEE66B492A55D37D001A1197 /* WaterWave.swift */,
+				CEDC7D3A2A794C9D007E89A9 /* Main */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -275,6 +273,16 @@
 				CECB53692A46B1EC007D139B /* Info.plist */,
 			);
 			path = DrinkWaterWidget;
+			sourceTree = "<group>";
+		};
+		CEDC7D3A2A794C9D007E89A9 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				CECB53732A46B2AF007D139B /* MainView.swift */,
+				CED129AD2A4C47D70079E416 /* DrinkView.swift */,
+				CEE66B492A55D37D001A1197 /* WaterWave.swift */,
+			);
+			path = Main;
 			sourceTree = "<group>";
 		};
 		CEE66B3C2A55C884001A1197 /* Lottie */ = {
