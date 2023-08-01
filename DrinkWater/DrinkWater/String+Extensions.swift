@@ -17,4 +17,6 @@ extension String {
         }()
         return dateFormatter.string(from: now)
     }
+    
+    static var keyOfGlassesOfWaterPerDay = "keyOfGlassesOfWaterPerDay"
 }
