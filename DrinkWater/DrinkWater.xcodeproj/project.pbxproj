@@ -17,6 +17,7 @@
 		CE4E5C232A69466C004A9DBC /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C222A69466C004A9DBC /* Water.swift */; };
 		CE4E5C252A694C69004A9DBC /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C242A694C69004A9DBC /* UserDefaults+Extensions.swift */; };
 		CE4E5C2B2A694DD4004A9DBC /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C2A2A694DD4004A9DBC /* String+Extensions.swift */; };
+		CE9CCFEF2A7BF82300083F7E /* OnboardingVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */; };
 		CEB99B872A57096F0061F09E /* bubble_dark.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B852A57096F0061F09E /* bubble_dark.json */; };
 		CEB99B882A57096F0061F09E /* bubble_light.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B862A57096F0061F09E /* bubble_light.json */; };
 		CECB535C2A46B1EB007D139B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB535B2A46B1EB007D139B /* WidgetKit.framework */; };
@@ -92,6 +93,7 @@
 		CE4E5C222A69466C004A9DBC /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
 		CE4E5C242A694C69004A9DBC /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
 		CE4E5C2A2A694DD4004A9DBC /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVIew.swift; sourceTree = "<group>"; };
 		CEB99B852A57096F0061F09E /* bubble_dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_dark.json; sourceTree = "<group>"; };
 		CEB99B862A57096F0061F09E /* bubble_light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_light.json; sourceTree = "<group>"; };
 		CECACECB2A600FA400956020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
+				CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */,
 			);
 			path = DrinkWater;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				CE4E5C232A69466C004A9DBC /* Water.swift in Sources */,
 				CE4E5C252A694C69004A9DBC /* UserDefaults+Extensions.swift in Sources */,
 				CEE66B362A55C826001A1197 /* SplashView.swift in Sources */,
+				CE9CCFEF2A7BF82300083F7E /* OnboardingVIew.swift in Sources */,
 				CEE66B392A55C85A001A1197 /* LottieView.swift in Sources */,
 				CEE66B4A2A55D37D001A1197 /* WaterWave.swift in Sources */,
 				CECB536B2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
