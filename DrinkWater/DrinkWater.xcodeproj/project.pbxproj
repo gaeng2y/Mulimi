@@ -189,7 +189,6 @@
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
-				CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */,
 			);
 			path = DrinkWater;
 			sourceTree = "<group>";
@@ -232,6 +231,7 @@
 			isa = PBXGroup;
 			children = (
 				CE4E5C292A694CA8004A9DBC /* Splash */,
+				CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */,
 				CED129A92A4C45860079E416 /* MainTabView.swift */,
 				CEDC7D3A2A794C9D007E89A9 /* Main */,
 			);

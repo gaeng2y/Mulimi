@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @AppStorage("_isFirstLaunching") var isFirstLaunching: Bool = true
+    
     var body: some View {
         MainView()
+            .fullScreenCover(isPresented: $isFirstLaunching) {
+                OnboardingVIew(isFirstLaunching: $isFirstLaunching)
+            }
     }
 }
 
