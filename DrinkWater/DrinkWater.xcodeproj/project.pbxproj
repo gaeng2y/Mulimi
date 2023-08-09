@@ -17,6 +17,7 @@
 		CE4E5C232A69466C004A9DBC /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C222A69466C004A9DBC /* Water.swift */; };
 		CE4E5C252A694C69004A9DBC /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C242A694C69004A9DBC /* UserDefaults+Extensions.swift */; };
 		CE4E5C2B2A694DD4004A9DBC /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C2A2A694DD4004A9DBC /* String+Extensions.swift */; };
+		CE7771832A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7771822A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift */; };
 		CE9CCFEF2A7BF82300083F7E /* OnboardingVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */; };
 		CEB99B872A57096F0061F09E /* bubble_dark.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B852A57096F0061F09E /* bubble_dark.json */; };
 		CEB99B882A57096F0061F09E /* bubble_light.json in Resources */ = {isa = PBXBuildFile; fileRef = CEB99B862A57096F0061F09E /* bubble_light.json */; };
@@ -93,6 +94,7 @@
 		CE4E5C222A69466C004A9DBC /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
 		CE4E5C242A694C69004A9DBC /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
 		CE4E5C2A2A694DD4004A9DBC /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		CE7771822A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassOfWaterSettable.swift; sourceTree = "<group>"; };
 		CE9CCFEE2A7BF82300083F7E /* OnboardingVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVIew.swift; sourceTree = "<group>"; };
 		CEB99B852A57096F0061F09E /* bubble_dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_dark.json; sourceTree = "<group>"; };
 		CEB99B862A57096F0061F09E /* bubble_light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bubble_light.json; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				CECB53762A46C2AC007D139B /* DrinkWater.entitlements */,
 				CE2225132A46AF2200F5DBB9 /* Assets.xcassets */,
 				CE2225152A46AF2200F5DBB9 /* Preview Content */,
+				CE7771822A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift */,
 			);
 			path = DrinkWater;
 			sourceTree = "<group>";
@@ -479,6 +482,7 @@
 				CECB53742A46B2AF007D139B /* MainView.swift in Sources */,
 				CEE66B3E2A55C8BE001A1197 /* FadeInOutView.swift in Sources */,
 				CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */,
+				CE7771832A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift in Sources */,
 				CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */,
 				CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
 			);

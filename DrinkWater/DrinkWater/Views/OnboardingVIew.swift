@@ -17,10 +17,16 @@ struct OnboardingVIew: View {
                 .ignoresSafeArea()
             
             VStack {
-                Text("하루에 마실 잔 수를 입력해주세요.")
-                    .foregroundColor(.black)
-                    .font(.title2)
+                VStack {
+                    Text("하루에 마실 잔 수를 입력해주세요.")
+                        .foregroundColor(.black)
+                        .font(.title2)
+                    Text("한잔을 250ml로 계산하고 있어요!")
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                }
                     .padding(.bottom, 50)
+                
                 
                 TextField("숫자만 입력하시면 돼요", text: $glassOfWater)
                     .multilineTextAlignment(.center)
@@ -29,8 +35,11 @@ struct OnboardingVIew: View {
                     .padding(.horizontal, 100)
                     .padding(.bottom, 50)
                 
+                Text("하루에 @리터")
+                    .padding(.bottom, 50)
+                
                 Button {
-                    isFirstLaunching.toggle()
+                    
                 } label: {
                     Text("시작")
                 }
@@ -41,5 +50,13 @@ struct OnboardingVIew: View {
             }
         }
         .ignoresSafeArea()
+    }
+}
+
+extension OnboardingVIew: GlassOfWaterSettable {
+    func setGlassOfWater(with input: String) {
+        isFirstLaunching.toggle()
+        
+        input
     }
 }
