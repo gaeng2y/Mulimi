@@ -57,6 +57,6 @@ extension OnboardingVIew: GlassOfWaterSettable {
     func setGlassOfWater(with input: String) {
         isFirstLaunching.toggle()
         
-        input
+        let totalDrinkOfWater: Float = Float(250 * Int(input)
     }
 }
