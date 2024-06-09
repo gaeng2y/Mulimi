@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5A2AC8A2C14BD7C00FC3B5D /* DrinkWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2AC892C14BD7C00FC3B5D /* DrinkWaterIntent.swift */; };
+		B5A2AC8C2C14BE7200FC3B5D /* DrinkWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2AC892C14BD7C00FC3B5D /* DrinkWaterIntent.swift */; };
+		B5CC2C0C2C155A5B00A267E2 /* GlassesCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5CC2C0B2C155A5B00A267E2 /* GlassesCounter.swift */; };
+		B5CC2C0F2C15F62D00A267E2 /* GlassesCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5CC2C0B2C155A5B00A267E2 /* GlassesCounter.swift */; };
+		B5CC2C102C15F63C00A267E2 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4E5C2A2A694DD4004A9DBC /* String+Extensions.swift */; };
 		CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */; };
 		CE2225142A46AF2200F5DBB9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2225132A46AF2200F5DBB9 /* Assets.xcassets */; };
 		CE2225172A46AF2200F5DBB9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2225162A46AF2200F5DBB9 /* Preview Assets.xcassets */; };
@@ -81,6 +86,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B5A2AC892C14BD7C00FC3B5D /* DrinkWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterIntent.swift; sourceTree = "<group>"; };
+		B5CC2C0B2C155A5B00A267E2 /* GlassesCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassesCounter.swift; sourceTree = "<group>"; };
 		CE22250C2A46AF2100F5DBB9 /* DrinkWater.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrinkWater.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE22250F2A46AF2100F5DBB9 /* DrinkWaterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWaterApp.swift; sourceTree = "<group>"; };
 		CE2225132A46AF2200F5DBB9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -154,6 +161,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B5CC2C0E2C15F5CA00A267E2 /* App Intent */ = {
+			isa = PBXGroup;
+			children = (
+				B5A2AC892C14BD7C00FC3B5D /* DrinkWaterIntent.swift */,
+			);
+			path = "App Intent";
+			sourceTree = "<group>";
+		};
 		CE2225032A46AF2100F5DBB9 = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +196,7 @@
 		CE22250E2A46AF2100F5DBB9 /* DrinkWater */ = {
 			isa = PBXGroup;
 			children = (
+				B5CC2C0E2C15F5CA00A267E2 /* App Intent */,
 				CE4E5C282A694C91004A9DBC /* App */,
 				CEE66B3C2A55C884001A1197 /* Lottie */,
 				CE4E5C262A694C81004A9DBC /* Model */,
@@ -225,6 +241,7 @@
 		CE4E5C262A694C81004A9DBC /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B5CC2C0B2C155A5B00A267E2 /* GlassesCounter.swift */,
 				CE4E5C222A69466C004A9DBC /* Water.swift */,
 			);
 			path = Model;
@@ -470,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5CC2C0C2C155A5B00A267E2 /* GlassesCounter.swift in Sources */,
 				CE2225102A46AF2100F5DBB9 /* DrinkWaterApp.swift in Sources */,
 				CE4E5C2B2A694DD4004A9DBC /* String+Extensions.swift in Sources */,
 				CE4E5C232A69466C004A9DBC /* Water.swift in Sources */,
@@ -484,6 +502,7 @@
 				CED129AA2A4C45860079E416 /* MainTabView.swift in Sources */,
 				CE7771832A83B5AD00EA6BC2 /* GlassOfWaterSettable.swift in Sources */,
 				CED129AE2A4C47D70079E416 /* DrinkView.swift in Sources */,
+				B5A2AC8A2C14BD7C00FC3B5D /* DrinkWaterIntent.swift in Sources */,
 				CECB53782A46C48B007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -511,7 +530,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CECB53612A46B1EC007D139B /* DrinkWaterWidgetBundle.swift in Sources */,
+				B5CC2C0F2C15F62D00A267E2 /* GlassesCounter.swift in Sources */,
 				CECB537B2A46C742007D139B /* DrinkWaterWidget.swift in Sources */,
+				B5A2AC8C2C14BE7200FC3B5D /* DrinkWaterIntent.swift in Sources */,
+				B5CC2C102C15F63C00A267E2 /* String+Extensions.swift in Sources */,
 				CECB53632A46B1EC007D139B /* DrinkWaterWidgetLiveActivity.swift in Sources */,
 				CEDC7D392A794563007E89A9 /* UserDefaults+Extensions.swift in Sources */,
 				CECB536A2A46B1EC007D139B /* DrinkWaterWidget.intentdefinition in Sources */,
