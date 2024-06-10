@@ -5,7 +5,6 @@
 //  Created by 강동영 on 6/9/24.
 //
 
-import Foundation
 import WidgetKit
 
 struct GlassesCounter {
