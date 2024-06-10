@@ -18,7 +18,6 @@ struct DrinkWaterIntent: AppIntent {
     static var description = IntentDescription("Glasses of Today counter")
     
     func perform() async throws -> some IntentResult {
-        print("Tab")
         GlassesCounter.countUp()
         return .result()
     }
