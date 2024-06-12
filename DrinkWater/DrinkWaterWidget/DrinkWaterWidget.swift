@@ -97,6 +97,15 @@ struct DrinkWaterWidgetEntryView : View {
             VStack {
                 Spacer()
                 HStack {
+                    if #available(iOSApplicationExtension 17.0, *) {
+                        Button(intent: DrinkWaterIntent()) {
+                            Text("마시기")
+                                .font(.system(size: 10))
+                                .foregroundColor(.white)
+                        }
+                        .background(Color.teal)
+                        .cornerRadius(10)
+                    }
                     Spacer()
                     Text("\(drinkWater)잔")
 						.font(.title)
