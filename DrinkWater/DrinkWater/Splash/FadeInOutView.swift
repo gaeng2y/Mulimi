@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct FadeInOutView: View {
-    @State var characters: Array<String.Element>
-    @State var opacity: Double = 0
-    @State var baseTime: Double
+    @State private var characters: Array<String.Element>
+    @State private var opacity: Double = 0
+    @State private var baseTime: Double
+    private var stringCount: Int {
+        characters.count
+    }
 
     init(text: String, startTime: Double) {
         characters = Array(text)
@@ -19,12 +22,12 @@ struct FadeInOutView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            ForEach(0 ..< characters.count) { num in
-                Text(String(self.characters[num]))
+            ForEach(characters, id: \.self) { character in
+                Text(String(character))
                     .font(.largeTitle)
                     .fontWeight(.heavy)
                     .opacity(opacity)
-                    .animation(.easeInOut.delay(Double(num) * 0.1),
+                    .animation(.easeInOut.delay(animationDelay(for: character)),
                                value: opacity)
             }
         }
@@ -40,4 +43,14 @@ struct FadeInOutView: View {
             }
         }
     }
+    
+    /// 문자에 대한 애니메이션 지연 시간을 계산합니다.
+    private func animationDelay(for character: Character) -> Double {
+        let index = characters.firstIndex(of: character) ?? 0
+        return Double(index) * 0.1
+    }
+}
+
+#Preview {
+    FadeInOutView(text: "물리미", startTime: 1)
 }

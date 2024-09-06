@@ -9,7 +9,7 @@ import Lottie
 import SwiftUI
 
 struct LottieView: UIViewRepresentable {
-    var lottieFile: String
+    var lottieFile: String = "bubble"
     var loopMode: LottieLoopMode = .playOnce
     var animationView = LottieAnimationView()
     
@@ -36,4 +36,8 @@ struct LottieView: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
         self.animationView.play()
     }
+}
+
+#Preview {
+    LottieView(lottieFile: "bubble")
 }

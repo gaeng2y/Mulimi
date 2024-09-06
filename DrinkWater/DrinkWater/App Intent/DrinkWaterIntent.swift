@@ -6,16 +6,16 @@
 //
 
 import AppIntents
+import ComposableArchitecture
 import WidgetKit
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct DrinkWaterIntent: AppIntent {
-    
     static var title: LocalizedStringResource = "Drink Water"
     static var description = IntentDescription("Glasses of Today counter")
     
     func perform() async throws -> some IntentResult {
-        GlassesCounter.countUp()
+        UserDefaults.appGroup.glassesOfToday += 1
+        WidgetCenter.shared.reloadAllTimelines()
         return .result()
     }
 }

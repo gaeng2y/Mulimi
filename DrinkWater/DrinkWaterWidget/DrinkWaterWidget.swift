@@ -7,142 +7,94 @@
 
 import WidgetKit
 import SwiftUI
-import Intents
 
-struct Provider: IntentTimelineProvider {
-    private var key: String {
-        let now = Date()
-        let dateFormatter: DateFormatter = {
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd"
-            return df
-        }()
-        return dateFormatter.string(from: now)
+struct Provider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> DrinkWaterEntry {
+        .init(date: .now,
+              numberOfGlasses: 0,
+              configuration: ConfigurationAppIntent())
     }
     
-    func placeholder(in context: Context) -> DrinkWaterEntry {
-        let entry = DrinkWaterEntry(
-            date: Date(),
-            glassesOfWater: Array(repeating: false, count: 8),
-            configuration: ConfigurationIntent()
-        )
-        return entry
+    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> DrinkWaterEntry {
+        .init(date: .now,
+              numberOfGlasses: UserDefaults.appGroup.glassesOfToday,
+              configuration: ConfigurationAppIntent())
     }
-
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DrinkWaterEntry) -> ()) {
-        let drinkwater = UserDefaults.shared.integer(forKey: key)
-        print(drinkwater)
-        let glassesOfWater = getGlassesOfWater(with: drinkwater)
-        
-        let entry = DrinkWaterEntry(
-            date: Date(),
-            glassesOfWater: glassesOfWater,
-            configuration: ConfigurationIntent()
-        )
-        completion(entry)
-    }
-
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    
+    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<DrinkWaterEntry> {
         var entries: [DrinkWaterEntry] = []
-
+        
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-
-            let drinkwater = UserDefaults.shared.integer(forKey: key)
-            print(drinkwater)
-            let glassesOfWater = getGlassesOfWater(with: drinkwater)
-            let entry = DrinkWaterEntry(
-                date: entryDate,
-                glassesOfWater: glassesOfWater,
-                configuration: configuration
-            )
+            let entry = DrinkWaterEntry(date: entryDate,
+                                        numberOfGlasses: UserDefaults.appGroup.glassesOfToday,
+                                        configuration: ConfigurationAppIntent())
             entries.append(entry)
         }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
-    }
-    
-    private func getGlassesOfWater(with drinkwater: Int) -> [Bool] {
-        var arr = [Bool]()
-        for _ in 0..<drinkwater {
-            arr.append(true)
-        }
-        for _ in 0..<(8 - drinkwater) {
-            arr.append(false)
-        }
-        return arr
+        
+        return Timeline(entries: entries, policy: .atEnd)
     }
 }
 
 struct DrinkWaterEntry: TimelineEntry {
     let date: Date
-    let glassesOfWater: [Bool]
-    let configuration: ConfigurationIntent
+    let numberOfGlasses: Int
+    let configuration: ConfigurationAppIntent
 }
 
 struct DrinkWaterWidgetEntryView : View {
     var entry: Provider.Entry
-    var drinkWater: Int {
-        entry.glassesOfWater.filter { $0 }.count
+    private var numberOfGlasses: Int {
+        entry.numberOfGlasses
     }
-
+    
     var body: some View {
         ZStack {
-            let name = "\(drinkWater)"
-            Image(name)
+            Image("\(numberOfGlasses)")
+                .resizable()
             
             VStack {
                 Spacer()
-                HStack {
-                    if #available(iOSApplicationExtension 17.0, *) {
-                        Button(intent: DrinkWaterIntent()) {
-                            Text("마시기")
-                                .font(.system(size: 10))
-                                .foregroundColor(.white)
-                        }
-                        .background(Color.teal)
-                        .cornerRadius(10)
-                    }
-                    Spacer()
-                    Text("\(drinkWater)잔")
-						.font(.title)
-						.foregroundColor(.white)
-						.shadow(color: .black, radius: 3)
-                }
-                .padding(.horizontal)
                 
+                HStack {
+                    Button(intent: DrinkWaterIntent()) {
+                        Text("마시기")
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                    }
+                    .background(Color.teal)
+                    .cornerRadius(10)
+                    
+                    Spacer()
+                    
+                    Text("\(numberOfGlasses)잔")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .shadow(color: .black, radius: 3)
+                }
             }
-            .padding(.init(top: 0, leading: 0, bottom: 5, trailing: 0))
         }
-        
     }
 }
 
 struct DrinkWaterWidget: Widget {
-    let kind: String = "DrinkWaterWidget"
-
+    let kind: String = .widgetKind
+    
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
+        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
             DrinkWaterWidgetEntryView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
         .supportedFamilies([.systemSmall])
     }
 }
 
-struct DrinkWaterWidget_Previews: PreviewProvider {
-    static var previews: some View {
-        DrinkWaterWidgetEntryView(
-            entry: DrinkWaterEntry(
-                date: Date(),
-                glassesOfWater: [false, false, false, false, false, false, false, false],
-                configuration: ConfigurationIntent()
-            )
-        )
-        .previewContext(WidgetPreviewContext(family: .systemSmall))
-    }
+#Preview(as: .systemSmall) {
+    DrinkWaterWidget()
+} timeline: {
+    DrinkWaterEntry(date: .now, numberOfGlasses: 0, configuration: .init())
+    DrinkWaterEntry(date: .now, numberOfGlasses: 4, configuration: .init())
+    DrinkWaterEntry(date: .now, numberOfGlasses: 8, configuration: .init())
 }

@@ -8,8 +8,15 @@
 import Foundation
 
 extension UserDefaults {
-    static var shared: UserDefaults {
-        let appGroupId = "group.com.gaeng2y.drinkwater"
-        return UserDefaults(suiteName: appGroupId)!
+    @objc dynamic var glassesOfToday: Int {
+        get { UserDefaults.appGroup.integer(forKey: .glassesOfToday) }
+        set { UserDefaults.appGroup.set(newValue, forKey: .glassesOfToday) }
     }
+    
+    static let appGroup: UserDefaults = {
+        guard let appGroupUserDefaults = UserDefaults(suiteName: .appGroupId) else {
+            fatalError("Undefined App Group, Please check capabilities")
+        }
+        return appGroupUserDefaults
+    }()
 }

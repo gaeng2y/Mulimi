@@ -8,6 +8,9 @@
 import Foundation
 
 extension String {
+    static let appGroupId = "group.com.gaeng2y.drinkwater"
+    static let widgetKind: String = "MulimeeWidget"
+    
     static var glassesOfToday: String {
         let now = Date()
         let dateFormatter: DateFormatter = {
@@ -17,6 +20,4 @@ extension String {
         }()
         return dateFormatter.string(from: now)
     }
-    
-    static var keyOfGlassesOfWaterPerDay = "keyOfGlassesOfWaterPerDay"
 }

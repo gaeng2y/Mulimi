@@ -1,13 +1,13 @@
 //
-//  WaterWave.swift
+//  WaterWaveView.swift
 //  DrinkWater
 //
-//  Created by Kyeongmo Yang on 2023/07/06.
+//  Created by Kyeongmo Yang on 9/6/24.
 //
 
 import SwiftUI
 
-struct WaterWave: Shape {
+struct WaterWaveView: Shape {
     var progress: CGFloat
     // Wave Height
     var waveHeight: CGFloat
