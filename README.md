@@ -18,6 +18,6 @@
 
 ## 스크린샷
 ### App
-![App](https://github.com/gaeng2y/DrinkWater/blob/main/DrinkWater/screenshots/6.5/Apple%20iPhone%2011%20Pro%20Max%20Screenshot%202.png?raw=true)
+![App](https://github.com/gaeng2y/Mulimi/blob/main/screenshots/6.5/Apple%20iPhone%2011%20Pro%20Max%20Screenshot%201.png?raw=true)
 ### Widget
-![Widget](https://github.com/gaeng2y/DrinkWater/blob/main/DrinkWater/screenshots/6.5/Apple%20iPhone%2011%20Pro%20Max%20Screenshot%203.png?raw=true)
+![Widget](https://github.com/gaeng2y/Mulimi/blob/main/screenshots/6.5/Apple%20iPhone%2011%20Pro%20Max%20Screenshot%203.png?raw=true)
