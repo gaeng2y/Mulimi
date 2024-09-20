@@ -10,6 +10,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: bundleId,
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(with: [
                 "LSApplicationCategoryType": "public.app-category.healthcare-fitness",
                 "CFBundleDisplayName": "물리미",
@@ -17,8 +18,8 @@ let project = Project(
                 "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
                 "CFBundleName": "$(PRODUCT_NAME)",
                 "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-                "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
-                "CFBundleShortVersionString": "$(MARKETING_VERSION)",
+                "CFBundleVersion": "5",
+                "CFBundleShortVersionString": "1.0.4",
                 "UILaunchStoryboardName": "LaunchScreen",
                 "ITSAppUsesNonExemptEncryption": false,
                 "UIApplicationSceneManifest": [
@@ -30,19 +31,42 @@ let project = Project(
             resources: ["App/Resources/**"],
             dependencies: [
                 .external(name: "ComposableArchitecture"),
-                .external(name: "Lottie")
+                .external(name: "Lottie"),
+                .target(name: "Utils"),
+                .target(name: "WidgetExtension")
             ]
         ),
         .target(
-            name: "MulimiWidget",
+            name: "Utils",
+            destinations: .iOS,
+            product: .framework,
+            bundleId: "\(bundleId).Utils",
+            deploymentTargets: .iOS("17.0"),
+            sources: ["Util/Sources/**"]
+        ),
+        .target(
+            name: "WidgetExtension",
             destinations: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).WidgetExtension",
-            infoPlist: .file(path: .relativeToRoot("Widget/Sources/Info.plist")),
+            infoPlist: .extendingDefault(with: [
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.widgetkit-extension"
+                ],
+                "CFBundleDisplayName": "물리미 위젯",
+                "CFBundleExecutable": "$(EXECUTABLE_NAME)",
+                "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
+                "CFBundleName": "$(PRODUCT_NAME)",
+                "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
+                "CFBundleVersion": "5",
+                "CFBundleShortVersionString": "1.0.4",
+            ]),
             sources: ["Widget/Sources/**"],
             resources: ["Widget/Resources/**"],
             entitlements: .file(path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")),
-            dependencies: []
+            dependencies: [
+                .target(name: "Utils")
+            ]
         ),
         .target(
             name: "MulimiTests",

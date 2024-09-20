@@ -7,6 +7,7 @@
 
 import WidgetKit
 import SwiftUI
+import Utils
 
 struct Provider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> DrinkWaterEntry {
@@ -49,31 +50,35 @@ struct DrinkWaterWidgetEntryView : View {
     private var numberOfGlasses: Int {
         entry.numberOfGlasses
     }
+    private var mililiters: Int {
+        250 * numberOfGlasses
+    }
     
     var body: some View {
-        ZStack {
-            Image("\(numberOfGlasses)")
-                .resizable()
+        VStack(alignment: .leading, spacing: 5) {
+            Text("오늘의 수분량")
+                .font(.subheadline)
+                .fontWeight(.medium)
             
-            VStack {
+            Text("\(numberOfGlasses)잔")
+                .font(.title)
+                .fontWeight(.heavy)
+            
+            Text("\(mililiters)ml")
+                .font(.body)
+                .fontWeight(.semibold)
+            
+            HStack {
                 Spacer()
                 
-                HStack {
-                    Button(intent: DrinkWaterIntent()) {
-                        Text("마시기")
-                            .font(.caption2)
-                            .foregroundColor(.white)
-                    }
-                    .background(Color.teal)
-                    .cornerRadius(10)
-                    
-                    Spacer()
-                    
-                    Text("\(numberOfGlasses)잔")
-                        .font(.title)
+                Button(intent: DrinkWaterIntent()) {
+                    Text("마시기")
+                        .font(.caption)
+                        .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .shadow(color: .black, radius: 3)
                 }
+                .background(Color.teal)
+                .cornerRadius(10)
             }
         }
     }

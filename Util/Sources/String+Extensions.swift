@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
     static let appGroupId = "group.com.gaeng2y.drinkwater"
     static let widgetKind: String = "MulimeeWidget"
     

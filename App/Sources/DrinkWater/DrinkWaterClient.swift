@@ -9,6 +9,7 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import WidgetKit
+import Utils
 
 @DependencyClient
 struct DrinkWaterClient {

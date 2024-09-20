@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension UserDefaults {
+public extension UserDefaults {
     @objc dynamic var glassesOfToday: Int {
         get { UserDefaults.appGroup.integer(forKey: .glassesOfToday) }
         set { UserDefaults.appGroup.set(newValue, forKey: .glassesOfToday) }
