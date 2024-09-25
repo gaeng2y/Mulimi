@@ -13,15 +13,15 @@ import Utils
 
 @DependencyClient
 struct DrinkWaterClient {
-    var fetchNumberOfGlasses: @Sendable () -> Int = { 0 }
+    var water: @Sendable () -> AnyPublisher<Int, Never> = { CurrentValueSubject(0).eraseToAnyPublisher() }
     var drinkWater: @Sendable () -> Void
     var reset: @Sendable () -> Void
 }
 
 extension DrinkWaterClient: TestDependencyKey {
     static var previewValue = Self(
-        fetchNumberOfGlasses : {
-            0
+        water: {
+            CurrentValueSubject(0).eraseToAnyPublisher()
         },
         drinkWater: {
             return
@@ -33,15 +33,16 @@ extension DrinkWaterClient: TestDependencyKey {
 
 extension DrinkWaterClient: DependencyKey {
     static let liveValue = Self(
-        fetchNumberOfGlasses: {
-            UserDefaults.appGroup.glassesOfToday
+        water : {
+            UserDefaults.appGroup.publisher(for: \.glassesOfToday).eraseToAnyPublisher()
         },
         drinkWater: {
             UserDefaults.appGroup.glassesOfToday += 1
-            WidgetCenter.shared.reloadAllTimelines()
-        }, reset: {
+            WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
+        },
+        reset: {
             UserDefaults.appGroup.glassesOfToday = .zero
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
         }
     )
 }

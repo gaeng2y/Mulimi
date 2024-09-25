@@ -43,13 +43,11 @@ struct DrinkWater {
     }
     
     enum Action {
-        case onAppear
-        case fetchNumberOfGlasses(Int)
+        case subscribeWater
+        case receivedWater(Int)
         case drinkButtonTapped
-        case drinkWater
         case resetButtonTapped
         case startAnimation
-        case receivedError(DrinkWaterError)
     }
     
     @Dependency(\.drinkWaterClient) var drinkWaterClient
@@ -57,14 +55,13 @@ struct DrinkWater {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .onAppear:
-                return .run { send in
-                    let numberOfGlasses = self.drinkWaterClient.fetchNumberOfGlasses()
-                    await send(.fetchNumberOfGlasses(numberOfGlasses))
+            case .subscribeWater:
+                return .publisher {
+                    drinkWaterClient.water().map { .receivedWater($0) }
                 }
                 
-            case let .fetchNumberOfGlasses(numberOfGlasses):
-                state.numberOfGlasses = numberOfGlasses
+            case let .receivedWater(glassOfWater):
+                state.numberOfGlasses = glassOfWater
                 return .none
                 
             case .drinkButtonTapped:
@@ -72,35 +69,18 @@ struct DrinkWater {
                     return .none
                 }
                 return .run { send in
-                    self.drinkWaterClient.drinkWater()
-                    await send(.drinkWater)
+                    drinkWaterClient.drinkWater()
                 }
                 
-            case .drinkWater:
-                state.numberOfGlasses += 1
-                return .none
-                
             case .resetButtonTapped:
-                state.numberOfGlasses = .zero
-                return .none
+                return .run { send in
+                    drinkWaterClient.reset()
+                }
                 
             case .startAnimation:
                 state.offset = 360
-                return .none
-                
-            case let .receivedError(drinkWaterError):
-                switch drinkWaterError {
-                case .failedFetchNumberOfGlasses:
-                    state.errorMessage = "문제가 발생했어요!"
-                }
-                
                 return .none
             }
         }
     }
 }
-
-enum DrinkWaterError: Error {
-    case failedFetchNumberOfGlasses
-}
-

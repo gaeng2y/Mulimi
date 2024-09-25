@@ -16,22 +16,30 @@ struct Provider: AppIntentTimelineProvider {
               configuration: ConfigurationAppIntent())
     }
     
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> DrinkWaterEntry {
+    func snapshot(
+        for configuration: ConfigurationAppIntent,
+        in context: Context
+    ) async -> DrinkWaterEntry {
         .init(date: .now,
               numberOfGlasses: UserDefaults.appGroup.glassesOfToday,
               configuration: ConfigurationAppIntent())
     }
     
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<DrinkWaterEntry> {
+    func timeline(
+        for configuration: ConfigurationAppIntent,
+        in context: Context
+    ) async -> Timeline<DrinkWaterEntry> {
         var entries: [DrinkWaterEntry] = []
         
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = DrinkWaterEntry(date: entryDate,
-                                        numberOfGlasses: UserDefaults.appGroup.glassesOfToday,
-                                        configuration: ConfigurationAppIntent())
+            let entry = DrinkWaterEntry(
+                date: entryDate,
+                numberOfGlasses: UserDefaults.appGroup.glassesOfToday,
+                configuration: ConfigurationAppIntent()
+            )
             entries.append(entry)
         }
         
@@ -71,7 +79,7 @@ struct DrinkWaterWidgetEntryView : View {
             HStack {
                 Spacer()
                 
-                Button(intent: DrinkWaterIntent()) {
+                Button(intent: ConfigurationAppIntent()) {
                     Text("마시기")
                         .font(.caption)
                         .fontWeight(.bold)
@@ -88,7 +96,11 @@ struct DrinkWaterWidget: Widget {
     let kind: String = .widgetKind
     
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        AppIntentConfiguration(
+            kind: kind,
+            intent: ConfigurationAppIntent.self,
+            provider: Provider()
+        ) { entry in
             DrinkWaterWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
