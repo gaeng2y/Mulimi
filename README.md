@@ -22,5 +22,4 @@
 프로젝트 관리를 위해서 GitHub Flow 전략을 채택
 GitHub Flow 전략을 채택한 이유는 간단한 브랜치 구조로 기능을 빠르게 개발하고 배포하기 위함
 
-![image](https://github.com/user-attachments/assets/c53de871-1893-400d-81ec-402761c82eaa)
-
+![image](https://github.com/user-attachments/assets/973890d7-1c08-4b77-8188-2ddaac72d6ed)
