@@ -18,7 +18,7 @@ let project = Project(
                 "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
                 "CFBundleName": "$(PRODUCT_NAME)",
                 "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-                "CFBundleVersion": "5",
+                "CFBundleVersion": "6",
                 "CFBundleShortVersionString": "1.0.4",
                 "UILaunchStoryboardName": "LaunchScreen",
                 "ITSAppUsesNonExemptEncryption": false,
@@ -29,6 +29,9 @@ let project = Project(
             ]),
             sources: ["App/Sources/**"],
             resources: ["App/Resources/**"],
+            entitlements: .file(
+                path: .relativeToRoot("Supporting Files/Mulimi.entitlements")
+            ),
             dependencies: [
                 .external(name: "ComposableArchitecture"),
                 .external(name: "Lottie"),
@@ -39,7 +42,7 @@ let project = Project(
         .target(
             name: "Utils",
             destinations: .iOS,
-            product: .framework,
+            product: .staticFramework,
             bundleId: "\(bundleId).Utils",
             deploymentTargets: .iOS("17.0"),
             sources: ["Util/Sources/**"]
@@ -49,6 +52,7 @@ let project = Project(
             destinations: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).WidgetExtension",
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(with: [
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.widgetkit-extension"
@@ -58,7 +62,7 @@ let project = Project(
                 "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
                 "CFBundleName": "$(PRODUCT_NAME)",
                 "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-                "CFBundleVersion": "5",
+                "CFBundleVersion": "6",
                 "CFBundleShortVersionString": "1.0.4",
             ]),
             sources: ["Widget/Sources/**"],
