@@ -34,7 +34,6 @@ let project = Project(
             ),
             dependencies: [
                 .external(name: "ComposableArchitecture"),
-                .external(name: "Lottie"),
                 .target(name: "Utils"),
                 .target(name: "WidgetExtension")
             ]
