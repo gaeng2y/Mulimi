@@ -26,6 +26,9 @@ struct RootView: View {
             }
         }
         .tint(.teal)
+        .onAppear {
+            store.send(.drinkWater(.subscribeWater))
+        }
     }
 }
 

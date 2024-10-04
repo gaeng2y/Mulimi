@@ -62,8 +62,6 @@ struct DrinkWaterView: View {
                     }
                     .frame(width: size.width, height: size.height, alignment: .center)
                     .onAppear {
-                        store.send(.subscribeWater)
-                        
                         withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) { () -> Void in
                             store.send(.startAnimation)
                         }
