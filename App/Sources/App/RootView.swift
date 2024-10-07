@@ -19,16 +19,23 @@ struct RootView: View {
                     action: \.drinkWater
                 )
             )
-            .transition(.opacity)
             .tabItem {
                 Image(systemName: "drop")
                 Text("수분")
             }
+            
+            DrinkHistoryView(
+                store: store.scope(
+                    state: \.drinkHistory,
+                    action: \.drinkHistory
+                )
+            )
+            .tabItem {
+                Image(systemName: "calendar")
+                Text("기록")
+            }
         }
         .tint(.teal)
-        .onAppear {
-            store.send(.drinkWater(.subscribeWater))
-        }
     }
 }
 
