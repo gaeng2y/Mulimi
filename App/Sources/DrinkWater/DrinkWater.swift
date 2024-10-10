@@ -69,12 +69,12 @@ struct DrinkWater {
                     return .none
                 }
                 return .run { send in
-                    drinkWaterClient.drinkWater()
+                    try await drinkWaterClient.drinkWater()
                 }
                 
             case .resetButtonTapped:
                 return .run { send in
-                    drinkWaterClient.reset()
+                    try await drinkWaterClient.reset()
                 }
                 
             case .startAnimation:

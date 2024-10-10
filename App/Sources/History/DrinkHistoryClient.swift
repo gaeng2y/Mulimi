@@ -9,60 +9,35 @@
 import ComposableArchitecture
 import HealthKit
 
-enum HealthKitError: Error {
-    case invalidObjectType
-    case permissionDenied
-    case healthKitInternalError
-    case incompleteExecuteQuery
-}
-
 @DependencyClient
 struct DrinkHistoryClient {
-    fileprivate enum Constant {
-        static let aGlassOfWater: Double = 250
-    }
-    
     var requestAuthorization: @Sendable () async throws -> Void
     var authroization: @Sendable () -> HealthKitAuthorizationStatus = { .notDetermined }
-    var histories: @Sendable () -> [History] = { [] }
+    var histories: @Sendable (Date, Date) async throws -> [History] = { _, _  in [] }
 }
 
 extension DrinkHistoryClient: TestDependencyKey {
     static var previewValue = Self(
         requestAuthorization: { },
         authroization: { .sharingAuthorized },
-        histories: { [] }
+        histories: { _, _ in [] }
     )
 }
 
 extension DrinkHistoryClient: DependencyKey {
-    private static let healthStore = HKHealthStore()
+    private static let healthStore = HealthKitStore()
     
     static let liveValue = Self(
         requestAuthorization: {
-            guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
-                throw HealthKitError.invalidObjectType
-            }
-            
-            do {
-                try await healthStore.requestAuthorization(toShare: [waterType], read: [waterType])
-            } catch {
-                throw HealthKitError.permissionDenied
-            }
+            try await healthStore.requestAuthorization()
         },
         authroization: {
-            guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
-                return .notDetermined
-            }
-            
-            switch healthStore.authorizationStatus(for: waterType) {
-            case .notDetermined: return .notDetermined
-            case .sharingDenied: return .sharingDenied
-            case .sharingAuthorized: return .sharingAuthorized
-            @unknown default: return .notDetermined
-            }
+            healthStore.healthKitAuthorizationStatus
         },
-        histories: { [] }
+        histories: { startDate, endDate in
+            return try await healthStore.readWaterIntake(from: startDate, to: endDate)
+                .map(History.init)
+        }
     )
 }
 

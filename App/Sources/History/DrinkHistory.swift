@@ -17,10 +17,10 @@ struct DrinkHistory {
         var histories: [History] = []
         var status: HealthKitAuthorizationStatus = .notDetermined
         
-        private var year: Int {
+        fileprivate var year: Int {
             Calendar.current.component(.year, from: date)
         }
-        private var month: Int {
+        fileprivate var month: Int {
             Calendar.current.component(.month, from: date)
         }
         var dateString: String {
@@ -32,6 +32,7 @@ struct DrinkHistory {
         case requestAuthorization
         case changeStatus
         case fetchHistories
+        case setHistories([History])
     }
     
     @Dependency(\.drinkHistoryClient) var drinkHistoryClient
@@ -50,9 +51,33 @@ struct DrinkHistory {
                 return .none
                 
             case .fetchHistories:
-                state.histories = []
+                let (start, end) = getStartAndEndDate(state: state)
+                guard let start, let end else {
+                    return .none
+                }
+                
+                return .run { send in
+                    let histories = try await drinkHistoryClient.histories(start, end)
+                    await send(.setHistories(histories))
+                }
+                
+            case let .setHistories(histories):
+                state.histories = histories
                 return .none
             }
         }
+    }
+    
+    private func getStartAndEndDate(state: State) -> (startDate: Date?, endDate: Date?) {
+        let startDateComponents = DateComponents(year: state.year, month: state.month, day: 1)
+        
+        guard let startDate = Calendar.current.date(from: startDateComponents),
+              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+            return (nil, nil)
+        }
+        let endDateComponents = DateComponents(year: state.year, month: state.month, day: range.count)
+        let endDate = Calendar.current.date(from: endDateComponents)
+        
+        return (startDate, endDate)
     }
 }
