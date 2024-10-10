@@ -30,6 +30,8 @@ let project = Project(
                 "CFBundleShortVersionString": "1.0.4",
                 "UILaunchStoryboardName": "LaunchScreen",
                 "ITSAppUsesNonExemptEncryption": false,
+                "NSHealthShareUsageDescription": "We need access to your health data to display your water intake.",
+                "NSHealthUpdateUsageDescription": "We need access to your health data to log your water intake.",
                 "UIApplicationSceneManifest": [
                     "UIApplicationSupportsMultipleScenes": true,
                     "UISceneConfigurations": [:]
