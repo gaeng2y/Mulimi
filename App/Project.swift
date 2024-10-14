@@ -1,9 +1,17 @@
+//
+//  Project.swift
+//  Config
+//
+//  Created by Kyeongmo Yang on 10/4/24.
+//
+
 import ProjectDescription
 
 let bundleId = "gaeng2y.DrinkWater"
 
 let project = Project(
-    name: "Mulimi",
+    name: "Mulimi App",
+    organizationName: "gaeng2y",
     targets: [
         .target(
             name: "Mulimi",
@@ -18,34 +26,40 @@ let project = Project(
                 "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
                 "CFBundleName": "$(PRODUCT_NAME)",
                 "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-                "CFBundleVersion": "6",
-                "CFBundleShortVersionString": "1.0.4",
+                "CFBundleVersion": "7",
+                "CFBundleShortVersionString": "1.0.5",
                 "UILaunchStoryboardName": "LaunchScreen",
                 "ITSAppUsesNonExemptEncryption": false,
+                "NSHealthShareUsageDescription": "We need access to your health data to display your water intake.",
+                "NSHealthUpdateUsageDescription": "We need access to your health data to log your water intake.",
                 "UIApplicationSceneManifest": [
                     "UIApplicationSupportsMultipleScenes": true,
                     "UISceneConfigurations": [:]
                 ]
             ]),
-            sources: ["App/Sources/**"],
-            resources: ["App/Resources/**"],
+            sources: ["Sources/**"],
+            resources: ["Resources/**"],
             entitlements: .file(
                 path: .relativeToRoot("Supporting Files/Mulimi.entitlements")
             ),
             dependencies: [
                 .external(name: "ComposableArchitecture"),
-                .external(name: "Lottie"),
-                .target(name: "Utils"),
-                .target(name: "WidgetExtension")
+                .target(name: "WidgetExtension"),
+                .project(
+                    target: "Utils",
+                    path: .relativeToRoot("Utils")
+                ),
             ]
         ),
         .target(
-            name: "Utils",
+            name: "MulimiTests",
             destinations: .iOS,
-            product: .staticFramework,
-            bundleId: "\(bundleId).Utils",
-            deploymentTargets: .iOS("17.0"),
-            sources: ["Util/Sources/**"]
+            product: .unitTests,
+            bundleId: "\(bundleId).MulimiTests",
+            infoPlist: .default,
+            sources: ["Tests/**"],
+            resources: [],
+            dependencies: [.target(name: "Mulimi")]
         ),
         .target(
             name: "WidgetExtension",
@@ -62,25 +76,18 @@ let project = Project(
                 "CFBundlePackageType": "$(PRODUCT_BUNDLE_PACKAGE_TYPE)",
                 "CFBundleName": "$(PRODUCT_NAME)",
                 "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-                "CFBundleVersion": "6",
-                "CFBundleShortVersionString": "1.0.4",
+                "CFBundleVersion": "7",
+                "CFBundleShortVersionString": "1.0.5",
             ]),
-            sources: ["Widget/Sources/**"],
-            resources: ["Widget/Resources/**"],
+            sources: ["../Widget/Sources/**"],
+            resources: ["../Widget/Resources/**"],
             entitlements: .file(path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")),
             dependencies: [
-                .target(name: "Utils")
+                .project(
+                    target: "Utils",
+                    path: .relativeToRoot("Utils")
+                )
             ]
-        ),
-        .target(
-            name: "MulimiTests",
-            destinations: .iOS,
-            product: .unitTests,
-            bundleId: "\(bundleId).MulimiTests",
-            infoPlist: .default,
-            sources: ["App/Tests/**"],
-            resources: [],
-            dependencies: [.target(name: "Mulimi")]
-        ),
+        )
     ]
 )

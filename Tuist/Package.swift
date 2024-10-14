@@ -20,10 +20,6 @@ let package = Package(
         .package(
             url: "https://github.com/pointfreeco/swift-composable-architecture.git",
             .upToNextMajor(from: "1.15.0")
-        ),
-        .package(
-            url: "https://github.com/airbnb/lottie-spm.git",
-            .upToNextMajor(from: "4.5.0")
         )
     ]
 )
