@@ -14,8 +14,8 @@ import Utils
 @DependencyClient
 struct DrinkWaterClient {
     var water: @Sendable () -> AnyPublisher<Int, Never> = { CurrentValueSubject(0).eraseToAnyPublisher() }
-    var drinkWater: @Sendable () -> Void
-    var reset: @Sendable () -> Void
+    var drinkWater: @Sendable () async throws -> Void
+    var reset: @Sendable () async throws -> Void
 }
 
 extension DrinkWaterClient: TestDependencyKey {
@@ -32,6 +32,8 @@ extension DrinkWaterClient: TestDependencyKey {
 }
 
 extension DrinkWaterClient: DependencyKey {
+    private static let healthStore = HealthKitStore()
+    
     static let liveValue = Self(
         water : {
             UserDefaults.appGroup.publisher(for: \.glassesOfToday).eraseToAnyPublisher()
@@ -39,10 +41,12 @@ extension DrinkWaterClient: DependencyKey {
         drinkWater: {
             UserDefaults.appGroup.glassesOfToday += 1
             WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
+            try await healthStore.setAGlassOfWater()
         },
         reset: {
             UserDefaults.appGroup.glassesOfToday = .zero
             WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
+            try await healthStore.resetWaterInTakeInToday()
         }
     )
 }
