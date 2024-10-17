@@ -20,7 +20,16 @@ extension DrinkHistoryClient: TestDependencyKey {
     static var previewValue = Self(
         requestAuthorization: { },
         authroization: { .sharingAuthorized },
-        histories: { _, _ in [] }
+        histories: { start, end in
+            guard let dayCount = Calendar.current.dateComponents([.day], from: start, to: end).day else {
+                return []
+            }
+            
+            let hisotires = (0...dayCount)
+                .compactMap { Calendar.current.date(byAdding: .day, value: $0, to: start) }
+                .map { History(date: $0, mililiter: 200.0) }
+            return hisotires
+        }
     )
 }
 
