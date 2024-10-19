@@ -16,6 +16,8 @@ struct DrinkHistory {
         var date: Date = .now
         var histories: [History] = []
         var status: HealthKitAuthorizationStatus = .notDetermined
+        var errorMessage: String?
+        var isPresentAlert: Bool = false
         
         fileprivate var year: Int {
             Calendar.current.component(.year, from: date)

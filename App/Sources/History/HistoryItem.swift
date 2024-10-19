@@ -33,7 +33,7 @@ struct HistoryItem: View {
                     .fontWeight(.semibold)
             }
         }
-        .background(Color.white)
+        .background(Color(.systemGray6))
         .cornerRadius(5)
         .shadow(radius: 2)
     }
