@@ -11,10 +11,14 @@
 <br>
 
 # 🛠️ 사용 기술 스택
+- Swift
 - SwiftUI
-- the Composable Architectrue(TCA)
-- WidgetKit
 - Tuist
+- the Composable Architectrue(TCA)
+- Clean Architecture
+- WidgetKit
+- HealthKit
+
 
 <br>
 
