@@ -11,18 +11,21 @@ import SwiftUI
 struct HistoryItem: View {
     let history: History
     
-    private var dayString: String {
-        let day = Calendar.current.component(.day, from: history.date)
-        return "\(day)"
+    private var dateString: String {
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: history.date)
+        
+        guard let year = dateComponents.year,
+              let month = dateComponents.month,
+              let day = dateComponents.day else {
+            return ""
+        }
+        return "\(year)-\(month)-\(day)"
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                Text(dayString)
-                    .font(.title2)
-                Spacer()
-            }
+        HStack {
+            Text(dateString)
+                .font(.subheadline)
             
             Spacer()
             
@@ -33,12 +36,17 @@ struct HistoryItem: View {
                     .fontWeight(.semibold)
             }
         }
-        .background(Color(.systemGray6))
         .cornerRadius(5)
         .shadow(radius: 2)
     }
 }
 
 #Preview {
-    HistoryItem(history: .init(date: .now, mililiter: 200))
+    HistoryItem(
+        history: .init(
+            id: UUID(),
+            date: .now,
+            mililiter: 200
+        )
+    )
 }

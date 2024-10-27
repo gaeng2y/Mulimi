@@ -27,7 +27,7 @@ extension DrinkHistoryClient: TestDependencyKey {
             
             let hisotires = (0...dayCount)
                 .compactMap { Calendar.current.date(byAdding: .day, value: $0, to: start) }
-                .map { History(date: $0, mililiter: 200.0) }
+                .map { History(id: UUID(), date: $0, mililiter: 200.0) }
             return hisotires
         }
     )
@@ -45,7 +45,7 @@ extension DrinkHistoryClient: DependencyKey {
         },
         histories: { startDate, endDate in
             return try await healthStore.readWaterIntake(from: startDate, to: endDate)
-                .map(History.init)
+                .map { History(id: UUID(), date: $0.date, mililiter: $0.amount) }
         }
     )
 }

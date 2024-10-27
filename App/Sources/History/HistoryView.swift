@@ -1,5 +1,5 @@
 //
-//  DrinkHistoryView.swift
+//  HistoryView.swift
 //  Mulimi
 //
 //  Created by Kyeongmo Yang on 10/7/24.
@@ -9,8 +9,8 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct DrinkHistoryView: View {
-    @Bindable var store: StoreOf<DrinkHistory>
+struct HistoryView: View {
+    @Bindable var store: StoreOf<HistoryFeature>
     
     var body: some View {
         ZStack {
@@ -48,22 +48,10 @@ struct DrinkHistoryView: View {
                     }
                     
                 case .sharingAuthorized:
-                    Grid(horizontalSpacing: 10, verticalSpacing: 10) {
-                        ForEach(0..<(store.histories.count + 4) / 5, id: \.self) { rowIndex in
-                            GridRow {
-                                ForEach(0..<5) { columnIndex in
-                                    let index = rowIndex * 5 + columnIndex
-                                    if index < store.histories.count {
-                                        HistoryItem(history: store.histories[index])
-                                            .aspectRatio(1, contentMode: .fit)
-                                    } else {
-                                        EmptyView()
-                                    }
-                                }
-                            }
-                        }
+                    List(store.histories) { history in
+                        HistoryItem(history: history)
                     }
-                    .padding(10)
+                    .listStyle(.plain)
                     .task {
                         store.send(.fetchHistories)
                     }
@@ -82,7 +70,7 @@ struct DrinkHistoryView: View {
 }
 
 #Preview {
-    DrinkHistoryView(store: Store(initialState: DrinkHistory.State()) {
-        DrinkHistory()
+    HistoryView(store: Store(initialState: HistoryFeature.State()) {
+        HistoryFeature()
     })
 }

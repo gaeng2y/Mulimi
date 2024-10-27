@@ -12,12 +12,12 @@ struct Root {
     @ObservableState
     struct State {
         var drinkWater = DrinkWater.State()
-        var drinkHistory = DrinkHistory.State()
+        var drinkHistory = HistoryFeature.State()
     }
     
     enum Action {
         case drinkWater(DrinkWater.Action)
-        case drinkHistory(DrinkHistory.Action)
+        case drinkHistory(HistoryFeature.Action)
     }
     
     var body: some ReducerOf<Self> {
@@ -35,7 +35,7 @@ struct Root {
             DrinkWater()
         }
         Scope(state: \.drinkHistory, action: \.drinkHistory) {
-            DrinkHistory()
+            HistoryFeature()
         }
     }
 }
