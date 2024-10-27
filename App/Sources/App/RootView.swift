@@ -24,7 +24,7 @@ struct RootView: View {
                 Text("수분")
             }
             
-            DrinkHistoryView(
+            HistoryView(
                 store: store.scope(
                     state: \.drinkHistory,
                     action: \.drinkHistory

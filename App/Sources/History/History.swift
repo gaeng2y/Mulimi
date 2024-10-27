@@ -8,7 +8,8 @@
 
 import Foundation
 
-struct History: Hashable {
+struct History: Hashable, Identifiable {
+    let id: UUID
     var date: Date
     var mililiter: Double
 }

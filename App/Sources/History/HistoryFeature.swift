@@ -1,5 +1,5 @@
 //
-//  DrinkHistory.swift
+//  HistoryFeature.swift
 //  Mulimi
 //
 //  Created by Kyeongmo Yang on 10/6/24.
@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Foundation
 
 @Reducer
-struct DrinkHistory {
+struct HistoryFeature {
     @ObservableState
     struct State {
         var date: Date = .now
