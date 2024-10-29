@@ -61,22 +61,21 @@ struct DrinkWaterWidgetEntryView : View {
     private var mililiters: Int {
         250 * numberOfGlasses
     }
+    private var progress: CGFloat {
+        CGFloat(mililiters) / 2000.0
+    }
+    private var percentage: Int {
+        Int(progress * 100.0)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("오늘의 수분량")
-                .font(.subheadline)
-                .fontWeight(.medium)
-            
-            Text("\(numberOfGlasses)잔")
-                .font(.title)
-                .fontWeight(.heavy)
-            
-            Text("\(mililiters)ml")
-                .font(.body)
-                .fontWeight(.semibold)
-            
             HStack {
+                Image(systemName: "drop.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(Color.accentColor)
+                
                 Spacer()
                 
                 Button(intent: ConfigurationAppIntent()) {
@@ -85,9 +84,27 @@ struct DrinkWaterWidgetEntryView : View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                 }
-                .background(Color.teal)
+                .background(Color.accentColor)
                 .cornerRadius(10)
             }
+            
+            Spacer()
+            
+            HStack {
+                Text("\(numberOfGlasses)잔")
+                    .font(.title3)
+                    .fontWeight(.heavy)
+                
+                Text("\(percentage)%")
+                    .font(.headline)
+            }
+            
+            Text("\(mililiters)ml")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+            
+            ProgressView(value: progress)
+                .tint(.accentColor)
         }
     }
 }
