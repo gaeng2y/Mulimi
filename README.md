@@ -14,8 +14,8 @@
 - Swift
 - SwiftUI
 - Tuist
-- the Composable Architectrue(TCA)
 - Clean Architecture
+- MVVM
 - WidgetKit
 - HealthKit
 
@@ -23,11 +23,8 @@
 
 # 🏞️ 구조
 - App
-- Core
-  - Repository
-- Feature
-  - Drink
-  - History
-- Utils
-- DesignSystem
+- Data
+- Domain
+- Presentation
+- Shared
 - DependencyInjection
