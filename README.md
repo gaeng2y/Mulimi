@@ -3,6 +3,10 @@
 
 <br>
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/gaeng2y/Mulimee?utm_source=oss&utm_medium=github&utm_campaign=gaeng2y%2FMulimee&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
+<br>
+
 # 📒 개요
 - 하루 8잔(2.0L) 물을 마시면 건강해진다! 에서 영감
 - 앱에서 물을 마신 잔을 카운팅
