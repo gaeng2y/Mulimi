@@ -10,7 +10,8 @@ import ProjectDescription
 let workspace = Workspace(
     name: "Mulimi",
     projects: [
-        "App"
+        "Project/App",
+        "Project/Widget"
     ],
     schemes: []
 )

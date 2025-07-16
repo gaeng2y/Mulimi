@@ -18,8 +18,16 @@ let package = Package(
         // .package(url: "https://github.com/Alamofire/Alamofire", from: "5.0.0"),
         // You can read more about dependencies here: https://docs.tuist.io/documentation/tuist/dependencies
         .package(
-            url: "https://github.com/pointfreeco/swift-composable-architecture.git",
-            .upToNextMajor(from: "1.15.0")
-        )
+            url: "https://github.com/Swinject/Swinject.git",
+            .upToNextMajor(from: "2.8.0")
+        ),
+        .package(
+            url: "https://github.com/QMUI/LookinServer.git",
+            .upToNextMajor(from: "1.2.0")
+        ),
+            .package(
+                url: "https://github.com/supabase/supabase-swift.git",
+                .upToNextMajor(from: "2.0.0")
+            )
     ]
 )
