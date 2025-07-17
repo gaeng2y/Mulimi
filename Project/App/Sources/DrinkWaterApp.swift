@@ -11,9 +11,7 @@ import SwiftUI
 struct DrinkWaterApp: App {
     var body: some Scene {
         WindowGroup {
-            RootView(store: .init(initialState: Root.State()) {
-                Root()
-            })
+            ContentView()
         }
     }
 }

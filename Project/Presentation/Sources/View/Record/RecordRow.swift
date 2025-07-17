@@ -6,13 +6,17 @@
 //  Copyright © 2024 gaeng2y. All rights reserved.
 //
 
+import DomainLayerInterface
 import SwiftUI
 
-struct HistoryItem: View {
-    let history: History
+struct RecordRow: View {
+    let record: Record
     
     private var dateString: String {
-        let dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: history.date)
+        let dateComponents = Calendar.current.dateComponents(
+            [.year, .month, .day],
+            from: record.date
+        )
         
         guard let year = dateComponents.year,
               let month = dateComponents.month,
@@ -31,7 +35,7 @@ struct HistoryItem: View {
             
             HStack {
                 Spacer()
-                Text(String(format: "%.0fml", history.mililiter))
+                Text(String(format: "%.0fml", record.mililiter))
                     .font(.subheadline)
                     .fontWeight(.semibold)
             }
@@ -42,11 +46,9 @@ struct HistoryItem: View {
 }
 
 #Preview {
-    HistoryItem(
-        history: .init(
-            id: UUID(),
-            date: .now,
-            mililiter: 200
-        )
-    )
+    RecordRow(record: .init(
+        id: UUID(),
+        date: .now,
+        mililiter: 200
+    ))
 }

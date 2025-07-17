@@ -18,29 +18,29 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTargets: .iOS("17.0"),
-            infoPlist: .file(path: .path("Resources/Info.plist")),
+            deploymentTargets: .iOS("18.0"),
+            infoPlist: .file(path: .path("Supports/Info.plist")),
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             entitlements: .file(
-                path: .relativeToRoot("Supporting Files/Mulimi.entitlements")
+                path: .path("Supports/Mulimi.entitlements")
             ),
             dependencies: [
-                .external(name: "ComposableArchitecture"),
+                .external(name: "Swinject"),
                 .project(
                     target: "WidgetExtension",
                     path: .relativeToRoot("Project/Widget")
                 ),
                 .project(
-                    target: "Data",
+                    target: "DataLayer",
                     path: .relativeToRoot("Project/Data")
                 ),
                 .project(
-                    target: "Domain",
+                    target: "DomainLayer",
                     path: .relativeToRoot("Project/Domain")
                 ),
                 .project(
-                    target: "Presentation",
+                    target: "PresentationLayer",
                     path: .relativeToRoot("Project/Presentation")
                 ),
                 .project(
