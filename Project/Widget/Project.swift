@@ -8,7 +8,7 @@ let project = Project(
             destinations: .iOS,
             product: .appExtension,
             bundleId: "gaeng2y.DrinkWater.WidgetExtension",
-            deploymentTargets: .iOS("17.0"),
+            deploymentTargets: .iOS("18.0"),
             infoPlist: .file(path: .relativeToCurrentFile("Resources/Info.plist")),
             sources: ["Sources/**"],
             resources: ["Resources/**"],

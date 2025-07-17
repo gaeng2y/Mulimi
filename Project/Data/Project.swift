@@ -10,16 +10,37 @@ import ProjectDescription
 let bundleId = "gaeng2y.DrinkWater"
 
 let project = Project(
-    name: "Data",
+    name: "DataLayer",
     organizationName: "gaeng2y",
     targets: [
         .target(
-            name: "Data",
+            name: "DataLayer",
             destinations: .iOS,
-            product: .staticLibrary,
-            bundleId: "\(bundleId).Data",
-            deploymentTargets: .iOS("17.0"),
-            sources: ["Sources/**"]
+            product: .framework,
+            bundleId: "\(bundleId).DataLayer",
+            deploymentTargets: .iOS("18.0"),
+            sources: ["Sources/**"],
+            dependencies: [
+                .project(
+                    target: "DomainLayerInterface",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "Utils",
+                    path: .relativeToRoot("Project/Utils")
+                )
+            ]
+        ),
+        .target(
+            name: "DataLayerTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId: "\(bundleId).DataLayer.Tests",
+            deploymentTargets: .iOS("18.0"),
+            sources: ["Tests/**"],
+            dependencies: [
+                .target(name: "DataLayer")
+            ]
         )
     ]
 )

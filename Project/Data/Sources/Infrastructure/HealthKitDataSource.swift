@@ -1,22 +1,25 @@
 //
-//  HealthKitStore.swift
-//  Mulimi
+//  HealthKitDataSource.swift
+//  DataLayer
 //
-//  Created by Kyeongmo Yang on 10/10/24.
-//  Copyright © 2024 gaeng2y. All rights reserved.
+//  Created by Kyeongmo Yang on 7/17/25.
+//  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
+import DomainLayerInterface
 import Foundation
 import HealthKit
 
-enum HealthKitError: Error {
-    case invalidObjectType
-    case permissionDenied
-    case healthKitInternalError
-    case incompleteExecuteQuery
+public protocol HealthKitDataSource {
+    var healthKitAuthorizationStatus: HealthKitAuthorizationStatus { get }
+    
+    func requestAuthorization() async throws
+    func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)]
+    func setAGlassOfWater() async throws
+    func resetWaterInTakeInToday() async throws
 }
 
-final class HealthKitStore {
+public final class HealthKitDataSourceImpl: HealthKitDataSource {
     private enum Constant {
         static let aGlassOfWater: Double = 250
     }
@@ -31,7 +34,7 @@ final class HealthKitStore {
         return Self.healthStore.authorizationStatus(for: waterType)
     }
     
-    var healthKitAuthorizationStatus: HealthKitAuthorizationStatus {
+    public var healthKitAuthorizationStatus: HealthKitAuthorizationStatus {
         switch authorizationStatus {
         case .notDetermined: .notDetermined
         case .sharingDenied: .sharingDenied
@@ -40,7 +43,7 @@ final class HealthKitStore {
         }
     }
     
-    func requestAuthorization() async throws {
+    public func requestAuthorization() async throws {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
@@ -52,7 +55,7 @@ final class HealthKitStore {
         }
     }
     
-    func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)] {
+    public func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)] {
         return try await withCheckedThrowingContinuation { continuation in
             guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
                 continuation.resume(throwing: HealthKitError.invalidObjectType)
@@ -86,7 +89,7 @@ final class HealthKitStore {
         }
     }
     
-    func setAGlassOfWater() async throws {
+    public func setAGlassOfWater() async throws {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
@@ -97,7 +100,7 @@ final class HealthKitStore {
         try await Self.healthStore.save(waterSample)
     }
     
-    func resetWaterInTakeInToday() async throws {
+    public func resetWaterInTakeInToday() async throws {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
