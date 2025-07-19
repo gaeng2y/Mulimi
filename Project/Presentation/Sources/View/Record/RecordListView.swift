@@ -10,7 +10,13 @@ import DomainLayerInterface
 import SwiftUI
 
 public struct RecordListView: View {
-    public init() {}
+    @ObservedObject private var viewModel: RecordListViewModel
+    
+    public init(
+        viewModel: RecordListViewModel
+    ) {
+        self.viewModel = viewModel
+    }
     
     public var body: some View {
         ZStack {
@@ -31,7 +37,7 @@ public struct RecordListView: View {
     }
     
     private struct RecordRow: View {
-        let record: Record
+        let record: HydrationRecord
         
         private var dateString: String {
             let dateComponents = Calendar.current.dateComponents(
@@ -67,6 +73,6 @@ public struct RecordListView: View {
     }
 }
 
-#Preview {
-    RecordListView()
-}
+//#Preview {
+//    RecordListView()
+//}

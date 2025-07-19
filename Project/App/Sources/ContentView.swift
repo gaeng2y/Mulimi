@@ -19,9 +19,12 @@ struct ContentView: View {
             }
             
             Tab("기록", systemImage: "calendar") {
-                RecordListView()
+                RecordListView(
+                    viewModel: DIContainer.shared.resolve(RecordListViewModel.self)
+                )
             }
         }
+        .tint(.accent)
     }
 }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Record: Hashable, Identifiable {
+public struct HydrationRecord: Hashable, Identifiable {
     public let id: UUID
     public let date: Date
     public let mililiter: Double
