@@ -7,16 +7,19 @@
 //
 
 import SwiftUI
+import PresentationLayer
 
 struct ContentView: View {
     var body: some View {
         TabView {
             Tab("물", systemImage: "waterbottle") {
-                EmptyView()
+                DrinkWaterView(
+                    viewModel: DIContainer.shared.resolve(DrinkWaterViewModel.self)
+                )
             }
             
             Tab("기록", systemImage: "calendar") {
-                EmptyView()
+                RecordListView()
             }
         }
     }

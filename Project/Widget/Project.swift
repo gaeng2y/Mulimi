@@ -1,5 +1,7 @@
 import ProjectDescription
 
+let bundleId = "gaeng2y.DrinkWater"
+
 let project = Project(
     name: "Widget",
     targets: [
@@ -7,7 +9,7 @@ let project = Project(
             name: "WidgetExtension",
             destinations: .iOS,
             product: .appExtension,
-            bundleId: "gaeng2y.DrinkWater.WidgetExtension",
+            bundleId: "\(bundleId).WidgetExtension",
             deploymentTargets: .iOS("18.0"),
             infoPlist: .file(path: .relativeToCurrentFile("Resources/Info.plist")),
             sources: ["Sources/**"],
@@ -18,7 +20,7 @@ let project = Project(
             dependencies: [
                 .project(
                     target: "Utils",
-                    path: .relativeToRoot("Project/Utils")
+                    path: .relativeToRoot("Project/Shared/Utils")
                 )
             ]
         )

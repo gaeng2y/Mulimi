@@ -25,7 +25,7 @@ let project = Project(
                 .target(name: "DomainLayerInterface"),
                 .project(
                     target: "Utils",
-                    path: .relativeToRoot("Project/Utils")
+                    path: .relativeToRoot("Project/Shared/Utils")
                 )
             ]
         ),

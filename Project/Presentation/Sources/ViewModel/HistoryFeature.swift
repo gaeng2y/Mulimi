@@ -8,31 +8,31 @@
 
 import Foundation
 
-struct HistoryFeature {
-    struct State {
-        var date: Date = .now
-        var histories: [RecordRow] = []
-//        var status: HealthKitAuthorizationStatus = .notDetermined
-        var errorMessage: String?
-        var isPresentAlert: Bool = false
-        
-        fileprivate var year: Int {
-            Calendar.current.component(.year, from: date)
-        }
-        fileprivate var month: Int {
-            Calendar.current.component(.month, from: date)
-        }
-        var dateString: String {
-            "\(year)년 \(month)월"
-        }
-    }
-    
-    enum Action {
-        case requestAuthorization
-        case changeStatus
-        case fetchHistories
+//struct HistoryFeature {
+//    struct State {
+//        var date: Date = .now
+//        var histories: [Record] = []
+////        var status: HealthKitAuthorizationStatus = .notDetermined
+//        var errorMessage: String?
+//        var isPresentAlert: Bool = false
+//        
+//        fileprivate var year: Int {
+//            Calendar.current.component(.year, from: date)
+//        }
+//        fileprivate var month: Int {
+//            Calendar.current.component(.month, from: date)
+//        }
+//        var dateString: String {
+//            "\(year)년 \(month)월"
+//        }
+//    }
+//    
+//    enum Action {
+//        case requestAuthorization
+//        case changeStatus
+//        case fetchHistories
 //        case setHistories([History])
-    }
+//    }
     
 //    var body: some ReducerOf<Self> {
 //        Reduce { state, action in
@@ -77,4 +77,4 @@ struct HistoryFeature {
 //        
 //        return (startDate, endDate)
 //    }
-}
+//}

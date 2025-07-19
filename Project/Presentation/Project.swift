@@ -27,7 +27,11 @@ let project = Project(
                 ),
                 .project(
                     target: "Utils",
-                    path: .relativeToRoot("Project/Utils")
+                    path: .relativeToRoot("Project/Shared/Utils")
+                ),
+                .project(
+                    target: "DesignSystem",
+                    path: .relativeToRoot("Project/Shared/DesignSystem")
                 )
             ]
         ),

@@ -26,6 +26,8 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource {
     
     private static let healthStore = HKHealthStore()
     
+    public init() {}
+    
     private var authorizationStatus: HKAuthorizationStatus {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             return .notDetermined

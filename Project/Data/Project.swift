@@ -27,7 +27,7 @@ let project = Project(
                 ),
                 .project(
                     target: "Utils",
-                    path: .relativeToRoot("Project/Utils")
+                    path: .relativeToRoot("Project/Shared/Utils")
                 )
             ]
         ),

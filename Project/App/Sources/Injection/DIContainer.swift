@@ -24,4 +24,11 @@ final class DIContainer {
             PresentationLayer()
         ])
     }
+    
+    func resolve<Service>(_ serviceType: Service.Type) -> Service {
+        guard let service = resolver.resolve(serviceType) else {
+            fatalError("Do not register \(serviceType)")
+        }
+        return service
+    }
 }

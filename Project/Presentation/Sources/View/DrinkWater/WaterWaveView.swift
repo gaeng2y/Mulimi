@@ -21,7 +21,7 @@ struct WaterWaveView: Shape {
     }
     
     func path(in rect: CGRect) -> Path {
-        return Path { path in
+        Path { path in
             path.move(to: .zero)
             
             // Drawing vwaves using sine
@@ -40,4 +40,12 @@ struct WaterWaveView: Shape {
             path.addLine(to: CGPoint(x: 0, y: rect.height))
         }
     }
+}
+
+#Preview {
+    WaterWaveView(
+        progress: 0.125,
+        waveHeight: 0.1,
+        offset: 0
+    )
 }

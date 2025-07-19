@@ -6,11 +6,18 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
+import DomainLayerInterface
 import PresentationLayer
 import Swinject
 
 final class PresentationLayer: Assembly {
     func assemble(container: Container) {
-        
+        // MARK: - DrinkWater
+        container.register(DrinkWaterViewModel.self) { resolver in
+            DrinkWaterViewModel(
+                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                healthKitUseCase: resolver.resolve(HealthKitUseCase.self)!
+            )
+        }
     }
 }

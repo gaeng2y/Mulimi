@@ -12,6 +12,13 @@ let bundleId = "gaeng2y.DrinkWater"
 let project = Project(
     name: "Mulimi App",
     organizationName: "gaeng2y",
+    settings: .settings(
+        base: [:],
+        configurations: [
+            .debug(name: "Debug", xcconfig: .relativeToRoot("XCConfig/Debug.xcconfig")),
+            .release(name: "Release", xcconfig: .relativeToRoot("XCConfig/Release.xcconfig"))
+        ]
+    ),
     targets: [
         .target(
             name: "Mulimi",
@@ -23,7 +30,7 @@ let project = Project(
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             entitlements: .file(
-                path: .path("Supports/Mulimi.entitlements")
+                path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
             dependencies: [
                 .external(name: "Swinject"),
@@ -45,7 +52,7 @@ let project = Project(
                 ),
                 .project(
                     target: "Utils",
-                    path: .relativeToRoot("Project/Utils")
+                    path: .relativeToRoot("Project/Shared/Utils")
                 ),
             ]
         )
