@@ -23,13 +23,50 @@ public struct RecordListView: View {
             Color.background
                 .ignoresSafeArea(edges: [.top, .horizontal])
             
+            switch viewModel.authorizationStatus {
+            case .notDetermined:
+                Text("권한을 설정해주세요.")
+            case .sharingDenied:
+                AuthorizationDeniedView()
+            case .sharingAuthorized:
+                ListView(viewModel: viewModel)
+            }
+            
+        }
+        .task {
+            await viewModel.requestAuthorization()
+        }
+        .alert(
+            viewModel.errorMessage,
+            isPresented: $viewModel.isPresentedAlert
+        ) {
+            
+        }
+    }
+    
+    private struct AuthorizationDeniedView: View {
+        var body: some View {
+            Text("설정에서 원한을 허용해주세요.")
+        }
+    }
+    
+    private struct ListView: View {
+        @ObservedObject private var viewModel: RecordListViewModel
+        
+        init(viewModel: RecordListViewModel) {
+            self.viewModel = viewModel
+        }
+        
+        var body: some View {
             VStack {
                 HStack {
-                    Text("")
+                    Text(viewModel.date.formatted())
                         .font(.title)
                         .fontWeight(.heavy)
                     
-                    Spacer()
+                    List(viewModel.records) { record in
+                        RecordRow(record: record)
+                    }
                 }
                 .padding()
             }

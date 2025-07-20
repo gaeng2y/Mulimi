@@ -13,9 +13,13 @@ import Foundation
 public final class RecordListViewModel: ObservableObject {
     @Published private(set) var records: [HydrationRecord] = []
     @Published private(set) var date: Date = .now
-    @Published private(set) var errorMessage: String?
+    @Published var isPresentedAlert: Bool = false
+    private(set) var errorMessage: String = ""
     
     private let useCase: HealthKitUseCase
+    var authorizationStatus: HealthKitAuthorizationStatus {
+        useCase.authorisationStatus
+    }
     
     public init(
         useCase: HealthKitUseCase
