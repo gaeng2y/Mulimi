@@ -19,8 +19,8 @@ struct ContentView: View {
             }
             
             Tab("기록", systemImage: "calendar") {
-                RecordListView(
-                    viewModel: DIContainer.shared.resolve(RecordListViewModel.self)
+                HydrationRecordListView(
+                    viewModel: DIContainer.shared.resolve(HydrationRecordListViewModel.self)
                 )
             }
         }

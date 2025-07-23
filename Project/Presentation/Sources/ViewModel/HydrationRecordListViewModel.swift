@@ -1,19 +1,19 @@
 //
-//  RecordListViewModel.swift
+//  HydrationRecordListViewModel.swift
 //  PresentationLayer
 //
 //  Created by Kyeongmo Yang on 7/19/25.
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import Combine
 import DomainLayerInterface
 import Foundation
 
-public final class RecordListViewModel: ObservableObject {
-    @Published private(set) var records: [HydrationRecord] = []
-    @Published private(set) var date: Date = .now
-    @Published var isPresentedAlert: Bool = false
+@Observable
+public final class HydrationRecordListViewModel {
+    private(set) var records: [HydrationRecord] = []
+    private(set) var date: Date = .now
+    
     private(set) var errorMessage: String = ""
     
     private let useCase: HealthKitUseCase

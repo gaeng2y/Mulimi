@@ -1,5 +1,5 @@
 //
-//  HistoryView.swift
+//  HydrationRecordListView.swift
 //  Mulimi
 //
 //  Created by Kyeongmo Yang on 10/7/24.
@@ -9,12 +9,11 @@
 import DomainLayerInterface
 import SwiftUI
 
-public struct RecordListView: View {
-    @ObservedObject private var viewModel: RecordListViewModel
+public struct HydrationRecordListView: View {
+    private var viewModel: HydrationRecordListViewModel
+    @State private var isPresentedAlert: Bool = false
     
-    public init(
-        viewModel: RecordListViewModel
-    ) {
+    public init(viewModel: HydrationRecordListViewModel) {
         self.viewModel = viewModel
     }
     
@@ -29,16 +28,15 @@ public struct RecordListView: View {
             case .sharingDenied:
                 AuthorizationDeniedView()
             case .sharingAuthorized:
-                ListView(viewModel: viewModel)
+                RowListView(viewModel: viewModel)
             }
-            
         }
         .task {
             await viewModel.requestAuthorization()
         }
         .alert(
             viewModel.errorMessage,
-            isPresented: $viewModel.isPresentedAlert
+            isPresented: $isPresentedAlert
         ) {
             
         }
@@ -50,10 +48,10 @@ public struct RecordListView: View {
         }
     }
     
-    private struct ListView: View {
-        @ObservedObject private var viewModel: RecordListViewModel
+    private struct RowListView: View {
+        private var viewModel: HydrationRecordListViewModel
         
-        init(viewModel: RecordListViewModel) {
+        init(viewModel: HydrationRecordListViewModel) {
             self.viewModel = viewModel
         }
         
@@ -65,7 +63,7 @@ public struct RecordListView: View {
                         .fontWeight(.heavy)
                     
                     List(viewModel.records) { record in
-                        RecordRow(record: record)
+                        HydrationRecordRow(record: record)
                     }
                 }
                 .padding()
@@ -73,7 +71,7 @@ public struct RecordListView: View {
         }
     }
     
-    private struct RecordRow: View {
+    private struct HydrationRecordRow: View {
         let record: HydrationRecord
         
         private var dateString: String {

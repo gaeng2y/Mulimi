@@ -21,8 +21,8 @@ final class PresentationLayer: Assembly {
         }
         
         // MARK: - HealthKit
-        container.register(RecordListViewModel.self) { resolver in
-            RecordListViewModel(
+        container.register(HydrationRecordListViewModel.self) { resolver in
+            HydrationRecordListViewModel(
                 useCase: resolver.resolve(HealthKitUseCase.self)!
             )
         }

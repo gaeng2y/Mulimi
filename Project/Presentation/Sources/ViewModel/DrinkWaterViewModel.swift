@@ -7,12 +7,12 @@
 //
 
 import DomainLayerInterface
-import Combine
 import Foundation
 
-public final class DrinkWaterViewModel: ObservableObject {
-    @Published private(set) var drinkWaterCount: Int
-    @Published private(set) var offset: CGFloat = 0
+@Observable
+public final class DrinkWaterViewModel {
+    private(set) var drinkWaterCount: Int
+    private(set) var offset: CGFloat = 0
     
     private let waterUseCase: DrinkWaterUseCase
     private let healthKitUseCase: HealthKitUseCase
