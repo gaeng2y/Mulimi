@@ -1,7 +1,5 @@
 # 💧 Mulimi (물리미)
 
-[![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/gaeng2y/Mulimi?utm_source=oss&utm_medium=github&utm_campaign=gaeng2y%2FMulimi&labelColor=171717&color=FF570A&link=https://coderabbit.ai&label=CodeRabbit+Reviews)](https://coderabbit.ai)
-
 **매일 잊지 않고 물 한 잔, 물리미와 함께 건강한 수분 섭취 습관을 만들어보세요.**
 
 현대인에게 부족한 수분 보충을 위해 매일 8잔(2.0L)의 물을 마실 수 있도록 도와주는 간단하고 직관적인 물 마시기 트래커 앱입니다.

@@ -2,13 +2,13 @@
 import PackageDescription
 
 #if TUIST
-    import ProjectDescription
+import ProjectDescription
 
-    let packageSettings = PackageSettings(
-        // Customize the product types for specific package product
-        // Default is .staticFramework
-        // productTypes: ["Alamofire": .framework,]
-    )
+let packageSettings = PackageSettings(
+    // Customize the product types for specific package product
+    // Default is .staticFramework
+    // productTypes: ["Alamofire": .framework,]
+)
 #endif
 
 let package = Package(
@@ -22,12 +22,8 @@ let package = Package(
             .upToNextMajor(from: "2.8.0")
         ),
         .package(
-            url: "https://github.com/QMUI/LookinServer.git",
-            .upToNextMajor(from: "1.2.0")
-        ),
-            .package(
-                url: "https://github.com/supabase/supabase-swift.git",
-                .upToNextMajor(from: "2.0.0")
-            )
+            url: "https://github.com/supabase/supabase-swift.git",
+            .upToNextMajor(from: "2.0.0")
+        )
     ]
 )
