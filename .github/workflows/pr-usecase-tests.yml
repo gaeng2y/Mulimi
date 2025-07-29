@@ -2,7 +2,6 @@ name: 🧪 UseCase Tests on PR
 
 on:
   pull_request:
-    branches: [ "*" ]
     paths:
       - 'Project/Domain/**'
       - 'Project/Data/**'
