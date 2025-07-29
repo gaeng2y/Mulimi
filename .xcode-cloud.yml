@@ -1,0 +1,73 @@
+# Xcode Cloud Configuration for Mulimi
+# This file defines the CI/CD workflows for the Tuist-based project
+
+version: 1
+
+workflows:
+  # Development branch workflow
+  development:
+    name: "Development Build"
+    description: "Build and test on development branch"
+    
+    # Trigger conditions
+    start_conditions:
+      - branch_changes:
+          source:
+            patterns:
+              - "develop"
+              - "feature/*"
+    
+    # Build steps
+    build:
+      xcode_version: "15.1"
+      scheme: "Mulimi"
+      destination: "platform=iOS Simulator,OS=17.2,name=iPhone 15"
+      
+    # Actions to perform
+    actions:
+      - action: build
+      - action: test
+        test_plan: "MulimiTests"
+        
+    # Environment variables
+    environment_variables:
+      - name: "TUIST_CONFIG_PATH"
+        value: "Tuist"
+        
+  # Release workflow
+  release:
+    name: "Release Build"
+    description: "Build and archive for release"
+    
+    # Trigger conditions
+    start_conditions:
+      - branch_changes:
+          source:
+            patterns:
+              - "main"
+      - tag_changes:
+          source:
+            patterns:
+              - "v*"
+    
+    # Build steps
+    build:
+      xcode_version: "15.1"
+      scheme: "Mulimi"
+      
+    # Actions to perform
+    actions:
+      - action: build
+      - action: test
+        test_plan: "MulimiTests"
+      - action: archive
+        destination: "generic/platform=iOS"
+        
+    # Post actions
+    post_actions:
+      - action: testflight_internal
+        
+    # Environment variables
+    environment_variables:
+      - name: "TUIST_CONFIG_PATH"
+        value: "Tuist"
