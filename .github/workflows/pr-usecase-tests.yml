@@ -1,0 +1,167 @@
+name: 🧪 UseCase Tests on PR
+
+on:
+  pull_request:
+    branches: [ "*" ]
+    paths:
+      - 'Project/Domain/**'
+      - 'Project/Data/**'
+      - '.github/workflows/pr-usecase-tests.yml'
+      - 'Tuist/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  usecase-tests:
+    name: 🧪 Domain Layer Tests
+    runs-on: macos-latest
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Setup mise
+        run: |
+          curl -s https://mise.run | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          
+      - name: 📦 Install Tuist
+        run: |
+          mise install
+          echo "$(mise where tuist)/bin" >> $GITHUB_PATH
+          
+      - name: ✅ Verify Installation
+        run: |
+          tuist --version
+          
+      - name: 📦 Install Dependencies
+        run: tuist install
+        
+      - name: 🏗️ Generate Project
+        run: tuist generate
+        
+      - name: 🧪 Run UseCase Tests
+        run: |
+          xcodebuild test \
+            -workspace Mulimi.xcworkspace \
+            -scheme DomainLayerTests \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2' \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee test_output.log
+            
+      - name: 📊 Parse Test Results
+        id: test_results
+        if: always()
+        run: |
+          # Extract test results from log
+          TOTAL=$(grep -o "Test Suite.*passed" test_output.log | wc -l | xargs)
+          PASSED=$(grep -o "Test Case.*passed" test_output.log | wc -l | xargs)
+          FAILED=$(grep -o "Test Case.*failed" test_output.log | wc -l | xargs)
+          
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          
+          # Calculate success rate
+          if [ $TOTAL -gt 0 ]; then
+            SUCCESS_RATE=$(echo "scale=1; $PASSED * 100 / $TOTAL" | bc)
+          else
+            SUCCESS_RATE=0
+          fi
+          echo "success_rate=$SUCCESS_RATE" >> $GITHUB_OUTPUT
+          
+          # Extract failed test details
+          grep -A 5 "Test Case.*failed" test_output.log > failed_tests.txt || echo "No failed tests" > failed_tests.txt
+          
+      - name: 💬 Comment Test Results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            const total = '${{ steps.test_results.outputs.total }}';
+            const passed = '${{ steps.test_results.outputs.passed }}';
+            const failed = '${{ steps.test_results.outputs.failed }}';
+            const successRate = '${{ steps.test_results.outputs.success_rate }}';
+            
+            let statusEmoji = failed > 0 ? '❌' : '✅';
+            let statusText = failed > 0 ? 'Tests Failed' : 'All Tests Passed';
+            
+            // Read failed tests if any
+            let failedDetails = '';
+            try {
+              const failedContent = fs.readFileSync('failed_tests.txt', 'utf8');
+              if (failedContent.trim() !== 'No failed tests') {
+                failedDetails = `
+            ## 🔍 Failed Tests Details
+            \`\`\`
+            ${failedContent}
+            \`\`\`
+            `;
+              }
+            } catch (e) {
+              console.log('No failed tests file found');
+            }
+            
+            const comment = `## ${statusEmoji} UseCase Layer Test Results
+            
+            **📊 Test Summary:**
+            - **Total Tests:** ${total}
+            - **Passed:** ${passed} ✅
+            - **Failed:** ${failed} ❌
+            - **Success Rate:** ${successRate}%
+            
+            **Status:** ${statusText}
+            
+            ${failedDetails}
+            
+            ---
+            🤖 **Automated by GitHub Actions** | ⏰ **${new Date().toLocaleString()}**
+            `;
+            
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('UseCase Layer Test Results')
+            );
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+            
+      - name: 📁 Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            TestResults.xcresult
+            test_output.log
+            failed_tests.txt
