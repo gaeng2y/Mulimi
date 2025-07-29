@@ -37,7 +37,7 @@ jobs:
       - name: Run Tests
         run: |
           xcodebuild test \
-            -workspace Mulimi.xcworkspace \
+            -project Project/Domain/DomainLayer.xcodeproj \
             -scheme DomainLayerTests \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2' \
             CODE_SIGNING_ALLOWED=NO | tee test_output.log
