@@ -69,16 +69,16 @@ jobs:
             // Create comment
             const comment = `## ${statusEmoji} UseCase Tests Results
 
-**📊 Summary:**
-- **Total:** ${total} tests
-- **Passed:** ${passed} ✅  
-- **Failed:** ${failed} ❌
-- **Success Rate:** ${successRate}%
+            **📊 Summary:**
+            - **Total:** ${total} tests
+            - **Passed:** ${passed} ✅  
+            - **Failed:** ${failed} ❌
+            - **Success Rate:** ${successRate}%
 
-**Status:** ${statusText}
+            **Status:** ${statusText}
 
----
-🤖 *Updated: ${new Date().toLocaleString()}*`;
+            ---
+            🤖 *Updated: ${new Date().toLocaleString()}*`;
             
             // Update or create comment
             const { data: comments } = await github.rest.issues.listComments({
