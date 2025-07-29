@@ -2,9 +2,11 @@ name: 🧪 UseCase Tests on PR
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'Project/Domain/**'
       - 'Project/Data/**'
+      - '.github/workflows/pr-usecase-tests.yml'
 
 jobs:
   usecase-tests:
