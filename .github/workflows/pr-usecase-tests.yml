@@ -38,7 +38,7 @@ jobs:
         run: |
           xcodebuild clean test \
             -project Project/Domain/DomainLayer.xcodeproj \
-            -scheme DomainLayerTests \
+            -scheme DomainLayer \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.2' \
             CODE_SIGNING_ALLOWED=NO \
             -derivedDataPath DerivedData \
