@@ -1,0 +1,61 @@
+{
+  "configurations" : [
+    {
+      "id" : "9B2F7B50-7C3D-4F8A-B1E9-D5A4C3F6E8B2",
+      "name" : "Configuration 1",
+      "options" : {
+        "testRepetitionMode" : "fixedIterations",
+        "testIterations" : 1
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:Project\/Domain\/DomainLayer.xcodeproj",
+          "identifier" : "DomainLayer",
+          "name" : "DomainLayer"
+        },
+        {
+          "containerPath" : "container:Project\/Data\/DataLayer.xcodeproj", 
+          "identifier" : "DataLayer",
+          "name" : "DataLayer"
+        },
+        {
+          "containerPath" : "container:Project\/Presentation\/PresentationLayer.xcodeproj",
+          "identifier" : "PresentationLayer", 
+          "name" : "PresentationLayer"
+        }
+      ]
+    },
+    "testRepetitionMode" : "none"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Project\/Domain\/DomainLayer.xcodeproj",
+        "identifier" : "DomainLayerTests",
+        "name" : "DomainLayerTests" 
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Project\/Data\/DataLayer.xcodeproj",
+        "identifier" : "DataLayerTests",
+        "name" : "DataLayerTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Project\/Presentation\/PresentationLayer.xcodeproj", 
+        "identifier" : "PresentationLayerTests",
+        "name" : "PresentationLayerTests"
+      }
+    }
+  ],
+  "version" : 1
+}

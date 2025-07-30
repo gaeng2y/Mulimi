@@ -1,0 +1,112 @@
+name: 🧪 UseCase Tests on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'Project/Domain/**'
+      - 'Project/Data/**'
+      - '.github/workflows/pr-usecase-tests.yml'
+
+jobs:
+  usecase-tests:
+    name: Domain Layer Tests
+    runs-on: macos-latest
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Tuist
+        run: |
+          curl -s https://mise.run | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          mise install
+          echo "$(mise where tuist)/bin" >> $GITHUB_PATH
+          
+      - name: Install Dependencies
+        run: tuist install
+          
+      - name: Generate Project
+        run: tuist generate
+        
+      - name: Run Tests
+        run: |
+          xcodebuild clean test \
+            -project Project/Domain/DomainLayer.xcodeproj \
+            -scheme DomainLayer \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.2' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath DerivedData \
+            ENABLE_TESTING_SEARCH_PATHS=YES \
+            | tee test_output.log
+            
+      - name: Parse Results & Comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read test output
+            let testOutput = '';
+            try {
+              testOutput = fs.readFileSync('test_output.log', 'utf8');
+            } catch (e) {
+              testOutput = 'No test output found';
+            }
+            
+            // Simple parsing
+            const passed = (testOutput.match(/Test Case .* passed/g) || []).length;
+            const failed = (testOutput.match(/Test Case .* failed/g) || []).length;
+            const total = passed + failed;
+            const successRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+            
+            // Status
+            const statusEmoji = failed > 0 ? '❌' : '✅';
+            const statusText = failed > 0 ? 'Some tests failed' : 'All tests passed';
+            
+            // Create comment
+            const comment = `## ${statusEmoji} UseCase Tests Results
+
+            **📊 Summary:**
+            - **Total:** ${total} tests
+            - **Passed:** ${passed} ✅  
+            - **Failed:** ${failed} ❌
+            - **Success Rate:** ${successRate}%
+
+            **Status:** ${statusText}
+
+            ---
+            🤖 *Updated: ${new Date().toLocaleString()}*`;
+            
+            // Update or create comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(c => 
+              c.body.includes('UseCase Tests Results')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
