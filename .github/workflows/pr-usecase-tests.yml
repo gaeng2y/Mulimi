@@ -36,12 +36,14 @@ jobs:
         
       - name: Run Tests
         run: |
-          xcodebuild test \
+          xcodebuild clean test \
             -project Project/Domain/DomainLayer.xcodeproj \
-            -scheme DomainLayer \
+            -scheme DomainLayerTests \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.2' \
-            -only-testing:DomainLayerTests \
-            CODE_SIGNING_ALLOWED=NO | tee test_output.log
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath DerivedData \
+            ENABLE_TESTING_SEARCH_PATHS=YES \
+            | tee test_output.log
             
       - name: Parse Results & Comment
         if: always()
