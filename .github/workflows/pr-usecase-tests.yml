@@ -36,20 +36,15 @@ jobs:
         
       - name: Run Tests
         run: |
-          # Find available iOS simulator  
-          SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone" | head -1 | grep -o -E '\([0-9A-F-]+\)' | tr -d '()')
-          if [ -z "$SIMULATOR_ID" ]; then
-            echo "No iPhone simulator found, using any iOS simulator"
-            DESTINATION='platform=iOS Simulator'
-          else
-            echo "Using simulator: $SIMULATOR_ID"
-            DESTINATION="platform=iOS Simulator,id=$SIMULATOR_ID"
-          fi
+          # List available destinations for debugging
+          echo "Available destinations:"
+          xcodebuild -project Project/Domain/DomainLayer.xcodeproj -scheme DomainLayer -showdestinations
           
+          # Try the most basic iOS Simulator destination
           xcodebuild test \
             -project Project/Domain/DomainLayer.xcodeproj \
             -scheme DomainLayer \
-            -destination "$DESTINATION" \
+            -destination 'generic/platform=iOS Simulator' \
             -only-testing:DomainLayerTests \
             CODE_SIGNING_ALLOWED=NO | tee test_output.log
             
