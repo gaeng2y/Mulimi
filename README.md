@@ -4,6 +4,8 @@
 <img src="https://github.com/gaeng2y/Mulimi/blob/main/Images/app%20icon.png?raw=true" width="300" height="300">
 </p>
 
+- 앱스토어 링크: [링크](https://apps.apple.com/us/app/%EB%AC%BC%EB%A6%AC%EB%AF%B8/id6451200968)
+
 **매일 잊지 않고 물 한 잔, 물리미와 함께 건강한 수분 섭취 습관을 만들어보세요.**
 
 현대인에게 부족한 수분 보충을 위해 매일 8잔(2.0L)의 물을 마실 수 있도록 도와주는 간단하고 직관적인 물 마시기 트래커 앱입니다.
@@ -31,8 +33,6 @@
 
 ### External Libraries
 - **[Swinject](https://github.com/Swinject/Swinject)**: 의존성 주입(DI)을 관리하여 코드의 결합도를 낮추고 테스트 용이성을 확보합니다.
-- **[supabase-swift](https://github.com/supabase/supabase-swift)**: Supabase와의 연동을 통해 백엔드 기능을 구현합니다. (필요시 사용)
-- 
 ---
 
 ## 🏗️ 프로젝트 구조
