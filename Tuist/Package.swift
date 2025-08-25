@@ -20,10 +20,6 @@ let package = Package(
         .package(
             url: "https://github.com/Swinject/Swinject.git",
             .upToNextMajor(from: "2.8.0")
-        ),
-        .package(
-            url: "https://github.com/supabase/supabase-swift.git",
-            .upToNextMajor(from: "2.0.0")
         )
     ]
 )
