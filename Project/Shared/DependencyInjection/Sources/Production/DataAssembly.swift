@@ -1,17 +1,16 @@
 //
 //  DataAssembly.swift
-//  Mulimi
+//  DependencyInjection
 //
-//  Created by Kyeongmo Yang on 7/17/25.
-//  Copyright © 2025 gaeng2y. All rights reserved.
+//  Created by Kyeongmo Yang on 9/17/25.
 //
 
 import DataLayer
 import DomainLayerInterface
 import Swinject
 
-final class DataAssembly: Assembly {
-    func assemble(container: Container) {
+public final class DataAssembly: Assembly {
+    public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterDataSource.self) { resolver in
             DrinkWaterUserDefaultsDataSource(userDefaults: .appGroup)

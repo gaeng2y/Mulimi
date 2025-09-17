@@ -1,17 +1,16 @@
 //
 //  DomainAssembly.swift
-//  Mulimi
+//  DependencyInjection
 //
-//  Created by Kyeongmo Yang on 7/17/25.
-//  Copyright © 2025 gaeng2y. All rights reserved.
+//  Created by Kyeongmo Yang on 9/17/25.
 //
 
 import DomainLayer
 import DomainLayerInterface
 import Swinject
 
-final class DomainAssembly: Assembly {
-    func assemble(container: Container) {
+public final class DomainAssembly: Assembly {
+    public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterUseCase.self) { resolver in
             DrinkWaterUseCaseImpl(

@@ -1,17 +1,16 @@
 //
-//  PresentationLayer.swift
-//  Mulimi
+//  PresentationAssembly.swift
+//  DependencyInjection
 //
-//  Created by Kyeongmo Yang on 7/17/25.
-//  Copyright © 2025 gaeng2y. All rights reserved.
+//  Created by Kyeongmo Yang on 9/17/25.
 //
 
 import DomainLayerInterface
 import PresentationLayer
 import Swinject
 
-final class PresentationLayer: Assembly {
-    func assemble(container: Container) {
+public final class PresentationAssembly: Assembly {
+    public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             DrinkWaterViewModel(
