@@ -20,7 +20,7 @@ public struct HydrationRecordListView: View {
     public var body: some View {
         ZStack {
             Color.background
-                .ignoresSafeArea(edges: [.top, .horizontal])
+                .ignoresSafeArea()
             
             switch viewModel.authorizationStatus {
             case .notDetermined:
@@ -56,17 +56,11 @@ public struct HydrationRecordListView: View {
         }
         
         var body: some View {
-            VStack {
-                HStack {
-                    Text(viewModel.date.formatted())
-                        .font(.title)
-                        .fontWeight(.heavy)
-                    
-                    List(viewModel.records) { record in
-                        HydrationRecordRow(record: record)
-                    }
+            NavigationStack {
+                List(viewModel.records) { record in
+                    HydrationRecordRow(record: record)
                 }
-                .padding()
+                .navigationTitle(viewModel.date.formatted(.dateTime.year().month()))
             }
         }
     }
