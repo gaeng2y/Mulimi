@@ -65,6 +65,8 @@ DerivedData/
 ### Tuist derived files ###
 graph.dot
 Derived/
+.build/
+Tuist/.build/
 
 ### Tuist managed dependencies ###
 XCConfig/Secrets.xcconfig
