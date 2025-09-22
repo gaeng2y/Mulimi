@@ -33,11 +33,8 @@ let project = Project(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
             dependencies: [
+                .target(name: "WidgetExtension"),
                 .external(name: "Swinject"),
-                .project(
-                    target: "WidgetExtension",
-                    path: .relativeToRoot("Project/Widget")
-                ),
                 .project(
                     target: "DataLayer",
                     path: .relativeToRoot("Project/Data")
@@ -54,6 +51,25 @@ let project = Project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),
+            ]
+        ),
+        .target(
+            name: "WidgetExtension",
+            destinations: .iOS,
+            product: .appExtension,
+            bundleId: "\(bundleId).WidgetExtension",
+            deploymentTargets: .iOS("18.0"),
+            infoPlist: .file(path: .relativeToRoot("Project/Widget/Resources/Info.plist")),
+            sources: .paths([.relativeToRoot("Project/Widget/Sources/**")]),
+            resources: .resources([.glob(pattern: .relativeToRoot("Project/Widget/Resources/Assets.xcassets"))]),
+            entitlements: .file(
+                path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")
+            ),
+            dependencies: [
+                .project(
+                    target: "Utils",
+                    path: .relativeToRoot("Project/Shared/Utils")
+                )
             ]
         )
     ]
