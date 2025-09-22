@@ -24,7 +24,7 @@ let project = Project(
             dependencies: [
                 .external(name: "Swinject"),
                 .project(
-                    target: "DataLayerInterface",
+                    target: "DataLayer",
                     path: .relativeToRoot("Project/Data")
                 ),
                 .project(
@@ -32,16 +32,12 @@ let project = Project(
                     path: .relativeToRoot("Project/Domain")
                 ),
                 .project(
-                    target: "PresentationLayer",
-                    path: .relativeToRoot("Project/Presentation")
-                ),
-                .project(
-                    target: "DataLayer",
-                    path: .relativeToRoot("Project/Data")
-                ),
-                .project(
                     target: "DomainLayer",
                     path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "PresentationLayer",
+                    path: .relativeToRoot("Project/Presentation")
                 )
             ]
         ),

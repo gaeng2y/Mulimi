@@ -102,6 +102,4 @@ public struct HydrationRecordListView: View {
     }
 }
 
-//#Preview {
-//    RecordListView()
-//}
+// Preview는 DependencyInjectionPreview 모듈에서 제공

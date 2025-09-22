@@ -95,10 +95,12 @@ public struct DrinkWaterView: View {
             }
         }
     }
-    
+
     private struct WaterDrop: View {
         var body: some View {
             Image(systemName: "drop.fill")
         }
     }
 }
+
+// Preview는 DependencyInjectionPreview 모듈에서 제공

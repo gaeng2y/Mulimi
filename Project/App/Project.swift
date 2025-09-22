@@ -34,18 +34,9 @@ let project = Project(
             ),
             dependencies: [
                 .target(name: "WidgetExtension"),
-                .external(name: "Swinject"),
                 .project(
-                    target: "DataLayer",
-                    path: .relativeToRoot("Project/Data")
-                ),
-                .project(
-                    target: "DomainLayer",
-                    path: .relativeToRoot("Project/Domain")
-                ),
-                .project(
-                    target: "PresentationLayer",
-                    path: .relativeToRoot("Project/Presentation")
+                    target: "DependencyInjection",
+                    path: .relativeToRoot("Project/Shared/DependencyInjection")
                 ),
                 .project(
                     target: "Utils",

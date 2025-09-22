@@ -6,6 +6,7 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
+import DependencyInjection
 import SwiftUI
 import PresentationLayer
 
