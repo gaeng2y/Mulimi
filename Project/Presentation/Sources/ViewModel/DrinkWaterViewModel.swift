@@ -37,13 +37,27 @@ public final class DrinkWaterViewModel {
     func drinkWater() {
         drinkWaterCount += 1
         waterUseCase.drinkWater()
-//        healthKitUseCase.drinkWater()
+
+        Task {
+            do {
+                try await healthKitUseCase.drinkWater()
+            } catch {
+                print("Failed to log water to HealthKit: \(error)")
+            }
+        }
     }
     
     func reset() {
         drinkWaterCount = 0
-        waterUseCase.drinkWater()
-//        healthKitUseCase.reset()
+        waterUseCase.reset()
+
+        Task {
+            do {
+                try await healthKitUseCase.reset()
+            } catch {
+                print("Failed to reset HealthKit data: \(error)")
+            }
+        }
     }
     
     func startAnimation() {

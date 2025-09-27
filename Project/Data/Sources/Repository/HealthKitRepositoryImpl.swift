@@ -31,4 +31,12 @@ public struct HealthKitRepositoryImpl: HealthKitRepository {
     public func reset() async throws {
         try await dataSource.resetWaterInTakeInToday()
     }
+    
+    public func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord] {
+        let results = try await dataSource.readWaterIntake(from: startDate, to: endDate)
+        return results.map { date, amount in
+            HydrationRecord(id: UUID(), date: date, mililiter: amount)
+        }
+        
+    }
 }

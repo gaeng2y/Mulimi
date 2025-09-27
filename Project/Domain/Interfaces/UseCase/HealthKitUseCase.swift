@@ -14,4 +14,5 @@ public protocol HealthKitUseCase {
     func requestAuthorization() async throws
     func drinkWater() async throws
     func reset() async throws
+    func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord]
 }

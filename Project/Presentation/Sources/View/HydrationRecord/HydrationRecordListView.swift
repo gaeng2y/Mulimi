@@ -28,7 +28,7 @@ public struct HydrationRecordListView: View {
             case .sharingDenied:
                 AuthorizationDeniedView()
             case .sharingAuthorized:
-                RowListView(viewModel: viewModel)
+                RecordCalendarView(viewModel: viewModel)
             }
         }
         .task {
@@ -101,5 +101,3 @@ public struct HydrationRecordListView: View {
         }
     }
 }
-
-// Preview는 DependencyInjectionPreview 모듈에서 제공

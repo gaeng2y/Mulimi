@@ -34,4 +34,41 @@ public final class HydrationRecordListViewModel {
             errorMessage = error.localizedDescription
         }
     }
+    
+    func fetchHydrationRecord() async {
+        let (startDate, endDate) = getStartAndEndDate()
+        
+        guard let startDate, let endDate else {
+            errorMessage = "Failed to calculate date range"
+            return
+        }
+        
+        do {
+            let fetchedRecords = try await useCase.fetchHistory(from: startDate, to: endDate)
+            records = fetchedRecords
+        } catch {
+            return
+        }
+    }
+    
+    private func getStartAndEndDate() -> (startDate: Date?, endDate: Date?) {
+        let year = date.getComponents(for: .year)
+        let month = date.getComponents(for: .month)
+        let startDateComponents = DateComponents(year: year, month: month, day: 1)
+        
+        guard let startDate = Calendar.current.date(from: startDateComponents),
+              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+            return (nil, nil)
+        }
+        let endDateComponents = DateComponents(year: year, month: month, day: range.count)
+        let endDate = Calendar.current.date(from: endDateComponents)
+        
+        return (startDate, endDate)
+    }
+}
+
+fileprivate extension Date {
+    func getComponents(for component: Calendar.Component) -> Int? {
+        Calendar.autoupdatingCurrent.dateComponents([component], from: self).value(for: component) ?? 0
+    }
 }
