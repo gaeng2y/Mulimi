@@ -8,6 +8,7 @@
 
 import DomainLayerInterface
 import Foundation
+import Utils
 
 public protocol UserPreferencesDataSource {
     func getMainAppearance() -> MainAppearance
@@ -21,23 +22,17 @@ public protocol UserPreferencesDataSource {
 public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
     private let userDefaults: UserDefaults
     
-    public init(userDefaults: UserDefaults = .standard) {
+    public init(userDefaults: UserDefaults = .appGroup) {
         self.userDefaults = userDefaults
     }
     
     // MARK: - MainAppearance
     public func getMainAppearance() -> MainAppearance {
-        let storedValue = userDefaults.string(forKey: "mainScreenAppearance") ?? "drop"
-        
-        switch storedValue {
-        case "drop":
-            return .drop
-        case "heart":
-            return .heart
-        case "cloud":
-            return .cloud
-        default:
-            return .drop
+        switch userDefaults.mainAppearance {
+        case "drop": .drop
+        case "heart": .heart
+        case "cloud": .cloud
+        default: .drop
         }
     }
     
@@ -51,7 +46,7 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
         case .cloud:
             stringValue = "cloud"
         }
-        userDefaults.set(stringValue, forKey: "mainScreenAppearance")
+        userDefaults.mainAppearance = stringValue
     }
     
     // MARK: - Daily Water Limit

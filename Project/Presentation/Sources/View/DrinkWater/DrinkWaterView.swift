@@ -88,42 +88,43 @@ public struct DrinkWaterView: View {
             }
         }
         .onAppear {
+            // Refresh data when view appears to catch any Widget changes
+            viewModel.refreshFromUserDefaults()
+
             withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
                 viewModel.startAnimation()
             }
         }
     }
+}
+
+fileprivate struct WaterDropView: View {
+    let appearance: MainAppearance
+    let progress: CGFloat
+    let offset: CGFloat
     
-    private struct WaterDropView: View {
-        let appearance: MainAppearance
-        let progress: CGFloat
-        let offset: CGFloat
-        
-        var body: some View {
-            ZStack {
+    var body: some View {
+        ZStack {
+            Image(systemName: appearance.fillSystemImage)
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(.white)
+                .scaleEffect(x: 1.1, y: 1.1)
+                .offset(y: -1)
+            
+            WaterWaveView(
+                progress: progress,
+                waveHeight: 0.1,
+                offset: offset
+            )
+            .fill(.teal)
+            .waterDropGlareEffect()
+            .mask {
                 Image(systemName: appearance.fillSystemImage)
                     .resizable()
-                    .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.white)
-                    .scaleEffect(x: 1.1, y: 1.1)
-                    .offset(y: -1)
-                
-                WaterWaveView(
-                    progress: progress,
-                    waveHeight: 0.1,
-                    offset: offset
-                )
-                .fill(.teal)
-                .waterDropGlareEffect()
-                .mask {
-                    Image(systemName: appearance.fillSystemImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                }
             }
         }
     }
 }
-
-// Preview는 DependencyInjectionPreview 모듈에서 제공

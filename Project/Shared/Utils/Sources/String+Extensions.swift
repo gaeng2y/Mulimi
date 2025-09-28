@@ -20,4 +20,7 @@ public extension String {
         }()
         return dateFormatter.string(from: now)
     }
+    
+    static let mainAppearance: String = "mainAppearance"
+    static let dailyWaterLimit: String = "dailyWaterLimit"
 }

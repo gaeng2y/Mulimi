@@ -12,7 +12,7 @@ import DomainLayerInterface
 public struct SettingDetailView: View {
     let menu: SettingMenu
     private let viewModel: SettingsViewModel
-
+    
     public init(menu: SettingMenu, viewModel: SettingsViewModel) {
         self.menu = menu
         self.viewModel = viewModel
@@ -35,7 +35,7 @@ public struct SettingDetailView: View {
 // MARK: - Setting Detail Views
 private struct DailyLimitSettingView: View {
     private let viewModel: SettingsViewModel
-
+    
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
@@ -47,7 +47,7 @@ private struct DailyLimitSettingView: View {
                     .font(.largeTitle)
                     .fontWeight(.semibold)
             }
-
+            
             Slider(value: Binding(
                 get: { viewModel.dailyWaterLimit },
                 set: { viewModel.dailyWaterLimit = $0 }
@@ -77,7 +77,7 @@ private struct DailyLimitSettingView: View {
 
 private struct AccentColorSettingView: View {
     private let viewModel: SettingsViewModel
-
+    
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
@@ -130,37 +130,37 @@ private struct AccentColorSettingView: View {
 
 private struct MainShapeSettingView: View {
     private let viewModel: SettingsViewModel
-
+    
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
-
+    
     var body: some View {
         VStack(spacing: 20) {
-            ForEach(viewModel.availableAppearances) { appearance in
+            ForEach(MainAppearance.allCases) { appearance in
                 Button {
                     viewModel.selectMainAppearance(appearance)
                 } label: {
                     VStack(spacing: 12) {
                         HStack {
-                            Image(systemName: getSystemImage(for: appearance))
+                            Image(systemName: appearance.systemImage)
                                 .font(.title2)
                                 .frame(width: 40)
                                 .foregroundColor(.accentColor)
-
+                            
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(appearance.displayName)
                                     .font(.headline)
                                     .foregroundColor(.primary)
-
-                                Text(getDescription(for: appearance))
+                                
+                                Text(appearance.description)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                     .multilineTextAlignment(.leading)
                             }
-
+                            
                             Spacer()
-
+                            
                             if viewModel.isMainAppearanceSelected(appearance) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(.accentColor)
@@ -188,33 +188,11 @@ private struct MainShapeSettingView: View {
                 .buttonStyle(PlainButtonStyle())
             }
             .padding(.horizontal)
-
+            
             Spacer()
         }
         .padding()
         .navigationTitle("메인 화면 모양")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func getSystemImage(for appearance: MainAppearance) -> String {
-        switch appearance {
-        case .drop:
-            return "drop.fill"
-        case .heart:
-            return "heart.fill"
-        case .cloud:
-            return "cloud.fill"
-        }
-    }
-
-    private func getDescription(for appearance: MainAppearance) -> String {
-        switch appearance {
-        case .drop:
-            return "깔끔한 물방울 모양"
-        case .heart:
-            return "사랑스러운 하트 모양"
-        case .cloud:
-            return "부드러운 구름 모양"
-        }
     }
 }
