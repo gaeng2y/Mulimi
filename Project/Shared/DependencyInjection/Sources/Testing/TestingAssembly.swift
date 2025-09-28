@@ -20,5 +20,9 @@ public final class TestingAssembly: Assembly {
         container.register(HealthKitUseCase.self) { _ in
             MockHealthKitUseCaseForTesting()
         }
+
+        container.register(UserPreferencesUseCase.self) { _ in
+            MockUserPreferencesUseCaseForTesting()
+        }
     }
 }

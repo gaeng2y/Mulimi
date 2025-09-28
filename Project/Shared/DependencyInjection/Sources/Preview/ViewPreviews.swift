@@ -22,3 +22,22 @@ import SwiftUI
     let viewModel = DIContainer.preview.resolve(HydrationRecordListViewModel.self)
     HydrationRecordListView(viewModel: viewModel)
 }
+
+// MARK: - SettingsView Preview
+#Preview("SettingsView") {
+    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    SettingsView(viewModel: viewModel)
+}
+
+// MARK: - SettingDetailView Previews
+#Preview("DailyLimit Setting") {
+    SettingDetailView(menu: .dailyLimit)
+}
+
+#Preview("AccentColor Setting") {
+    SettingDetailView(menu: .accentColor)
+}
+
+#Preview("MainShape Setting") {
+    SettingDetailView(menu: .mainShape)
+}

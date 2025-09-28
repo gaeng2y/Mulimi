@@ -10,24 +10,24 @@ import Foundation
 
 public final class MockHealthKitUseCase: HealthKitUseCase {
     public init() {}
-
+    
     public func requestAuthorization() async throws -> HealthKitAuthorizationStatus {
         return .authorized
     }
-
+    
     public func drinkWater() {
         // Mock implementation - no actual HealthKit operation
     }
-
+    
     public func reset() {
         // Mock implementation - no actual HealthKit operation
     }
-
+    
     public func fetchRecords() async throws -> [HydrationRecord] {
         // Return sample data for preview
         let calendar = Calendar.current
         let today = Date()
-
+        
         return [
             HydrationRecord(
                 id: UUID(),

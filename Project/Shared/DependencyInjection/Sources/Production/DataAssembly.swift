@@ -32,5 +32,16 @@ public final class DataAssembly: Assembly {
                 dataSource: resolver.resolve(HealthKitDataSource.self)!
             )
         }
+        
+        // MARK: - UserPreferences
+        container.register(UserPreferencesDataSource.self) { resolver in
+            UserPreferencesDataSourceImpl(userDefaults: .standard)
+        }
+        
+        container.register(UserPreferencesRepository.self) { resolver in
+            UserPreferencesRepositoryImpl(
+                dataSource: resolver.resolve(UserPreferencesDataSource.self)!
+            )
+        }
     }
 }

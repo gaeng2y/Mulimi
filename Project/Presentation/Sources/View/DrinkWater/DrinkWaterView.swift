@@ -6,6 +6,7 @@
 //
 
 import DesignSystem
+import DomainLayerInterface
 import SwiftUI
 
 public struct DrinkWaterView: View {
@@ -22,41 +23,38 @@ public struct DrinkWaterView: View {
             
             VStack {
                 GeometryReader { proxy in
-                    ZStack {
-                        Image(systemName: "drop.fill")
-                            .resizable()
-                            .renderingMode(.template)
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.white)
-                            .scaleEffect(x: 1.1, y: 1.1)
-                            .offset(y: -1)
-                        
-                        WaterWaveView(
-                            progress: viewModel.progress,
-                            waveHeight: 0.1,
-                            offset: viewModel.offset
-                        )
-                        .fill(.teal)
-                        .waterDropGlareEffect()
-                        .mask {
-                            Image(systemName: "drop.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        }
-                        .frame(
-                            width: proxy.size.width,
-                            height: proxy.size.height,
-                            alignment: .center
-                        )
-                    }
+                    WaterDropView(
+                        appearance: viewModel.mainAppearance,
+                        progress: viewModel.progress,
+                        offset: viewModel.offset
+                    )
+                    .frame(
+                        width: proxy.size.width,
+                        height: proxy.size.height,
+                        alignment: .center
+                    )
                 }
                 .frame(height: 450)
                 
-                HStack(alignment: .firstTextBaseline) {
-                    Text("\(viewModel.drinkWaterCount)잔")
-                        .font(.title)
-                    Text("\(viewModel.mililiters)")
-                        .font(.callout)
+                VStack(spacing: 8) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("\(viewModel.drinkWaterCount)잔")
+                            .font(.title)
+                        Text("\(viewModel.mililiters)")
+                            .font(.callout)
+                    }
+                    
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("목표: \(Int(viewModel.dailyLimit))ml")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        if viewModel.isLimitReached {
+                            Text("완료!")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                                .fontWeight(.semibold)
+                        }
+                    }
                 }
                 .padding()
                 
@@ -64,15 +62,15 @@ public struct DrinkWaterView: View {
                     Button {
                         viewModel.drinkWater()
                     } label: {
-                        Text("마시기")
+                        Text(viewModel.isLimitReached ? "목표 달성!" : "마시기")
                             .font(.headline)
                             .fontWeight(.bold)
                             .padding()
-                            .background(Color.accent)
+                            .background(viewModel.isLimitReached ? Color.gray : Color.accent)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
-                    .disabled(false)
+                    .disabled(viewModel.isLimitReached)
                     
                     
                     Button {
@@ -95,10 +93,35 @@ public struct DrinkWaterView: View {
             }
         }
     }
-
-    private struct WaterDrop: View {
+    
+    private struct WaterDropView: View {
+        let appearance: MainAppearance
+        let progress: CGFloat
+        let offset: CGFloat
+        
         var body: some View {
-            Image(systemName: "drop.fill")
+            ZStack {
+                Image(systemName: appearance.fillSystemImage)
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.white)
+                    .scaleEffect(x: 1.1, y: 1.1)
+                    .offset(y: -1)
+                
+                WaterWaveView(
+                    progress: progress,
+                    waveHeight: 0.1,
+                    offset: offset
+                )
+                .fill(.teal)
+                .waterDropGlareEffect()
+                .mask {
+                    Image(systemName: appearance.fillSystemImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }
+            }
         }
     }
 }

@@ -26,7 +26,9 @@ struct ContentView: View {
             }
             
             Tab("설정", systemImage: "gear") {
-                SettingsView()
+                SettingsView(
+                    viewModel: DIContainer.shared.resolve(SettingsViewModel.self)
+                )
             }
         }
         .tint(.accent)

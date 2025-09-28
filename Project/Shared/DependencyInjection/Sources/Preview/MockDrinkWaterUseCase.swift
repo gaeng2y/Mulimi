@@ -9,13 +9,13 @@ import DomainLayerInterface
 
 public final class MockDrinkWaterUseCase: DrinkWaterUseCase {
     public var currentWater: Int = 3
-
+    
     public init() {}
-
+    
     public func drinkWater() {
         currentWater += 1
     }
-
+    
     public func reset() {
         currentWater = 0
     }

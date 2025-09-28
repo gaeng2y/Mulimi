@@ -108,10 +108,46 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
+        
+        // Create date range for today
+        let calendar = Calendar.current
+        let today = Date()
+        let startOfDay = calendar.startOfDay(for: today)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? today
+        
+        // Create predicate for today's water intake samples
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: .strictStartDate)
+        
+        // Find and delete all water intake samples for today
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let sampleQuery = HKSampleQuery(
+                sampleType: waterType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: nil
+            ) { query, samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let samples = samples, !samples.isEmpty else {
+                    // No samples to delete, operation complete
+                    continuation.resume(returning: ())
+                    return
+                }
+                
+                // Delete all found samples
+                self.healthStore.delete(samples) { success, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume(returning: ())
+                    }
+                }
+            }
             
-        let waterQuantity = HKQuantity(unit: .literUnit(with: .milli), doubleValue: .zero)
-        let waterSample = HKQuantitySample(type: waterType, quantity: waterQuantity, start: .now, end: .now)
-            
-        try await healthStore.save(waterSample)
+            healthStore.execute(sampleQuery)
+        }
     }
 }
