@@ -23,7 +23,7 @@ let project = Project(
         .target(
             name: "Utils",
             destinations: .iOS,
-            product: .framework,
+            product: .staticLibrary,
             bundleId: "\(bundleId).Utils",
             deploymentTargets: .iOS("18.0"),
             sources: ["Sources/**"]

@@ -45,7 +45,7 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                ),
+                )
             ]
         ),
         .target(
@@ -61,10 +61,6 @@ let project = Project(
                 path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")
             ),
             dependencies: [
-                .project(
-                    target: "DependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
-                ),
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")

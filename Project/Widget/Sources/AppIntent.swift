@@ -8,6 +8,7 @@
 import WidgetKit
 import AppIntents
 import Utils
+import HealthKit
 
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Configuration"
@@ -31,9 +32,34 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
         if nextMl <= limit {
             userDefaults.glassesOfToday += 1
             userDefaults.synchronize() // Force synchronization
+            
+            // Log to HealthKit
+            await logWaterToHealthKit()
         }
         
         WidgetCenter.shared.reloadAllTimelines()
         return .result()
+    }
+    
+    private func logWaterToHealthKit() async {
+        guard HKHealthStore.isHealthDataAvailable() else { return }
+        
+        let healthStore = HKHealthStore()
+        let waterType = HKQuantityType(.dietaryWater)
+        let waterQuantity = HKQuantity(unit: HKUnit.literUnit(with: .milli), doubleValue: 250.0)
+        
+        let waterSample = HKQuantitySample(
+            type: waterType,
+            quantity: waterQuantity,
+            start: Date(),
+            end: Date()
+        )
+        
+        do {
+            try await healthStore.save(waterSample)
+        } catch {
+            // Silent fail - Widget should not show errors to user
+            print("Failed to log water to HealthKit from Widget: \(error)")
+        }
     }
 }
