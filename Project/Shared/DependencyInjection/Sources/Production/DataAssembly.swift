@@ -35,7 +35,7 @@ public final class DataAssembly: Assembly {
         
         // MARK: - UserPreferences
         container.register(UserPreferencesDataSource.self) { resolver in
-            UserPreferencesDataSourceImpl(userDefaults: .standard)
+            UserPreferencesDataSourceImpl(userDefaults: .appGroup)
         }
         
         container.register(UserPreferencesRepository.self) { resolver in

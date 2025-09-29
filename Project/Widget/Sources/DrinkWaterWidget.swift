@@ -5,7 +5,6 @@
 //  Created by Kyeongmo Yang on 2023/06/24.
 //
 
-import Foundation
 import SwiftUI
 import Utils
 import WidgetKit
@@ -94,49 +93,57 @@ struct DrinkWaterWidgetEntryView : View {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
-            // 상단: 메인 수치 (HIG - 주요 정보 우선 표시)
-            VStack(spacing: 2) {
+        VStack(alignment: .leading, spacing: 8) {
+            // 상단: 현재 마신 ml (왼쪽 정렬)
+            HStack(alignment: .lastTextBaseline, spacing: 2) {
                 Text("\(mililiters)")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundColor(.primary)
-                    .minimumScaleFactor(0.8)
-                
+                    .minimumScaleFactor(0.7)
+
                 Text("ml")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.secondary)
             }
-            
-            // 중앙: 프로그레스 표시 (HIG - 시각적 진행도)
-            VStack(spacing: 6) {
-                ProgressView(value: progress)
-                    .progressViewStyle(LinearProgressViewStyle())
-                    .tint(isLimitReached ? .green : .accentColor)
-                    .scaleEffect(y: 1.5)
-                
-                Text("\(numberOfGlasses)잔 / \(Int(entry.dailyLimit))ml 목표")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.9)
-            }
-            
-            // 하단: 액션 버튼 (HIG - 단순한 인터랙션)
-            Button(intent: ConfigurationAppIntent()) {
-                Label {
-                    Text(isLimitReached ? "완료" : "마시기")
-                        .font(.system(size: 12, weight: .semibold))
-                } icon: {
-                    Image(systemName: isLimitReached ? "checkmark.circle.fill" : "plus.circle.fill")
-                        .font(.system(size: 16, weight: .medium))
+
+            // 중앙 상단: 프로그레스 바
+            ProgressView(value: progress)
+                .progressViewStyle(LinearProgressViewStyle())
+                .tint(isLimitReached ? .green : .accentColor)
+                .scaleEffect(y: 1.8)
+
+            // 중앙 하단: 잔수 / 목표 (한 줄로 표시)
+            Text("\(numberOfGlasses)잔 / 목표 \(Int(entry.dailyLimit.rounded()))ml")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.secondary)
+
+            Spacer()
+
+            // 하단: 마시기 버튼 (오른쪽 정렬)
+            HStack {
+                Spacer()
+
+                Button(intent: ConfigurationAppIntent()) {
+                    HStack(spacing: 4) {
+                        Image(systemName: isLimitReached ? "checkmark.circle.fill" : "plus.circle.fill")
+                            .font(.system(size: 13, weight: .medium))
+                        Text(isLimitReached ? "완료" : "마시기")
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 7)
+                            .fill(isLimitReached ? Color.green : Color.accentColor)
+                    )
                 }
-                .foregroundColor(isLimitReached ? .green : .accentColor)
+                .buttonStyle(PlainButtonStyle())
+                .disabled(isLimitReached)
             }
-            .buttonStyle(PlainButtonStyle())
-            .disabled(isLimitReached)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(12)
+        .padding(10)
     }
 }
 

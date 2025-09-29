@@ -19,6 +19,7 @@ public final class DrinkWaterViewModel {
     private(set) var drinkWaterCount: Int
     private(set) var offset: CGFloat = 0
     private(set) var mainAppearance: MainAppearance
+    private(set) var currentDailyLimit: Double
     
     private let waterUseCase: DrinkWaterUseCase
     private let healthKitUseCase: HealthKitUseCase
@@ -34,15 +35,16 @@ public final class DrinkWaterViewModel {
     }
     
     var dailyLimit: Double {
-        userPreferencesUseCase.getDailyWaterLimit()
+        currentDailyLimit
     }
     
     var isLimitReached: Bool {
-        currentWaterIntakeInMl >= dailyLimit
+        currentWaterIntakeInMl.rounded() >= dailyLimit.rounded()
     }
     
     var progress: CGFloat {
-        CGFloat(drinkWaterCount) * 0.125
+        let maxProgress = currentDailyLimit / 250.0  // 목표량을 잔수로 변환
+        return min(CGFloat(drinkWaterCount) / CGFloat(maxProgress), 1.0)
     }
     
     public init(
@@ -55,6 +57,7 @@ public final class DrinkWaterViewModel {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.drinkWaterCount = waterUseCase.currentWater
         self.mainAppearance = userPreferencesUseCase.getMainAppearance()
+        self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         
         setupUserPreferencesObservation()
     }
@@ -67,6 +70,7 @@ public final class DrinkWaterViewModel {
                 DispatchQueue.main.async {
                     self?.updateMainAppearance()
                     self?.updateWaterCount()
+                    self?.updateDailyLimit()
                 }
             }
             .store(in: &cancellables)
@@ -78,6 +82,7 @@ public final class DrinkWaterViewModel {
                 DispatchQueue.main.async {
                     self?.updateMainAppearance()
                     self?.updateWaterCount()
+                    self?.updateDailyLimit()
                 }
             }
             .store(in: &cancellables)
@@ -97,11 +102,34 @@ public final class DrinkWaterViewModel {
             drinkWaterCount = newCount
         }
     }
+
+    private func updateDailyLimit() {
+        let newLimit = userPreferencesUseCase.getDailyWaterLimit()
+        print("🔍 DEBUG - updateDailyLimit:")
+        print("  - Current limit: \(currentDailyLimit)ml")
+        print("  - New limit from UseCase: \(newLimit)ml")
+        print("  - Needs update: \(currentDailyLimit != newLimit)")
+
+        if currentDailyLimit != newLimit {
+            currentDailyLimit = newLimit
+            print("✅ Daily limit updated to: \(currentDailyLimit)ml")
+        }
+    }
     
     func drinkWater() {
         // Check if adding one more glass would exceed daily limit
         let nextIntake = currentWaterIntakeInMl + 250.0
-        if nextIntake > dailyLimit {
+        print("🔍 DEBUG - drinkWater:")
+        print("  - Current glasses: \(drinkWaterCount)")
+        print("  - Current intake: \(currentWaterIntakeInMl)ml")
+        print("  - Next intake: \(nextIntake)ml")
+        print("  - Daily limit: \(dailyLimit)ml")
+        print("  - Would exceed limit (strict): \(nextIntake > dailyLimit)")
+        print("  - Would exceed limit (rounded): \(nextIntake.rounded() > dailyLimit.rounded())")
+
+        // Use rounded comparison to avoid floating point precision issues
+        if nextIntake.rounded() > dailyLimit.rounded() {
+            print("❌ Stopping - would exceed daily limit")
             return // Do not allow drinking more than daily limit
         }
         
@@ -144,5 +172,6 @@ public final class DrinkWaterViewModel {
         // Force refresh from UserDefaults
         updateMainAppearance()
         updateWaterCount()
+        updateDailyLimit()
     }
 }

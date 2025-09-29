@@ -22,7 +22,7 @@ public protocol UserPreferencesDataSource {
 public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
     private let userDefaults: UserDefaults
     
-    public init(userDefaults: UserDefaults = .appGroup) {
+    public init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
     }
     
@@ -51,12 +51,25 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
     
     // MARK: - Daily Water Limit
     public func getDailyWaterLimit() -> Double {
-        let limit = userDefaults.double(forKey: "dailyWaterLimit")
+        let limit = userDefaults.dailyLimit
         return limit == 0 ? 2000 : limit // Default 2000ml
     }
-    
+
     public func setDailyWaterLimit(_ limit: Double) {
-        userDefaults.set(limit, forKey: "dailyWaterLimit")
+        print("🔍 DEBUG - UserPreferencesDataSource.setDailyWaterLimit:")
+        print("  - Setting daily limit: \(limit)ml")
+        print("  - Using key: \(String.dailyWaterLimit)")
+        
+        userDefaults.dailyLimit = limit
+        
+        // Force synchronization for cross-process communication
+        userDefaults.synchronize()
+        
+        print("  - Value saved and synchronized")
+        
+        // Verify the saved value
+        let savedValue = userDefaults.dailyLimit
+        print("  - Verification - saved value: \(savedValue)ml")
     }
     
     // MARK: - Accent Color

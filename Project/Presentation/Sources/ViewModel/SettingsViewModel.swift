@@ -17,6 +17,7 @@ public final class SettingsViewModel {
     
     // MARK: - Published State
     public private(set) var currentMainAppearance: MainAppearance
+    public private(set) var currentDailyWaterLimit: Double
     
     public init(
         navigationRouter: NavigationRouter,
@@ -25,6 +26,7 @@ public final class SettingsViewModel {
         self.navigationRouter = navigationRouter
         self.userPreferencesUseCase = userPreferencesUseCase
         self.currentMainAppearance = userPreferencesUseCase.getMainAppearance()
+        self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
     }
     
     // MARK: - Navigation State
@@ -75,10 +77,20 @@ public final class SettingsViewModel {
     }
     
     public var dailyWaterLimit: Double {
-        get { userPreferencesUseCase.getDailyWaterLimit() }
+        get { currentDailyWaterLimit }
         set {
+            currentDailyWaterLimit = newValue
             userPreferencesUseCase.setDailyWaterLimit(newValue)
-            WidgetCenter.shared.reloadAllTimelines()
+
+            // Force UserDefaults synchronization for widget
+            UserDefaults.standard.synchronize()
+            UserDefaults(suiteName: "group.com.gaeng2y.drinkwater")?.synchronize()
+
+            // Reload widget timelines
+            WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
+
+            // Notify other ViewModels
+            NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: nil)
         }
     }
     

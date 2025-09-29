@@ -65,7 +65,13 @@ let project = Project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 )
-            ]
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+                ]
+            )
         )
     ]
 )

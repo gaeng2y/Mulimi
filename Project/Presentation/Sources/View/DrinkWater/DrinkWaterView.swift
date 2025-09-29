@@ -45,7 +45,7 @@ public struct DrinkWaterView: View {
                     }
                     
                     HStack(alignment: .firstTextBaseline) {
-                        Text("목표: \(Int(viewModel.dailyLimit))ml")
+                        Text("목표: \(Int(viewModel.dailyLimit.rounded()))ml")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         if viewModel.isLimitReached {

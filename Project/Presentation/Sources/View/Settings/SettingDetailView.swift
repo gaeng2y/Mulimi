@@ -8,6 +8,8 @@
 
 import SwiftUI
 import DomainLayerInterface
+import WidgetKit
+import UIKit
 
 public struct SettingDetailView: View {
     let menu: SettingMenu
@@ -43,18 +45,26 @@ private struct DailyLimitSettingView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Text("\(Int(viewModel.dailyWaterLimit)) ml")
+                Text("\(Int(viewModel.dailyWaterLimit.rounded())) ml")
                     .font(.largeTitle)
                     .fontWeight(.semibold)
             }
             
             Slider(value: Binding(
                 get: { viewModel.dailyWaterLimit },
-                set: { viewModel.dailyWaterLimit = $0 }
+                set: {
+                    viewModel.dailyWaterLimit = $0
+                    // 위젯 즉시 업데이트
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
             ), in: 1000...4000, step: 250) {
                 Text("목표량")
             }
             .padding(.horizontal)
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                // 앱이 활성화될 때 위젯 새로고침
+                WidgetCenter.shared.reloadAllTimelines()
+            }
             
             HStack {
                 Text("1000ml")
