@@ -24,14 +24,16 @@ public struct DrinkWaterUserDefaultsDataSource: DrinkWaterDataSource {
     }
     
     public var currentWater: Int {
-        userDefaults.integer(forKey: "glassOfToday")
+        userDefaults.glassesOfToday
     }
     
     public func drinkWater() {
-        userDefaults.set(currentWater + 1, forKey: "glassOfToday")
+        userDefaults.glassesOfToday += 1
+        userDefaults.synchronize()
     }
-    
+
     public func reset() {
-        userDefaults.set(0, forKey: "glassOfToday")
+        userDefaults.glassesOfToday = .zero
+        userDefaults.synchronize()
     }
 }

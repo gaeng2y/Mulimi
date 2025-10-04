@@ -18,8 +18,8 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleVersion</key>
-	<string>9</string>
+	<string>$(APP_BUILD_NUMBER)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.7</string>
+	<string>$(APP_MARKETING_VERSION)</string>
 </dict>
 </plist>

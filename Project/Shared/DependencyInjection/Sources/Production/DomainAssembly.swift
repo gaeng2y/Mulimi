@@ -24,5 +24,12 @@ public final class DomainAssembly: Assembly {
                 repository: resolver.resolve(HealthKitRepository.self)!
             )
         }
+        
+        // MARK: - UserPreferences
+        container.register(UserPreferencesUseCase.self) { resolver in
+            UserPreferencesUseCaseImpl(
+                repository: resolver.resolve(UserPreferencesRepository.self)!
+            )
+        }
     }
 }

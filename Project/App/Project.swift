@@ -6,6 +6,7 @@
 //
 
 import ProjectDescription
+import ProjectDescriptionHelpers
 
 let bundleId = "gaeng2y.DrinkWater"
 
@@ -13,7 +14,10 @@ let project = Project(
     name: "Mulimi App",
     organizationName: "gaeng2y",
     settings: .settings(
-        base: [:],
+        base: [
+            "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+            "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+        ],
         configurations: [
             .debug(name: "Debug", xcconfig: .relativeToRoot("XCConfig/Debug.xcconfig")),
             .release(name: "Release", xcconfig: .relativeToRoot("XCConfig/Release.xcconfig"))
@@ -41,7 +45,7 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                ),
+                )
             ]
         ),
         .target(
@@ -61,7 +65,13 @@ let project = Project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 )
-            ]
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+                ]
+            )
         )
     ]
 )

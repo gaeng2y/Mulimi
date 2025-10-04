@@ -24,6 +24,12 @@ struct ContentView: View {
                     viewModel: DIContainer.shared.resolve(HydrationRecordListViewModel.self)
                 )
             }
+            
+            Tab("설정", systemImage: "gear") {
+                SettingsView(
+                    viewModel: DIContainer.shared.resolve(SettingsViewModel.self)
+                )
+            }
         }
         .tint(.accent)
     }
