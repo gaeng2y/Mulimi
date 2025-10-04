@@ -15,8 +15,6 @@ public protocol UserPreferencesDataSource {
     func setMainAppearance(_ appearance: MainAppearance)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
-    func getAccentColor() -> String
-    func setAccentColor(_ color: String)
 }
 
 public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
@@ -70,14 +68,5 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
         // Verify the saved value
         let savedValue = userDefaults.dailyLimit
         print("  - Verification - saved value: \(savedValue)ml")
-    }
-    
-    // MARK: - Accent Color
-    public func getAccentColor() -> String {
-        userDefaults.string(forKey: "appAccentColor") ?? "blue"
-    }
-    
-    public func setAccentColor(_ color: String) {
-        userDefaults.set(color, forKey: "appAccentColor")
     }
 }
