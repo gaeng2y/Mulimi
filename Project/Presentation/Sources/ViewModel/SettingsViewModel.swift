@@ -93,15 +93,7 @@ public final class SettingsViewModel {
             NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: nil)
         }
     }
-    
-    public var accentColor: String {
-        get { userPreferencesUseCase.getAccentColor() }
-        set {
-            userPreferencesUseCase.setAccentColor(newValue)
-            WidgetCenter.shared.reloadAllTimelines()
-        }
-    }
-    
+
     // MARK: - MainAppearance Specific
     func selectMainAppearance(_ appearance: MainAppearance) {
         setMainAppearance(appearance)

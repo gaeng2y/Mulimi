@@ -30,12 +30,4 @@ public struct UserPreferencesUseCaseImpl: UserPreferencesUseCase {
     public func setDailyWaterLimit(_ limit: Double) {
         repository.setDailyWaterLimit(limit)
     }
-
-    public func getAccentColor() -> String {
-        repository.getAccentColor()
-    }
-
-    public func setAccentColor(_ color: String) {
-        repository.setAccentColor(color)
-    }
 }

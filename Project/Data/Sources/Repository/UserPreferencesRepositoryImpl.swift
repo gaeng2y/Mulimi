@@ -31,12 +31,4 @@ public struct UserPreferencesRepositoryImpl: UserPreferencesRepository {
     public func setDailyWaterLimit(_ limit: Double) {
         dataSource.setDailyWaterLimit(limit)
     }
-    
-    public func getAccentColor() -> String {
-        dataSource.getAccentColor()
-    }
-    
-    public func setAccentColor(_ color: String) {
-        dataSource.setAccentColor(color)
-    }
 }

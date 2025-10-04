@@ -25,8 +25,6 @@ public struct SettingDetailView: View {
             switch menu {
             case .dailyLimit:
                 DailyLimitSettingView(viewModel: viewModel)
-            case .accentColor:
-                AccentColorSettingView(viewModel: viewModel)
             case .mainShape:
                 MainShapeSettingView(viewModel: viewModel)
             }
@@ -81,59 +79,6 @@ private struct DailyLimitSettingView: View {
         }
         .padding()
         .navigationTitle("하루 목표량")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct AccentColorSettingView: View {
-    private let viewModel: SettingsViewModel
-    
-    init(viewModel: SettingsViewModel) {
-        self.viewModel = viewModel
-    }
-    
-    private let availableColors: [(name: String, color: Color)] = [
-        ("blue", .blue),
-        ("purple", .purple),
-        ("pink", .pink),
-        ("red", .red),
-        ("orange", .orange),
-        ("yellow", .yellow),
-        ("green", .green),
-        ("teal", .teal),
-        ("indigo", .indigo)
-    ]
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 20) {
-                ForEach(availableColors, id: \.name) { item in
-                    Button {
-                        viewModel.accentColor = item.name
-                    } label: {
-                        Circle()
-                            .fill(item.color)
-                            .frame(width: 60, height: 60)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.primary, lineWidth: viewModel.accentColor == item.name ? 3 : 0)
-                            )
-                            .overlay(
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.white)
-                                    .fontWeight(.bold)
-                                    .opacity(viewModel.accentColor == item.name ? 1 : 0)
-                            )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-            }
-            .padding()
-            
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("강조 색상")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

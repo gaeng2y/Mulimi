@@ -13,6 +13,4 @@ public protocol UserPreferencesUseCase {
     func setMainAppearance(_ appearance: MainAppearance)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
-    func getAccentColor() -> String
-    func setAccentColor(_ color: String)
 }
