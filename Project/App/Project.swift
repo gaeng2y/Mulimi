@@ -70,6 +70,10 @@ let project = Project(
                 base: [
                     "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
                     "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
                 ]
             )
         )
