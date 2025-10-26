@@ -32,7 +32,7 @@ public struct HydrationRecordListView: View {
             }
         }
         .task {
-            await viewModel.requestAuthorization()
+            await viewModel.onAppear()
         }
         .alert(
             viewModel.errorMessage,
