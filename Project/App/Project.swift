@@ -32,7 +32,10 @@ let project = Project(
             deploymentTargets: .iOS("18.0"),
             infoPlist: .file(path: .path("Supports/Info.plist")),
             sources: ["Sources/**"],
-            resources: ["Resources/**"],
+            resources: [
+                "Resources/**",
+                "Supports/GoogleService-Info.plist"
+            ],
             entitlements: .file(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
@@ -45,7 +48,9 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                )
+                ),
+                .external(name: "FirebaseAnalytics"),
+                .external(name: "FirebaseCrashlytics")
             ]
         ),
         .target(
@@ -70,6 +75,10 @@ let project = Project(
                 base: [
                     "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
                     "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
                 ]
             )
         )

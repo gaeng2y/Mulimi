@@ -17,9 +17,7 @@ public final class HydrationRecordListViewModel {
     private(set) var errorMessage: String = ""
     
     private let useCase: HealthKitUseCase
-    var authorizationStatus: HealthKitAuthorizationStatus {
-        useCase.authorisationStatus
-    }
+    private(set) var authorizationStatus: HealthKitAuthorizationStatus = .notDetermined
     
     public init(
         useCase: HealthKitUseCase
@@ -27,7 +25,12 @@ public final class HydrationRecordListViewModel {
         self.useCase = useCase
     }
     
-    func requestAuthorization() async {
+    func onAppear() async {
+        await requestAuthorization()
+        authorizationStatus = useCase.authorisationStatus
+    }
+    
+    private func requestAuthorization() async {
         do {
             try await useCase.requestAuthorization()
         } catch {
