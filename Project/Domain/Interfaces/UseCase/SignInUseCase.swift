@@ -9,7 +9,8 @@
 import Foundation
 
 public protocol SignInUseCase {
-    func isAuthenticated() -> Bool
+    var isAuthenticated: Bool { get }
+
     func signInWithApple() async throws
     func signOut()
 }

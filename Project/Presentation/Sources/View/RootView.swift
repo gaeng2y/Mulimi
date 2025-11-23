@@ -9,17 +9,17 @@
 import SwiftUI
 
 public struct RootView<Content: View>: View {
-    @StateObject private var viewModel: AuthenticationViewModel
+    @State private var viewModel: AuthenticationViewModel
     private let content: () -> Content
-
+    
     public init(
         viewModel: @autoclosure @escaping () -> AuthenticationViewModel,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self._viewModel = StateObject(wrappedValue: viewModel())
+        self._viewModel = State(wrappedValue: viewModel())
         self.content = content
     }
-
+    
     public var body: some View {
         Group {
             if viewModel.isAuthenticated {

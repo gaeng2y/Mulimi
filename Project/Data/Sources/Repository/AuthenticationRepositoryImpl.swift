@@ -6,36 +6,76 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import AuthenticationServices
 import DomainLayerInterface
 import Foundation
 
 public struct AuthenticationRepositoryImpl: AuthenticationRepository {
+    // MARK: - Dependencies
+    private let appleSignInDataSource: AppleSignInDataSource
     private let keyChainDataSource: KeyChainDataSource
-
-    public init(keyChainDataSource: KeyChainDataSource) {
+    // 향후 서버 통신 시 추가
+    // private let networkDataSource: AuthenticationNetworkDataSource
+    
+    // MARK: - Initializer
+    public init(
+        appleSignInDataSource: AppleSignInDataSource,
+        keyChainDataSource: KeyChainDataSource
+    ) {
+        self.appleSignInDataSource = appleSignInDataSource
         self.keyChainDataSource = keyChainDataSource
     }
-
-    public func isAuthenticated() -> Bool {
+    
+    // MARK: - Authentication Status
+    public var isAuthenticated: Bool {
         keyChainDataSource.validateToken()
     }
-
-    public func signInWithApple() async throws -> String {
-        let provider = ASAuthorizationAppleIDProvider()
-        let request = provider.createRequest()
-        request.requestedScopes = [.fullName, .email]
-
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        let delegate = AppleSignInDelegate()
-        controller.delegate = delegate
-
-        return try await withCheckedThrowingContinuation { continuation in
-            delegate.continuation = continuation
-            controller.performRequests()
+    
+    // MARK: - Sign In with Apple
+    public func signInWithApple() async throws -> UserCredential {
+        // 1. Apple 로그인 수행
+        let appleCredential = try await appleSignInDataSource.signIn(
+            scopes: ["email", "fullName"]
+        )
+        
+        // 2. 도메인 Entity로 변환
+        let userCredential = UserCredential(
+            userIdentifier: appleCredential.userIdentifier,
+            email: appleCredential.email,
+            name: formatName(from: appleCredential.fullName)
+        )
+        
+        // 3. KeyChain에 저장
+        keyChainDataSource.save(
+            property: .userIdentifier,
+            value: appleCredential.userIdentifier
+        )
+        keyChainDataSource.save(
+            property: .accessToken,
+            value: appleCredential.userIdentifier  // 임시로 userIdentifier 사용
+        )
+        
+        if let email = appleCredential.email {
+            keyChainDataSource.save(property: .email, value: email)
         }
+        
+        if let name = userCredential.name, !name.isEmpty {
+            keyChainDataSource.save(property: .nickname, value: name)
+        }
+        
+        // 향후 서버 통신 추가 시:
+        // 4. 서버로 Identity Token 전송하여 JWT 획득
+        // if let identityToken = appleCredential.identityToken {
+        //     let tokens = try await networkDataSource.authenticateWithApple(
+        //         identityToken: identityToken
+        //     )
+        //     keyChainDataSource.save(property: .accessToken, value: tokens.accessToken)
+        //     keyChainDataSource.save(property: .refreshToken, value: tokens.refreshToken)
+        // }
+        
+        return userCredential
     }
-
+    
+    // MARK: - Sign Out
     public func signOut() {
         keyChainDataSource.delete(property: .accessToken)
         keyChainDataSource.delete(property: .refreshToken)
@@ -43,51 +83,13 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
         keyChainDataSource.delete(property: .nickname)
         keyChainDataSource.delete(property: .email)
     }
-}
-
-private class AppleSignInDelegate: NSObject, ASAuthorizationControllerDelegate {
-    var continuation: CheckedContinuation<String, Error>?
-
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            continuation?.resume(throwing: NSError(
-                domain: "AuthenticationError",
-                code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Invalid credential type"]
-            ))
-            return
-        }
-
-        let userIdentifier = appleIDCredential.user
-
-        // KeyChain에 사용자 정보 저장
-        let keyChain = KeyChainDataSourceImpl()
-        keyChain.save(property: .userIdentifier, value: userIdentifier)
-        keyChain.save(property: .accessToken, value: userIdentifier) // 임시로 userIdentifier를 토큰으로 사용
-
-        if let fullName = appleIDCredential.fullName {
-            let name = [fullName.givenName, fullName.familyName]
-                .compactMap { $0 }
-                .joined(separator: " ")
-            if !name.isEmpty {
-                keyChain.save(property: .nickname, value: name)
-            }
-        }
-
-        if let email = appleIDCredential.email {
-            keyChain.save(property: .email, value: email)
-        }
-
-        continuation?.resume(returning: userIdentifier)
-    }
-
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithError error: Error
-    ) {
-        continuation?.resume(throwing: error)
+    
+    // MARK: - Helper
+    private func formatName(from fullName: (givenName: String?, familyName: String?)?) -> String? {
+        guard let fullName = fullName else { return nil }
+        let name = [fullName.givenName, fullName.familyName]
+            .compactMap { $0 }
+            .joined(separator: " ")
+        return name.isEmpty ? nil : name
     }
 }

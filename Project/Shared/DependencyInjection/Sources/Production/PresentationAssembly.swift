@@ -40,7 +40,7 @@ public final class PresentationAssembly: Assembly {
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
-
+        
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(

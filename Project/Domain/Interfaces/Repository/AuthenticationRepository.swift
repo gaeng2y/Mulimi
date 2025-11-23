@@ -9,7 +9,8 @@
 import Foundation
 
 public protocol AuthenticationRepository {
-    func isAuthenticated() -> Bool
-    func signInWithApple() async throws -> String
+    var isAuthenticated: Bool { get }
+
+    func signInWithApple() async throws -> UserCredential
     func signOut()
 }

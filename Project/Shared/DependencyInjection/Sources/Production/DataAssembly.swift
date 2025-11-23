@@ -49,8 +49,18 @@ public final class DataAssembly: Assembly {
             KeyChainDataSourceImpl()
         }
 
+        container.register(AppleSignInDataSource.self) { resolver in
+            AppleSignInDataSourceImpl()
+        }
+
+        // 향후 서버 통신 시 추가:
+        // container.register(AuthenticationNetworkDataSource.self) { resolver in
+        //     AuthenticationNetworkDataSourceImpl()
+        // }
+
         container.register(AuthenticationRepository.self) { resolver in
             AuthenticationRepositoryImpl(
+                appleSignInDataSource: resolver.resolve(AppleSignInDataSource.self)!,
                 keyChainDataSource: resolver.resolve(KeyChainDataSource.self)!
             )
         }
