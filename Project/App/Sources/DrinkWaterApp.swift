@@ -5,6 +5,8 @@
 //  Created by Kyeongmo Yang on 2023/06/24.
 //
 
+import DependencyInjection
+import PresentationLayer
 import SwiftUI
 
 @main
@@ -13,7 +15,11 @@ struct DrinkWaterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(
+                viewModel: DIContainer.shared.resolve(AuthenticationViewModel.self)
+            ) {
+                ContentView()
+            }
         }
     }
 }

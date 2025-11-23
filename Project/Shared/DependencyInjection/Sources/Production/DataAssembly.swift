@@ -43,5 +43,16 @@ public final class DataAssembly: Assembly {
                 dataSource: resolver.resolve(UserPreferencesDataSource.self)!
             )
         }
+
+        // MARK: - Authentication
+        container.register(KeyChainDataSource.self) { resolver in
+            KeyChainDataSourceImpl()
+        }
+
+        container.register(AuthenticationRepository.self) { resolver in
+            AuthenticationRepositoryImpl(
+                keyChainDataSource: resolver.resolve(KeyChainDataSource.self)!
+            )
+        }
     }
 }
