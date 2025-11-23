@@ -31,5 +31,12 @@ public final class DomainAssembly: Assembly {
                 repository: resolver.resolve(UserPreferencesRepository.self)!
             )
         }
+
+        // MARK: - Authentication
+        container.register(SignInUseCase.self) { resolver in
+            SignInUseCaseImpl(
+                repository: resolver.resolve(AuthenticationRepository.self)!
+            )
+        }
     }
 }

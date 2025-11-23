@@ -17,6 +17,8 @@ public protocol KeyChainDataSource {
 }
 
 public struct KeyChainDataSourceImpl: KeyChainDataSource {
+    public init() {}
+    
     public func validateToken() -> Bool {
         load(property: .accessToken).isEmpty == false
     }
