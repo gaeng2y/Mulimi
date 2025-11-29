@@ -14,17 +14,26 @@ import WidgetKit
 public final class SettingsViewModel {
     private let navigationRouter: NavigationRouter
     private let userPreferencesUseCase: UserPreferencesUseCase
-    
+    private let signInUseCase: SignInUseCase
+    private let authenticationViewModel: AuthenticationViewModel
+
     // MARK: - Published State
     public private(set) var currentMainAppearance: MainAppearance
     public private(set) var currentDailyWaterLimit: Double
-    
+    public var showWithdrawalConfirmation: Bool = false
+    public var isWithdrawing: Bool = false
+    public var withdrawalError: String?
+
     public init(
         navigationRouter: NavigationRouter,
-        userPreferencesUseCase: UserPreferencesUseCase
+        userPreferencesUseCase: UserPreferencesUseCase,
+        signInUseCase: SignInUseCase,
+        authenticationViewModel: AuthenticationViewModel
     ) {
         self.navigationRouter = navigationRouter
         self.userPreferencesUseCase = userPreferencesUseCase
+        self.signInUseCase = signInUseCase
+        self.authenticationViewModel = authenticationViewModel
         self.currentMainAppearance = userPreferencesUseCase.getMainAppearance()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
     }
@@ -101,5 +110,32 @@ public final class SettingsViewModel {
     
     func isMainAppearanceSelected(_ appearance: MainAppearance) -> Bool {
         currentMainAppearance == appearance
+    }
+
+    // MARK: - Withdrawal Actions
+    public func requestWithdrawal() {
+        showWithdrawalConfirmation = true
+    }
+
+    public func confirmWithdrawal() async {
+        isWithdrawing = true
+        withdrawalError = nil
+
+        do {
+            try await signInUseCase.deleteAccount()
+            showWithdrawalConfirmation = false
+
+            // AuthenticationViewModel 상태 업데이트하여 로그인 화면으로 이동
+            authenticationViewModel.isAuthenticated = false
+        } catch {
+            withdrawalError = error.localizedDescription
+        }
+
+        isWithdrawing = false
+    }
+
+    public func cancelWithdrawal() {
+        showWithdrawalConfirmation = false
+        withdrawalError = nil
     }
 }

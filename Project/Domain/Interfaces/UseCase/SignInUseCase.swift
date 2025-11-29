@@ -13,4 +13,5 @@ public protocol SignInUseCase {
 
     func signInWithApple() async throws
     func signOut()
+    func deleteAccount() async throws
 }

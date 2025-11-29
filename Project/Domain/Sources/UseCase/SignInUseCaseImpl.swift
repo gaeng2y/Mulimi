@@ -23,8 +23,12 @@ public struct SignInUseCaseImpl: SignInUseCase {
     public func signInWithApple() async throws {
         _ = try await repository.signInWithApple()
     }
-    
+
     public func signOut() {
         repository.signOut()
+    }
+
+    public func deleteAccount() async throws {
+        try await repository.deleteAccount()
     }
 }
