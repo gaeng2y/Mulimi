@@ -33,18 +33,21 @@ public final class PresentationAssembly: Assembly {
             )
         }
         
-        // MARK: - Settings
-        container.register(SettingsViewModel.self) { resolver in
-            SettingsViewModel(
-                navigationRouter: resolver.resolve(NavigationRouter.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
-            )
-        }
-        
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!
+            )
+        }
+        .inObjectScope(.container)
+
+        // MARK: - Settings
+        container.register(SettingsViewModel.self) { resolver in
+            SettingsViewModel(
+                navigationRouter: resolver.resolve(NavigationRouter.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!
             )
         }
     }

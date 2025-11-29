@@ -13,4 +13,5 @@ public protocol AuthenticationRepository {
 
     func signInWithApple() async throws -> UserCredential
     func signOut()
+    func deleteAccount() async throws
 }

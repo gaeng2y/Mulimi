@@ -83,7 +83,23 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
         keyChainDataSource.delete(property: .nickname)
         keyChainDataSource.delete(property: .email)
     }
-    
+
+    // MARK: - Delete Account
+    public func deleteAccount() async throws {
+        // 1. 서버에 계정 삭제 요청 (향후 구현)
+        // try await networkDataSource.deleteAccount()
+
+        // 2. KeyChain에서 모든 인증 정보 삭제
+        keyChainDataSource.delete(property: .accessToken)
+        keyChainDataSource.delete(property: .refreshToken)
+        keyChainDataSource.delete(property: .userIdentifier)
+        keyChainDataSource.delete(property: .nickname)
+        keyChainDataSource.delete(property: .email)
+
+        // 3. Apple Sign In 자격 증명 해제 (필요 시)
+        // Apple은 서버 측에서 처리하는 것이 일반적
+    }
+
     // MARK: - Helper
     private func formatName(from fullName: (givenName: String?, familyName: String?)?) -> String? {
         guard let fullName = fullName else { return nil }

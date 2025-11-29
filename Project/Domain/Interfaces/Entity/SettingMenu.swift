@@ -11,6 +11,7 @@ import SwiftUI
 public enum SettingMenu: CaseIterable, Identifiable {
     case dailyLimit
     case mainShape
+    case withdrawal
 
     public var id: Self { self }
 
@@ -18,6 +19,7 @@ public enum SettingMenu: CaseIterable, Identifiable {
         switch self {
         case .dailyLimit: "하루 목표량"
         case .mainShape: "메인 화면 모양"
+        case .withdrawal: "회원 탈퇴"
         }
     }
 
@@ -27,6 +29,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
             return "target"
         case .mainShape:
             return "square.grid.2x2"
+        case .withdrawal:
+            return "person.crop.circle.badge.xmark"
         }
     }
 
@@ -36,6 +40,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
             return "하루 동안 마실 물의 목표량을 설정합니다"
         case .mainShape:
             return "메인 화면의 디자인을 선택합니다"
+        case .withdrawal:
+            return "계정을 영구적으로 삭제합니다"
         }
     }
 
@@ -45,6 +51,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
             return "dailyWaterLimit"
         case .mainShape:
             return "mainScreenAppearance"
+        case .withdrawal:
+            return "accountWithdrawal"
         }
     }
 }
