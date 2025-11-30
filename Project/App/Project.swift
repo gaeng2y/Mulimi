@@ -69,6 +69,10 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
+                ),
+                .project(
+                    target: "DependencyInjection",
+                    path: .relativeToRoot("Project/Shared/DependencyInjection")
                 )
             ],
             settings: .settings(
