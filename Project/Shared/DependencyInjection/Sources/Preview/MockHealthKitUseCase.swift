@@ -8,7 +8,7 @@
 import DomainLayerInterface
 import Foundation
 
-public final class MockHealthKitUseCase: HealthKitUseCase {
+public final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
     public init() {}
     
     public func requestAuthorization() async throws -> HealthKitAuthorizationStatus {

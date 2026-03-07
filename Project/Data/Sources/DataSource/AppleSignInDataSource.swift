@@ -10,7 +10,7 @@ import AuthenticationServices
 import Foundation
 
 // MARK: - DTO
-public struct AppleSignInCredential {
+public struct AppleSignInCredential: Sendable {
     public let userIdentifier: String
     public let identityToken: String?
     public let authorizationCode: String?
@@ -33,14 +33,16 @@ public struct AppleSignInCredential {
 }
 
 // MARK: - DataSource Protocol
-public protocol AppleSignInDataSource {
+public protocol AppleSignInDataSource: Sendable {
+    @MainActor
     func signIn(scopes: [String]) async throws -> AppleSignInCredential
 }
 
 // MARK: - Implementation
-public final class AppleSignInDataSourceImpl: AppleSignInDataSource {
+public final class AppleSignInDataSourceImpl: AppleSignInDataSource, @unchecked Sendable {
     public init() {}
     
+    @MainActor
     public func signIn(scopes: [String]) async throws -> AppleSignInCredential {
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()

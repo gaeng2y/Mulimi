@@ -8,12 +8,12 @@
 import Foundation
 
 public extension UserDefaults {
-    static let appGroup: UserDefaults = {
+    static var appGroup: UserDefaults {
         guard let appGroupUserDefaults = UserDefaults(suiteName: .appGroupId) else {
             fatalError("Undefined App Group, Please check capabilities")
         }
         return appGroupUserDefaults
-    }()
+    }
     
     @objc dynamic var glassesOfToday: Int {
         get { self.integer(forKey: .glassesOfToday) }

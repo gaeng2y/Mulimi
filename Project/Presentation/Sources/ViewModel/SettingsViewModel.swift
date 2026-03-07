@@ -117,6 +117,7 @@ public final class SettingsViewModel {
         showWithdrawalConfirmation = true
     }
 
+    @MainActor
     public func confirmWithdrawal() async {
         isWithdrawing = true
         withdrawalError = nil

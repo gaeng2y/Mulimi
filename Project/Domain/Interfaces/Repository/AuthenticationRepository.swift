@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol AuthenticationRepository {
+public protocol AuthenticationRepository: Sendable {
     var isAuthenticated: Bool { get }
 
     func signInWithApple() async throws -> UserCredential

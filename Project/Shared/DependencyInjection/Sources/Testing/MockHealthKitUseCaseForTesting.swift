@@ -8,7 +8,7 @@
 import DomainLayerInterface
 import Foundation
 
-public final class MockHealthKitUseCaseForTesting: HealthKitUseCase {
+public final class MockHealthKitUseCaseForTesting: HealthKitUseCase, @unchecked Sendable {
     public var requestAuthorizationResult: HealthKitAuthorizationStatus = .authorized
     public var shouldThrowError = false
     public var fetchRecordsResult: [HydrationRecord] = []

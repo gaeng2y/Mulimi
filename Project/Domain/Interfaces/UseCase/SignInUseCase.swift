@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol SignInUseCase {
+public protocol SignInUseCase: Sendable {
     var isAuthenticated: Bool { get }
 
     func signInWithApple() async throws

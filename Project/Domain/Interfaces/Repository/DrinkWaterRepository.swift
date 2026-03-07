@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol DrinkWaterRepository {
+public protocol DrinkWaterRepository: Sendable {
     var currentWater: Int { get }
     
     func drinkWater()

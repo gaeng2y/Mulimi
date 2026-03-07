@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum MainAppearance: CaseIterable, Identifiable {
+public enum MainAppearance: CaseIterable, Identifiable, Sendable {
     case drop
     case heart
     case cloud
@@ -60,5 +60,5 @@ public enum MainAppearance: CaseIterable, Identifiable {
     }
     
     // Default appearance
-    public static let `default`: MainAppearance = .drop
+    public static var `default`: MainAppearance { .drop }
 }

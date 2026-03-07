@@ -10,7 +10,7 @@ import DomainLayerInterface
 import Foundation
 import HealthKit
 
-public protocol HealthKitDataSource {
+public protocol HealthKitDataSource: Sendable {
     var healthKitAuthorizationStatus: HealthKitAuthorizationStatus { get }
     
     func requestAuthorization() async throws
@@ -19,7 +19,7 @@ public protocol HealthKitDataSource {
     func resetWaterInTakeInToday() async throws
 }
 
-public final class HealthKitDataSourceImpl: HealthKitDataSource {
+public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Sendable {
     private enum Constant {
         static let aGlassOfWater: Double = 250
     }

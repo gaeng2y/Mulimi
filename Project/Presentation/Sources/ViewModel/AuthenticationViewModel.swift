@@ -27,6 +27,7 @@ public final class AuthenticationViewModel {
         isAuthenticated = signInUseCase.isAuthenticated
     }
     
+    @MainActor
     public func signInWithApple() async {
         isLoading = true
         errorMessage = nil
