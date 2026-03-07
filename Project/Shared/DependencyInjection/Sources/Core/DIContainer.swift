@@ -7,7 +7,7 @@
 
 import Swinject
 
-public final class DIContainer {
+public final class DIContainer: @unchecked Sendable {
     public static let shared = DIContainer()
 
     private let assembler: Assembler

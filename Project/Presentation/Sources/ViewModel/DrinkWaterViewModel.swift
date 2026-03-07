@@ -13,6 +13,7 @@ import UIKit
 import Utils
 import WidgetKit
 
+@MainActor
 @Observable
 public final class DrinkWaterViewModel {
     // MARK: - Published State
@@ -66,24 +67,18 @@ public final class DrinkWaterViewModel {
         // Observe any UserDefaults changes, not just from specific instance
         NotificationCenter.default
             .publisher(for: UserDefaults.didChangeNotification)
+            .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                DispatchQueue.main.async {
-                    self?.updateMainAppearance()
-                    self?.updateWaterCount()
-                    self?.updateDailyLimit()
-                }
+                self?.refreshFromUserDefaults()
             }
             .store(in: &cancellables)
         
         // Also observe when app becomes active to catch Widget changes
         NotificationCenter.default
             .publisher(for: UIApplication.didBecomeActiveNotification)
+            .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                DispatchQueue.main.async {
-                    self?.updateMainAppearance()
-                    self?.updateWaterCount()
-                    self?.updateDailyLimit()
-                }
+                self?.refreshFromUserDefaults()
             }
             .store(in: &cancellables)
     }
@@ -116,7 +111,7 @@ public final class DrinkWaterViewModel {
         }
     }
     
-    func drinkWater() {
+    func drinkWater() async {
         // Check if adding one more glass would exceed daily limit
         let nextIntake = currentWaterIntakeInMl + 250.0
         print("🔍 DEBUG - drinkWater:")
@@ -139,28 +134,24 @@ public final class DrinkWaterViewModel {
         // Reload Widget timeline
         WidgetCenter.shared.reloadAllTimelines()
         
-        Task {
-            do {
-                try await healthKitUseCase.drinkWater()
-            } catch {
-                print("Failed to log water to HealthKit: \(error)")
-            }
+        do {
+            try await healthKitUseCase.drinkWater()
+        } catch {
+            print("Failed to log water to HealthKit: \(error)")
         }
     }
     
-    func reset() {
+    func reset() async {
         drinkWaterCount = 0
         waterUseCase.reset()
         
         // Reload Widget timeline
         WidgetCenter.shared.reloadAllTimelines()
         
-        Task {
-            do {
-                try await healthKitUseCase.reset()
-            } catch {
-                print("Failed to reset HealthKit data: \(error)")
-            }
+        do {
+            try await healthKitUseCase.reset()
+        } catch {
+            print("Failed to reset HealthKit data: \(error)")
         }
     }
     

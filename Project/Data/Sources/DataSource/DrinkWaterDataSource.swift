@@ -9,14 +9,14 @@
 import Foundation
 import Utils
 
-public protocol DrinkWaterDataSource {
+public protocol DrinkWaterDataSource: Sendable {
     var currentWater: Int { get }
     
     func drinkWater()
     func reset()
 }
 
-public struct DrinkWaterUserDefaultsDataSource: DrinkWaterDataSource {
+public struct DrinkWaterUserDefaultsDataSource: DrinkWaterDataSource, @unchecked Sendable {
     private let userDefaults: UserDefaults
     
     public init(userDefaults: UserDefaults) {

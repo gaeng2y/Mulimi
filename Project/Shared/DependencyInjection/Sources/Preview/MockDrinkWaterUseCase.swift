@@ -7,7 +7,7 @@
 
 import DomainLayerInterface
 
-public final class MockDrinkWaterUseCase: DrinkWaterUseCase {
+public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     public var currentWater: Int = 3
     
     public init() {}

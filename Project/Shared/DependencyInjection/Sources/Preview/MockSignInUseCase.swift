@@ -8,7 +8,7 @@
 
 import DomainLayerInterface
 
-public final class MockSignInUseCase: SignInUseCase {
+public final class MockSignInUseCase: SignInUseCase, @unchecked Sendable {
     public var isAuthenticated: Bool = true
 
     public init() {}

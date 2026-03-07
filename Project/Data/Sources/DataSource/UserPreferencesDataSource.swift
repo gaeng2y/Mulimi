@@ -10,14 +10,14 @@ import DomainLayerInterface
 import Foundation
 import Utils
 
-public protocol UserPreferencesDataSource {
+public protocol UserPreferencesDataSource: Sendable {
     func getMainAppearance() -> MainAppearance
     func setMainAppearance(_ appearance: MainAppearance)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
 }
 
-public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource {
+public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @unchecked Sendable {
     private let userDefaults: UserDefaults
     
     public init(userDefaults: UserDefaults) {

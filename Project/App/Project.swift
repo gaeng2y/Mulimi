@@ -16,7 +16,8 @@ let project = Project(
     settings: .settings(
         base: [
             "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
-            "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+            "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+            "SWIFT_VERSION": .string("6.0")
         ],
         configurations: [
             .debug(name: "Debug", xcconfig: .relativeToRoot("XCConfig/Debug.xcconfig")),
@@ -78,7 +79,8 @@ let project = Project(
             settings: .settings(
                 base: [
                     "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
-                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+                    "SWIFT_VERSION": .string("6.0")
                 ],
                 configurations: [
                     .debug(name: "Debug"),

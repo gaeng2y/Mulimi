@@ -19,11 +19,17 @@ public final class PresentationAssembly: Assembly {
         
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
-            DrinkWaterViewModel(
-                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                healthKitUseCase: resolver.resolve(HealthKitUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
-            )
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                DrinkWaterViewModel(
+                    waterUseCase: waterUseCase,
+                    healthKitUseCase: healthKitUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
         }
         
         // MARK: - HealthKit

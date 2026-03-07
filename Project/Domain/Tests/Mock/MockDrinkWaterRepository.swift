@@ -8,7 +8,7 @@
 
 import DomainLayerInterface
 
-final class MockDrinkWaterRepository: DrinkWaterRepository {
+final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
     private var _currentWater: Int = 0
     
     // Call tracking properties

@@ -25,11 +25,13 @@ public final class HydrationRecordListViewModel {
         self.useCase = useCase
     }
     
+    @MainActor
     func onAppear() async {
         await requestAuthorization()
         authorizationStatus = useCase.authorisationStatus
     }
     
+    @MainActor
     private func requestAuthorization() async {
         do {
             try await useCase.requestAuthorization()
@@ -38,6 +40,7 @@ public final class HydrationRecordListViewModel {
         }
     }
     
+    @MainActor
     func fetchHydrationRecord() async {
         let (startDate, endDate) = getStartAndEndDate()
         

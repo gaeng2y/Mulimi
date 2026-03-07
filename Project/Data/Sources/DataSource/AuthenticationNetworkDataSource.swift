@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - DTO
-public struct AuthTokens {
+public struct AuthTokens: Sendable {
     public let accessToken: String
     public let refreshToken: String
     public let expiresIn: Int
@@ -22,14 +22,14 @@ public struct AuthTokens {
 }
 
 // MARK: - DataSource Protocol
-public protocol AuthenticationNetworkDataSource {
+public protocol AuthenticationNetworkDataSource: Sendable {
     func authenticateWithApple(identityToken: String) async throws -> AuthTokens
     func authenticateWithGoogle(idToken: String) async throws -> AuthTokens
     func refreshToken(_ refreshToken: String) async throws -> AuthTokens
 }
 
 // MARK: - Implementation (향후 서버 통신 시 구현)
-public final class AuthenticationNetworkDataSourceImpl: AuthenticationNetworkDataSource {
+public final class AuthenticationNetworkDataSourceImpl: AuthenticationNetworkDataSource, @unchecked Sendable {
     public init() {}
 
     public func authenticateWithApple(identityToken: String) async throws -> AuthTokens {
