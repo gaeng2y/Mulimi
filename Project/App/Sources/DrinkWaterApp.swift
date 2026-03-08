@@ -18,7 +18,10 @@ struct DrinkWaterApp: App {
 
     init() {
         do {
-            self.modelContainer = try SharedHydrationStore.makeModelContainer()
+            self.modelContainer = try SharedHydrationStore.makeModelContainer(
+                cloudKitDatabase: .automatic,
+                shouldFallbackToLocalStore: true
+            )
         } catch {
             fatalError("Failed to initialize shared hydration store: \(error)")
         }

@@ -50,6 +50,10 @@ let project = Project(
                 .project(
                     target: "PresentationLayer",
                     path: .relativeToRoot("Project/Presentation")
+                ),
+                .project(
+                    target: "Utils",
+                    path: .relativeToRoot("Project/Shared/Utils")
                 )
             ]
         ),
