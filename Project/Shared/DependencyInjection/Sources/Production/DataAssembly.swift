@@ -13,7 +13,11 @@ public final class DataAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterDataSource.self) { resolver in
-            DrinkWaterUserDefaultsDataSource(userDefaults: .appGroup)
+            do {
+                return try DrinkWaterSwiftDataDataSource(userDefaults: .appGroup)
+            } catch {
+                fatalError("Failed to initialize DrinkWaterSwiftDataDataSource: \(error)")
+            }
         }
         
         container.register(DrinkWaterRepository.self) { resolver in

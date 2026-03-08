@@ -40,6 +40,10 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
+                ),
+                .project(
+                    target: "Persistence",
+                    path: .relativeToRoot("Project/Shared/Persistence")
                 )
             ]
         ),
