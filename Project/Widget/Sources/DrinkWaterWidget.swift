@@ -10,12 +10,20 @@ import Utils
 import WidgetKit
 import DependencyInjection
 import DomainLayerInterface
+import Persistence
+import SwiftData
 
 struct Provider: AppIntentTimelineProvider {
     private let userPreferencesUseCase: UserPreferencesUseCase
+    private let modelContainer: ModelContainer
     
     init() {
         self.userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
+        do {
+            self.modelContainer = try SharedHydrationStore.makeModelContainer()
+        } catch {
+            fatalError("Failed to initialize shared hydration store in widget: \(error)")
+        }
     }
     
     func placeholder(in context: Context) -> DrinkWaterEntry {
