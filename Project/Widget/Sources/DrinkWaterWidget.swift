@@ -12,10 +12,13 @@ import DependencyInjection
 import DomainLayerInterface
 
 struct Provider: AppIntentTimelineProvider {
+    private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
     
     init() {
+        self.waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         self.userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
+        waterUseCase.migrateLegacyDataIfNeeded()
     }
     
     func placeholder(in context: Context) -> DrinkWaterEntry {
@@ -32,14 +35,13 @@ struct Provider: AppIntentTimelineProvider {
         for configuration: ConfigurationAppIntent,
         in context: Context
     ) async -> DrinkWaterEntry {
-        let userDefaults = UserDefaults.appGroup
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let mainAppearance = userPreferencesUseCase.getMainAppearance()
         let appearanceIcon = mainAppearance.systemImage
         
         return .init(
             date: .now,
-            numberOfGlasses: userDefaults.glassesOfToday,
+            numberOfGlasses: waterUseCase.currentWater,
             dailyLimit: dailyLimit,
             mainAppearanceIcon: appearanceIcon,
             configuration: ConfigurationAppIntent()
@@ -50,10 +52,10 @@ struct Provider: AppIntentTimelineProvider {
         for configuration: ConfigurationAppIntent,
         in context: Context
     ) async -> Timeline<DrinkWaterEntry> {
-        let userDefaults = UserDefaults.appGroup
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let mainAppearance = userPreferencesUseCase.getMainAppearance()
         let appearanceIcon = mainAppearance.systemImage
+        let currentCount = waterUseCase.currentWater
         
         var entries: [DrinkWaterEntry] = []
         
@@ -63,7 +65,7 @@ struct Provider: AppIntentTimelineProvider {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
             let entry = DrinkWaterEntry(
                 date: entryDate,
-                numberOfGlasses: userDefaults.glassesOfToday,
+                numberOfGlasses: currentCount,
                 dailyLimit: dailyLimit,
                 mainAppearanceIcon: appearanceIcon,
                 configuration: ConfigurationAppIntent()

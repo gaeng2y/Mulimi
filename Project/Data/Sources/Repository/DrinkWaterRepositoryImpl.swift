@@ -19,7 +19,15 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     public var currentWater: Int {
         dataSource.currentWater
     }
-    
+
+    public func hydrationEvents(on date: Date) -> [HydrationEvent] {
+        dataSource.hydrationEvents(on: date)
+    }
+
+    public func migrateLegacyDataIfNeeded() {
+        dataSource.migrateLegacyDataIfNeeded()
+    }
+
     public func drinkWater() {
         dataSource.drinkWater()
     }

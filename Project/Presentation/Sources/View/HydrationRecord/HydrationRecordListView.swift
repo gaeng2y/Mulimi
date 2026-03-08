@@ -21,15 +21,7 @@ public struct HydrationRecordListView: View {
         ZStack {
             Color.background
                 .ignoresSafeArea()
-            
-            switch viewModel.authorizationStatus {
-            case .notDetermined:
-                Text("권한을 설정해주세요.")
-            case .sharingDenied:
-                AuthorizationDeniedView()
-            case .sharingAuthorized:
-                RecordCalendarView(viewModel: viewModel)
-            }
+            RecordCalendarView(viewModel: viewModel)
         }
         .task {
             await viewModel.onAppear()
@@ -39,12 +31,6 @@ public struct HydrationRecordListView: View {
             isPresented: $isPresentedAlert
         ) {
             
-        }
-    }
-    
-    private struct AuthorizationDeniedView: View {
-        var body: some View {
-            Text("설정에서 원한을 허용해주세요.")
         }
     }
     

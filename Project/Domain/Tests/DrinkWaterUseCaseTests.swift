@@ -9,6 +9,7 @@
 import Testing
 import DomainLayer
 import DomainLayerInterface
+import Foundation
 
 @testable import DomainLayer
 
@@ -163,5 +164,32 @@ struct DrinkWaterUseCaseTests {
         // Repository의 상태를 변경하면 UseCase의 결과도 변경된다
         mockRepository.setCurrentWater(10)
         #expect(useCase.currentWater == 10)
+    }
+
+    @Test("HydrationEvent 조회는 Repository 호출 결과를 그대로 반환한다")
+    func hydrationEvents() {
+        let mockRepository = MockDrinkWaterRepository()
+        let now = Date.now
+        let expected = [
+            HydrationEvent(id: UUID(), consumedAt: now, volumeML: 250),
+            HydrationEvent(id: UUID(), consumedAt: now.addingTimeInterval(60), volumeML: 250)
+        ]
+        mockRepository.setHydrationEvents(expected)
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let actual = useCase.hydrationEvents(on: now)
+
+        #expect(mockRepository.hydrationEventsCallCount == 1)
+        #expect(actual == expected)
+    }
+
+    @Test("Legacy 마이그레이션 요청은 Repository에 위임된다")
+    func migrateLegacyDataIfNeeded() {
+        let mockRepository = MockDrinkWaterRepository()
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        useCase.migrateLegacyDataIfNeeded()
+
+        #expect(mockRepository.migrateCallCount == 1)
     }
 }

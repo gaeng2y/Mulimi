@@ -10,7 +10,6 @@ import Combine
 import DomainLayerInterface
 import Foundation
 import UIKit
-import Utils
 import WidgetKit
 
 @MainActor
@@ -56,6 +55,8 @@ public final class DrinkWaterViewModel {
         self.waterUseCase = waterUseCase
         self.healthKitUseCase = healthKitUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
+
+        waterUseCase.migrateLegacyDataIfNeeded()
         self.drinkWaterCount = waterUseCase.currentWater
         self.mainAppearance = userPreferencesUseCase.getMainAppearance()
         self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
@@ -91,8 +92,7 @@ public final class DrinkWaterViewModel {
     }
     
     private func updateWaterCount() {
-        // Directly read from UserDefaults to ensure fresh data
-        let newCount = UserDefaults.appGroup.glassesOfToday
+        let newCount = waterUseCase.currentWater
         if drinkWaterCount != newCount {
             drinkWaterCount = newCount
         }
@@ -100,31 +100,17 @@ public final class DrinkWaterViewModel {
 
     private func updateDailyLimit() {
         let newLimit = userPreferencesUseCase.getDailyWaterLimit()
-        print("🔍 DEBUG - updateDailyLimit:")
-        print("  - Current limit: \(currentDailyLimit)ml")
-        print("  - New limit from UseCase: \(newLimit)ml")
-        print("  - Needs update: \(currentDailyLimit != newLimit)")
-
         if currentDailyLimit != newLimit {
             currentDailyLimit = newLimit
-            print("✅ Daily limit updated to: \(currentDailyLimit)ml")
         }
     }
     
     func drinkWater() async {
         // Check if adding one more glass would exceed daily limit
         let nextIntake = currentWaterIntakeInMl + 250.0
-        print("🔍 DEBUG - drinkWater:")
-        print("  - Current glasses: \(drinkWaterCount)")
-        print("  - Current intake: \(currentWaterIntakeInMl)ml")
-        print("  - Next intake: \(nextIntake)ml")
-        print("  - Daily limit: \(dailyLimit)ml")
-        print("  - Would exceed limit (strict): \(nextIntake > dailyLimit)")
-        print("  - Would exceed limit (rounded): \(nextIntake.rounded() > dailyLimit.rounded())")
 
         // Use rounded comparison to avoid floating point precision issues
         if nextIntake.rounded() > dailyLimit.rounded() {
-            print("❌ Stopping - would exceed daily limit")
             return // Do not allow drinking more than daily limit
         }
         
@@ -159,10 +145,14 @@ public final class DrinkWaterViewModel {
         offset = 360
     }
     
-    public func refreshFromUserDefaults() {
-        // Force refresh from UserDefaults
+    public func refreshState() {
+        // Refresh from persistence and user preferences.
         updateMainAppearance()
         updateWaterCount()
         updateDailyLimit()
+    }
+
+    public func refreshFromUserDefaults() {
+        refreshState()
     }
 }

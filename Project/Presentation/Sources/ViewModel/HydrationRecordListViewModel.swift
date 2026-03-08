@@ -15,66 +15,53 @@ public final class HydrationRecordListViewModel {
     private(set) var date: Date = .now
     
     private(set) var errorMessage: String = ""
-    
-    private let useCase: HealthKitUseCase
-    private(set) var authorizationStatus: HealthKitAuthorizationStatus = .notDetermined
+    private let useCase: DrinkWaterUseCase
     
     public init(
-        useCase: HealthKitUseCase
+        useCase: DrinkWaterUseCase
     ) {
         self.useCase = useCase
     }
     
     @MainActor
     func onAppear() async {
-        await requestAuthorization()
-        authorizationStatus = useCase.authorisationStatus
-    }
-    
-    @MainActor
-    private func requestAuthorization() async {
-        do {
-            try await useCase.requestAuthorization()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        await fetchHydrationRecord()
     }
     
     @MainActor
     func fetchHydrationRecord() async {
-        let (startDate, endDate) = getStartAndEndDate()
-        
-        guard let startDate, let endDate else {
-            errorMessage = "Failed to calculate date range"
-            return
+        let monthDates = monthDates(for: date)
+        let fetchedRecords = monthDates.compactMap { day -> HydrationRecord? in
+            let events = useCase.hydrationEvents(on: day)
+            let total = events.reduce(0) { partialResult, event in
+                partialResult + event.volumeML
+            }
+
+            guard total > 0 else {
+                return nil
+            }
+
+            return HydrationRecord(
+                id: UUID(),
+                date: day,
+                mililiter: Double(total)
+            )
         }
-        
-        do {
-            let fetchedRecords = try await useCase.fetchHistory(from: startDate, to: endDate)
-            records = fetchedRecords
-        } catch {
-            return
-        }
+
+        records = fetchedRecords.sorted { $0.date < $1.date }
     }
     
-    private func getStartAndEndDate() -> (startDate: Date?, endDate: Date?) {
-        let year = date.getComponents(for: .year)
-        let month = date.getComponents(for: .month)
-        let startDateComponents = DateComponents(year: year, month: month, day: 1)
-        
-        guard let startDate = Calendar.current.date(from: startDateComponents),
-              let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-            return (nil, nil)
+    private func monthDates(for date: Date) -> [Date] {
+        guard let startDate = Calendar.current.date(
+            from: Calendar.current.dateComponents([.year, .month], from: date)
+        ),
+        let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
+            errorMessage = "Failed to calculate date range"
+            return []
         }
-        let endDateComponents = DateComponents(year: year, month: month, day: range.count)
-        let endDate = Calendar.current.date(from: endDateComponents)
-        
-        return (startDate, endDate)
-    }
-}
 
-fileprivate extension Date {
-    func getComponents(for component: Calendar.Component) -> Int? {
-        Calendar.autoupdatingCurrent.dateComponents([component], from: self).value(for: component) ?? 0
+        return range.compactMap { day in
+            Calendar.current.date(byAdding: .day, value: day - 1, to: startDate)
+        }
     }
 }

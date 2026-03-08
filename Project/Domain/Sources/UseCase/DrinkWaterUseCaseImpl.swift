@@ -7,6 +7,7 @@
 //
 
 import DomainLayerInterface
+import Foundation
 
 public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     private let repository: DrinkWaterRepository
@@ -18,7 +19,15 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     public var currentWater: Int {
         repository.currentWater
     }
-    
+
+    public func hydrationEvents(on date: Date) -> [HydrationEvent] {
+        repository.hydrationEvents(on: date)
+    }
+
+    public func migrateLegacyDataIfNeeded() {
+        repository.migrateLegacyDataIfNeeded()
+    }
+
     public func drinkWater() {
         repository.drinkWater()
     }
