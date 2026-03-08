@@ -7,8 +7,6 @@
 
 import WidgetKit
 import AppIntents
-import Utils
-import HealthKit
 import DependencyInjection
 import DomainLayerInterface
 
@@ -21,11 +19,12 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
     var favoriteEmoji: String
     
     public func perform() async throws -> some IntentResult {
+        let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
         let healthKitUseCase = DIContainer.shared.resolve(HealthKitUseCase.self)
-        
-        let userDefaults = UserDefaults.appGroup
-        let currentGlasses = userDefaults.glassesOfToday
+
+        waterUseCase.migrateLegacyDataIfNeeded()
+        let currentGlasses = waterUseCase.currentWater
         let currentMl = Double(currentGlasses * 250)
         
         // Get daily limit from UseCase
@@ -34,8 +33,7 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
         // Check if adding one more glass would exceed daily limit
         let nextMl = currentMl + 250.0
         if nextMl <= dailyLimit {
-            userDefaults.glassesOfToday += 1
-            userDefaults.synchronize() // Force synchronization
+            waterUseCase.drinkWater()
             
             // Log to HealthKit via UseCase
             do {
