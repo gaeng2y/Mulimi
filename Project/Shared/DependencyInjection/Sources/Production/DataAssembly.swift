@@ -8,6 +8,7 @@
 import DataLayer
 import DomainLayerInterface
 import Swinject
+import Utils
 
 public final class DataAssembly: Assembly {
     public func assemble(container: Container) {
