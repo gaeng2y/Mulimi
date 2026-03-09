@@ -5,6 +5,17 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
+SECRETS_XCCONFIG_PATH="XCConfig/Secrets.xcconfig"
+if [ ! -f "$SECRETS_XCCONFIG_PATH" ]; then
+  TEAM_ID_VALUE="${TEAM_ID:-8UV3Y69NB7}"
+  if [ -f "XCConfig/Secrets.xcconfig.template" ]; then
+    sed "s/YOUR_TEAM_ID/$TEAM_ID_VALUE/g" "XCConfig/Secrets.xcconfig.template" > "$SECRETS_XCCONFIG_PATH"
+  else
+    echo "DEVELOPMENT_TEAM = $TEAM_ID_VALUE" > "$SECRETS_XCCONFIG_PATH"
+  fi
+  echo "✅ Generated $SECRETS_XCCONFIG_PATH with DEVELOPMENT_TEAM=$TEAM_ID_VALUE"
+fi
+
 if ! command -v mise >/dev/null 2>&1; then
   curl https://mise.run | sh
 fi
