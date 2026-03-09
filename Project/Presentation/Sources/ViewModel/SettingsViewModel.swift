@@ -8,6 +8,7 @@
 
 import SwiftUI
 import DomainLayerInterface
+import Utils
 import WidgetKit
 
 @Observable
