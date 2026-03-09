@@ -50,6 +50,24 @@ public final class HydrationRecordListViewModel {
 
         records = fetchedRecords.sorted { $0.date < $1.date }
     }
+
+    @MainActor
+    func updateDisplayedMonth(year: Int, month: Int) async {
+        guard (1...12).contains(month),
+              let newDate = Calendar.current.date(
+                from: DateComponents(year: year, month: month, day: 1)
+              ) else {
+            errorMessage = "Invalid date selection"
+            return
+        }
+
+        guard !Calendar.current.isDate(newDate, equalTo: date, toGranularity: .month) else {
+            return
+        }
+
+        date = newDate
+        await fetchHydrationRecord()
+    }
     
     private func monthDates(for date: Date) -> [Date] {
         guard let startDate = Calendar.current.date(
