@@ -11,6 +11,9 @@ import SwiftUI
 
 struct RecordCalendarView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
+    @State private var isYearMonthPickerPresented = false
+    @State private var selectedYear = Calendar.current.component(.year, from: .now)
+    @State private var selectedMonth = Calendar.current.component(.month, from: .now)
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
@@ -53,19 +56,36 @@ struct RecordCalendarView: View {
         .task {
             await viewModel.fetchHydrationRecord()
         }
+        .sheet(isPresented: $isYearMonthPickerPresented) {
+            yearMonthPickerSheet
+        }
     }
 
     private var monthHeader: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(viewModel.date.formatted(.dateTime.year()))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+            Button {
+                syncPickerSelectionWithCurrentDate()
+                isYearMonthPickerPresented = true
+            } label: {
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(viewModel.date.formatted(.dateTime.year()))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
 
-                Text(viewModel.date.formatted(.dateTime.month(.wide)))
-                    .font(.title2)
-                    .fontWeight(.bold)
+                        Text(viewModel.date.formatted(.dateTime.month(.wide)))
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
+
+                    Image(systemName: "chevron.down")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.secondary)
+                }
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel("년월 선택")
+            .accessibilityHint("기록을 볼 년과 월을 선택합니다")
 
             Spacer()
 
@@ -155,6 +175,65 @@ struct RecordCalendarView: View {
         let goalPerMonth = dailyGoal * Double(daysInMonth)
         let totalConsumed = viewModel.records.reduce(0) { $0 + $1.mililiter }
         return min(Int((totalConsumed / goalPerMonth) * 100), 100)
+    }
+
+    private var selectableYears: [Int] {
+        let currentYear = calendar.component(.year, from: .now)
+        return Array((currentYear - 10)...(currentYear + 2))
+    }
+
+    @ViewBuilder
+    private var yearMonthPickerSheet: some View {
+        NavigationStack {
+            HStack(spacing: 0) {
+                Picker("년", selection: $selectedYear) {
+                    ForEach(selectableYears, id: \.self) { year in
+                        Text("\(year)년")
+                            .tag(year)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(maxWidth: .infinity)
+                .clipped()
+
+                Picker("월", selection: $selectedMonth) {
+                    ForEach(1...12, id: \.self) { month in
+                        Text("\(month)월")
+                            .tag(month)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(maxWidth: .infinity)
+                .clipped()
+            }
+            .navigationTitle("년/월 선택")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("취소") {
+                        isYearMonthPickerPresented = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("적용") {
+                        Task {
+                            await viewModel.updateDisplayedMonth(
+                                year: selectedYear,
+                                month: selectedMonth
+                            )
+                        }
+                        isYearMonthPickerPresented = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.height(320)])
+        .presentationDragIndicator(.visible)
+    }
+
+    private func syncPickerSelectionWithCurrentDate() {
+        selectedYear = calendar.component(.year, from: viewModel.date)
+        selectedMonth = calendar.component(.month, from: viewModel.date)
     }
 }
 

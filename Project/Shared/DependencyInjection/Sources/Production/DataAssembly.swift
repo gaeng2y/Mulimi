@@ -8,12 +8,17 @@
 import DataLayer
 import DomainLayerInterface
 import Swinject
+import Utils
 
 public final class DataAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterDataSource.self) { resolver in
-            DrinkWaterUserDefaultsDataSource(userDefaults: .appGroup)
+            do {
+                return try DrinkWaterSwiftDataDataSource(userDefaults: .appGroup)
+            } catch {
+                fatalError("Failed to initialize DrinkWaterSwiftDataDataSource: \(error)")
+            }
         }
         
         container.register(DrinkWaterRepository.self) { resolver in
@@ -41,6 +46,27 @@ public final class DataAssembly: Assembly {
         container.register(UserPreferencesRepository.self) { resolver in
             UserPreferencesRepositoryImpl(
                 dataSource: resolver.resolve(UserPreferencesDataSource.self)!
+            )
+        }
+
+        // MARK: - Authentication
+        container.register(KeyChainDataSource.self) { resolver in
+            KeyChainDataSourceImpl()
+        }
+
+        container.register(AppleSignInDataSource.self) { resolver in
+            AppleSignInDataSourceImpl()
+        }
+
+        // 향후 서버 통신 시 추가:
+        // container.register(AuthenticationNetworkDataSource.self) { resolver in
+        //     AuthenticationNetworkDataSourceImpl()
+        // }
+
+        container.register(AuthenticationRepository.self) { resolver in
+            AuthenticationRepositoryImpl(
+                appleSignInDataSource: resolver.resolve(AppleSignInDataSource.self)!,
+                keyChainDataSource: resolver.resolve(KeyChainDataSource.self)!
             )
         }
     }

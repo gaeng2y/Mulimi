@@ -25,7 +25,11 @@ public final class PreviewAssembly: Assembly {
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCase()
         }
-        
+
+        container.register(SignInUseCase.self) { _ in
+            MockSignInUseCase()
+        }
+
         // MARK: - ViewModels
         container.register(DrinkWaterViewModel.self) { resolver in
             DrinkWaterViewModel(
@@ -37,7 +41,7 @@ public final class PreviewAssembly: Assembly {
         
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(HealthKitUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!
             )
         }
         
@@ -46,12 +50,22 @@ public final class PreviewAssembly: Assembly {
             MockNavigationRouter()
         }
         .inObjectScope(.container)
-        
+
+        // MARK: - Authentication (Preview)
+        container.register(AuthenticationViewModel.self) { resolver in
+            AuthenticationViewModel(
+                signInUseCase: resolver.resolve(SignInUseCase.self)!
+            )
+        }
+        .inObjectScope(.container)
+
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
                 navigationRouter: resolver.resolve(NavigationRouter.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!
             )
         }
     }

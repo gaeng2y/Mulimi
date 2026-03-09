@@ -8,7 +8,7 @@
 
 import DomainLayerInterface
 
-final class MockUserPreferencesRepository: UserPreferencesRepository {
+final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked Sendable {
     private var _mainAppearance: MainAppearance = .default
     private var _dailyWaterLimit: Double = 2000.0
 

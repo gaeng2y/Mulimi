@@ -8,9 +8,11 @@
 
 import Foundation
 
-public protocol DrinkWaterRepository {
+public protocol DrinkWaterRepository: Sendable {
     var currentWater: Int { get }
-    
+
+    func hydrationEvents(on date: Date) -> [HydrationEvent]
+    func migrateLegacyDataIfNeeded()
     func drinkWater()
     func reset()
 }

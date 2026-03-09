@@ -16,7 +16,8 @@ let project = Project(
     settings: .settings(
         base: [
             "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
-            "APP_BUILD_NUMBER": .string(AppVersion.buildNumber)
+            "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+            "SWIFT_VERSION": .string("6.0")
         ],
         configurations: [
             .debug(name: "Debug"),
@@ -27,7 +28,7 @@ let project = Project(
         .target(
             name: "Utils",
             destinations: .iOS,
-            product: .staticLibrary,
+            product: .framework,
             bundleId: "\(bundleId).Utils",
             deploymentTargets: .iOS("18.0"),
             sources: ["Sources/**"]

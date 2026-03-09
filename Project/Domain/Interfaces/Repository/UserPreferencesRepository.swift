@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol UserPreferencesRepository {
+public protocol UserPreferencesRepository: Sendable {
     func getMainAppearance() -> MainAppearance
     func setMainAppearance(_ appearance: MainAppearance)
     func getDailyWaterLimit() -> Double

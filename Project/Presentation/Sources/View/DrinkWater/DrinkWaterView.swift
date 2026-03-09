@@ -60,7 +60,9 @@ public struct DrinkWaterView: View {
                 
                 HStack {
                     Button {
-                        viewModel.drinkWater()
+                        Task {
+                            await viewModel.drinkWater()
+                        }
                     } label: {
                         Text(viewModel.isLimitReached ? "목표 달성!" : "마시기")
                             .font(.headline)
@@ -74,7 +76,9 @@ public struct DrinkWaterView: View {
                     
                     
                     Button {
-                        viewModel.reset()
+                        Task {
+                            await viewModel.reset()
+                        }
                     } label: {
                         Text("초기화")
                             .font(.headline)
@@ -89,7 +93,7 @@ public struct DrinkWaterView: View {
         }
         .onAppear {
             // Refresh data when view appears to catch any Widget changes
-            viewModel.refreshFromUserDefaults()
+            viewModel.refreshState()
 
             withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
                 viewModel.startAnimation()

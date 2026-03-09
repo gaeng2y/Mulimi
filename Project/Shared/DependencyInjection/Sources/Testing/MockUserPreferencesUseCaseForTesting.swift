@@ -8,7 +8,7 @@
 
 import DomainLayerInterface
 
-public final class MockUserPreferencesUseCaseForTesting: UserPreferencesUseCase {
+public final class MockUserPreferencesUseCaseForTesting: UserPreferencesUseCase, @unchecked Sendable {
     public var mainAppearance: MainAppearance = .drop
     public var dailyWaterLimit: Double = 2000
     public var accentColor: String = "blue"

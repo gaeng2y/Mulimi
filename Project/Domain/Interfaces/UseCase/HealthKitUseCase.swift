@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol HealthKitUseCase {
+public protocol HealthKitUseCase: Sendable {
     var authorisationStatus: HealthKitAuthorizationStatus { get }
     
     func requestAuthorization() async throws

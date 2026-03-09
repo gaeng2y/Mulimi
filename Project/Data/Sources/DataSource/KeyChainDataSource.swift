@@ -9,7 +9,7 @@
 import DomainLayerInterface
 import Foundation
 
-public protocol KeyChainDataSource {
+public protocol KeyChainDataSource: Sendable {
     func validateToken() -> Bool
     func save(property: TokenProperty, value: String)
     func load(property: TokenProperty) -> String
@@ -17,6 +17,8 @@ public protocol KeyChainDataSource {
 }
 
 public struct KeyChainDataSourceImpl: KeyChainDataSource {
+    public init() {}
+    
     public func validateToken() -> Bool {
         load(property: .accessToken).isEmpty == false
     }

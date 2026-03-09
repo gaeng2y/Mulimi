@@ -9,7 +9,7 @@
 import DomainLayerInterface
 import Foundation
 
-final class MockHealthKitRepository: HealthKitRepository {
+final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
     private var _authorizationStatus: HealthKitAuthorizationStatus = .notDetermined
     private var _hydrationRecords: [HydrationRecord] = []
 
