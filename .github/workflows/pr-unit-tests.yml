@@ -59,14 +59,19 @@ jobs:
         id: destination
         run: |
           set -e
-          DESTINATION_ID="$(xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer 2>/dev/null | sed -n 's/.*platform:iOS Simulator, id:\([^,}]*\).*/\1/p' | head -n 1 | tr -d ' ')"
+          DESTINATION_ID="$(xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer 2>/dev/null \
+            | grep 'platform:iOS Simulator' \
+            | grep 'OS:' \
+            | sed -n 's/.*id:\([^,}]*\).*/\1/p' \
+            | head -n 1 \
+            | tr -d ' ')"
           if [ -z "$DESTINATION_ID" ]; then
             echo "No iOS Simulator destination found for DomainLayer."
             xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer
             exit 1
           fi
-          echo "destination=id=$DESTINATION_ID" >> "$GITHUB_OUTPUT"
-          echo "Using destination id=$DESTINATION_ID"
+          echo "destination=platform=iOS Simulator,id=$DESTINATION_ID" >> "$GITHUB_OUTPUT"
+          echo "Using destination platform=iOS Simulator,id=$DESTINATION_ID"
 
       - name: Run unit tests
         run: |
