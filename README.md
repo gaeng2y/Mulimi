@@ -1,8 +1,24 @@
-## 💧 물리미
-
 <p align="center">
 <img src="https://github.com/gaeng2y/Mulimi/blob/main/Images/app%20icon.png?raw=true" width="300" height="300">
 </p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/iOS-18.0%2B-0A84FF?style=for-the-badge&logo=apple&logoColor=white" alt="iOS 18.0+">
+  <img src="https://img.shields.io/badge/Swift-6.0-F05138?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.0">
+  <img src="https://img.shields.io/badge/SwiftUI-MVVM-1A73E8?style=for-the-badge&logo=swift&logoColor=white" alt="SwiftUI MVVM">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Clean_Architecture-Modular-111111?style=for-the-badge" alt="Modular Clean Architecture">
+  <img src="https://img.shields.io/badge/Tuist-Project_Generation-00B4D8?style=for-the-badge" alt="Tuist">
+  <img src="https://img.shields.io/badge/SwiftData-CloudKit_Sync-2E7D32?style=for-the-badge&logo=icloud&logoColor=white" alt="SwiftData + CloudKit">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/WidgetKit-Home_Widget-0F766E?style=for-the-badge" alt="WidgetKit">
+  <img src="https://img.shields.io/badge/HealthKit-Water_Tracking-D32F2F?style=for-the-badge" alt="HealthKit">
+  <img src="https://img.shields.io/badge/Firebase-Analytics%20%26%20Crashlytics-FF6F00?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
+</p>
+
+## 물리미 (Mulimi)
 
 - 앱스토어 링크: [링크](https://apps.apple.com/us/app/%EB%AC%BC%EB%A6%AC%EB%AF%B8/id6451200968)
 
@@ -23,16 +39,16 @@
 
 ## 🛠️ 기술 스택 및 아키텍처
 
-### Core Technologies
-- **Swift & SwiftUI**: Apple의 최신 프레임워크를 사용하여 선언적이고 현대적인 UI를 구현했습니다.
-- **Tuist**: 모듈화된 프로젝트 구조를 효율적으로 관리하고 빌드 시간을 단축하기 위해 사용합니다.
-- **Combine**: 비동기적인 데이터 흐름을 처리합니다.
+### Core Stack
+- **Swift 6.0 / SwiftUI / iOS 18+**: 최신 Swift Concurrency와 선언형 UI를 기반으로 구현했습니다.
+- **Tuist**: 모듈형 프로젝트 생성 및 의존성 관리를 담당합니다.
+- **SwiftData + CloudKit**: 물 섭취 이벤트를 앱/위젯 및 기기 간 동기화하며, 실패 시 로컬 저장소로 자동 폴백합니다.
+- **HealthKit / WidgetKit**: 건강 데이터 통합 및 홈 화면 위젯 기능을 제공합니다.
+- **Firebase Analytics / Crashlytics**: 앱 사용 분석과 크래시 모니터링을 수행합니다.
 
 ### Architecture
-- **모듈형 클린 아키텍처 (Modular Clean Architecture)**: 프로젝트를 여러 개의 독립적인 모듈(Framework)로 분리하여 유지보수성과 확장성을 높였습니다. 의존성 방향이 `App` -> `Presentation` -> `Domain` -> `Data`로 흐르도록 설계하여 각 레이어의 역할을 명확히 했습니다.
-
-### External Libraries
-- **[Swinject](https://github.com/Swinject/Swinject)**: 의존성 주입(DI)을 관리하여 코드의 결합도를 낮추고 테스트 용이성을 확보합니다.
+- **Modular Clean Architecture + MVVM**: 레이어별 책임을 분리하고 테스트 가능한 구조를 유지합니다.
+- **Dependency Injection (Swinject)**: 모듈 간 결합도를 낮추고 구현 교체/테스트를 단순화합니다.
 ---
 
 ## 🏗️ 프로젝트 구조
@@ -41,23 +57,29 @@
 
 ```
 Mulimi/
-├── XCConfig/             # 빌드 설정 (팀 ID 등)
+├── XCConfig/                # 빌드 설정 (팀 ID, 환경값)
 ├── Project/
-│   ├── App/              # 앱의 진입점, DI 컨테이너 설정
-│   ├── Data/             # 데이터 소스 구현 (UserDefaults, HealthKit, API 등)
-│   ├── Domain/           # 핵심 비즈니스 로직, UseCase, Repository 인터페이스
-│   ├── Presentation/     # UI (Views, ViewModels), 화면 흐름 관리
-│   └── Widget/           # 홈 화면 위젯
+│   ├── App/                 # 앱 진입점, AppDelegate, 런타임 조립
+│   ├── Presentation/        # SwiftUI 뷰/뷰모델 (MVVM)
+│   ├── Domain/              # UseCase, Entity, Repository 인터페이스
+│   ├── Data/                # Repository 구현, DataSource (SwiftData/HealthKit 등)
+│   ├── Widget/              # WidgetKit 위젯 및 AppIntent
+│   └── Shared/
+│       ├── DependencyInjection/
+│       ├── Persistence/     # SharedHydrationStore, HydrationEventModel
+│       ├── DesignSystem/
+│       └── Utils/
 └── Tuist/
     ├── ProjectDescriptionHelpers/
-    └── Package.swift       # 외부 라이브러리 의존성 관리
+    └── Package.swift        # 외부 라이브러리 의존성 관리
 ```
 
-- **`App`**: 앱의 생명주기를 관리하고, `Swinject`를 사용해 각 모듈의 의존성을 조립하는 최종 단계입니다.
-- **`Presentation`**: SwiftUI로 작성된 뷰와 뷰 로직을 포함합니다. `Domain` 레이어의 UseCase를 사용하여 비즈니스 로직을 실행합니다.
-- **`Domain`**: 앱의 핵심 규칙과 UseCase를 정의합니다. 다른 레이어에 의존하지 않는 순수한 Swift 모듈입니다.
-- **`Data`**: `Domain` 레이어의 Repository 인터페이스에 대한 구체적인 구현을 제공합니다. `HealthKit`, `UserDefaults`, `Supabase` API 등 실제 데이터 소스와의 통신을 담당합니다.
-- **`Widget`**: `WidgetKit`을 사용하여 홈 화면에 표시될 위젯의 뷰와 타임라인을 정의합니다.
+- **`App`**: 앱 생명주기/전역 설정을 관리하고 각 모듈을 연결합니다.
+- **`Presentation`**: UI와 상태 관리(MVVM), 사용자 상호작용을 처리합니다.
+- **`Domain`**: 순수 비즈니스 규칙과 유스케이스를 정의합니다.
+- **`Data`**: Domain 인터페이스의 구현체를 제공하며 SwiftData/HealthKit/인증 데이터 소스와 연결됩니다.
+- **`Widget`**: 위젯 타임라인과 위젯 액션(AppIntent)을 담당합니다.
+- **`Shared`**: DI, 공통 Persistence, 디자인 시스템, 유틸리티를 제공합니다.
 
 ---
 
