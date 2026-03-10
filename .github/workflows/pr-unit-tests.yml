@@ -20,6 +20,8 @@ jobs:
     timeout-minutes: 45
     env:
       TEAM_ID: "8UV3Y69NB7"
+      GITHUB_TOKEN: ${{ github.token }}
+      AQUA_GITHUB_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
