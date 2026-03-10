@@ -55,42 +55,28 @@ jobs:
           tuist install
           tuist generate
 
-      - name: Resolve test destination
+      - name: Resolve iOS Simulator destination
         id: destination
         run: |
-          set -e
-          DESTINATIONS="$(xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer)"
-          echo "$DESTINATIONS"
+          set -euo pipefail
+          xcrun simctl list devices available
 
-          IOS_SIM_ID="$(printf '%s\n' "$DESTINATIONS" \
-            | grep 'platform:iOS Simulator' \
-            | grep 'OS:' \
-            | sed -n 's/.*id:\([^,}]*\).*/\1/p' \
-            | head -n 1 \
-            | tr -d ' ')"
+          IOS_SIM_ID="$(xcrun simctl list devices available \
+            | awk -F '[()]' '/iPhone/ && /(Booted|Shutdown)/ {gsub(/^[[:space:]]+/, "", $2); print $2; exit}')"
 
-          if [ -n "$IOS_SIM_ID" ]; then
-            DESTINATION="platform=iOS Simulator,id=$IOS_SIM_ID"
-            echo "Using iOS Simulator destination: $DESTINATION"
-            echo "destination=$DESTINATION" >> "$GITHUB_OUTPUT"
-            exit 0
+          if [ -z "$IOS_SIM_ID" ]; then
+            IOS_SIM_ID="$(xcrun simctl list devices available \
+              | awk -F '[()]' '/iPad/ && /(Booted|Shutdown)/ {gsub(/^[[:space:]]+/, "", $2); print $2; exit}')"
           fi
 
-          MAC_ID="$(printf '%s\n' "$DESTINATIONS" \
-            | grep 'platform:macOS' \
-            | sed -n 's/.*id:\([^,}]*\).*/\1/p' \
-            | head -n 1 \
-            | tr -d ' ')"
-
-          if [ -n "$MAC_ID" ]; then
-            DESTINATION="platform=macOS,id=$MAC_ID"
-            echo "No concrete iOS Simulator found. Falling back to macOS destination: $DESTINATION"
-            echo "destination=$DESTINATION" >> "$GITHUB_OUTPUT"
-            exit 0
+          if [ -z "$IOS_SIM_ID" ]; then
+            echo "No concrete iOS simulator device found."
+            xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer || true
+            exit 1
           fi
 
-          echo "No valid destination found for DomainLayer."
-          exit 1
+          echo "destination=id=$IOS_SIM_ID" >> "$GITHUB_OUTPUT"
+          echo "Using destination id=$IOS_SIM_ID"
 
       - name: Run unit tests
         run: |
@@ -102,6 +88,7 @@ jobs:
               -workspace Mulimi.xcworkspace \
               -scheme "$SCHEME" \
               -destination "$DESTINATION" \
+              -destination-timeout 180 \
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO
           done
