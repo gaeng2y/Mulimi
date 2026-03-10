@@ -55,23 +55,42 @@ jobs:
           tuist install
           tuist generate
 
-      - name: Resolve iOS Simulator destination
+      - name: Resolve test destination
         id: destination
         run: |
           set -e
-          DESTINATION_ID="$(xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer 2>/dev/null \
+          DESTINATIONS="$(xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer)"
+          echo "$DESTINATIONS"
+
+          IOS_SIM_ID="$(printf '%s\n' "$DESTINATIONS" \
             | grep 'platform:iOS Simulator' \
             | grep 'OS:' \
             | sed -n 's/.*id:\([^,}]*\).*/\1/p' \
             | head -n 1 \
             | tr -d ' ')"
-          if [ -z "$DESTINATION_ID" ]; then
-            echo "No iOS Simulator destination found for DomainLayer."
-            xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer
-            exit 1
+
+          if [ -n "$IOS_SIM_ID" ]; then
+            DESTINATION="platform=iOS Simulator,id=$IOS_SIM_ID"
+            echo "Using iOS Simulator destination: $DESTINATION"
+            echo "destination=$DESTINATION" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          echo "destination=platform=iOS Simulator,id=$DESTINATION_ID" >> "$GITHUB_OUTPUT"
-          echo "Using destination platform=iOS Simulator,id=$DESTINATION_ID"
+
+          MAC_ID="$(printf '%s\n' "$DESTINATIONS" \
+            | grep 'platform:macOS' \
+            | sed -n 's/.*id:\([^,}]*\).*/\1/p' \
+            | head -n 1 \
+            | tr -d ' ')"
+
+          if [ -n "$MAC_ID" ]; then
+            DESTINATION="platform=macOS,id=$MAC_ID"
+            echo "No concrete iOS Simulator found. Falling back to macOS destination: $DESTINATION"
+            echo "destination=$DESTINATION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "No valid destination found for DomainLayer."
+          exit 1
 
       - name: Run unit tests
         run: |
