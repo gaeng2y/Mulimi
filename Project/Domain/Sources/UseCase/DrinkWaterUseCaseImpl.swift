@@ -17,22 +17,24 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     }
     
     public var currentWater: Int {
-        repository.currentWater
+        get async {
+            await repository.currentWater
+        }
     }
 
-    public func hydrationEvents(on date: Date) -> [HydrationEvent] {
-        repository.hydrationEvents(on: date)
+    public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+        await repository.hydrationEvents(on: date)
     }
 
-    public func migrateLegacyDataIfNeeded() {
-        repository.migrateLegacyDataIfNeeded()
+    public func migrateLegacyDataIfNeeded() async {
+        await repository.migrateLegacyDataIfNeeded()
     }
 
-    public func drinkWater() {
-        repository.drinkWater()
+    public func drinkWater() async {
+        await repository.drinkWater()
     }
     
-    public func reset() {
-        repository.reset()
+    public func reset() async {
+        await repository.reset()
     }
 }

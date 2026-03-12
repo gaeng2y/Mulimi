@@ -31,20 +31,24 @@ public final class HydrationRecordListViewModel {
     @MainActor
     func fetchHydrationRecord() async {
         let monthDates = monthDates(for: date)
-        let fetchedRecords = monthDates.compactMap { day -> HydrationRecord? in
-            let events = useCase.hydrationEvents(on: day)
+        var fetchedRecords: [HydrationRecord] = []
+
+        for day in monthDates {
+            let events = await useCase.hydrationEvents(on: day)
             let total = events.reduce(0) { partialResult, event in
                 partialResult + event.volumeML
             }
 
             guard total > 0 else {
-                return nil
+                continue
             }
 
-            return HydrationRecord(
+            fetchedRecords.append(
+                HydrationRecord(
                 id: UUID(),
                 date: day,
                 mililiter: Double(total)
+            )
             )
         }
 

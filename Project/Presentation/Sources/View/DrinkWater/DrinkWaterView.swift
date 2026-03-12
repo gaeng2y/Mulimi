@@ -93,7 +93,9 @@ public struct DrinkWaterView: View {
         }
         .onAppear {
             // Refresh data when view appears to catch any Widget changes
-            viewModel.refreshState()
+            Task {
+                await viewModel.loadInitialState()
+            }
 
             withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
                 viewModel.startAnimation()

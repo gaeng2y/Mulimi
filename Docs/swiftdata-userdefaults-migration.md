@@ -3,14 +3,14 @@
 ## Scope
 - Target data: today's water count (`glassesOfToday`)
 - New storage: `HydrationEventModel` (SwiftData, App Group container)
-- Migration owner: `DrinkWaterSwiftDataDataSource`
+- Migration owner: `DrinkWaterPersistentDataSource`
 
 ## Legacy Data Format
 - Legacy key format: `yyyy-MM-dd` (for example `2026-03-08`)
 - Legacy value: `Int` glass count for that day
 
 ## Migration Flow
-1. `DrinkWaterSwiftDataDataSource` is initialized.
+1. `DrinkWaterPersistentDataSource` is initialized.
 2. If migration flag `hydrationMigration.swiftData.v1.completed` is `false`, migration runs.
 3. Read legacy today count from UserDefaults.
 4. Fetch today's events in SwiftData.

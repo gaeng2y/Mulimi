@@ -12,9 +12,9 @@ struct DrinkWaterViewModelTests {
 
     @MainActor
     @Test("초기화 시 legacy 마이그레이션과 초기 상태를 반영한다")
-    func initializeState() {
+    func initializeState() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWater = 2
+        waterUseCase.currentWaterValue = 2
         let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.mainAppearanceValue = .heart
@@ -25,6 +25,8 @@ struct DrinkWaterViewModelTests {
             healthKitUseCase: healthKitUseCase,
             userPreferencesUseCase: userPreferencesUseCase
         )
+
+        await viewModel.loadInitialState()
 
         #expect(waterUseCase.migrateLegacyDataIfNeededCallCount == 1)
         #expect(viewModel.drinkWaterCount == 2)
@@ -39,7 +41,7 @@ struct DrinkWaterViewModelTests {
     @Test("drinkWater는 제한 이하일 때 로컬/UseCase 상태를 모두 갱신한다")
     func drinkWaterWithinLimit() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWater = 0
+        waterUseCase.currentWaterValue = 0
         let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
@@ -50,6 +52,7 @@ struct DrinkWaterViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase
         )
 
+        await viewModel.loadInitialState()
         await viewModel.drinkWater()
 
         #expect(viewModel.drinkWaterCount == 1)
@@ -61,7 +64,7 @@ struct DrinkWaterViewModelTests {
     @Test("drinkWater는 제한을 초과하면 동작하지 않는다")
     func drinkWaterOverLimit() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWater = 4
+        waterUseCase.currentWaterValue = 4
         let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
@@ -72,6 +75,7 @@ struct DrinkWaterViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase
         )
 
+        await viewModel.loadInitialState()
         await viewModel.drinkWater()
 
         #expect(viewModel.drinkWaterCount == 4)
@@ -94,6 +98,7 @@ struct DrinkWaterViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase
         )
 
+        await viewModel.loadInitialState()
         await viewModel.drinkWater()
 
         #expect(viewModel.drinkWaterCount == 1)
@@ -105,7 +110,7 @@ struct DrinkWaterViewModelTests {
     @Test("reset은 카운트를 0으로 만들고 UseCase 리셋을 호출한다")
     func reset() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWater = 3
+        waterUseCase.currentWaterValue = 3
         let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
 
@@ -115,6 +120,7 @@ struct DrinkWaterViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase
         )
 
+        await viewModel.loadInitialState()
         await viewModel.reset()
 
         #expect(viewModel.drinkWaterCount == 0)
@@ -124,7 +130,7 @@ struct DrinkWaterViewModelTests {
 
     @MainActor
     @Test("refreshState는 UseCase 최신값으로 상태를 갱신한다")
-    func refreshState() {
+    func refreshState() async {
         let waterUseCase = MockDrinkWaterUseCase()
         let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
@@ -135,11 +141,13 @@ struct DrinkWaterViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase
         )
 
-        waterUseCase.currentWater = 5
+        await viewModel.loadInitialState()
+
+        waterUseCase.currentWaterValue = 5
         userPreferencesUseCase.mainAppearanceValue = .cloud
         userPreferencesUseCase.dailyWaterLimitValue = 2300
 
-        viewModel.refreshState()
+        await viewModel.refreshState()
 
         #expect(viewModel.drinkWaterCount == 5)
         #expect(viewModel.mainAppearance == .cloud)

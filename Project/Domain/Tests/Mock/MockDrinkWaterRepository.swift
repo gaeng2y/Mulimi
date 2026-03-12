@@ -10,7 +10,7 @@ import DomainLayerInterface
 import Foundation
 
 final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
-    private var _currentWater: Int = 0
+    private var currentWaterValue = 0
     private var _events: [HydrationEvent] = []
     
     // Call tracking properties
@@ -20,21 +20,23 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var migrateCallCount = 0
     
     var currentWater: Int {
-        _currentWater
+        get async {
+            currentWaterValue
+        }
     }
 
-    func hydrationEvents(on date: Date) -> [HydrationEvent] {
+    func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         hydrationEventsCallCount += 1
         return _events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
     }
 
-    func migrateLegacyDataIfNeeded() {
+    func migrateLegacyDataIfNeeded() async {
         migrateCallCount += 1
     }
     
-    func drinkWater() {
+    func drinkWater() async {
         drinkWaterCallCount += 1
-        _currentWater += 1
+        currentWaterValue += 1
         _events.append(
             HydrationEvent(
                 id: UUID(),
@@ -44,20 +46,20 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         )
     }
     
-    func reset() {
+    func reset() async {
         resetCallCount += 1
-        _currentWater = 0
+        currentWaterValue = 0
         _events.removeAll()
     }
     
     // Test helper methods
     func setCurrentWater(_ value: Int) {
-        _currentWater = value
+        currentWaterValue = value
     }
 
     func setHydrationEvents(_ events: [HydrationEvent]) {
         _events = events
-        _currentWater = events.count
+        currentWaterValue = events.count
     }
     
     func resetCallCounts() {
