@@ -7,6 +7,7 @@
 //
 
 import DomainLayerInterface
+import Localization
 import SwiftUI
 
 public struct HydrationRecordListView: View {
@@ -20,7 +21,7 @@ public struct HydrationRecordListView: View {
     public var body: some View {
         NavigationStack {
             RecordCalendarView(viewModel: viewModel)
-            .navigationTitle("기록")
+            .navigationTitle(L10n.tr("historyTitle"))
             .navigationBarTitleDisplayMode(.large)
             .background(
                 Color.background
@@ -56,17 +57,7 @@ public struct HydrationRecordListView: View {
         let record: HydrationRecord
         
         private var dateString: String {
-            let dateComponents = Calendar.current.dateComponents(
-                [.year, .month, .day],
-                from: record.date
-            )
-            
-            guard let year = dateComponents.year,
-                  let month = dateComponents.month,
-                  let day = dateComponents.day else {
-                return ""
-            }
-            return "\(year)-\(month)-\(day)"
+            record.date.formatted(.dateTime.year().month().day())
         }
         
         var body: some View {
@@ -78,7 +69,7 @@ public struct HydrationRecordListView: View {
                 
                 HStack {
                     Spacer()
-                    Text(String(format: "%.0fml", record.mililiter))
+                    Text(L10n.tr("commonMilliliterFormat", Int(record.mililiter.rounded())))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 }

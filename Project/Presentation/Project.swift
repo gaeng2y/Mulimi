@@ -44,6 +44,10 @@ let project = Project(
                 .project(
                     target: "DesignSystem",
                     path: .relativeToRoot("Project/Shared/DesignSystem")
+                ),
+                .project(
+                    target: "Localization",
+                    path: .relativeToRoot("Project/Shared/Localization")
                 )
             ]
         ),
@@ -55,7 +59,11 @@ let project = Project(
             deploymentTargets: .iOS("18.0"),
             sources: ["Tests/**"],
             dependencies: [
-                .target(name: "PresentationLayer")
+                .target(name: "PresentationLayer"),
+                .project(
+                    target: "Localization",
+                    path: .relativeToRoot("Project/Shared/Localization")
+                )
             ]
         )
     ]

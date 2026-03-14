@@ -1,5 +1,6 @@
 import DomainLayerInterface
 import Foundation
+import Localization
 import Testing
 
 @testable import PresentationLayer
@@ -45,7 +46,7 @@ struct HydrationRecordListViewModelTests {
 
         await viewModel.updateDisplayedMonth(year: 2026, month: 13)
 
-        #expect(viewModel.errorMessage == "Invalid date selection")
+        #expect(viewModel.errorMessage == L10n.tr("historyInvalidDateSelectionError"))
     }
 
     @MainActor

@@ -7,6 +7,7 @@
 //
 
 import DomainLayerInterface
+import Localization
 import SwiftUI
 
 public struct SettingsView: View {
@@ -39,7 +40,7 @@ public struct SettingsView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
             }
-            .navigationTitle("설정")
+            .navigationTitle(L10n.tr("settingsTitle"))
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .settingDetail(let menu):
