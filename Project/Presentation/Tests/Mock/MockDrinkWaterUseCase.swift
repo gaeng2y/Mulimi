@@ -20,6 +20,13 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
         hydrationEventsByDay[dayKey(for: date)] ?? []
     }
 
+    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+        hydrationEventsByDay.values
+            .flatMap { $0 }
+            .filter { interval.contains($0.consumedAt) }
+            .sorted { $0.consumedAt < $1.consumedAt }
+    }
+
     func migrateLegacyDataIfNeeded() async {
         migrateLegacyDataIfNeededCallCount += 1
     }

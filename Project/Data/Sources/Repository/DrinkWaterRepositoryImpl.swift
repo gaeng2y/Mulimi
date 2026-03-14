@@ -26,6 +26,10 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         await dataSource.hydrationEvents(on: date)
     }
 
+    public func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+        await dataSource.hydrationEvents(in: interval)
+    }
+
     public func migrateLegacyDataIfNeeded() async {
         await dataSource.migrateLegacyDataIfNeeded()
     }

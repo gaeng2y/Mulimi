@@ -24,6 +24,12 @@ struct ContentView: View {
                     viewModel: DIContainer.shared.resolve(HydrationRecordListViewModel.self)
                 )
             }
+
+            Tab("인사이트", systemImage: "chart.bar.xaxis") {
+                HydrationInsightView(
+                    viewModel: DIContainer.shared.resolve(HydrationInsightViewModel.self)
+                )
+            }
             
             Tab("설정", systemImage: "gear") {
                 SettingsView(

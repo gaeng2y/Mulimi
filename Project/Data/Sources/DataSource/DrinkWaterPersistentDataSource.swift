@@ -15,6 +15,7 @@ public protocol DrinkWaterDataSource: Sendable {
     var currentWater: Int { get async }
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
+    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
     func drinkWater() async
     func reset() async
@@ -83,6 +84,21 @@ public actor DrinkWaterPersistentDataSource: DrinkWaterDataSource {
             }
         } catch {
             assertionFailure("Failed to fetch hydration events: \(error)")
+            return []
+        }
+    }
+
+    public func hydrationEvents(in interval: DateInterval) -> [HydrationEvent] {
+        do {
+            return try fetchEventModels(in: interval, using: makeContext()).map {
+                HydrationEvent(
+                    id: $0.id,
+                    consumedAt: $0.consumedAt,
+                    volumeML: $0.volumeML
+                )
+            }
+        } catch {
+            assertionFailure("Failed to fetch hydration events for interval: \(error)")
             return []
         }
     }
@@ -195,6 +211,13 @@ public actor DrinkWaterPersistentDataSource: DrinkWaterDataSource {
         try Self.fetchEventModels(on: date, using: context, calendar: calendar)
     }
 
+    private func fetchEventModels(
+        in interval: DateInterval,
+        using context: ModelContext
+    ) throws -> [HydrationEventModel] {
+        try Self.fetchEventModels(in: interval, using: context)
+    }
+
     private static func syncLegacyCount(
         using context: ModelContext,
         userDefaults: UserDefaults,
@@ -225,6 +248,22 @@ public actor DrinkWaterPersistentDataSource: DrinkWaterDataSource {
         let descriptor = FetchDescriptor<HydrationEventModel>(
             predicate: #Predicate { model in
                 model.consumedAt >= dayStart && model.consumedAt < dayEnd
+            },
+            sortBy: [SortDescriptor(\.consumedAt, order: .forward)]
+        )
+
+        return try context.fetch(descriptor)
+    }
+
+    private static func fetchEventModels(
+        in interval: DateInterval,
+        using context: ModelContext
+    ) throws -> [HydrationEventModel] {
+        let intervalStart = interval.start
+        let intervalEnd = interval.end
+        let descriptor = FetchDescriptor<HydrationEventModel>(
+            predicate: #Predicate { model in
+                model.consumedAt >= intervalStart && model.consumedAt < intervalEnd
             },
             sortBy: [SortDescriptor(\.consumedAt, order: .forward)]
         )

@@ -17,6 +17,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var drinkWaterCallCount = 0
     private(set) var resetCallCount = 0
     private(set) var hydrationEventsCallCount = 0
+    private(set) var hydrationEventsInIntervalCallCount = 0
     private(set) var migrateCallCount = 0
     
     var currentWater: Int {
@@ -28,6 +29,13 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         hydrationEventsCallCount += 1
         return _events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
+    }
+
+    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+        hydrationEventsInIntervalCallCount += 1
+        return _events.filter {
+            interval.contains($0.consumedAt)
+        }
     }
 
     func migrateLegacyDataIfNeeded() async {
@@ -66,6 +74,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         drinkWaterCallCount = 0
         resetCallCount = 0
         hydrationEventsCallCount = 0
+        hydrationEventsInIntervalCallCount = 0
         migrateCallCount = 0
     }
 }

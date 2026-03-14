@@ -183,6 +183,26 @@ struct DrinkWaterUseCaseTests {
         #expect(actual == expected)
     }
 
+    @Test("기간 HydrationEvent 조회는 Repository 호출 결과를 그대로 반환한다")
+    func hydrationEventsInInterval() async {
+        let mockRepository = MockDrinkWaterRepository()
+        let calendar = Calendar(identifier: .gregorian)
+        let start = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10))!
+        let insideDate = calendar.date(byAdding: .hour, value: 12, to: start)!
+        let end = calendar.date(byAdding: .day, value: 3, to: start)!
+        let expected = [
+            HydrationEvent(id: UUID(), consumedAt: insideDate, volumeML: 250),
+            HydrationEvent(id: UUID(), consumedAt: calendar.date(byAdding: .day, value: 1, to: insideDate)!, volumeML: 500)
+        ]
+        mockRepository.setHydrationEvents(expected)
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let actual = await useCase.hydrationEvents(in: DateInterval(start: start, end: end))
+
+        #expect(mockRepository.hydrationEventsInIntervalCallCount == 1)
+        #expect(actual == expected)
+    }
+
     @Test("Legacy 마이그레이션 요청은 Repository에 위임된다")
     func migrateLegacyDataIfNeeded() async {
         let mockRepository = MockDrinkWaterRepository()

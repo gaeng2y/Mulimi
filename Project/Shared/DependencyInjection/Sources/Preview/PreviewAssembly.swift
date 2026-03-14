@@ -44,6 +44,13 @@ public final class PreviewAssembly: Assembly {
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!
             )
         }
+
+        container.register(HydrationInsightViewModel.self) { resolver in
+            HydrationInsightViewModel(
+                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+            )
+        }
         
         // MARK: - Navigation (Preview)
         container.register(NavigationRouter.self) { _ in
