@@ -15,11 +15,12 @@ public final class DataAssembly: Assembly {
         // MARK: - DrinkWater
         container.register(DrinkWaterDataSource.self) { resolver in
             do {
-                return try DrinkWaterSwiftDataDataSource(userDefaults: .appGroup)
+                return try DrinkWaterPersistentDataSource(userDefaults: .appGroup)
             } catch {
-                fatalError("Failed to initialize DrinkWaterSwiftDataDataSource: \(error)")
+                fatalError("Failed to initialize DrinkWaterPersistentDataSource: \(error)")
             }
         }
+        .inObjectScope(.container)
         
         container.register(DrinkWaterRepository.self) { resolver in
             DrinkWaterRepositoryImpl(

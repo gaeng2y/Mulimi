@@ -17,22 +17,24 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     }
     
     public var currentWater: Int {
-        dataSource.currentWater
+        get async {
+            await dataSource.currentWater
+        }
     }
 
-    public func hydrationEvents(on date: Date) -> [HydrationEvent] {
-        dataSource.hydrationEvents(on: date)
+    public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+        await dataSource.hydrationEvents(on: date)
     }
 
-    public func migrateLegacyDataIfNeeded() {
-        dataSource.migrateLegacyDataIfNeeded()
+    public func migrateLegacyDataIfNeeded() async {
+        await dataSource.migrateLegacyDataIfNeeded()
     }
 
-    public func drinkWater() {
-        dataSource.drinkWater()
+    public func drinkWater() async {
+        await dataSource.drinkWater()
     }
     
-    public func reset() {
-        dataSource.reset()
+    public func reset() async {
+        await dataSource.reset()
     }
 }

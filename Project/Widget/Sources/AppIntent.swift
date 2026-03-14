@@ -23,8 +23,8 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
         let healthKitUseCase = DIContainer.shared.resolve(HealthKitUseCase.self)
 
-        waterUseCase.migrateLegacyDataIfNeeded()
-        let currentGlasses = waterUseCase.currentWater
+        await waterUseCase.migrateLegacyDataIfNeeded()
+        let currentGlasses = await waterUseCase.currentWater
         let currentMl = Double(currentGlasses * 250)
         
         // Get daily limit from UseCase
@@ -33,7 +33,7 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
         // Check if adding one more glass would exceed daily limit
         let nextMl = currentMl + 250.0
         if nextMl <= dailyLimit {
-            waterUseCase.drinkWater()
+            await waterUseCase.drinkWater()
             
             // Log to HealthKit via UseCase
             do {

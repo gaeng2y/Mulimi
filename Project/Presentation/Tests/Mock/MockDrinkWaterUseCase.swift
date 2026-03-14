@@ -2,7 +2,7 @@ import DomainLayerInterface
 import Foundation
 
 final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
-    var currentWater: Int = 0
+    var currentWaterValue: Int = 0
 
     var migrateLegacyDataIfNeededCallCount: Int = 0
     var drinkWaterCallCount: Int = 0
@@ -10,22 +10,28 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
 
-    func hydrationEvents(on date: Date) -> [HydrationEvent] {
+    var currentWater: Int {
+        get async {
+            currentWaterValue
+        }
+    }
+
+    func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         hydrationEventsByDay[dayKey(for: date)] ?? []
     }
 
-    func migrateLegacyDataIfNeeded() {
+    func migrateLegacyDataIfNeeded() async {
         migrateLegacyDataIfNeededCallCount += 1
     }
 
-    func drinkWater() {
+    func drinkWater() async {
         drinkWaterCallCount += 1
-        currentWater += 1
+        currentWaterValue += 1
     }
 
-    func reset() {
+    func reset() async {
         resetCallCount += 1
-        currentWater = 0
+        currentWaterValue = 0
     }
 
     func setHydrationEvents(_ events: [HydrationEvent], on date: Date) {

@@ -18,7 +18,6 @@ struct Provider: AppIntentTimelineProvider {
     init() {
         self.waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         self.userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-        waterUseCase.migrateLegacyDataIfNeeded()
     }
     
     func placeholder(in context: Context) -> DrinkWaterEntry {
@@ -35,13 +34,14 @@ struct Provider: AppIntentTimelineProvider {
         for configuration: ConfigurationAppIntent,
         in context: Context
     ) async -> DrinkWaterEntry {
+        await waterUseCase.migrateLegacyDataIfNeeded()
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let mainAppearance = userPreferencesUseCase.getMainAppearance()
         let appearanceIcon = mainAppearance.systemImage
         
         return .init(
             date: .now,
-            numberOfGlasses: waterUseCase.currentWater,
+            numberOfGlasses: await waterUseCase.currentWater,
             dailyLimit: dailyLimit,
             mainAppearanceIcon: appearanceIcon,
             configuration: ConfigurationAppIntent()
@@ -52,10 +52,11 @@ struct Provider: AppIntentTimelineProvider {
         for configuration: ConfigurationAppIntent,
         in context: Context
     ) async -> Timeline<DrinkWaterEntry> {
+        await waterUseCase.migrateLegacyDataIfNeeded()
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let mainAppearance = userPreferencesUseCase.getMainAppearance()
         let appearanceIcon = mainAppearance.systemImage
-        let currentCount = waterUseCase.currentWater
+        let currentCount = await waterUseCase.currentWater
         
         var entries: [DrinkWaterEntry] = []
         

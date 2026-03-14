@@ -9,24 +9,30 @@ import DomainLayerInterface
 import Foundation
 
 public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
-    public var currentWater: Int = 3
+    public var currentWaterValue: Int = 3
     public var events: [HydrationEvent] = []
     
     public init() {}
 
-    public func hydrationEvents(on date: Date) -> [HydrationEvent] {
+    public var currentWater: Int {
+        get async {
+            currentWaterValue
+        }
+    }
+
+    public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
     }
 
-    public func migrateLegacyDataIfNeeded() {}
+    public func migrateLegacyDataIfNeeded() async {}
     
-    public func drinkWater() {
-        currentWater += 1
+    public func drinkWater() async {
+        currentWaterValue += 1
         events.append(HydrationEvent(id: UUID(), consumedAt: .now, volumeML: 250))
     }
     
-    public func reset() {
-        currentWater = 0
+    public func reset() async {
+        currentWaterValue = 0
         events.removeAll()
     }
 }
