@@ -18,10 +18,14 @@ public struct HydrationRecordListView: View {
     }
     
     public var body: some View {
-        ZStack {
-            Color.background
-                .ignoresSafeArea()
+        NavigationStack {
             RecordCalendarView(viewModel: viewModel)
+            .navigationTitle("기록")
+            .navigationBarTitleDisplayMode(.large)
+            .background(
+                Color.background
+                    .ignoresSafeArea()
+            )
         }
         .task {
             await viewModel.onAppear()
@@ -42,11 +46,8 @@ public struct HydrationRecordListView: View {
         }
         
         var body: some View {
-            NavigationStack {
-                List(viewModel.records) { record in
-                    HydrationRecordRow(record: record)
-                }
-                .navigationTitle(viewModel.date.formatted(.dateTime.year().month()))
+            List(viewModel.records) { record in
+                HydrationRecordRow(record: record)
             }
         }
     }

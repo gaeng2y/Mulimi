@@ -25,16 +25,9 @@ struct RecordCalendarView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                monthHeader
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-
-                weekDayHeader
-                    .padding(.horizontal, 16)
-
-                ScrollView(showsIndicators: false) {
+        ScrollView(showsIndicators: false) {
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                Section {
                     LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(calendarDays, id: \.self) { day in
                             CalendarDayView(
@@ -48,11 +41,20 @@ struct RecordCalendarView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
+                } header: {
+                    VStack(spacing: 0) {
+                        monthHeader
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+
+                        weekDayHeader
+                            .padding(.horizontal, 16)
+                    }
+                    .background(Color(uiColor: .systemGroupedBackground))
                 }
             }
-            .background(Color(uiColor: .systemGroupedBackground))
-            .navigationBarHidden(true)
         }
+        .background(Color(uiColor: .systemGroupedBackground))
         .task {
             await viewModel.fetchHydrationRecord()
         }
