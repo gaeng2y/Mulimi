@@ -13,7 +13,7 @@ import PresentationLayer
 struct ContentView: View {
     var body: some View {
         TabView {
-            Tab("물", systemImage: "waterbottle") {
+            Tab("섭취", systemImage: "waterbottle") {
                 DrinkWaterView(
                     viewModel: DIContainer.shared.resolve(DrinkWaterViewModel.self)
                 )

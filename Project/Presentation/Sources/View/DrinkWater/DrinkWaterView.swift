@@ -17,87 +17,94 @@ public struct DrinkWaterView: View {
     }
     
     public var body: some View {
-        ZStack {
-            Color.background
-                .ignoresSafeArea()
-            
-            VStack {
-                GeometryReader { proxy in
-                    WaterDropView(
-                        appearance: viewModel.mainAppearance,
-                        progress: viewModel.progress,
-                        offset: viewModel.offset
-                    )
-                    .frame(
-                        width: proxy.size.width,
-                        height: proxy.size.height,
-                        alignment: .center
-                    )
-                }
-                .frame(height: 450)
+        NavigationStack {
+            ZStack {
+                Color.background
+                    .ignoresSafeArea()
                 
-                VStack(spacing: 8) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("\(viewModel.drinkWaterCount)잔")
-                            .font(.title)
-                        Text("\(viewModel.mililiters)")
-                            .font(.callout)
+                VStack {
+                    GeometryReader { proxy in
+                        WaterDropView(
+                            appearance: viewModel.mainAppearance,
+                            progress: viewModel.progress,
+                            offset: viewModel.offset
+                        )
+                        .animation(
+                            .linear(duration: 2.0).repeatForever(autoreverses: false),
+                            value: viewModel.offset
+                        )
+                        .frame(
+                            width: proxy.size.width,
+                            height: proxy.size.height,
+                            alignment: .center
+                        )
                     }
+                    .frame(height: 450)
                     
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("목표: \(Int(viewModel.dailyLimit.rounded()))ml")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        if viewModel.isLimitReached {
-                            Text("완료!")
+                    VStack(spacing: 8) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("\(viewModel.drinkWaterCount)잔")
+                                .font(.title)
+                            Text("\(viewModel.mililiters)")
+                                .font(.callout)
+                        }
+                        
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("목표: \(Int(viewModel.dailyLimit.rounded()))ml")
                                 .font(.caption)
-                                .foregroundColor(.green)
-                                .fontWeight(.semibold)
+                                .foregroundColor(.secondary)
+                            if viewModel.isLimitReached {
+                                Text("완료!")
+                                    .font(.caption)
+                                    .foregroundColor(.green)
+                                    .fontWeight(.semibold)
+                            }
                         }
                     }
-                }
-                .padding()
-                
-                HStack {
-                    Button {
-                        Task {
-                            await viewModel.drinkWater()
-                        }
-                    } label: {
-                        Text(viewModel.isLimitReached ? "목표 달성!" : "마시기")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .padding()
-                            .background(viewModel.isLimitReached ? Color.gray : Color.accent)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .disabled(viewModel.isLimitReached)
+                    .padding()
                     
-                    
-                    Button {
-                        Task {
-                            await viewModel.reset()
+                    HStack {
+                        Button {
+                            Task {
+                                await viewModel.drinkWater()
+                            }
+                        } label: {
+                            Text(viewModel.isLimitReached ? "목표 달성!" : "마시기")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .padding()
+                                .background(viewModel.isLimitReached ? Color.gray : Color.accent)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
-                    } label: {
-                        Text("초기화")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .padding()
-                            .background(.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(10)
+                        .disabled(viewModel.isLimitReached)
+                        
+                        Button {
+                            Task {
+                                await viewModel.reset()
+                            }
+                        } label: {
+                            Text("초기화")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .padding()
+                                .background(.white)
+                                .foregroundColor(.black)
+                                .cornerRadius(10)
+                        }
                     }
                 }
             }
-        }
-        .onAppear {
-            // Refresh data when view appears to catch any Widget changes
-            Task {
+            .navigationTitle("섭취")
+            .navigationBarTitleDisplayMode(.large)
+            .task {
+                // Refresh data when view appears to catch any Widget changes.
                 await viewModel.loadInitialState()
             }
-
-            withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+            .task {
+                // Start the repeating wave after the initial frame is committed.
+                viewModel.resetAnimation()
+                await Task.yield()
                 viewModel.startAnimation()
             }
         }

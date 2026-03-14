@@ -148,6 +148,10 @@ public final class DrinkWaterViewModel {
             print("Failed to reset HealthKit data: \(error)")
         }
     }
+
+    func resetAnimation() {
+        offset = 0
+    }
     
     func startAnimation() {
         offset = 360

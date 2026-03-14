@@ -38,6 +38,7 @@ public final class PreviewAssembly: Assembly {
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
+        .inObjectScope(.container)
         
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(

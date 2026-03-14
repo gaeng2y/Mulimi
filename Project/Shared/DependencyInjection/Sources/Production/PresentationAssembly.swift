@@ -31,6 +31,7 @@ public final class PresentationAssembly: Assembly {
                 )
             }
         }
+        .inObjectScope(.container)
         
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
