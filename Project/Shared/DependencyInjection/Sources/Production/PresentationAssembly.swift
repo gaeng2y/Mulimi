@@ -38,6 +38,18 @@ public final class PresentationAssembly: Assembly {
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!
             )
         }
+
+        container.register(HydrationInsightViewModel.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationInsightViewModel(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
+        }
         
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in

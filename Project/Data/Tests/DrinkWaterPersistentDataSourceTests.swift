@@ -7,6 +7,8 @@
 
 import DataLayer
 import Foundation
+import Persistence
+import SwiftData
 import Testing
 
 @Suite("DrinkWaterPersistentDataSource Tests")
@@ -100,6 +102,42 @@ struct DrinkWaterPersistentDataSourceTests {
 
         #expect(await dataSource.currentWater == 10)
         #expect(await dataSource.hydrationEvents(on: .now).count == 10)
+    }
+
+    @Test("hydrationEvents(in:)은 지정한 기간의 이벤트만 반환한다")
+    func hydrationEventsInInterval() async throws {
+        let suiteName = makeIsolatedSuiteName()
+        let setupUserDefaults = makeIsolatedUserDefaults(suiteName: suiteName)
+        defer { setupUserDefaults.removePersistentDomain(forName: suiteName) }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let modelContainer = try SharedHydrationStore.makeModelContainer(isStoredInMemoryOnly: true)
+        let context = ModelContext(modelContainer)
+        let firstDay = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 8))!
+        let secondDay = calendar.date(byAdding: .day, value: 1, to: firstDay)!
+        let thirdDay = calendar.date(byAdding: .day, value: 2, to: firstDay)!
+
+        context.insert(HydrationEventModel(consumedAt: firstDay, volumeML: 250))
+        context.insert(HydrationEventModel(consumedAt: secondDay, volumeML: 500))
+        context.insert(HydrationEventModel(consumedAt: thirdDay, volumeML: 750))
+        try context.save()
+
+        let dataSource = DrinkWaterPersistentDataSource(
+            modelContainer: modelContainer,
+            userDefaults: makeIsolatedUserDefaults(suiteName: suiteName),
+            calendar: calendar
+        )
+
+        let interval = DateInterval(
+            start: calendar.startOfDay(for: secondDay),
+            end: calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: thirdDay))!
+        )
+        let events = await dataSource.hydrationEvents(in: interval)
+
+        #expect(events.count == 2)
+        #expect(events.map(\.volumeML) == [500, 750])
     }
 
     private func makeIsolatedSuiteName() -> String {

@@ -24,6 +24,10 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
         events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
     }
 
+    public func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+        events.filter { interval.contains($0.consumedAt) }
+    }
+
     public func migrateLegacyDataIfNeeded() async {}
     
     public func drinkWater() async {
