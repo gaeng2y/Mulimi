@@ -24,7 +24,13 @@ let project = Project(
             product: .framework,
             bundleId: "\(bundleId).DomainLayer.Interface",
             deploymentTargets: .iOS("18.0"),
-            sources: ["Interfaces/**"]
+            sources: ["Interfaces/**"],
+            dependencies: [
+                .project(
+                    target: "Localization",
+                    path: .relativeToRoot("Project/Shared/Localization")
+                )
+            ]
         ),
         .target(
             name: "DomainLayer",

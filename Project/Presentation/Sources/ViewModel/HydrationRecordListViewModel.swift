@@ -8,6 +8,7 @@
 
 import DomainLayerInterface
 import Foundation
+import Localization
 
 @Observable
 public final class HydrationRecordListViewModel {
@@ -61,7 +62,7 @@ public final class HydrationRecordListViewModel {
               let newDate = Calendar.current.date(
                 from: DateComponents(year: year, month: month, day: 1)
               ) else {
-            errorMessage = "Invalid date selection"
+            errorMessage = L10n.tr("historyInvalidDateSelectionError")
             return
         }
 
@@ -78,7 +79,7 @@ public final class HydrationRecordListViewModel {
             from: Calendar.current.dateComponents([.year, .month], from: date)
         ),
         let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-            errorMessage = "Failed to calculate date range"
+            errorMessage = L10n.tr("historyFailedDateRangeError")
             return []
         }
 

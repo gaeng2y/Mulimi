@@ -7,6 +7,7 @@
 
 import DomainLayerInterface
 import Foundation
+import Localization
 
 struct HydrationInsightMetric: Identifiable, Equatable {
     let id: String
@@ -66,33 +67,41 @@ public final class HydrationInsightViewModel {
         [
             HydrationInsightMetric(
                 id: "weeklyAverage",
-                title: "이번 주 평균",
+                title: L10n.tr("insightMetricWeeklyAverageTitle"),
                 value: volumeText(weeklyAverageML),
-                detail: "\(weeklyElapsedDays)일 기준"
+                detail: L10n.tr("insightElapsedDaysFormat", weeklyElapsedDays)
             ),
             HydrationInsightMetric(
                 id: "monthlyAverage",
-                title: "이번 달 평균",
+                title: L10n.tr("insightMetricMonthlyAverageTitle"),
                 value: volumeText(monthlyAverageML),
-                detail: "\(monthlyElapsedDays)일 기준"
+                detail: L10n.tr("insightElapsedDaysFormat", monthlyElapsedDays)
             ),
             HydrationInsightMetric(
                 id: "weeklyAchievement",
-                title: "주간 달성률",
+                title: L10n.tr("insightMetricWeeklyAchievementTitle"),
                 value: percentText(weeklyAchievementRate),
-                detail: "\(weeklyAchievedDays)/\(max(weeklyElapsedDays, 1))일 달성"
+                detail: L10n.tr(
+                    "insightAchievementDaysFormat",
+                    weeklyAchievedDays,
+                    max(weeklyElapsedDays, 1)
+                )
             ),
             HydrationInsightMetric(
                 id: "monthlyAchievement",
-                title: "월간 달성률",
+                title: L10n.tr("insightMetricMonthlyAchievementTitle"),
                 value: percentText(monthlyAchievementRate),
-                detail: "\(monthlyAchievedDays)/\(max(monthlyElapsedDays, 1))일 달성"
+                detail: L10n.tr(
+                    "insightAchievementDaysFormat",
+                    monthlyAchievedDays,
+                    max(monthlyElapsedDays, 1)
+                )
             )
         ]
     }
 
     var streakText: String {
-        "\(currentStreak)일"
+        L10n.tr("insightStreakValueFormat", currentStreak)
     }
 
     var dailyGoalText: String {
@@ -109,10 +118,16 @@ public final class HydrationInsightViewModel {
 
     var weekdayInsightText: String {
         guard let bestWeekday, let leastWeekday else {
-            return "이번 달 요일별 패턴을 만들 기록이 아직 부족합니다."
+            return L10n.tr("insightWeekdayInsightInsufficient")
         }
 
-        return "\(bestWeekday.label)에 평균 \(volumeText(bestWeekday.averageIntakeML))로 가장 많이 마셨고, \(leastWeekday.label)에는 평균 \(volumeText(leastWeekday.averageIntakeML))로 가장 적게 마셨어요."
+        return L10n.tr(
+            "insightWeekdayInsightFormat",
+            bestWeekday.label,
+            volumeText(bestWeekday.averageIntakeML),
+            leastWeekday.label,
+            volumeText(leastWeekday.averageIntakeML)
+        )
     }
 
     var chartUpperBound: Double {
@@ -321,10 +336,10 @@ public final class HydrationInsightViewModel {
     }
 
     private func volumeText(_ volumeML: Double) -> String {
-        "\(Int(volumeML.rounded()))ml"
+        L10n.tr("commonMilliliterFormat", Int(volumeML.rounded()))
     }
 
     private func percentText(_ ratio: Double) -> String {
-        "\(Int((ratio * 100).rounded()))%"
+        L10n.tr("commonPercentFormat", Int((ratio * 100).rounded()))
     }
 }

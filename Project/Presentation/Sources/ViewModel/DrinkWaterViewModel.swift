@@ -9,6 +9,7 @@
 import Combine
 import DomainLayerInterface
 import Foundation
+import Localization
 import UIKit
 import WidgetKit
 
@@ -27,7 +28,7 @@ public final class DrinkWaterViewModel {
     private var cancellables = Set<AnyCancellable>()
     
     var mililiters: String {
-        String(format: "%.0fml", currentWaterIntakeInMl)
+        L10n.tr("commonMilliliterFormat", Int(currentWaterIntakeInMl.rounded()))
     }
     
     var currentWaterIntakeInMl: Double {

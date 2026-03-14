@@ -7,6 +7,7 @@
 
 import DesignSystem
 import DomainLayerInterface
+import Localization
 import SwiftUI
 
 public struct DrinkWaterView: View {
@@ -43,18 +44,18 @@ public struct DrinkWaterView: View {
                     
                     VStack(spacing: 8) {
                         HStack(alignment: .firstTextBaseline) {
-                            Text("\(viewModel.drinkWaterCount)잔")
+                            Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
                                 .font(.title)
                             Text("\(viewModel.mililiters)")
                                 .font(.callout)
                         }
                         
                         HStack(alignment: .firstTextBaseline) {
-                            Text("목표: \(Int(viewModel.dailyLimit.rounded()))ml")
+                            Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             if viewModel.isLimitReached {
-                                Text("완료!")
+                                Text(L10n.tr("drinkWaterCompleteLabel"))
                                     .font(.caption)
                                     .foregroundColor(.green)
                                     .fontWeight(.semibold)
@@ -69,7 +70,11 @@ public struct DrinkWaterView: View {
                                 await viewModel.drinkWater()
                             }
                         } label: {
-                            Text(viewModel.isLimitReached ? "목표 달성!" : "마시기")
+                            Text(
+                                viewModel.isLimitReached ?
+                                L10n.tr("drinkWaterButtonReachedTitle") :
+                                L10n.tr("drinkWaterButtonTitle")
+                            )
                                 .font(.headline)
                                 .fontWeight(.bold)
                                 .padding()
@@ -84,7 +89,7 @@ public struct DrinkWaterView: View {
                                 await viewModel.reset()
                             }
                         } label: {
-                            Text("초기화")
+                            Text(L10n.tr("commonResetTitle"))
                                 .font(.headline)
                                 .fontWeight(.bold)
                                 .padding()
@@ -95,7 +100,7 @@ public struct DrinkWaterView: View {
                     }
                 }
             }
-            .navigationTitle("섭취")
+            .navigationTitle(L10n.tr("drinkTitle"))
             .navigationBarTitleDisplayMode(.large)
             .task {
                 // Refresh data when view appears to catch any Widget changes.

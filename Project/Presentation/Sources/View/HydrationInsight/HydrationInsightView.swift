@@ -7,6 +7,7 @@
 
 import Charts
 import DesignSystem
+import Localization
 import SwiftUI
 
 public struct HydrationInsightView: View {
@@ -32,7 +33,7 @@ public struct HydrationInsightView: View {
 
                 Group {
                     if viewModel.isLoading {
-                        ProgressView("인사이트 불러오는 중...")
+                        ProgressView(L10n.tr("insightLoadingTitle"))
                     } else if viewModel.isEmpty {
                         emptyState
                     } else {
@@ -41,7 +42,7 @@ public struct HydrationInsightView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .navigationTitle("인사이트")
+            .navigationTitle(L10n.tr("insightNavigationTitle"))
             .task {
                 await viewModel.loadInsights()
             }
@@ -95,23 +96,38 @@ public struct HydrationInsightView: View {
                 .offset(x: 30, y: -30)
 
             VStack(alignment: .leading, spacing: 16) {
-                Label("이번 주와 이번 달 흐름", systemImage: "chart.bar.xaxis")
+                Label(L10n.tr("insightOverviewTitle"), systemImage: "chart.bar.xaxis")
                     .font(.headline)
                     .foregroundStyle(.white.opacity(0.92))
 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("하루 목표는 \(viewModel.dailyGoalText)")
+                    Text(L10n.tr("insightDailyGoalFormat", viewModel.dailyGoalText))
                         .font(.title3.weight(.bold))
                         .foregroundStyle(.white)
-                    Text("이번 주 달성률 \(viewModel.weeklyAchievementText), 이번 달 달성률 \(viewModel.monthlyAchievementText)")
+                    Text(
+                        L10n.tr(
+                            "insightAchievementSummaryFormat",
+                            viewModel.weeklyAchievementText,
+                            viewModel.monthlyAchievementText
+                        )
+                    )
                         .font(.subheadline)
                         .foregroundStyle(.white.opacity(0.88))
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 HStack(spacing: 12) {
-                    PillLabel(title: "현재 streak", value: viewModel.streakText)
-                    PillLabel(title: "이번 달 평균", value: "\(Int(viewModel.monthlyAverageML.rounded()))ml")
+                    PillLabel(
+                        title: L10n.tr("insightStreakPillTitle"),
+                        value: viewModel.streakText
+                    )
+                    PillLabel(
+                        title: L10n.tr("insightThisMonthLabel"),
+                        value: L10n.tr(
+                            "commonMilliliterFormat",
+                            Int(viewModel.monthlyAverageML.rounded())
+                        )
+                    )
                 }
             }
             .padding(22)
@@ -120,25 +136,36 @@ public struct HydrationInsightView: View {
     }
 
     private var streakCard: some View {
-        InsightCard(title: "연속 달성 흐름", subtitle: "오늘 목표를 아직 채우지 않았다면 어제까지의 연속 달성일을 보여줍니다.") {
+        InsightCard(
+            title: L10n.tr("insightStreakCardTitle"),
+            subtitle: L10n.tr("insightStreakCardSubtitle")
+        ) {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text(viewModel.streakText)
                         .font(.system(size: 36, weight: .bold, design: .rounded))
-                    Text("연속 목표 달성")
+                    Text(L10n.tr("insightStreakAchievementLabel"))
                         .font(.headline)
                         .foregroundStyle(.secondary)
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
                     AchievementProgressRow(
-                        title: "이번 주",
-                        detail: "\(viewModel.weeklyAchievedDays)/\(max(viewModel.weeklyElapsedDays, 1))일 달성",
+                        title: L10n.tr("insightThisWeekLabel"),
+                        detail: L10n.tr(
+                            "insightAchievementDaysFormat",
+                            viewModel.weeklyAchievedDays,
+                            max(viewModel.weeklyElapsedDays, 1)
+                        ),
                         progress: viewModel.weeklyAchievementRate
                     )
                     AchievementProgressRow(
-                        title: "이번 달",
-                        detail: "\(viewModel.monthlyAchievedDays)/\(max(viewModel.monthlyElapsedDays, 1))일 달성",
+                        title: L10n.tr("insightThisMonthLabel"),
+                        detail: L10n.tr(
+                            "insightAchievementDaysFormat",
+                            viewModel.monthlyAchievedDays,
+                            max(viewModel.monthlyElapsedDays, 1)
+                        ),
                         progress: viewModel.monthlyAchievementRate
                     )
                 }
@@ -147,12 +174,18 @@ public struct HydrationInsightView: View {
     }
 
     private var weekdayPatternCard: some View {
-        InsightCard(title: "이번 달 요일 패턴", subtitle: viewModel.weekdayInsightText) {
+        InsightCard(
+            title: L10n.tr("insightWeekdayPatternTitle"),
+            subtitle: viewModel.weekdayInsightText
+        ) {
             VStack(alignment: .leading, spacing: 14) {
                 Chart(viewModel.weekdayDistributions) { distribution in
                     BarMark(
-                        x: .value("요일", distribution.label),
-                        y: .value("평균 섭취량", distribution.averageIntakeML)
+                        x: .value(L10n.tr("insightChartWeekdayAxisTitle"), distribution.label),
+                        y: .value(
+                            L10n.tr("insightChartAverageIntakeAxisTitle"),
+                            distribution.averageIntakeML
+                        )
                     )
                     .cornerRadius(8)
                     .foregroundStyle(
@@ -162,7 +195,12 @@ public struct HydrationInsightView: View {
                     )
 
                     if viewModel.dailyGoalML > 0 {
-                        RuleMark(y: .value("목표", viewModel.dailyGoalML))
+                        RuleMark(
+                            y: .value(
+                                L10n.tr("insightChartGoalAxisTitle"),
+                                viewModel.dailyGoalML
+                            )
+                        )
                             .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 4]))
                             .foregroundStyle(Color.secondary.opacity(0.7))
                     }
@@ -174,15 +212,23 @@ public struct HydrationInsightView: View {
                 HStack(spacing: 12) {
                     if let bestWeekday = viewModel.bestWeekday {
                         BadgeView(
-                            title: "가장 많이 마신 날",
-                            value: "\(bestWeekday.label) · \(Int(bestWeekday.averageIntakeML.rounded()))ml"
+                            title: L10n.tr("insightMostDrankDayTitle"),
+                            value: L10n.tr(
+                                "insightWeekdayBadgeValueFormat",
+                                bestWeekday.label,
+                                Int(bestWeekday.averageIntakeML.rounded())
+                            )
                         )
                     }
 
                     if let leastWeekday = viewModel.leastWeekday {
                         BadgeView(
-                            title: "가장 적게 마신 날",
-                            value: "\(leastWeekday.label) · \(Int(leastWeekday.averageIntakeML.rounded()))ml"
+                            title: L10n.tr("insightLeastDrankDayTitle"),
+                            value: L10n.tr(
+                                "insightWeekdayBadgeValueFormat",
+                                leastWeekday.label,
+                                Int(leastWeekday.averageIntakeML.rounded())
+                            )
                         )
                     }
                 }
@@ -191,7 +237,7 @@ public struct HydrationInsightView: View {
                     Circle()
                         .fill(Color.secondary.opacity(0.7))
                         .frame(width: 8, height: 8)
-                    Text("점선은 하루 목표량을 뜻합니다.")
+                    Text(L10n.tr("insightGoalRuleDescription"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -208,9 +254,9 @@ public struct HydrationInsightView: View {
                 .foregroundStyle(Color.accent)
 
             VStack(spacing: 8) {
-                Text("아직 보여줄 인사이트가 없어요")
+                Text(L10n.tr("insightEmptyTitle"))
                     .font(.title3.weight(.bold))
-                Text("최근 기록이 쌓이면 주간 평균, 달성률, streak, 요일 패턴을 한 번에 볼 수 있습니다. 오늘 목표는 \(viewModel.dailyGoalText)입니다.")
+                Text(L10n.tr("insightEmptyDescriptionFormat", viewModel.dailyGoalText))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

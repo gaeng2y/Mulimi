@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Localization
 
 public enum SettingMenu: CaseIterable, Identifiable {
     case dailyLimit
@@ -17,9 +18,9 @@ public enum SettingMenu: CaseIterable, Identifiable {
 
     public var title: String {
         switch self {
-        case .dailyLimit: "하루 목표량"
-        case .mainShape: "메인 화면 모양"
-        case .withdrawal: "회원 탈퇴"
+        case .dailyLimit: L10n.tr("settingDailyLimitTitle")
+        case .mainShape: L10n.tr("settingMainShapeTitle")
+        case .withdrawal: L10n.tr("settingWithdrawalTitle")
         }
     }
 
@@ -37,11 +38,11 @@ public enum SettingMenu: CaseIterable, Identifiable {
     public var description: String {
         switch self {
         case .dailyLimit:
-            return "하루 동안 마실 물의 목표량을 설정합니다"
+            return L10n.tr("settingDailyLimitDescription")
         case .mainShape:
-            return "메인 화면의 디자인을 선택합니다"
+            return L10n.tr("settingMainShapeDescription")
         case .withdrawal:
-            return "계정을 영구적으로 삭제합니다"
+            return L10n.tr("settingWithdrawalDescription")
         }
     }
 

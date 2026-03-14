@@ -1,5 +1,6 @@
 import DomainLayerInterface
 import Foundation
+import Localization
 import Testing
 
 @testable import PresentationLayer
@@ -33,7 +34,7 @@ struct DrinkWaterViewModelTests {
         #expect(viewModel.mainAppearance == .heart)
         #expect(viewModel.dailyLimit == 1500)
         #expect(viewModel.currentWaterIntakeInMl == 500)
-        #expect(viewModel.mililiters == "500ml")
+        #expect(viewModel.mililiters == L10n.tr("commonMilliliterFormat", 500))
         #expect(viewModel.isLimitReached == false)
     }
 
