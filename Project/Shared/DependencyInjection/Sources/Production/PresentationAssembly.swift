@@ -16,6 +16,16 @@ public final class PresentationAssembly: Assembly {
             SettingsCoordinator()
         }
         .inObjectScope(.container)
+        container.register(SettingsRouting.self) { resolver in
+            resolver.resolve(SettingsCoordinator.self)!
+        }
+        container.register(RecordCoordinator.self) { _ in
+            RecordCoordinator()
+        }
+        .inObjectScope(.container)
+        container.register(RecordRouting.self) { resolver in
+            resolver.resolve(RecordCoordinator.self)!
+        }
         
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
@@ -36,7 +46,8 @@ public final class PresentationAssembly: Assembly {
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                recordRouting: resolver.resolve(RecordRouting.self)!
             )
         }
 
@@ -63,7 +74,7 @@ public final class PresentationAssembly: Assembly {
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                settingsCoordinator: resolver.resolve(SettingsCoordinator.self)!,
+                settingsRouting: resolver.resolve(SettingsRouting.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

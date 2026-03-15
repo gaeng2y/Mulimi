@@ -12,7 +12,6 @@ import SwiftUI
 
 struct RecordCalendarView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
-    @State private var isYearMonthPickerPresented = false
     @State private var selectedYear = Calendar.current.component(.year, from: .now)
     @State private var selectedMonth = Calendar.current.component(.month, from: .now)
 
@@ -58,8 +57,16 @@ struct RecordCalendarView: View {
         .task {
             await viewModel.fetchHydrationRecord()
         }
-        .sheet(isPresented: $isYearMonthPickerPresented) {
-            yearMonthPickerSheet
+        .sheet(
+            item: Binding(
+                get: { viewModel.presentedRoute },
+                set: { viewModel.presentedRoute = $0 }
+            )
+        ) { route in
+            switch route {
+            case .monthPicker:
+                yearMonthPickerSheet
+            }
         }
     }
 
@@ -67,7 +74,7 @@ struct RecordCalendarView: View {
         HStack {
             Button {
                 syncPickerSelectionWithCurrentDate()
-                isYearMonthPickerPresented = true
+                viewModel.showMonthPicker()
             } label: {
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -225,7 +232,7 @@ struct RecordCalendarView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(L10n.tr("commonCancelTitle")) {
-                        isYearMonthPickerPresented = false
+                        viewModel.dismissPresentedRoute()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -236,7 +243,7 @@ struct RecordCalendarView: View {
                                 month: selectedMonth
                             )
                         }
-                        isYearMonthPickerPresented = false
+                        viewModel.dismissPresentedRoute()
                     }
                 }
             }

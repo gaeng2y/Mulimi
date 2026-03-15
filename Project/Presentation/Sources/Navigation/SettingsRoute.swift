@@ -8,7 +8,7 @@
 import DomainLayerInterface
 import Foundation
 
-public enum SettingsRoute: Hashable {
+public enum SettingsRoute: NavigationRoute {
     case dailyLimit
     case mainShape
     case withdrawal
@@ -46,5 +46,11 @@ extension SettingsRoute: Identifiable {
         case .withdrawal:
             return "account_withdrawal"
         }
+    }
+}
+
+extension SettingsRoute {
+    public var presentationStyle: NavigationPresentationStyle {
+        .push
     }
 }

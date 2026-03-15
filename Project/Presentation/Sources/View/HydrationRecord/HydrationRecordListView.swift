@@ -11,7 +11,7 @@ import Localization
 import SwiftUI
 
 public struct HydrationRecordListView: View {
-    private var viewModel: HydrationRecordListViewModel
+    @Bindable private var viewModel: HydrationRecordListViewModel
     @State private var isPresentedAlert: Bool = false
     
     public init(viewModel: HydrationRecordListViewModel) {
@@ -19,7 +19,12 @@ public struct HydrationRecordListView: View {
     }
     
     public var body: some View {
-        NavigationStack {
+        NavigationStack(
+            path: Binding(
+                get: { viewModel.navigationPath },
+                set: { viewModel.navigationPath = $0 }
+            )
+        ) {
             RecordCalendarView(viewModel: viewModel)
             .navigationTitle(L10n.tr("historyTitle"))
             .navigationBarTitleDisplayMode(.large)
@@ -40,7 +45,7 @@ public struct HydrationRecordListView: View {
     }
     
     private struct RowListView: View {
-        private var viewModel: HydrationRecordListViewModel
+        @Bindable private var viewModel: HydrationRecordListViewModel
         
         init(viewModel: HydrationRecordListViewModel) {
             self.viewModel = viewModel

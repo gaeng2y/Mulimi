@@ -13,7 +13,7 @@ import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
-    private let settingsCoordinator: SettingsCoordinator
+    private let settingsRouting: any SettingsRouting
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let authenticationViewModel: AuthenticationViewModel
@@ -26,12 +26,12 @@ public final class SettingsViewModel {
     public var withdrawalError: String?
 
     public init(
-        settingsCoordinator: SettingsCoordinator,
+        settingsRouting: any SettingsRouting,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
         authenticationViewModel: AuthenticationViewModel
     ) {
-        self.settingsCoordinator = settingsCoordinator
+        self.settingsRouting = settingsRouting
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
@@ -41,12 +41,12 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation State
     public var navigationPath: NavigationPath {
-        get { settingsCoordinator.path }
-        set { settingsCoordinator.path = newValue }
+        get { settingsRouting.path }
+        set { settingsRouting.path = newValue }
     }
     
     public var hasNavigationPath: Bool {
-        settingsCoordinator.hasPath
+        settingsRouting.hasPath
     }
     
     // MARK: - Settings Data
@@ -54,15 +54,15 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation Actions
     public func navigate(to menu: SettingMenu) {
-        settingsCoordinator.push(SettingsRoute(menu: menu))
+        settingsRouting.push(SettingsRoute(menu: menu))
     }
     
     public func navigateBack() {
-        settingsCoordinator.pop()
+        settingsRouting.pop()
     }
     
     public func resetNavigation() {
-        settingsCoordinator.reset()
+        settingsRouting.reset()
     }
     
     // MARK: - Settings Actions
