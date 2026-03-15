@@ -24,4 +24,10 @@ public struct PreviewViews {
         let viewModel = DIContainer.preview.resolve(HydrationRecordListViewModel.self)
         return HydrationRecordListView(viewModel: viewModel)
     }
+
+    /// ProfileView Preview 생성
+    public static var profile: some View {
+        let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+        return ProfileView(settingsViewModel: viewModel)
+    }
 }
