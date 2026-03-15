@@ -9,6 +9,7 @@
 import DomainLayerInterface
 import Foundation
 import Localization
+import SwiftUI
 
 @Observable
 public final class HydrationRecordListViewModel {
@@ -17,16 +18,37 @@ public final class HydrationRecordListViewModel {
     
     private(set) var errorMessage: String = ""
     private let useCase: DrinkWaterUseCase
+    private let recordRouting: any RecordRouting
     
     public init(
-        useCase: DrinkWaterUseCase
+        useCase: DrinkWaterUseCase,
+        recordRouting: any RecordRouting
     ) {
         self.useCase = useCase
+        self.recordRouting = recordRouting
+    }
+
+    public var navigationPath: NavigationPath {
+        get { recordRouting.path }
+        set { recordRouting.path = newValue }
+    }
+
+    public var presentedRoute: RecordRoute? {
+        get { recordRouting.presentedRoute }
+        set { recordRouting.presentedRoute = newValue }
     }
     
     @MainActor
     func onAppear() async {
         await fetchHydrationRecord()
+    }
+
+    public func showMonthPicker() {
+        recordRouting.present(.monthPicker)
+    }
+
+    public func dismissPresentedRoute() {
+        recordRouting.dismissPresentedRoute()
     }
     
     @MainActor

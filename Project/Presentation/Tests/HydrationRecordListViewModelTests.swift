@@ -1,17 +1,57 @@
 import DomainLayerInterface
 import Foundation
 import Localization
+import SwiftUI
 import Testing
 
 @testable import PresentationLayer
 
 @Suite("HydrationRecordListViewModel Tests")
 struct HydrationRecordListViewModelTests {
+    private final class SpyRecordRouting: RecordRouting {
+        var path = NavigationPath()
+        var presentedRoute: RecordRoute?
+        var hasPath: Bool { !path.isEmpty }
+        private(set) var pushedRoutes: [RecordRoute] = []
+        private(set) var presentCallCount = 0
+        private(set) var dismissCallCount = 0
+
+        func push(_ route: RecordRoute) {
+            pushedRoutes.append(route)
+            path.append(route)
+        }
+
+        func pop() {
+            if !path.isEmpty {
+                path.removeLast()
+            }
+        }
+
+        func reset() {
+            path = NavigationPath()
+        }
+
+        func present(_ route: RecordRoute) {
+            presentCallCount += 1
+            presentedRoute = route
+        }
+
+        func dismissPresentedRoute() {
+            dismissCallCount += 1
+            presentedRoute = nil
+        }
+
+        func handleDeepLink(_ url: URL) {}
+    }
+
     @MainActor
     @Test("fetchHydrationRecord는 날짜별 합계를 계산해 정렬된 기록을 만든다")
     func fetchHydrationRecord() async {
         let mockUseCase = MockDrinkWaterUseCase()
-        let viewModel = HydrationRecordListViewModel(useCase: mockUseCase)
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            recordRouting: SpyRecordRouting()
+        )
         let calendar = Calendar.current
         let monthStart = calendar.date(
             from: calendar.dateComponents([.year, .month], from: .now)
@@ -42,7 +82,10 @@ struct HydrationRecordListViewModelTests {
     @MainActor
     @Test("updateDisplayedMonth는 잘못된 월 입력 시 에러를 설정한다")
     func updateDisplayedMonthWithInvalidMonth() async {
-        let viewModel = HydrationRecordListViewModel(useCase: MockDrinkWaterUseCase())
+        let viewModel = HydrationRecordListViewModel(
+            useCase: MockDrinkWaterUseCase(),
+            recordRouting: SpyRecordRouting()
+        )
 
         await viewModel.updateDisplayedMonth(year: 2026, month: 13)
 
@@ -50,10 +93,35 @@ struct HydrationRecordListViewModelTests {
     }
 
     @MainActor
+    @Test("showMonthPicker와 dismissPresentedRoute는 record route 시트를 제어한다")
+    func monthPickerRoutingActions() {
+        let routing = SpyRecordRouting()
+        let viewModel = HydrationRecordListViewModel(
+            useCase: MockDrinkWaterUseCase(),
+            recordRouting: routing
+        )
+
+        viewModel.showMonthPicker()
+
+        #expect(viewModel.presentedRoute == .monthPicker)
+        #expect(routing.presentedRoute == .monthPicker)
+        #expect(routing.presentCallCount == 1)
+
+        viewModel.dismissPresentedRoute()
+
+        #expect(viewModel.presentedRoute == nil)
+        #expect(routing.presentedRoute == nil)
+        #expect(routing.dismissCallCount == 1)
+    }
+
+    @MainActor
     @Test("updateDisplayedMonth는 유효한 입력 시 월을 전환하고 기록을 다시 조회한다")
     func updateDisplayedMonth() async {
         let mockUseCase = MockDrinkWaterUseCase()
-        let viewModel = HydrationRecordListViewModel(useCase: mockUseCase)
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            recordRouting: SpyRecordRouting()
+        )
         let calendar = Calendar.current
         let targetDate = calendar.date(from: DateComponents(year: 2025, month: 8, day: 1))!
 

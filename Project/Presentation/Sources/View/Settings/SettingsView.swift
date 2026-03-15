@@ -41,13 +41,8 @@ public struct SettingsView: View {
                 .buttonStyle(PlainButtonStyle())
             }
             .navigationTitle(L10n.tr("settingsTitle"))
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                switch destination {
-                case .settingDetail(let menu):
-                    SettingDetailView(menu: menu, viewModel: viewModel)
-                default:
-                    EmptyView()
-                }
+            .navigationDestination(for: SettingsRoute.self) { route in
+                SettingDetailView(menu: route.menu, viewModel: viewModel)
             }
         }
     }
