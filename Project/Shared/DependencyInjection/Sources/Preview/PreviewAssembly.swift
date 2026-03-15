@@ -61,10 +61,14 @@ public final class PreviewAssembly: Assembly {
 
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
-                    routineUseCase: routineUseCase
+                    routineUseCase: routineUseCase,
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
                 )
             }
         }

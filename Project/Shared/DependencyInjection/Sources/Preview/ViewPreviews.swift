@@ -49,8 +49,17 @@ import SwiftUI
         ],
         authorizationStatus: .authorized
     )
+    let mockDrinkWaterUseCase = MockDrinkWaterUseCase()
+    mockDrinkWaterUseCase.currentWaterValue = 2
+    let mockUserPreferencesUseCase = MockUserPreferencesUseCase()
+    mockUserPreferencesUseCase.setDailyWaterLimit(2000)
+
     ProfileRoutineView(
-        viewModel: ProfileRoutineViewModel(routineUseCase: mockUseCase)
+        viewModel: ProfileRoutineViewModel(
+            routineUseCase: mockUseCase,
+            drinkWaterUseCase: mockDrinkWaterUseCase,
+            userPreferencesUseCase: mockUserPreferencesUseCase
+        )
     )
 }
 

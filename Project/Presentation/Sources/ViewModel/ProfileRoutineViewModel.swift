@@ -10,6 +10,15 @@ struct RoutineDetailRow: Identifiable, Equatable {
     let systemImage: String
 }
 
+struct RoutineGuidanceSummary: Equatable {
+    let badgeText: String
+    let headline: String
+    let description: String
+    let footnote: String
+    let recommendedValueText: String?
+    let actualValueText: String?
+}
+
 struct RoutineEditorDraft: Equatable {
     var id: UUID?
     var title: String
@@ -72,16 +81,33 @@ struct RoutineEditorDraft: Equatable {
 @Observable
 public final class ProfileRoutineViewModel {
     private let routineUseCase: RoutineUseCase
+    private let drinkWaterUseCase: DrinkWaterUseCase
+    private let userPreferencesUseCase: UserPreferencesUseCase
+    private let calendar: Calendar
+    private let nowProvider: @Sendable () -> Date
 
     public private(set) var notificationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
     public private(set) var routines: [HydrationRoutine] = []
+    public private(set) var currentWaterCount = 0
+    public private(set) var dailyWaterLimitML = 0
     public var isEditorPresented = false
     public var isSaving = false
     public var errorMessage: String?
     var editorDraft = RoutineEditorDraft()
 
-    public init(routineUseCase: RoutineUseCase) {
+    public init(
+        routineUseCase: RoutineUseCase,
+        drinkWaterUseCase: DrinkWaterUseCase,
+        userPreferencesUseCase: UserPreferencesUseCase,
+        calendar: Calendar = .current,
+        nowProvider: @escaping @Sendable () -> Date = { .now }
+    ) {
         self.routineUseCase = routineUseCase
+        self.drinkWaterUseCase = drinkWaterUseCase
+        self.userPreferencesUseCase = userPreferencesUseCase
+        self.calendar = calendar
+        self.nowProvider = nowProvider
+        self.dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
     }
 
     public var hasConfiguredRoutine: Bool {
@@ -157,9 +183,53 @@ public final class ProfileRoutineViewModel {
         editorDraft.isEditing
     }
 
+    var guidanceSummary: RoutineGuidanceSummary {
+        let todayRoutines = todayActiveRoutines
+
+        guard !todayRoutines.isEmpty else {
+            return RoutineGuidanceSummary(
+                badgeText: L10n.tr("profileRoutineGuidanceNoScheduleBadge"),
+                headline: L10n.tr("profileRoutineGuidanceNoScheduleHeadline"),
+                description: L10n.tr("profileRoutineGuidanceNoScheduleDescription"),
+                footnote: L10n.tr("profileRoutineGuidanceNoScheduleFootnote"),
+                recommendedValueText: nil,
+                actualValueText: nil
+            )
+        }
+
+        let elapsedCount = elapsedRoutineCount(for: todayRoutines)
+        let actualIntakeML = currentWaterCount * 250
+        let recommendedIntakeML = recommendedIntakeML(
+            elapsedCount: elapsedCount,
+            totalCount: todayRoutines.count
+        )
+
+        return RoutineGuidanceSummary(
+            badgeText: L10n.tr(
+                "profileRoutineGuidanceProgressFormat",
+                Int(routineProgressPercentage(elapsedCount: elapsedCount, totalCount: todayRoutines.count).rounded())
+            ),
+            headline: guidanceHeadline(
+                elapsedCount: elapsedCount,
+                recommendedIntakeML: recommendedIntakeML,
+                actualIntakeML: actualIntakeML
+            ),
+            description: L10n.tr(
+                "profileRoutineGuidanceDescriptionFormat",
+                L10n.tr("commonMilliliterFormat", recommendedIntakeML),
+                L10n.tr("commonMilliliterFormat", actualIntakeML)
+            ),
+            footnote: L10n.tr("profileRoutineGuidanceFootnoteFormat", todayRoutines.count, elapsedCount),
+            recommendedValueText: L10n.tr("commonMilliliterFormat", recommendedIntakeML),
+            actualValueText: L10n.tr("commonMilliliterFormat", actualIntakeML)
+        )
+    }
+
     public func load() async {
         notificationStatus = await routineUseCase.notificationAuthorizationStatus()
         routines = routineUseCase.fetchRoutines()
+        currentWaterCount = await drinkWaterUseCase.currentWater
+        dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
     }
 
     public func refreshAuthorizationStatus() async {
@@ -245,5 +315,79 @@ public final class ProfileRoutineViewModel {
 
     private var primaryRoutine: HydrationRoutine? {
         routines.first(where: \.isEnabled) ?? routines.first
+    }
+
+    private var todayActiveRoutines: [HydrationRoutine] {
+        guard let weekday = RoutineWeekday(rawValue: calendar.component(.weekday, from: nowProvider())) else {
+            return []
+        }
+
+        return routines
+            .filter { $0.isEnabled && $0.weekdays.contains(weekday) }
+            .sorted {
+                if $0.hour == $1.hour {
+                    return $0.minute < $1.minute
+                }
+
+                return $0.hour < $1.hour
+            }
+    }
+
+    private func elapsedRoutineCount(for routines: [HydrationRoutine]) -> Int {
+        let now = nowProvider()
+        let currentMinutes = minuteOfDay(for: now)
+
+        return routines.filter { routine in
+            minuteOfDay(hour: routine.hour, minute: routine.minute) <= currentMinutes
+        }
+        .count
+    }
+
+    private func recommendedIntakeML(elapsedCount: Int, totalCount: Int) -> Int {
+        guard totalCount > 0 else {
+            return 0
+        }
+
+        return Int((Double(dailyWaterLimitML) * Double(elapsedCount) / Double(totalCount)).rounded())
+    }
+
+    private func routineProgressPercentage(elapsedCount: Int, totalCount: Int) -> Double {
+        guard totalCount > 0 else {
+            return 0
+        }
+
+        return Double(elapsedCount) / Double(totalCount) * 100
+    }
+
+    private func guidanceHeadline(
+        elapsedCount: Int,
+        recommendedIntakeML: Int,
+        actualIntakeML: Int
+    ) -> String {
+        if elapsedCount == 0 {
+            return L10n.tr("profileRoutineGuidanceBeforeStartHeadline")
+        }
+
+        if actualIntakeML == recommendedIntakeML {
+            return L10n.tr("profileRoutineGuidanceOnTrackHeadline")
+        }
+
+        let gap = abs(actualIntakeML - recommendedIntakeML)
+        let gapText = L10n.tr("commonMilliliterFormat", gap)
+
+        if actualIntakeML < recommendedIntakeML {
+            return L10n.tr("profileRoutineGuidanceBehindHeadlineFormat", gapText)
+        }
+
+        return L10n.tr("profileRoutineGuidanceAheadHeadlineFormat", gapText)
+    }
+
+    private func minuteOfDay(for date: Date) -> Int {
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        return minuteOfDay(hour: components.hour ?? 0, minute: components.minute ?? 0)
+    }
+
+    private func minuteOfDay(hour: Int, minute: Int) -> Int {
+        hour * 60 + minute
     }
 }

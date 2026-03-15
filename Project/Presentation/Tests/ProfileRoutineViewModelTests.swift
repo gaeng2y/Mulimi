@@ -47,11 +47,80 @@ struct ProfileRoutineViewModelTests {
         }
     }
 
+    private final class SpyDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
+        var currentWaterValue = 0
+
+        var currentWater: Int {
+            get async {
+                currentWaterValue
+            }
+        }
+
+        func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+            []
+        }
+
+        func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+            []
+        }
+
+        func migrateLegacyDataIfNeeded() async {}
+
+        func drinkWater() async {}
+
+        func reset() async {}
+    }
+
+    private final class SpyUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
+        var dailyWaterLimit: Double = 2000
+
+        func getMainAppearance() -> MainAppearance {
+            .drop
+        }
+
+        func setMainAppearance(_ appearance: MainAppearance) {}
+
+        func getDailyWaterLimit() -> Double {
+            dailyWaterLimit
+        }
+
+        func setDailyWaterLimit(_ limit: Double) {
+            dailyWaterLimit = limit
+        }
+    }
+
+    @MainActor
+    private func makeViewModel(
+        routineUseCase: SpyRoutineUseCase = SpyRoutineUseCase(),
+        drinkWaterUseCase: SpyDrinkWaterUseCase = SpyDrinkWaterUseCase(),
+        userPreferencesUseCase: SpyUserPreferencesUseCase = SpyUserPreferencesUseCase(),
+        now: Date? = nil
+    ) -> ProfileRoutineViewModel {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+        let referenceDate = now ?? makeDate(year: 2026, month: 3, day: 16, hour: 10, minute: 30)
+
+        return ProfileRoutineViewModel(
+            routineUseCase: routineUseCase,
+            drinkWaterUseCase: drinkWaterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            calendar: calendar,
+            nowProvider: { referenceDate }
+        )
+    }
+
+    @MainActor
+    private func makeDate(year: Int, month: Int, day: Int, hour: Int, minute: Int) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+        return calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
+    }
+
     @MainActor
     @Test("루틴이 없으면 empty 상태 요약을 노출한다")
     func emptyStateSummary() async {
         let useCase = SpyRoutineUseCase()
-        let viewModel = ProfileRoutineViewModel(routineUseCase: useCase)
+        let viewModel = makeViewModel(routineUseCase: useCase)
 
         await viewModel.load()
 
@@ -78,7 +147,7 @@ struct ProfileRoutineViewModelTests {
         let useCase = SpyRoutineUseCase()
         useCase.routines = [routine]
         useCase.authorizationStatus = .authorized
-        let viewModel = ProfileRoutineViewModel(routineUseCase: useCase)
+        let viewModel = makeViewModel(routineUseCase: useCase)
 
         await viewModel.load()
 
@@ -97,7 +166,7 @@ struct ProfileRoutineViewModelTests {
     @Test("saveDraft는 유효한 루틴을 저장하고 시트를 닫는다")
     func saveDraft() async {
         let useCase = SpyRoutineUseCase()
-        let viewModel = ProfileRoutineViewModel(routineUseCase: useCase)
+        let viewModel = makeViewModel(routineUseCase: useCase)
 
         viewModel.presentCreateRoutine()
         viewModel.editorDraft.title = "오후 루틴"
@@ -114,7 +183,7 @@ struct ProfileRoutineViewModelTests {
     @Test("saveDraft는 요일이 없으면 검증 에러를 노출한다")
     func saveDraftValidation() async {
         let useCase = SpyRoutineUseCase()
-        let viewModel = ProfileRoutineViewModel(routineUseCase: useCase)
+        let viewModel = makeViewModel(routineUseCase: useCase)
 
         viewModel.presentCreateRoutine()
         viewModel.editorDraft.title = "오후 루틴"
@@ -123,5 +192,69 @@ struct ProfileRoutineViewModelTests {
         await viewModel.saveDraft()
 
         #expect(viewModel.errorMessage == L10n.tr("profileRoutineValidationError"))
+    }
+
+    @MainActor
+    @Test("오늘 활성 루틴과 현재 섭취량으로 권장 섭취 가이드를 계산한다")
+    func guidanceSummary() async {
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.routines = [
+            HydrationRoutine(
+                title: "오전 루틴",
+                hour: 9,
+                minute: 0,
+                weekdays: [.monday],
+                isEnabled: true
+            ),
+            HydrationRoutine(
+                title: "오후 루틴",
+                hour: 18,
+                minute: 0,
+                weekdays: [.monday],
+                isEnabled: true
+            )
+        ]
+        let drinkWaterUseCase = SpyDrinkWaterUseCase()
+        drinkWaterUseCase.currentWaterValue = 3
+        let userPreferencesUseCase = SpyUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimit = 2000
+        let now = makeDate(year: 2026, month: 3, day: 16, hour: 10, minute: 30)
+        let viewModel = makeViewModel(
+            routineUseCase: routineUseCase,
+            drinkWaterUseCase: drinkWaterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            now: now
+        )
+
+        await viewModel.load()
+
+        #expect(viewModel.guidanceSummary.badgeText == L10n.tr("profileRoutineGuidanceProgressFormat", 50))
+        #expect(viewModel.guidanceSummary.headline == L10n.tr("profileRoutineGuidanceBehindHeadlineFormat", L10n.tr("commonMilliliterFormat", 250)))
+        #expect(viewModel.guidanceSummary.description == L10n.tr("profileRoutineGuidanceDescriptionFormat", L10n.tr("commonMilliliterFormat", 1000), L10n.tr("commonMilliliterFormat", 750)))
+        #expect(viewModel.guidanceSummary.recommendedValueText == L10n.tr("commonMilliliterFormat", 1000))
+        #expect(viewModel.guidanceSummary.actualValueText == L10n.tr("commonMilliliterFormat", 750))
+    }
+
+    @MainActor
+    @Test("오늘에 해당하는 활성 루틴이 없으면 권장 섭취 안내는 빈 상태를 노출한다")
+    func guidanceSummaryWithoutTodayRoutine() async {
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.routines = [
+            HydrationRoutine(
+                title: "주말 루틴",
+                hour: 10,
+                minute: 0,
+                weekdays: [.saturday, .sunday],
+                isEnabled: true
+            )
+        ]
+        let viewModel = makeViewModel(routineUseCase: routineUseCase)
+
+        await viewModel.load()
+
+        #expect(viewModel.guidanceSummary.badgeText == L10n.tr("profileRoutineGuidanceNoScheduleBadge"))
+        #expect(viewModel.guidanceSummary.headline == L10n.tr("profileRoutineGuidanceNoScheduleHeadline"))
+        #expect(viewModel.guidanceSummary.recommendedValueText == nil)
+        #expect(viewModel.guidanceSummary.actualValueText == nil)
     }
 }

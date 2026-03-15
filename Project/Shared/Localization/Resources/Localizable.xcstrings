@@ -925,6 +925,160 @@
         }
       }
     },
+    "profileRoutineGuidanceActualTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 섭취"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceAheadHeadlineFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 %@ 앞서 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBeforeStartHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴 전이에요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBehindHeadlineFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 %@ 부족해요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 권장 %@ · 현재 섭취 %@"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceFootnoteFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 활성 루틴 %lld개 중 %lld개 시간대가 지났어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 없음"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반복 요일이 오늘에 맞는 활성 루틴을 추가하면 지금까지 권장 섭취량을 보여드릴게요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기준으로 계산할 활성 루틴이 생기면 진행률도 함께 안내합니다."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 적용되는 루틴이 없어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceOnTrackHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 루틴을 잘 따라가고 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceProgressFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 진행률 %lld%%"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRecommendedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 권장"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 가이드"
+          }
+        }
+      }
+    },
     "profileRoutineDisabledBadge" : {
       "extractionState" : "manual",
       "localizations" : {
