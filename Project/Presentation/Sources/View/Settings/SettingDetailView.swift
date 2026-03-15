@@ -32,6 +32,7 @@ public struct SettingDetailView: View {
                 WithdrawalSettingView(viewModel: viewModel)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
