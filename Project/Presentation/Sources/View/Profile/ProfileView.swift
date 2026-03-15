@@ -5,7 +5,6 @@ import SwiftUI
 public struct ProfileView: View {
     @Bindable private var settingsViewModel: SettingsViewModel
     @Bindable private var routineViewModel: ProfileRoutineViewModel
-    @State private var isSettingsPresented = false
 
     public init(
         settingsViewModel: SettingsViewModel,
@@ -46,8 +45,11 @@ public struct ProfileView: View {
             .navigationTitle(L10n.tr("profileTitle"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isSettingsPresented = true
+                    NavigationLink {
+                        SettingsView(
+                            viewModel: settingsViewModel,
+                            isEmbeddedInNavigationStack: true
+                        )
                     } label: {
                         Image(systemName: "gearshape")
                     }
@@ -57,9 +59,6 @@ public struct ProfileView: View {
             .task {
                 await routineViewModel.load()
             }
-        }
-        .sheet(isPresented: $isSettingsPresented) {
-            SettingsView(viewModel: settingsViewModel)
         }
     }
 
