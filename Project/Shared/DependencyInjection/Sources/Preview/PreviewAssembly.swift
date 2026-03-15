@@ -54,8 +54,8 @@ public final class PreviewAssembly: Assembly {
         }
         
         // MARK: - Navigation (Preview)
-        container.register(NavigationRouter.self) { _ in
-            MockNavigationRouter()
+        container.register(SettingsCoordinator.self) { _ in
+            MockSettingsCoordinator()
         }
         .inObjectScope(.container)
 
@@ -70,7 +70,7 @@ public final class PreviewAssembly: Assembly {
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                navigationRouter: resolver.resolve(NavigationRouter.self)!,
+                settingsCoordinator: resolver.resolve(SettingsCoordinator.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

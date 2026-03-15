@@ -13,7 +13,7 @@ import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
-    private let navigationRouter: NavigationRouter
+    private let settingsCoordinator: SettingsCoordinator
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let authenticationViewModel: AuthenticationViewModel
@@ -26,12 +26,12 @@ public final class SettingsViewModel {
     public var withdrawalError: String?
 
     public init(
-        navigationRouter: NavigationRouter,
+        settingsCoordinator: SettingsCoordinator,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
         authenticationViewModel: AuthenticationViewModel
     ) {
-        self.navigationRouter = navigationRouter
+        self.settingsCoordinator = settingsCoordinator
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
@@ -41,12 +41,12 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation State
     public var navigationPath: NavigationPath {
-        get { navigationRouter.settingsPath }
-        set { navigationRouter.settingsPath = newValue }
+        get { settingsCoordinator.path }
+        set { settingsCoordinator.path = newValue }
     }
     
     public var hasNavigationPath: Bool {
-        navigationRouter.hasSettingsPath
+        settingsCoordinator.hasPath
     }
     
     // MARK: - Settings Data
@@ -54,15 +54,15 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation Actions
     public func navigate(to menu: SettingMenu) {
-        navigationRouter.navigate(to: SettingsRoute(menu: menu))
+        settingsCoordinator.push(SettingsRoute(menu: menu))
     }
     
     public func navigateBack() {
-        navigationRouter.navigateBack()
+        settingsCoordinator.pop()
     }
     
     public func resetNavigation() {
-        navigationRouter.resetSettingsPath()
+        settingsCoordinator.reset()
     }
     
     // MARK: - Settings Actions

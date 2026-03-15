@@ -12,8 +12,8 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
-        container.register(NavigationRouter.self) { _ in
-            NavigationRouter()
+        container.register(SettingsCoordinator.self) { _ in
+            SettingsCoordinator()
         }
         .inObjectScope(.container)
         
@@ -63,7 +63,7 @@ public final class PresentationAssembly: Assembly {
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                navigationRouter: resolver.resolve(NavigationRouter.self)!,
+                settingsCoordinator: resolver.resolve(SettingsCoordinator.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

@@ -21,7 +21,7 @@ struct SettingsViewModelTests {
     @MainActor
     @Test("초기화 시 사용자 설정 상태를 반영한다")
     func initializeState() {
-        let navigationRouter = NavigationRouter()
+        let settingsCoordinator = SettingsCoordinator()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.mainAppearanceValue = .heart
         userPreferencesUseCase.dailyWaterLimitValue = 2100
@@ -29,7 +29,7 @@ struct SettingsViewModelTests {
         let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
 
         let viewModel = SettingsViewModel(
-            navigationRouter: navigationRouter,
+            settingsCoordinator: settingsCoordinator,
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: signInUseCase,
             authenticationViewModel: authenticationViewModel
@@ -44,9 +44,9 @@ struct SettingsViewModelTests {
     @MainActor
     @Test("navigate/navigateBack/resetNavigation은 settingsPath를 제어한다")
     func navigationActions() {
-        let navigationRouter = NavigationRouter()
+        let settingsCoordinator = SettingsCoordinator()
         let viewModel = SettingsViewModel(
-            navigationRouter: navigationRouter,
+            settingsCoordinator: settingsCoordinator,
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
             authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
@@ -54,16 +54,16 @@ struct SettingsViewModelTests {
 
         viewModel.navigate(to: .dailyLimit)
         #expect(viewModel.hasNavigationPath == true)
-        #expect(navigationRouter.settingsPathCount == 1)
+        #expect(settingsCoordinator.pathCount == 1)
 
         viewModel.navigateBack()
         #expect(viewModel.hasNavigationPath == false)
-        #expect(navigationRouter.settingsPathCount == 0)
+        #expect(settingsCoordinator.pathCount == 0)
 
         viewModel.navigate(to: .mainShape)
         viewModel.resetNavigation()
         #expect(viewModel.hasNavigationPath == false)
-        #expect(navigationRouter.settingsPathCount == 0)
+        #expect(settingsCoordinator.pathCount == 0)
     }
 
     @MainActor
@@ -71,7 +71,7 @@ struct SettingsViewModelTests {
     func setMainAppearance() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         let viewModel = SettingsViewModel(
-            navigationRouter: NavigationRouter(),
+            settingsCoordinator: SettingsCoordinator(),
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
             authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
@@ -89,7 +89,7 @@ struct SettingsViewModelTests {
     func setDailyWaterLimit() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         let viewModel = SettingsViewModel(
-            navigationRouter: NavigationRouter(),
+            settingsCoordinator: SettingsCoordinator(),
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
             authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
@@ -106,7 +106,7 @@ struct SettingsViewModelTests {
     @Test("requestWithdrawal/cancelWithdrawal은 확인 상태를 토글한다")
     func withdrawalRequestAndCancel() {
         let viewModel = SettingsViewModel(
-            navigationRouter: NavigationRouter(),
+            settingsCoordinator: SettingsCoordinator(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
             authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
@@ -129,7 +129,7 @@ struct SettingsViewModelTests {
         let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
         authenticationViewModel.isAuthenticated = true
         let viewModel = SettingsViewModel(
-            navigationRouter: NavigationRouter(),
+            settingsCoordinator: SettingsCoordinator(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
             authenticationViewModel: authenticationViewModel
@@ -153,7 +153,7 @@ struct SettingsViewModelTests {
         let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
         authenticationViewModel.isAuthenticated = true
         let viewModel = SettingsViewModel(
-            navigationRouter: NavigationRouter(),
+            settingsCoordinator: SettingsCoordinator(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
             authenticationViewModel: authenticationViewModel
