@@ -13,7 +13,7 @@ import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
-    private let navigationRouter: NavigationRouter
+    private let settingsRouting: any SettingsRouting
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let authenticationViewModel: AuthenticationViewModel
@@ -26,12 +26,12 @@ public final class SettingsViewModel {
     public var withdrawalError: String?
 
     public init(
-        navigationRouter: NavigationRouter,
+        settingsRouting: any SettingsRouting,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
         authenticationViewModel: AuthenticationViewModel
     ) {
-        self.navigationRouter = navigationRouter
+        self.settingsRouting = settingsRouting
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
@@ -41,12 +41,12 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation State
     public var navigationPath: NavigationPath {
-        get { navigationRouter.settingsPath }
-        set { navigationRouter.settingsPath = newValue }
+        get { settingsRouting.path }
+        set { settingsRouting.path = newValue }
     }
     
     public var hasNavigationPath: Bool {
-        navigationRouter.hasSettingsPath
+        settingsRouting.hasPath
     }
     
     // MARK: - Settings Data
@@ -54,16 +54,15 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation Actions
     public func navigate(to menu: SettingMenu) {
-        let destination = NavigationDestination.settingDetail(menu)
-        navigationRouter.navigate(to: destination)
+        settingsRouting.push(SettingsRoute(menu: menu))
     }
     
     public func navigateBack() {
-        navigationRouter.navigateBack()
+        settingsRouting.pop()
     }
     
     public func resetNavigation() {
-        navigationRouter.resetSettingsPath()
+        settingsRouting.reset()
     }
     
     // MARK: - Settings Actions

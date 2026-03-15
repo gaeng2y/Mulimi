@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Localization
 
 public enum MainAppearance: CaseIterable, Identifiable, Sendable {
     case drop
@@ -18,11 +19,11 @@ public enum MainAppearance: CaseIterable, Identifiable, Sendable {
     public var displayName: String {
         switch self {
         case .drop:
-            return "물방울"
+            return L10n.tr("mainAppearanceDropName")
         case .heart:
-            return "하트"
+            return L10n.tr("mainAppearanceHeartName")
         case .cloud:
-            return "구름"
+            return L10n.tr("mainAppearanceCloudName")
         }
     }
     
@@ -51,11 +52,11 @@ public enum MainAppearance: CaseIterable, Identifiable, Sendable {
     public var description: String {
         switch self {
         case .drop:
-            return "물방울 모양으로 물의 본질을 표현합니다"
+            return L10n.tr("mainAppearanceDropDescription")
         case .heart:
-            return "하트 모양으로 사랑스럽고 친근한 느낌을 줍니다"
+            return L10n.tr("mainAppearanceHeartDescription")
         case .cloud:
-            return "구름 모양으로 부드럽고 편안한 느낌을 줍니다"
+            return L10n.tr("mainAppearanceCloudDescription")
         }
     }
     

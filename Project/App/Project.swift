@@ -51,6 +51,10 @@ let project = Project(
                     path: .relativeToRoot("Project/Shared/Persistence")
                 ),
                 .project(
+                    target: "Localization",
+                    path: .relativeToRoot("Project/Shared/Localization")
+                ),
+                .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),

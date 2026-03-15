@@ -9,10 +9,11 @@
 import Foundation
 
 public protocol DrinkWaterUseCase: Sendable {
-    var currentWater: Int { get }
+    var currentWater: Int { get async }
 
-    func hydrationEvents(on date: Date) -> [HydrationEvent]
-    func migrateLegacyDataIfNeeded()
-    func drinkWater()
-    func reset()
+    func hydrationEvents(on date: Date) async -> [HydrationEvent]
+    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
+    func migrateLegacyDataIfNeeded() async
+    func drinkWater() async
+    func reset() async
 }

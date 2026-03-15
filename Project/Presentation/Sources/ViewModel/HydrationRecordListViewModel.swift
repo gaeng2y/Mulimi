@@ -8,6 +8,8 @@
 
 import DomainLayerInterface
 import Foundation
+import Localization
+import SwiftUI
 
 @Observable
 public final class HydrationRecordListViewModel {
@@ -16,35 +18,60 @@ public final class HydrationRecordListViewModel {
     
     private(set) var errorMessage: String = ""
     private let useCase: DrinkWaterUseCase
+    private let recordRouting: any RecordRouting
     
     public init(
-        useCase: DrinkWaterUseCase
+        useCase: DrinkWaterUseCase,
+        recordRouting: any RecordRouting
     ) {
         self.useCase = useCase
+        self.recordRouting = recordRouting
+    }
+
+    public var navigationPath: NavigationPath {
+        get { recordRouting.path }
+        set { recordRouting.path = newValue }
+    }
+
+    public var presentedRoute: RecordRoute? {
+        get { recordRouting.presentedRoute }
+        set { recordRouting.presentedRoute = newValue }
     }
     
     @MainActor
     func onAppear() async {
         await fetchHydrationRecord()
     }
+
+    public func showMonthPicker() {
+        recordRouting.present(.monthPicker)
+    }
+
+    public func dismissPresentedRoute() {
+        recordRouting.dismissPresentedRoute()
+    }
     
     @MainActor
     func fetchHydrationRecord() async {
         let monthDates = monthDates(for: date)
-        let fetchedRecords = monthDates.compactMap { day -> HydrationRecord? in
-            let events = useCase.hydrationEvents(on: day)
+        var fetchedRecords: [HydrationRecord] = []
+
+        for day in monthDates {
+            let events = await useCase.hydrationEvents(on: day)
             let total = events.reduce(0) { partialResult, event in
                 partialResult + event.volumeML
             }
 
             guard total > 0 else {
-                return nil
+                continue
             }
 
-            return HydrationRecord(
+            fetchedRecords.append(
+                HydrationRecord(
                 id: UUID(),
                 date: day,
                 mililiter: Double(total)
+            )
             )
         }
 
@@ -57,7 +84,7 @@ public final class HydrationRecordListViewModel {
               let newDate = Calendar.current.date(
                 from: DateComponents(year: year, month: month, day: 1)
               ) else {
-            errorMessage = "Invalid date selection"
+            errorMessage = L10n.tr("historyInvalidDateSelectionError")
             return
         }
 
@@ -74,7 +101,7 @@ public final class HydrationRecordListViewModel {
             from: Calendar.current.dateComponents([.year, .month], from: date)
         ),
         let range = Calendar.current.range(of: .day, in: .month, for: startDate) else {
-            errorMessage = "Failed to calculate date range"
+            errorMessage = L10n.tr("historyFailedDateRangeError")
             return []
         }
 

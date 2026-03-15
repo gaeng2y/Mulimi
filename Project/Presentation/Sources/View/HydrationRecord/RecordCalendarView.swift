@@ -7,17 +7,16 @@
 //
 
 import DomainLayerInterface
+import Localization
 import SwiftUI
 
 struct RecordCalendarView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
-    @State private var isYearMonthPickerPresented = false
     @State private var selectedYear = Calendar.current.component(.year, from: .now)
     @State private var selectedMonth = Calendar.current.component(.month, from: .now)
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
-    private let weekDays = ["월", "화", "수", "목", "금", "토", "일"]
     private let dailyGoal: Double = 2000
 
     init(viewModel: HydrationRecordListViewModel) {
@@ -25,16 +24,9 @@ struct RecordCalendarView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                monthHeader
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-
-                weekDayHeader
-                    .padding(.horizontal, 16)
-
-                ScrollView(showsIndicators: false) {
+        ScrollView(showsIndicators: false) {
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                Section {
                     LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(calendarDays, id: \.self) { day in
                             CalendarDayView(
@@ -48,16 +40,33 @@ struct RecordCalendarView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
+                } header: {
+                    VStack(spacing: 0) {
+                        monthHeader
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+
+                        weekDayHeader
+                            .padding(.horizontal, 16)
+                    }
+                    .background(Color(uiColor: .systemGroupedBackground))
                 }
             }
-            .background(Color(uiColor: .systemGroupedBackground))
-            .navigationBarHidden(true)
         }
+        .background(Color(uiColor: .systemGroupedBackground))
         .task {
             await viewModel.fetchHydrationRecord()
         }
-        .sheet(isPresented: $isYearMonthPickerPresented) {
-            yearMonthPickerSheet
+        .sheet(
+            item: Binding(
+                get: { viewModel.presentedRoute },
+                set: { viewModel.presentedRoute = $0 }
+            )
+        ) { route in
+            switch route {
+            case .monthPicker:
+                yearMonthPickerSheet
+            }
         }
     }
 
@@ -65,7 +74,7 @@ struct RecordCalendarView: View {
         HStack {
             Button {
                 syncPickerSelectionWithCurrentDate()
-                isYearMonthPickerPresented = true
+                viewModel.showMonthPicker()
             } label: {
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -84,17 +93,17 @@ struct RecordCalendarView: View {
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("년월 선택")
-            .accessibilityHint("기록을 볼 년과 월을 선택합니다")
+            .accessibilityLabel(L10n.tr("recordCalendarMonthPickerAccessibilityLabel"))
+            .accessibilityHint(L10n.tr("recordCalendarMonthPickerAccessibilityHint"))
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text("월 목표")
+                Text(L10n.tr("recordCalendarMonthlyGoalTitle"))
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                Text("\(monthlyProgress)%")
+                Text(L10n.tr("commonPercentFormat", monthlyProgress))
                     .font(.title3)
                     .fontWeight(.semibold)
                     .foregroundColor(.accentColor)
@@ -182,13 +191,25 @@ struct RecordCalendarView: View {
         return Array((currentYear - 10)...(currentYear + 2))
     }
 
+    private var weekDays: [String] {
+        [
+            L10n.tr("commonWeekdayMondayShort"),
+            L10n.tr("commonWeekdayTuesdayShort"),
+            L10n.tr("commonWeekdayWednesdayShort"),
+            L10n.tr("commonWeekdayThursdayShort"),
+            L10n.tr("commonWeekdayFridayShort"),
+            L10n.tr("commonWeekdaySaturdayShort"),
+            L10n.tr("commonWeekdaySundayShort")
+        ]
+    }
+
     @ViewBuilder
     private var yearMonthPickerSheet: some View {
         NavigationStack {
             HStack(spacing: 0) {
-                Picker("년", selection: $selectedYear) {
+                Picker(L10n.tr("recordCalendarYearPickerTitle"), selection: $selectedYear) {
                     ForEach(selectableYears, id: \.self) { year in
-                        Text("\(year)년")
+                        Text(L10n.tr("commonYearFormat", year))
                             .tag(year)
                     }
                 }
@@ -196,9 +217,9 @@ struct RecordCalendarView: View {
                 .frame(maxWidth: .infinity)
                 .clipped()
 
-                Picker("월", selection: $selectedMonth) {
+                Picker(L10n.tr("recordCalendarMonthPickerTitle"), selection: $selectedMonth) {
                     ForEach(1...12, id: \.self) { month in
-                        Text("\(month)월")
+                        Text(L10n.tr("commonMonthFormat", month))
                             .tag(month)
                     }
                 }
@@ -206,23 +227,23 @@ struct RecordCalendarView: View {
                 .frame(maxWidth: .infinity)
                 .clipped()
             }
-            .navigationTitle("년/월 선택")
+            .navigationTitle(L10n.tr("recordCalendarSelectionTitle"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("취소") {
-                        isYearMonthPickerPresented = false
+                    Button(L10n.tr("commonCancelTitle")) {
+                        viewModel.dismissPresentedRoute()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("적용") {
+                    Button(L10n.tr("commonApplyTitle")) {
                         Task {
                             await viewModel.updateDisplayedMonth(
                                 year: selectedYear,
                                 month: selectedMonth
                             )
                         }
-                        isYearMonthPickerPresented = false
+                        viewModel.dismissPresentedRoute()
                     }
                 }
             }

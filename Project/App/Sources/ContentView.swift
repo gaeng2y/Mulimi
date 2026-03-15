@@ -7,28 +7,39 @@
 //
 
 import DependencyInjection
-import SwiftUI
+import Localization
 import PresentationLayer
+import SwiftUI
 
 struct ContentView: View {
     var body: some View {
         TabView {
-            Tab("물", systemImage: "waterbottle") {
-                DrinkWaterView(
-                    viewModel: DIContainer.shared.resolve(DrinkWaterViewModel.self)
-                )
+            DrinkWaterView(
+                viewModel: DIContainer.shared.resolve(DrinkWaterViewModel.self)
+            )
+            .tabItem {
+                Label(L10n.tr("drinkTitle"), systemImage: "waterbottle")
             }
-            
-            Tab("기록", systemImage: "calendar") {
-                HydrationRecordListView(
-                    viewModel: DIContainer.shared.resolve(HydrationRecordListViewModel.self)
-                )
+
+            HydrationRecordListView(
+                viewModel: DIContainer.shared.resolve(HydrationRecordListViewModel.self)
+            )
+            .tabItem {
+                Label(L10n.tr("historyTitle"), systemImage: "calendar")
             }
-            
-            Tab("설정", systemImage: "gear") {
-                SettingsView(
-                    viewModel: DIContainer.shared.resolve(SettingsViewModel.self)
-                )
+
+            HydrationInsightView(
+                viewModel: DIContainer.shared.resolve(HydrationInsightViewModel.self)
+            )
+            .tabItem {
+                Label(L10n.tr("insightNavigationTitle"), systemImage: "chart.bar.xaxis")
+            }
+
+            SettingsView(
+                viewModel: DIContainer.shared.resolve(SettingsViewModel.self)
+            )
+            .tabItem {
+                Label(L10n.tr("settingsTitle"), systemImage: "gear")
             }
         }
         .tint(.accent)

@@ -7,10 +7,11 @@
 //
 
 import DomainLayerInterface
+import Localization
 import SwiftUI
 
 public struct HydrationRecordListView: View {
-    private var viewModel: HydrationRecordListViewModel
+    @Bindable private var viewModel: HydrationRecordListViewModel
     @State private var isPresentedAlert: Bool = false
     
     public init(viewModel: HydrationRecordListViewModel) {
@@ -18,10 +19,19 @@ public struct HydrationRecordListView: View {
     }
     
     public var body: some View {
-        ZStack {
-            Color.background
-                .ignoresSafeArea()
+        NavigationStack(
+            path: Binding(
+                get: { viewModel.navigationPath },
+                set: { viewModel.navigationPath = $0 }
+            )
+        ) {
             RecordCalendarView(viewModel: viewModel)
+            .navigationTitle(L10n.tr("historyTitle"))
+            .navigationBarTitleDisplayMode(.large)
+            .background(
+                Color.background
+                    .ignoresSafeArea()
+            )
         }
         .task {
             await viewModel.onAppear()
@@ -35,18 +45,15 @@ public struct HydrationRecordListView: View {
     }
     
     private struct RowListView: View {
-        private var viewModel: HydrationRecordListViewModel
+        @Bindable private var viewModel: HydrationRecordListViewModel
         
         init(viewModel: HydrationRecordListViewModel) {
             self.viewModel = viewModel
         }
         
         var body: some View {
-            NavigationStack {
-                List(viewModel.records) { record in
-                    HydrationRecordRow(record: record)
-                }
-                .navigationTitle(viewModel.date.formatted(.dateTime.year().month()))
+            List(viewModel.records) { record in
+                HydrationRecordRow(record: record)
             }
         }
     }
@@ -55,17 +62,7 @@ public struct HydrationRecordListView: View {
         let record: HydrationRecord
         
         private var dateString: String {
-            let dateComponents = Calendar.current.dateComponents(
-                [.year, .month, .day],
-                from: record.date
-            )
-            
-            guard let year = dateComponents.year,
-                  let month = dateComponents.month,
-                  let day = dateComponents.day else {
-                return ""
-            }
-            return "\(year)-\(month)-\(day)"
+            record.date.formatted(.dateTime.year().month().day())
         }
         
         var body: some View {
@@ -77,7 +74,7 @@ public struct HydrationRecordListView: View {
                 
                 HStack {
                     Spacer()
-                    Text(String(format: "%.0fml", record.mililiter))
+                    Text(L10n.tr("commonMilliliterFormat", Int(record.mililiter.rounded())))
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 }

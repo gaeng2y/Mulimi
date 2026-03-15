@@ -38,18 +38,37 @@ public final class PreviewAssembly: Assembly {
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
+        .inObjectScope(.container)
         
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                recordRouting: resolver.resolve(RecordRouting.self)!
+            )
+        }
+
+        container.register(HydrationInsightViewModel.self) { resolver in
+            HydrationInsightViewModel(
+                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
         
         // MARK: - Navigation (Preview)
-        container.register(NavigationRouter.self) { _ in
-            MockNavigationRouter()
+        container.register(SettingsCoordinator.self) { _ in
+            MockSettingsCoordinator()
         }
         .inObjectScope(.container)
+        container.register(SettingsRouting.self) { resolver in
+            resolver.resolve(SettingsCoordinator.self)!
+        }
+        container.register(RecordCoordinator.self) { _ in
+            MockRecordCoordinator()
+        }
+        .inObjectScope(.container)
+        container.register(RecordRouting.self) { resolver in
+            resolver.resolve(RecordCoordinator.self)!
+        }
 
         // MARK: - Authentication (Preview)
         container.register(AuthenticationViewModel.self) { resolver in
@@ -62,7 +81,7 @@ public final class PreviewAssembly: Assembly {
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                navigationRouter: resolver.resolve(NavigationRouter.self)!,
+                settingsRouting: resolver.resolve(SettingsRouting.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

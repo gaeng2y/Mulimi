@@ -6,6 +6,7 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
+import Localization
 import SwiftUI
 
 public struct SignInView: View {
@@ -25,11 +26,11 @@ public struct SignInView: View {
                     .font(.system(size: 80))
                     .foregroundColor(.blue)
 
-                Text("물 마시기")
+                Text(L10n.tr("signInTitle"))
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                Text("건강한 수분 섭취를 위해\n로그인이 필요합니다")
+                Text(L10n.tr("signInSubtitle"))
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -63,7 +64,7 @@ public struct SignInView: View {
                                 .font(.title3)
                                 .fontWeight(.medium)
 
-                            Text("Sign in with Apple")
+                            Text(L10n.tr("signInWithAppleTitle"))
                                 .font(.body)
                                 .fontWeight(.medium)
                         }

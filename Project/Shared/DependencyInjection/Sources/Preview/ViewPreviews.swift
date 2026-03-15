@@ -23,6 +23,11 @@ import SwiftUI
     HydrationRecordListView(viewModel: viewModel)
 }
 
+#Preview("HydrationInsightView") {
+    let viewModel = DIContainer.preview.resolve(HydrationInsightViewModel.self)
+    HydrationInsightView(viewModel: viewModel)
+}
+
 // MARK: - SettingsView Preview
 #Preview("SettingsView") {
     let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)

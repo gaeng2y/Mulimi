@@ -12,10 +12,20 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
-        container.register(NavigationRouter.self) { _ in
-            NavigationRouter()
+        container.register(SettingsCoordinator.self) { _ in
+            SettingsCoordinator()
         }
         .inObjectScope(.container)
+        container.register(SettingsRouting.self) { resolver in
+            resolver.resolve(SettingsCoordinator.self)!
+        }
+        container.register(RecordCoordinator.self) { _ in
+            RecordCoordinator()
+        }
+        .inObjectScope(.container)
+        container.register(RecordRouting.self) { resolver in
+            resolver.resolve(RecordCoordinator.self)!
+        }
         
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
@@ -31,12 +41,26 @@ public final class PresentationAssembly: Assembly {
                 )
             }
         }
+        .inObjectScope(.container)
         
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                recordRouting: resolver.resolve(RecordRouting.self)!
             )
+        }
+
+        container.register(HydrationInsightViewModel.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationInsightViewModel(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
         }
         
         // MARK: - Authentication
@@ -50,7 +74,7 @@ public final class PresentationAssembly: Assembly {
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                navigationRouter: resolver.resolve(NavigationRouter.self)!,
+                settingsRouting: resolver.resolve(SettingsRouting.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

@@ -9,6 +9,7 @@
 import Combine
 import DomainLayerInterface
 import Foundation
+import Localization
 import UIKit
 import WidgetKit
 
@@ -27,7 +28,7 @@ public final class DrinkWaterViewModel {
     private var cancellables = Set<AnyCancellable>()
     
     var mililiters: String {
-        String(format: "%.0fml", currentWaterIntakeInMl)
+        L10n.tr("commonMilliliterFormat", Int(currentWaterIntakeInMl.rounded()))
     }
     
     var currentWaterIntakeInMl: Double {
@@ -56,8 +57,7 @@ public final class DrinkWaterViewModel {
         self.healthKitUseCase = healthKitUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
 
-        waterUseCase.migrateLegacyDataIfNeeded()
-        self.drinkWaterCount = waterUseCase.currentWater
+        self.drinkWaterCount = 0
         self.mainAppearance = userPreferencesUseCase.getMainAppearance()
         self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         
@@ -70,7 +70,9 @@ public final class DrinkWaterViewModel {
             .publisher(for: UserDefaults.didChangeNotification)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.refreshFromUserDefaults()
+                Task { @MainActor [weak self] in
+                    await self?.refreshState()
+                }
             }
             .store(in: &cancellables)
         
@@ -79,7 +81,9 @@ public final class DrinkWaterViewModel {
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.refreshFromUserDefaults()
+                Task { @MainActor [weak self] in
+                    await self?.refreshState()
+                }
             }
             .store(in: &cancellables)
     }
@@ -91,8 +95,8 @@ public final class DrinkWaterViewModel {
         }
     }
     
-    private func updateWaterCount() {
-        let newCount = waterUseCase.currentWater
+    private func updateWaterCount() async {
+        let newCount = await waterUseCase.currentWater
         if drinkWaterCount != newCount {
             drinkWaterCount = newCount
         }
@@ -105,6 +109,11 @@ public final class DrinkWaterViewModel {
         }
     }
     
+    public func loadInitialState() async {
+        await waterUseCase.migrateLegacyDataIfNeeded()
+        await refreshState()
+    }
+
     func drinkWater() async {
         // Check if adding one more glass would exceed daily limit
         let nextIntake = currentWaterIntakeInMl + 250.0
@@ -115,7 +124,7 @@ public final class DrinkWaterViewModel {
         }
         
         drinkWaterCount += 1
-        waterUseCase.drinkWater()
+        await waterUseCase.drinkWater()
         
         // Reload Widget timeline
         WidgetCenter.shared.reloadAllTimelines()
@@ -129,7 +138,7 @@ public final class DrinkWaterViewModel {
     
     func reset() async {
         drinkWaterCount = 0
-        waterUseCase.reset()
+        await waterUseCase.reset()
         
         // Reload Widget timeline
         WidgetCenter.shared.reloadAllTimelines()
@@ -140,19 +149,19 @@ public final class DrinkWaterViewModel {
             print("Failed to reset HealthKit data: \(error)")
         }
     }
+
+    func resetAnimation() {
+        offset = 0
+    }
     
     func startAnimation() {
         offset = 360
     }
     
-    public func refreshState() {
+    public func refreshState() async {
         // Refresh from persistence and user preferences.
         updateMainAppearance()
-        updateWaterCount()
+        await updateWaterCount()
         updateDailyLimit()
-    }
-
-    public func refreshFromUserDefaults() {
-        refreshState()
     }
 }

@@ -6,8 +6,9 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import SwiftUI
 import DomainLayerInterface
+import Localization
+import SwiftUI
 import WidgetKit
 import UIKit
 
@@ -31,6 +32,7 @@ public struct SettingDetailView: View {
                 WithdrawalSettingView(viewModel: viewModel)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
@@ -45,7 +47,7 @@ private struct DailyLimitSettingView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Text("\(Int(viewModel.dailyWaterLimit.rounded())) ml")
+                Text(L10n.tr("settingsDailyLimitValueFormat", Int(viewModel.dailyWaterLimit.rounded())))
                     .font(.largeTitle)
                     .fontWeight(.semibold)
             }
@@ -58,7 +60,7 @@ private struct DailyLimitSettingView: View {
                     WidgetCenter.shared.reloadAllTimelines()
                 }
             ), in: 1000...4000, step: 250) {
-                Text("목표량")
+                Text(L10n.tr("settingsDailyLimitSliderTitle"))
             }
             .padding(.horizontal)
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
@@ -67,11 +69,11 @@ private struct DailyLimitSettingView: View {
             }
             
             HStack {
-                Text("1000ml")
+                Text(L10n.tr("commonMilliliterFormat", 1000))
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
-                Text("4000ml")
+                Text(L10n.tr("commonMilliliterFormat", 4000))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -80,7 +82,7 @@ private struct DailyLimitSettingView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("하루 목표량")
+        .navigationTitle(L10n.tr("settingDailyLimitTitle"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -149,7 +151,7 @@ private struct MainShapeSettingView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("메인 화면 모양")
+        .navigationTitle(L10n.tr("settingMainShapeTitle"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -168,11 +170,11 @@ private struct WithdrawalSettingView: View {
                     .font(.system(size: 60))
                     .foregroundColor(.red)
 
-                Text("회원 탈퇴")
+                Text(L10n.tr("settingWithdrawalTitle"))
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.")
+                Text(L10n.tr("withdrawalDescription"))
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -181,9 +183,9 @@ private struct WithdrawalSettingView: View {
             .padding(.top, 40)
 
             VStack(alignment: .leading, spacing: 12) {
-                Label("저장된 물 섭취 기록 삭제", systemImage: "drop.fill")
-                Label("개인 설정 정보 삭제", systemImage: "gearshape.fill")
-                Label("계정 정보 삭제", systemImage: "person.fill")
+                Label(L10n.tr("withdrawalDeleteRecordsItem"), systemImage: "drop.fill")
+                Label(L10n.tr("withdrawalDeletePreferencesItem"), systemImage: "gearshape.fill")
+                Label(L10n.tr("withdrawalDeleteAccountItem"), systemImage: "person.fill")
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
@@ -200,7 +202,7 @@ private struct WithdrawalSettingView: View {
             Button {
                 viewModel.requestWithdrawal()
             } label: {
-                Text("회원 탈퇴하기")
+                Text(L10n.tr("withdrawalActionTitle"))
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -211,22 +213,22 @@ private struct WithdrawalSettingView: View {
             .padding(.horizontal)
             .padding(.bottom)
         }
-        .navigationTitle("회원 탈퇴")
+        .navigationTitle(L10n.tr("settingWithdrawalTitle"))
         .navigationBarTitleDisplayMode(.inline)
-        .alert("정말 탈퇴하시겠습니까?", isPresented: $viewModel.showWithdrawalConfirmation) {
-            Button("취소", role: .cancel) {
+        .alert(L10n.tr("withdrawalConfirmationTitle"), isPresented: $viewModel.showWithdrawalConfirmation) {
+            Button(L10n.tr("commonCancelTitle"), role: .cancel) {
                 viewModel.cancelWithdrawal()
             }
-            Button("탈퇴", role: .destructive) {
+            Button(L10n.tr("commonWithdrawTitle"), role: .destructive) {
                 Task {
                     await viewModel.confirmWithdrawal()
                 }
             }
         } message: {
-            Text("이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.")
+            Text(L10n.tr("withdrawalConfirmationMessage"))
         }
-        .alert("탈퇴 실패", isPresented: .constant(viewModel.withdrawalError != nil)) {
-            Button("확인", role: .cancel) {
+        .alert(L10n.tr("withdrawalFailureTitle"), isPresented: .constant(viewModel.withdrawalError != nil)) {
+            Button(L10n.tr("commonConfirmTitle"), role: .cancel) {
                 viewModel.withdrawalError = nil
             }
         } message: {
@@ -240,7 +242,7 @@ private struct WithdrawalSettingView: View {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()
                     
-                    ProgressView("탈퇴 처리 중...")
+                    ProgressView(L10n.tr("withdrawalProgressTitle"))
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 12)
