@@ -15,9 +15,9 @@ public final class MockNavigationRouter: NavigationRouter {
     }
 
     // Mock implementation with debug logging for previews
-    override public func navigate(to destination: NavigationDestination) {
-        print("Mock Navigation to: \(destination)")
-        super.navigate(to: destination)
+    override public func navigate(to route: SettingsRoute) {
+        print("Mock Navigation to: \(route)")
+        super.navigate(to: route)
     }
 
     override public func navigateBack() {

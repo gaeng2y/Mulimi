@@ -18,8 +18,8 @@ public final class NavigationRouter {
     public init() {}
 
     // MARK: - Navigation Methods
-    public func navigate(to destination: NavigationDestination) {
-        settingsPath.append(destination)
+    public func navigate(to route: SettingsRoute) {
+        settingsPath.append(route)
     }
 
     public func navigateBack() {
@@ -48,8 +48,8 @@ public final class NavigationRouter {
 
     // MARK: - Deep Link Handling (Future)
     public func handleDeepLink(_ url: URL) {
-        // TODO: Implement URL parsing to NavigationDestination
-        // Example: myapp://settings/daily-limit -> .settingDetail(.dailyLimit)
+        // TODO: Implement URL parsing to SettingsRoute and other feature routes.
+        // Example: myapp://settings/daily-limit -> SettingsRoute.dailyLimit
     }
 
     // MARK: - Path State

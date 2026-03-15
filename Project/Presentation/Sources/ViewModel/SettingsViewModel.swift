@@ -54,8 +54,7 @@ public final class SettingsViewModel {
     
     // MARK: - Navigation Actions
     public func navigate(to menu: SettingMenu) {
-        let destination = NavigationDestination.settingDetail(menu)
-        navigationRouter.navigate(to: destination)
+        navigationRouter.navigate(to: SettingsRoute(menu: menu))
     }
     
     public func navigateBack() {
