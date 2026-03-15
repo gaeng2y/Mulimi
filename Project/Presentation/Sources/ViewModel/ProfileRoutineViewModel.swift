@@ -1,44 +1,7 @@
+import DomainLayerInterface
+import Foundation
 import Localization
-import SwiftUI
-
-public enum RoutineNotificationStatus: Equatable {
-    case notRequested
-    case authorized
-    case denied
-
-    var displayText: String {
-        switch self {
-        case .notRequested:
-            L10n.tr("profileRoutineNotificationPendingValue")
-        case .authorized:
-            L10n.tr("profileRoutineNotificationAuthorizedValue")
-        case .denied:
-            L10n.tr("profileRoutineNotificationDeniedValue")
-        }
-    }
-}
-
-public struct RoutineScheduleSummary: Identifiable, Equatable {
-    public let id: UUID
-    public let title: String
-    public let timeDescription: String
-    public let repeatDescription: String
-    public let isEnabled: Bool
-
-    public init(
-        id: UUID = UUID(),
-        title: String,
-        timeDescription: String,
-        repeatDescription: String,
-        isEnabled: Bool
-    ) {
-        self.id = id
-        self.title = title
-        self.timeDescription = timeDescription
-        self.repeatDescription = repeatDescription
-        self.isEnabled = isEnabled
-    }
-}
+import Observation
 
 struct RoutineDetailRow: Identifiable, Equatable {
     let id: String
@@ -47,17 +10,78 @@ struct RoutineDetailRow: Identifiable, Equatable {
     let systemImage: String
 }
 
+struct RoutineEditorDraft: Equatable {
+    var id: UUID?
+    var title: String
+    var time: Date
+    var selectedWeekdays: Set<RoutineWeekday>
+    var isEnabled: Bool
+
+    init(
+        id: UUID? = nil,
+        title: String = "",
+        time: Date = RoutineEditorDraft.defaultTime(),
+        selectedWeekdays: Set<RoutineWeekday> = [.monday, .tuesday, .wednesday, .thursday, .friday],
+        isEnabled: Bool = true
+    ) {
+        self.id = id
+        self.title = title
+        self.time = time
+        self.selectedWeekdays = selectedWeekdays
+        self.isEnabled = isEnabled
+    }
+
+    init(routine: HydrationRoutine) {
+        self.id = routine.id
+        self.title = routine.title
+        self.time = Self.date(hour: routine.hour, minute: routine.minute)
+        self.selectedWeekdays = Set(routine.weekdays)
+        self.isEnabled = routine.isEnabled
+    }
+
+    var isEditing: Bool {
+        id != nil
+    }
+
+    var canSave: Bool {
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !selectedWeekdays.isEmpty
+    }
+
+    func makeRoutine() -> HydrationRoutine {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: time)
+        return HydrationRoutine(
+            id: id ?? UUID(),
+            title: title,
+            hour: components.hour ?? 9,
+            minute: components.minute ?? 0,
+            weekdays: Array(selectedWeekdays),
+            isEnabled: isEnabled
+        )
+    }
+
+    private static func defaultTime() -> Date {
+        date(hour: 9, minute: 0)
+    }
+
+    private static func date(hour: Int, minute: Int) -> Date {
+        Calendar.current.date(from: DateComponents(hour: hour, minute: minute)) ?? .now
+    }
+}
+
+@MainActor
 @Observable
 public final class ProfileRoutineViewModel {
-    public private(set) var notificationStatus: RoutineNotificationStatus
-    public private(set) var routines: [RoutineScheduleSummary]
+    private let routineUseCase: RoutineUseCase
 
-    public init(
-        notificationStatus: RoutineNotificationStatus = .notRequested,
-        routines: [RoutineScheduleSummary] = []
-    ) {
-        self.notificationStatus = notificationStatus
-        self.routines = routines
+    public private(set) var notificationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
+    public private(set) var routines: [HydrationRoutine] = []
+    public var isEditorPresented = false
+    public var isSaving = false
+    public var errorMessage: String?
+    var editorDraft = RoutineEditorDraft()
+
+    public init(routineUseCase: RoutineUseCase) {
+        self.routineUseCase = routineUseCase
     }
 
     public var hasConfiguredRoutine: Bool {
@@ -89,7 +113,7 @@ public final class ProfileRoutineViewModel {
             return L10n.tr("profileRoutineEmptyDescription")
         }
 
-        return "\(primaryRoutine.timeDescription) · \(primaryRoutine.repeatDescription)"
+        return "\(primaryRoutine.timeText) · \(primaryRoutine.weekdayText)"
     }
 
     var detailRows: [RoutineDetailRow] {
@@ -97,7 +121,7 @@ public final class ProfileRoutineViewModel {
             RoutineDetailRow(
                 id: "notificationStatus",
                 title: L10n.tr("profileRoutineNotificationStatusTitle"),
-                value: notificationStatus.displayText,
+                value: notificationStatus.displayName,
                 systemImage: "bell.badge"
             ),
             RoutineDetailRow(
@@ -109,20 +133,106 @@ public final class ProfileRoutineViewModel {
             RoutineDetailRow(
                 id: "time",
                 title: L10n.tr("profileRoutineTimeTitle"),
-                value: primaryRoutine?.timeDescription ?? L10n.tr("profileRoutineDetailEmptyValue"),
+                value: primaryRoutine?.timeText ?? L10n.tr("profileRoutineDetailEmptyValue"),
                 systemImage: "clock"
             ),
             RoutineDetailRow(
                 id: "repeat",
                 title: L10n.tr("profileRoutineRepeatTitle"),
-                value: primaryRoutine?.repeatDescription ?? L10n.tr("profileRoutineDetailEmptyValue"),
+                value: primaryRoutine?.weekdayText ?? L10n.tr("profileRoutineDetailEmptyValue"),
                 systemImage: "calendar"
             )
         ]
     }
 
-    var displayedRoutines: [RoutineScheduleSummary] {
+    var displayedRoutines: [HydrationRoutine] {
         routines
+    }
+
+    var canSaveDraft: Bool {
+        editorDraft.canSave
+    }
+
+    var isEditingDraft: Bool {
+        editorDraft.isEditing
+    }
+
+    public func load() async {
+        notificationStatus = await routineUseCase.notificationAuthorizationStatus()
+        routines = routineUseCase.fetchRoutines()
+    }
+
+    public func refreshAuthorizationStatus() async {
+        notificationStatus = await routineUseCase.notificationAuthorizationStatus()
+    }
+
+    public func requestNotificationAuthorization() async {
+        do {
+            notificationStatus = try await routineUseCase.requestNotificationAuthorization()
+        } catch {
+            errorMessage = L10n.tr("profileRoutineAuthorizationRequestError")
+        }
+    }
+
+    public func presentCreateRoutine() {
+        editorDraft = RoutineEditorDraft()
+        isEditorPresented = true
+    }
+
+    public func presentEditRoutine(_ routine: HydrationRoutine) {
+        editorDraft = RoutineEditorDraft(routine: routine)
+        isEditorPresented = true
+    }
+
+    public func dismissEditor() {
+        isEditorPresented = false
+        editorDraft = RoutineEditorDraft()
+    }
+
+    public func toggleWeekday(_ weekday: RoutineWeekday) {
+        if editorDraft.selectedWeekdays.contains(weekday) {
+            editorDraft.selectedWeekdays.remove(weekday)
+        } else {
+            editorDraft.selectedWeekdays.insert(weekday)
+        }
+    }
+
+    public func saveDraft() async {
+        guard canSaveDraft else {
+            errorMessage = L10n.tr("profileRoutineValidationError")
+            return
+        }
+
+        isSaving = true
+        defer { isSaving = false }
+
+        do {
+            try await routineUseCase.saveRoutine(editorDraft.makeRoutine())
+            await load()
+            dismissEditor()
+        } catch let error as RoutineError {
+            await load()
+            dismissEditor()
+            switch error {
+            case .permissionDenied:
+                errorMessage = L10n.tr("profileRoutinePermissionDeniedError")
+            }
+        } catch {
+            errorMessage = L10n.tr("profileRoutineSaveError")
+        }
+    }
+
+    public func deleteRoutine(_ routine: HydrationRoutine) async {
+        do {
+            try await routineUseCase.deleteRoutine(id: routine.id)
+            await load()
+        } catch {
+            errorMessage = L10n.tr("profileRoutineDeleteError")
+        }
+    }
+
+    public func clearErrorMessage() {
+        errorMessage = nil
     }
 
     private var activeRoutineCountText: String {
@@ -133,7 +243,7 @@ public final class ProfileRoutineViewModel {
         return L10n.tr("profileRoutineCountFormat", activeRoutineCount)
     }
 
-    private var primaryRoutine: RoutineScheduleSummary? {
+    private var primaryRoutine: HydrationRoutine? {
         routines.first(where: \.isEnabled) ?? routines.first
     }
 }

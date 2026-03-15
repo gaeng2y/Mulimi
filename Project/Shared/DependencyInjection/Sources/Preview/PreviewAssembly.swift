@@ -30,6 +30,10 @@ public final class PreviewAssembly: Assembly {
             MockSignInUseCase()
         }
 
+        container.register(RoutineUseCase.self) { _ in
+            MockRoutineUseCase()
+        }
+
         // MARK: - ViewModels
         container.register(DrinkWaterViewModel.self) { resolver in
             DrinkWaterViewModel(
@@ -43,7 +47,7 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                recordRouting: resolver.resolve(RecordRouting.self)!
+                recordRouting: resolver.resolve((any RecordRouting).self)!
             )
         }
 
@@ -55,8 +59,14 @@ public final class PreviewAssembly: Assembly {
         }
         .inObjectScope(.container)
 
-        container.register(ProfileRoutineViewModel.self) { _ in
-            ProfileRoutineViewModel()
+        container.register(ProfileRoutineViewModel.self) { resolver in
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ProfileRoutineViewModel(
+                    routineUseCase: routineUseCase
+                )
+            }
         }
         .inObjectScope(.container)
         
@@ -65,14 +75,14 @@ public final class PreviewAssembly: Assembly {
             MockSettingsCoordinator()
         }
         .inObjectScope(.container)
-        container.register(SettingsRouting.self) { resolver in
+        container.register((any SettingsRouting).self) { resolver in
             resolver.resolve(SettingsCoordinator.self)!
         }
         container.register(RecordCoordinator.self) { _ in
             MockRecordCoordinator()
         }
         .inObjectScope(.container)
-        container.register(RecordRouting.self) { resolver in
+        container.register((any RecordRouting).self) { resolver in
             resolver.resolve(RecordCoordinator.self)!
         }
 
@@ -87,7 +97,7 @@ public final class PreviewAssembly: Assembly {
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                settingsRouting: resolver.resolve(SettingsRouting.self)!,
+                settingsRouting: resolver.resolve((any SettingsRouting).self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

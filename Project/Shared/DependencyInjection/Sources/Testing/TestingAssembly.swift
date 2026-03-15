@@ -24,5 +24,9 @@ public final class TestingAssembly: Assembly {
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCaseForTesting()
         }
+
+        container.register(RoutineUseCase.self) { _ in
+            MockRoutineUseCaseForTesting()
+        }
     }
 }

@@ -32,6 +32,13 @@ public final class DomainAssembly: Assembly {
             )
         }
 
+        // MARK: - Routine
+        container.register(RoutineUseCase.self) { resolver in
+            RoutineUseCaseImpl(
+                repository: resolver.resolve(RoutineRepository.self)!
+            )
+        }
+
         // MARK: - Authentication
         container.register(SignInUseCase.self) { resolver in
             SignInUseCaseImpl(

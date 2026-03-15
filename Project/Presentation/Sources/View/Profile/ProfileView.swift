@@ -54,6 +54,9 @@ public struct ProfileView: View {
                     .accessibilityLabel(L10n.tr("profileSettingsToolbarAccessibilityLabel"))
                 }
             }
+            .task {
+                await routineViewModel.load()
+            }
         }
         .sheet(isPresented: $isSettingsPresented) {
             SettingsView(viewModel: settingsViewModel)

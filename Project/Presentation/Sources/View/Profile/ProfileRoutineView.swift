@@ -1,7 +1,10 @@
+import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 public struct ProfileRoutineView: View {
+    @Environment(\.openURL) private var openURL
     @Bindable private var viewModel: ProfileRoutineViewModel
 
     public init(viewModel: ProfileRoutineViewModel) {
@@ -20,25 +23,92 @@ public struct ProfileRoutineView: View {
                 }
             }
 
-            if !viewModel.displayedRoutines.isEmpty {
-                Section(L10n.tr("profileRoutineSchedulesSectionTitle")) {
-                    ForEach(viewModel.displayedRoutines) { routine in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(routine.title)
-                                .font(.headline)
-                                .foregroundColor(.primary)
+            permissionSection
 
-                            Text("\(routine.timeDescription) · \(routine.repeatDescription)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+            Section(L10n.tr("profileRoutineSchedulesSectionTitle")) {
+                if viewModel.displayedRoutines.isEmpty {
+                    Text(L10n.tr("profileRoutineNoSchedulesDescription"))
+                        .foregroundColor(.secondary)
+                } else {
+                    ForEach(viewModel.displayedRoutines) { routine in
+                        Button {
+                            viewModel.presentEditRoutine(routine)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Text(routine.title)
+                                        .font(.headline)
+                                        .foregroundColor(.primary)
+
+                                    Spacer()
+
+                                    Text(routine.isEnabled ? L10n.tr("profileRoutineEnabledBadge") : L10n.tr("profileRoutineDisabledBadge"))
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(routine.isEnabled ? .accentColor : .secondary)
+                                }
+
+                                Text("\(routine.timeText) · \(routine.weekdayText)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
+                        .buttonStyle(.plain)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                Task {
+                                    await viewModel.deleteRoutine(routine)
+                                }
+                            } label: {
+                                Text(L10n.tr("commonDeleteTitle"))
+                            }
+                        }
                     }
                 }
             }
         }
         .navigationTitle(L10n.tr("profileRoutineSectionTitle"))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.presentCreateRoutine()
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .accessibilityLabel(L10n.tr("profileRoutineAddTitle"))
+            }
+        }
+        .sheet(
+            isPresented: Binding(
+                get: { viewModel.isEditorPresented },
+                set: { if !$0 { viewModel.dismissEditor() } }
+            )
+        ) {
+            RoutineEditorView(viewModel: viewModel)
+        }
+        .task {
+            await viewModel.load()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                await viewModel.refreshAuthorizationStatus()
+            }
+        }
+        .alert(
+            L10n.tr("profileRoutineAlertTitle"),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.clearErrorMessage() } }
+            )
+        ) {
+            Button(L10n.tr("commonConfirmTitle")) {
+                viewModel.clearErrorMessage()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     private var overviewCard: some View {
@@ -57,6 +127,36 @@ public struct ProfileRoutineView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private var permissionSection: some View {
+        switch viewModel.notificationStatus {
+        case .notDetermined:
+            Section {
+                Button(L10n.tr("profileRoutineRequestPermissionTitle")) {
+                    Task {
+                        await viewModel.requestNotificationAuthorization()
+                    }
+                }
+            } footer: {
+                Text(L10n.tr("profileRoutinePermissionPrompt"))
+            }
+        case .denied:
+            Section {
+                Button(L10n.tr("profileRoutineOpenSettingsTitle")) {
+                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+                        return
+                    }
+
+                    openURL(settingsURL)
+                }
+            } footer: {
+                Text(L10n.tr("profileRoutinePermissionDeniedDescription"))
+            }
+        case .authorized:
+            EmptyView()
+        }
     }
 
     private func detailRow(for row: RoutineDetailRow) -> some View {

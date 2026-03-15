@@ -8,6 +8,7 @@
 // Presentation Layer는 이 파일을 알지 못하며, 클린 아키텍처 원칙을 준수합니다.
 
 import DependencyInjection
+import DomainLayerInterface
 import PresentationLayer
 import SwiftUI
 
@@ -36,18 +37,20 @@ import SwiftUI
 }
 
 #Preview("ProfileRoutineView") {
+    let mockUseCase = MockRoutineUseCase(
+        routines: [
+            HydrationRoutine(
+                title: "출근 전 알림",
+                hour: 9,
+                minute: 0,
+                weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+                isEnabled: true
+            )
+        ],
+        authorizationStatus: .authorized
+    )
     ProfileRoutineView(
-        viewModel: ProfileRoutineViewModel(
-            notificationStatus: .authorized,
-            routines: [
-                RoutineScheduleSummary(
-                    title: "출근 전 알림",
-                    timeDescription: "오전 9:00",
-                    repeatDescription: "월, 화, 수, 목, 금",
-                    isEnabled: true
-                )
-            ]
-        )
+        viewModel: ProfileRoutineViewModel(routineUseCase: mockUseCase)
     )
 }
 
