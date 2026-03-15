@@ -815,6 +815,50 @@
         }
       }
     },
+    "profileRoutineActiveCountNoneValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "없음"
+          }
+        }
+      }
+    },
+    "profileRoutineActiveCountTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineConfiguredHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 루틴 상태를 확인해보세요"
+          }
+        }
+      }
+    },
+    "profileRoutineCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        }
+      }
+    },
     "profileRoutineComingSoonTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -822,6 +866,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "준비 중"
+          }
+        }
+      }
+    },
+    "profileRoutineDetailEmptyValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 전"
+          }
+        }
+      }
+    },
+    "profileRoutineEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한, 시간, 반복 요일을 정해 개인 루틴을 만들어보세요."
+          }
+        }
+      }
+    },
+    "profileRoutineEmptyHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴을 아직 설정하지 않았어요"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationAuthorizedValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용됨"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationDeniedValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거부됨"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationPendingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결 전"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationStatusTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한"
+          }
+        }
+      }
+    },
+    "profileRoutineOverviewSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 상태"
           }
         }
       }
@@ -844,6 +976,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRepeatTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반복 요일"
+          }
+        }
+      }
+    },
+    "profileRoutineSchedulesSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineStatusActiveCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 %lld개"
+          }
+        }
+      }
+    },
+    "profileRoutineStatusEmptyBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미설정"
+          }
+        }
+      }
+    },
+    "profileRoutineTimeTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 시간"
           }
         }
       }

@@ -53,6 +53,12 @@ public final class PreviewAssembly: Assembly {
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
+        .inObjectScope(.container)
+
+        container.register(ProfileRoutineViewModel.self) { _ in
+            ProfileRoutineViewModel()
+        }
+        .inObjectScope(.container)
         
         // MARK: - Navigation (Preview)
         container.register(SettingsCoordinator.self) { _ in

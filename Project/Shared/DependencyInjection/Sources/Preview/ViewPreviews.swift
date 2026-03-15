@@ -30,8 +30,25 @@ import SwiftUI
 
 // MARK: - ProfileView Preview
 #Preview("ProfileView") {
-    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    ProfileView(settingsViewModel: viewModel)
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
+    ProfileView(settingsViewModel: settingsViewModel, routineViewModel: routineViewModel)
+}
+
+#Preview("ProfileRoutineView") {
+    ProfileRoutineView(
+        viewModel: ProfileRoutineViewModel(
+            notificationStatus: .authorized,
+            routines: [
+                RoutineScheduleSummary(
+                    title: "출근 전 알림",
+                    timeDescription: "오전 9:00",
+                    repeatDescription: "월, 화, 수, 목, 금",
+                    isEnabled: true
+                )
+            ]
+        )
+    )
 }
 
 #Preview("SettingsView") {

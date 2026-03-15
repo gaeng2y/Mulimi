@@ -62,6 +62,12 @@ public final class PresentationAssembly: Assembly {
                 )
             }
         }
+        .inObjectScope(.container)
+
+        container.register(ProfileRoutineViewModel.self) { _ in
+            ProfileRoutineViewModel()
+        }
+        .inObjectScope(.container)
         
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in

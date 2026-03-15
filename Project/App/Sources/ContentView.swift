@@ -36,7 +36,8 @@ struct ContentView: View {
             }
 
             ProfileView(
-                settingsViewModel: DIContainer.shared.resolve(SettingsViewModel.self)
+                settingsViewModel: DIContainer.shared.resolve(SettingsViewModel.self),
+                routineViewModel: DIContainer.shared.resolve(ProfileRoutineViewModel.self)
             )
             .tabItem {
                 Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")

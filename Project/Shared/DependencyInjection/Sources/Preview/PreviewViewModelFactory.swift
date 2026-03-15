@@ -27,7 +27,11 @@ public struct PreviewViews {
 
     /// ProfileView Preview 생성
     public static var profile: some View {
-        let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-        return ProfileView(settingsViewModel: viewModel)
+        let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+        let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
+        return ProfileView(
+            settingsViewModel: settingsViewModel,
+            routineViewModel: routineViewModel
+        )
     }
 }

@@ -4,17 +4,26 @@ import SwiftUI
 
 public struct ProfileView: View {
     @Bindable private var settingsViewModel: SettingsViewModel
+    @Bindable private var routineViewModel: ProfileRoutineViewModel
     @State private var isSettingsPresented = false
 
-    public init(settingsViewModel: SettingsViewModel) {
+    public init(
+        settingsViewModel: SettingsViewModel,
+        routineViewModel: ProfileRoutineViewModel
+    ) {
         self.settingsViewModel = settingsViewModel
+        self.routineViewModel = routineViewModel
     }
 
     public var body: some View {
         NavigationStack {
             List {
                 Section {
-                    routineCard
+                    NavigationLink {
+                        ProfileRoutineView(viewModel: routineViewModel)
+                    } label: {
+                        routineCard
+                    }
                 }
 
                 Section(L10n.tr("profileCurrentSettingsSectionTitle")) {
@@ -66,13 +75,18 @@ public struct ProfileView: View {
 
                         Spacer()
 
-                        Text(L10n.tr("profileRoutineComingSoonTitle"))
+                        Text(routineViewModel.summaryBadgeText)
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundColor(.secondary)
                     }
 
-                    Text(L10n.tr("profileRoutineSectionDescription"))
+                    Text(routineViewModel.summaryHeadline)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+
+                    Text(routineViewModel.summaryDescription)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
