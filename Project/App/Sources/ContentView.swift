@@ -35,11 +35,12 @@ struct ContentView: View {
                 Label(L10n.tr("insightNavigationTitle"), systemImage: "chart.bar.xaxis")
             }
 
-            SettingsView(
-                viewModel: DIContainer.shared.resolve(SettingsViewModel.self)
+            ProfileView(
+                settingsViewModel: DIContainer.shared.resolve(SettingsViewModel.self),
+                routineViewModel: DIContainer.shared.resolve(ProfileRoutineViewModel.self)
             )
             .tabItem {
-                Label(L10n.tr("settingsTitle"), systemImage: "gear")
+                Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")
             }
         }
         .tint(.accent)

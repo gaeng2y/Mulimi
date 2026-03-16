@@ -23,4 +23,5 @@ public extension String {
     
     static let mainAppearance: String = "mainAppearance"
     static let dailyWaterLimit: String = "dailyWaterLimit"
+    static let hydrationRoutines: String = "hydrationRoutines"
 }

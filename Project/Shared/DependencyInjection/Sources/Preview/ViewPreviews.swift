@@ -8,6 +8,7 @@
 // Presentation Layer는 이 파일을 알지 못하며, 클린 아키텍처 원칙을 준수합니다.
 
 import DependencyInjection
+import DomainLayerInterface
 import PresentationLayer
 import SwiftUI
 
@@ -28,7 +29,40 @@ import SwiftUI
     HydrationInsightView(viewModel: viewModel)
 }
 
-// MARK: - SettingsView Preview
+// MARK: - ProfileView Preview
+#Preview("ProfileView") {
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
+    ProfileView(settingsViewModel: settingsViewModel, routineViewModel: routineViewModel)
+}
+
+#Preview("ProfileRoutineView") {
+    let mockUseCase = MockRoutineUseCase(
+        routines: [
+            HydrationRoutine(
+                title: "출근 전 알림",
+                hour: 9,
+                minute: 0,
+                weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+                isEnabled: true
+            )
+        ],
+        authorizationStatus: .authorized
+    )
+    let mockDrinkWaterUseCase = MockDrinkWaterUseCase()
+    mockDrinkWaterUseCase.currentWaterValue = 2
+    let mockUserPreferencesUseCase = MockUserPreferencesUseCase()
+    mockUserPreferencesUseCase.setDailyWaterLimit(2000)
+
+    ProfileRoutineView(
+        viewModel: ProfileRoutineViewModel(
+            routineUseCase: mockUseCase,
+            drinkWaterUseCase: mockDrinkWaterUseCase,
+            userPreferencesUseCase: mockUserPreferencesUseCase
+        )
+    )
+}
+
 #Preview("SettingsView") {
     let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
     SettingsView(viewModel: viewModel)
