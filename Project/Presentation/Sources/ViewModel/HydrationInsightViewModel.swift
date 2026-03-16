@@ -108,14 +108,6 @@ public final class HydrationInsightViewModel {
         volumeText(dailyGoalML)
     }
 
-    var weeklyAchievementText: String {
-        percentText(weeklyAchievementRate)
-    }
-
-    var monthlyAchievementText: String {
-        percentText(monthlyAchievementRate)
-    }
-
     var weekdayInsightText: String {
         guard let bestWeekday, let leastWeekday else {
             return L10n.tr("insightWeekdayInsightInsufficient")
