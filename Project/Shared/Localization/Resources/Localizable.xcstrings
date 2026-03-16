@@ -1002,6 +1002,17 @@
         }
       }
     },
+    "profileRoutineGuidanceActualDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 누적 섭취"
+          }
+        }
+      }
+    },
     "profileRoutineGuidanceActualTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1020,6 +1031,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "권장량보다 %@ 앞서 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBeforeStartDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴은 %@부터 시작되고, 오늘 %lld개가 예정돼 있어요."
           }
         }
       }
@@ -1046,6 +1068,17 @@
         }
       }
     },
+    "profileRoutineGuidanceCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 시간대가 모두 지났어요."
+          }
+        }
+      }
+    },
     "profileRoutineGuidanceDescriptionFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1053,6 +1086,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "지금까지 권장 %@ · 현재 섭취 %@"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceAheadDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 앞섰어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceBehindDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 부족해요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceOnTrackDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량과 같아요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferencePendingDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴 전이에요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장 대비 차이"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceFootnoteDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루 목표 %@를 오늘 활성 루틴 %lld개 기준으로 나눠 계산했어요."
           }
         }
       }
@@ -1112,6 +1211,39 @@
         }
       }
     },
+    "profileRoutineGuidanceNextRoutineDoneValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 일정 종료"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNextRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNextRoutineValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
+          }
+        }
+      }
+    },
     "profileRoutineGuidanceOnTrackHeadline" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1119,6 +1251,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "지금까지 루틴을 잘 따라가고 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceProgressCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 %lld/%lld 루틴 경과"
           }
         }
       }
@@ -1134,6 +1277,17 @@
         }
       }
     },
+    "profileRoutineGuidanceRecommendedDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경과한 루틴 기준"
+          }
+        }
+      }
+    },
     "profileRoutineGuidanceRecommendedTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1145,6 +1299,28 @@
         }
       }
     },
+    "profileRoutineGuidanceRemainingCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRemainingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 루틴"
+          }
+        }
+      }
+    },
     "profileRoutineGuidanceSectionTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1152,6 +1328,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오늘 루틴 가이드"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotElapsedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지남"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotNextTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotUpcomingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예정"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceTimelineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 흐름"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceUpcomingDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴은 %@이고, 오늘 %lld개가 남아 있어요."
           }
         }
       }

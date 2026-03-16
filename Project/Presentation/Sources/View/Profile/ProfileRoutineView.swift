@@ -117,36 +117,72 @@ public struct ProfileRoutineView: View {
     }
 
     private var guidanceCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(viewModel.guidanceSummary.badgeText)
+        let summary = viewModel.guidanceSummary
+
+        return VStack(alignment: .leading, spacing: 16) {
+            Text(summary.badgeText)
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(.accentColor)
+                .foregroundColor(guidanceToneColor(summary.tone))
 
-            Text(viewModel.guidanceSummary.headline)
+            Text(summary.headline)
                 .font(.headline)
 
-            Text(viewModel.guidanceSummary.description)
+            Text(summary.description)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            if let recommendedValueText = viewModel.guidanceSummary.recommendedValueText,
-               let actualValueText = viewModel.guidanceSummary.actualValueText {
-                HStack(spacing: 12) {
-                    guidanceMetric(
-                        title: L10n.tr("profileRoutineGuidanceRecommendedTitle"),
-                        value: recommendedValueText
+            if !summary.metrics.isEmpty {
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10)
+                    ],
+                    spacing: 10
+                ) {
+                    ForEach(summary.metrics) { metric in
+                        guidanceMetric(metric)
+                    }
+                }
+            }
+
+            if let nextRoutineValueText = summary.nextRoutineValueText,
+               let remainingRoutineValueText = summary.remainingRoutineValueText {
+                HStack(spacing: 10) {
+                    guidanceInfoCard(
+                        title: L10n.tr("profileRoutineGuidanceNextRoutineTitle"),
+                        value: nextRoutineValueText,
+                        systemImage: "clock"
                     )
 
-                    guidanceMetric(
-                        title: L10n.tr("profileRoutineGuidanceActualTitle"),
-                        value: actualValueText
+                    guidanceInfoCard(
+                        title: L10n.tr("profileRoutineGuidanceRemainingTitle"),
+                        value: remainingRoutineValueText,
+                        systemImage: "list.bullet"
                     )
                 }
             }
 
-            Text(viewModel.guidanceSummary.footnote)
+            if !summary.slots.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(L10n.tr("profileRoutineGuidanceTimelineTitle"))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(summary.slots) { slot in
+                                guidanceSlotChip(slot)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
+
+            Text(summary.footnote)
                 .font(.footnote)
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -184,20 +220,98 @@ public struct ProfileRoutineView: View {
         }
     }
 
-    private func guidanceMetric(title: String, value: String) -> some View {
+    private func guidanceMetric(_ metric: RoutineGuidanceMetric) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title)
+            Text(metric.title)
                 .font(.caption)
                 .foregroundColor(.secondary)
 
-            Text(value)
+            Text(metric.value)
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundColor(guidanceToneColor(metric.tone))
+
+            Text(metric.detail)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(Color.secondary.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func guidanceInfoCard(title: String, value: String, systemImage: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: systemImage)
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(Color.secondary.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func guidanceSlotChip(_ slot: RoutineGuidanceSlot) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(slot.timeText)
+                .font(.caption.weight(.semibold))
+                .foregroundColor(guidanceSlotColor(slot.status))
+
+            Text(slot.title)
+                .font(.caption2)
+                .foregroundColor(.primary)
+                .lineLimit(1)
+
+            Text(guidanceSlotStatusText(slot.status))
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(guidanceSlotColor(slot.status).opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func guidanceToneColor(_ tone: RoutineGuidanceTone) -> Color {
+        switch tone {
+        case .neutral:
+            return .secondary
+        case .onTrack:
+            return .accentColor
+        case .behind:
+            return .orange
+        case .ahead:
+            return .blue
+        }
+    }
+
+    private func guidanceSlotColor(_ status: RoutineGuidanceSlotStatus) -> Color {
+        switch status {
+        case .elapsed:
+            return .accentColor
+        case .next:
+            return .orange
+        case .upcoming:
+            return .secondary
+        }
+    }
+
+    private func guidanceSlotStatusText(_ status: RoutineGuidanceSlotStatus) -> String {
+        switch status {
+        case .elapsed:
+            return L10n.tr("profileRoutineGuidanceSlotElapsedTitle")
+        case .next:
+            return L10n.tr("profileRoutineGuidanceSlotNextTitle")
+        case .upcoming:
+            return L10n.tr("profileRoutineGuidanceSlotUpcomingTitle")
+        }
     }
 
     private func openSettings() {
