@@ -127,13 +127,11 @@ struct ProfileRoutineViewModelTests {
         await viewModel.load()
 
         #expect(viewModel.hasConfiguredRoutine == false)
+        #expect(viewModel.activeRoutineCount == 0)
         #expect(viewModel.summaryBadgeText == L10n.tr("profileRoutineStatusEmptyBadge"))
         #expect(viewModel.summaryHeadline == L10n.tr("profileRoutineEmptyHeadline"))
         #expect(viewModel.summaryDescription == L10n.tr("profileRoutineEmptyDescription"))
-        #expect(viewModel.detailRows[0].value == L10n.tr("profileRoutineNotificationPendingValue"))
-        #expect(viewModel.detailRows[1].value == L10n.tr("profileRoutineActiveCountNoneValue"))
-        #expect(viewModel.detailRows[2].value == L10n.tr("profileRoutineDetailEmptyValue"))
-        #expect(viewModel.detailRows[3].value == L10n.tr("profileRoutineDetailEmptyValue"))
+        #expect(viewModel.notificationStatus == .notDetermined)
     }
 
     @MainActor
@@ -154,13 +152,11 @@ struct ProfileRoutineViewModelTests {
         await viewModel.load()
 
         #expect(viewModel.hasConfiguredRoutine)
+        #expect(viewModel.activeRoutineCount == 1)
         #expect(viewModel.summaryBadgeText == L10n.tr("profileRoutineStatusActiveCountFormat", 1))
         #expect(viewModel.summaryHeadline == L10n.tr("profileRoutineConfiguredHeadline"))
         #expect(viewModel.summaryDescription == "\(routine.timeText) · \(routine.weekdayText)")
-        #expect(viewModel.detailRows[0].value == L10n.tr("profileRoutineNotificationAuthorizedValue"))
-        #expect(viewModel.detailRows[1].value == L10n.tr("profileRoutineCountFormat", 1))
-        #expect(viewModel.detailRows[2].value == routine.timeText)
-        #expect(viewModel.detailRows[3].value == routine.weekdayText)
+        #expect(viewModel.notificationStatus == .authorized)
         #expect(viewModel.displayedRoutines == [routine])
     }
 

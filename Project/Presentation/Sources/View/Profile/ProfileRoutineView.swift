@@ -13,23 +13,13 @@ public struct ProfileRoutineView: View {
 
     public var body: some View {
         List {
-            Section {
-                overviewCard
-            }
-
             Section(L10n.tr("profileRoutineGuidanceSectionTitle")) {
                 guidanceCard
             }
 
-            Section(L10n.tr("profileRoutineOverviewSectionTitle")) {
-                ForEach(viewModel.detailRows) { row in
-                    detailRow(for: row)
-                }
-            }
-
             permissionSection
 
-            Section(L10n.tr("profileRoutineSchedulesSectionTitle")) {
+            Section {
                 if viewModel.displayedRoutines.isEmpty {
                     Text(L10n.tr("profileRoutineNoSchedulesDescription"))
                         .foregroundColor(.secondary)
@@ -69,6 +59,17 @@ public struct ProfileRoutineView: View {
                             }
                         }
                     }
+                }
+            } header: {
+                HStack {
+                    Text(L10n.tr("profileRoutineSchedulesSectionTitle"))
+
+                    Spacer()
+
+                    Text(viewModel.summaryBadgeText)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
                 }
             }
         }
@@ -113,24 +114,6 @@ public struct ProfileRoutineView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-    }
-
-    private var overviewCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(viewModel.summaryBadgeText)
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.accentColor)
-
-            Text(viewModel.summaryHeadline)
-                .font(.headline)
-
-            Text(viewModel.summaryDescription)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(.vertical, 4)
     }
 
     private var guidanceCard: some View {
@@ -181,6 +164,8 @@ public struct ProfileRoutineView: View {
                         await viewModel.requestNotificationAuthorization()
                     }
                 }
+            } header: {
+                Text(L10n.tr("profileRoutineNotificationStatusTitle"))
             } footer: {
                 Text(L10n.tr("profileRoutinePermissionPrompt"))
             }
@@ -189,33 +174,13 @@ public struct ProfileRoutineView: View {
                 Button(L10n.tr("profileRoutineOpenSettingsTitle")) {
                     openSettings()
                 }
+            } header: {
+                Text(L10n.tr("profileRoutineNotificationStatusTitle"))
             } footer: {
                 Text(L10n.tr("profileRoutinePermissionDeniedDescription"))
             }
         case .authorized:
-            Section {
-                Label(
-                    L10n.tr("profileRoutinePermissionAuthorizedDescription"),
-                    systemImage: "checkmark.circle.fill"
-                )
-                .foregroundStyle(.green)
-            }
-        }
-    }
-
-    private func detailRow(for row: RoutineDetailRow) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: row.systemImage)
-                .foregroundColor(.accentColor)
-                .frame(width: 20)
-
-            Text(row.title)
-                .foregroundColor(.primary)
-
-            Spacer()
-
-            Text(row.value)
-                .foregroundColor(.secondary)
+            EmptyView()
         }
     }
 
