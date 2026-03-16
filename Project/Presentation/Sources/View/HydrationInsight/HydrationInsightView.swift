@@ -77,7 +77,7 @@ public struct HydrationInsightView: View {
     }
 
     private var overviewCard: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(
                     LinearGradient(
@@ -94,6 +94,7 @@ public struct HydrationInsightView: View {
                 .fill(.white.opacity(0.18))
                 .frame(width: 120, height: 120)
                 .offset(x: 30, y: -30)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
 
             VStack(alignment: .leading, spacing: 16) {
                 Label(L10n.tr("insightOverviewTitle"), systemImage: "chart.bar.xaxis")
@@ -130,8 +131,10 @@ public struct HydrationInsightView: View {
                     )
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(22)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
     }
 
