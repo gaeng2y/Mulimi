@@ -27,30 +27,15 @@ public struct RoutineRepositoryImpl: RoutineRepository {
     }
 
     public func saveRoutine(_ routine: HydrationRoutine) async throws {
-        var routines = storageDataSource.fetchRoutines()
-        var routineToSave = routine
-
-        if routineToSave.isEnabled {
+        if routine.isEnabled {
             let currentStatus = await notificationDataSource.authorizationStatus()
-            let resolvedStatus: RoutineNotificationAuthorizationStatus
-
-            switch currentStatus {
-            case .notDetermined:
-                resolvedStatus = try await notificationDataSource.requestAuthorization()
-            case .denied, .authorized:
-                resolvedStatus = currentStatus
-            }
-
-            if resolvedStatus != .authorized {
-                routineToSave.isEnabled = false
-                routines = upsert(routineToSave, in: routines)
-                storageDataSource.saveRoutines(routines.sorted(by: sortRoutines(lhs:rhs:)))
-                try await notificationDataSource.scheduleNotifications(for: routines.filter(\.isEnabled))
+            guard currentStatus == .authorized else {
                 throw RoutineError.permissionDenied
             }
         }
 
-        routines = upsert(routineToSave, in: routines)
+        var routines = storageDataSource.fetchRoutines()
+        routines = upsert(routine, in: routines)
         storageDataSource.saveRoutines(routines.sorted(by: sortRoutines(lhs:rhs:)))
         try await notificationDataSource.scheduleNotifications(for: routines.filter(\.isEnabled))
     }

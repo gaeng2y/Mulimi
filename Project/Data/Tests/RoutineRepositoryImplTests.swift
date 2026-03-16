@@ -45,10 +45,11 @@ struct RoutineRepositoryImplTests {
         }
     }
 
-    @Test("saveRoutine는 권한이 미정이면 요청 후 스케줄링한다")
-    func saveRoutineRequestsPermissionAndSchedules() async throws {
+    @Test("saveRoutine는 권한이 허용된 활성 루틴을 저장하고 스케줄링한다")
+    func saveRoutineSchedulesAuthorizedRoutine() async throws {
         let storage = SpyRoutineStorageDataSource()
         let notification = SpyRoutineNotificationDataSource()
+        notification.authorizationStatusValue = .authorized
         let repository = RoutineRepositoryImpl(
             storageDataSource: storage,
             notificationDataSource: notification
@@ -63,13 +64,13 @@ struct RoutineRepositoryImplTests {
 
         try await repository.saveRoutine(routine)
 
-        #expect(notification.requestAuthorizationCallCount == 1)
+        #expect(notification.requestAuthorizationCallCount == 0)
         #expect(storage.savedRoutines == [routine])
         #expect(notification.scheduledRoutines == [routine])
     }
 
-    @Test("saveRoutine는 권한이 거부되면 비활성 상태로 저장하고 에러를 던진다")
-    func saveRoutineDisabledWhenPermissionDenied() async {
+    @Test("saveRoutine는 권한이 거부된 활성 루틴을 저장하지 않고 에러를 던진다")
+    func saveRoutineDeniedPermission() async {
         let storage = SpyRoutineStorageDataSource()
         let notification = SpyRoutineNotificationDataSource()
         notification.authorizationStatusValue = .denied
@@ -89,8 +90,33 @@ struct RoutineRepositoryImplTests {
             try await repository.saveRoutine(routine)
         }
 
-        #expect(storage.savedRoutines.count == 1)
-        #expect(storage.savedRoutines[0].isEnabled == false)
+        #expect(storage.savedRoutines.isEmpty)
+        #expect(notification.scheduledRoutines.isEmpty)
+    }
+
+    @Test("saveRoutine는 권한이 미정인 활성 루틴을 저장하지 않고 에러를 던진다")
+    func saveRoutineNotDeterminedPermission() async {
+        let storage = SpyRoutineStorageDataSource()
+        let notification = SpyRoutineNotificationDataSource()
+        notification.authorizationStatusValue = .notDetermined
+        let repository = RoutineRepositoryImpl(
+            storageDataSource: storage,
+            notificationDataSource: notification
+        )
+        let routine = HydrationRoutine(
+            title: "오후 루틴",
+            hour: 15,
+            minute: 0,
+            weekdays: [.wednesday],
+            isEnabled: true
+        )
+
+        await #expect(throws: RoutineError.permissionDenied) {
+            try await repository.saveRoutine(routine)
+        }
+
+        #expect(notification.requestAuthorizationCallCount == 0)
+        #expect(storage.savedRoutines.isEmpty)
         #expect(notification.scheduledRoutines.isEmpty)
     }
 

@@ -19,6 +19,19 @@ struct RoutineGuidanceSummary: Equatable {
     let actualValueText: String?
 }
 
+enum RoutinePermissionPrompt: String, Identifiable, Equatable {
+    case requestAuthorization
+    case openSettings
+
+    var id: String { rawValue }
+}
+
+struct RoutinePermissionGuidance: Equatable {
+    let title: String
+    let description: String
+    let showsOpenSettingsAction: Bool
+}
+
 struct RoutineEditorDraft: Equatable {
     var id: UUID?
     var title: String
@@ -93,6 +106,7 @@ public final class ProfileRoutineViewModel {
     public var isEditorPresented = false
     public var isSaving = false
     public var errorMessage: String?
+    var permissionPrompt: RoutinePermissionPrompt?
     var editorDraft = RoutineEditorDraft()
 
     public init(
@@ -183,6 +197,55 @@ public final class ProfileRoutineViewModel {
         editorDraft.isEditing
     }
 
+    var editorPermissionGuidance: RoutinePermissionGuidance? {
+        guard editorDraft.isEnabled else {
+            return nil
+        }
+
+        switch notificationStatus {
+        case .authorized:
+            return RoutinePermissionGuidance(
+                title: L10n.tr("profileRoutineEditorPermissionAuthorizedTitle"),
+                description: L10n.tr("profileRoutineEditorPermissionAuthorizedDescription"),
+                showsOpenSettingsAction: false
+            )
+        case .notDetermined:
+            return RoutinePermissionGuidance(
+                title: L10n.tr("profileRoutineEditorPermissionPendingTitle"),
+                description: L10n.tr("profileRoutineEditorPermissionPendingDescription"),
+                showsOpenSettingsAction: false
+            )
+        case .denied:
+            return RoutinePermissionGuidance(
+                title: L10n.tr("profileRoutineEditorPermissionDeniedTitle"),
+                description: L10n.tr("profileRoutineEditorPermissionDeniedDescription"),
+                showsOpenSettingsAction: true
+            )
+        }
+    }
+
+    var permissionPromptTitle: String {
+        switch permissionPrompt {
+        case .requestAuthorization:
+            return L10n.tr("profileRoutinePermissionRequestAlertTitle")
+        case .openSettings:
+            return L10n.tr("profileRoutinePermissionDeniedAlertTitle")
+        case .none:
+            return ""
+        }
+    }
+
+    var permissionPromptMessage: String {
+        switch permissionPrompt {
+        case .requestAuthorization:
+            return L10n.tr("profileRoutinePermissionRequestAlertMessage")
+        case .openSettings:
+            return L10n.tr("profileRoutinePermissionDeniedAlertMessage")
+        case .none:
+            return ""
+        }
+    }
+
     var guidanceSummary: RoutineGuidanceSummary {
         let todayRoutines = todayActiveRoutines
 
@@ -245,17 +308,20 @@ public final class ProfileRoutineViewModel {
     }
 
     public func presentCreateRoutine() {
+        permissionPrompt = nil
         editorDraft = RoutineEditorDraft()
         isEditorPresented = true
     }
 
     public func presentEditRoutine(_ routine: HydrationRoutine) {
+        permissionPrompt = nil
         editorDraft = RoutineEditorDraft(routine: routine)
         isEditorPresented = true
     }
 
     public func dismissEditor() {
         isEditorPresented = false
+        permissionPrompt = nil
         editorDraft = RoutineEditorDraft()
     }
 
@@ -273,23 +339,51 @@ public final class ProfileRoutineViewModel {
             return
         }
 
-        isSaving = true
-        defer { isSaving = false }
+        permissionPrompt = nil
+        let routine = editorDraft.makeRoutine()
 
+        guard routine.isEnabled else {
+            await persistDraft(routine)
+            return
+        }
+
+        notificationStatus = await routineUseCase.notificationAuthorizationStatus()
+
+        switch notificationStatus {
+        case .authorized:
+            await persistDraft(routine)
+        case .notDetermined:
+            permissionPrompt = .requestAuthorization
+        case .denied:
+            permissionPrompt = .openSettings
+        }
+    }
+
+    public func requestDraftNotificationAuthorization() async {
         do {
-            try await routineUseCase.saveRoutine(editorDraft.makeRoutine())
-            await load()
-            dismissEditor()
-        } catch let error as RoutineError {
-            await load()
-            dismissEditor()
-            switch error {
-            case .permissionDenied:
-                errorMessage = L10n.tr("profileRoutinePermissionDeniedError")
+            notificationStatus = try await routineUseCase.requestNotificationAuthorization()
+
+            switch notificationStatus {
+            case .authorized:
+                permissionPrompt = nil
+                await persistDraft(editorDraft.makeRoutine())
+            case .notDetermined, .denied:
+                permissionPrompt = .openSettings
             }
         } catch {
-            errorMessage = L10n.tr("profileRoutineSaveError")
+            errorMessage = L10n.tr("profileRoutineAuthorizationRequestError")
         }
+    }
+
+    public func saveDraftWithoutNotifications() async {
+        var routine = editorDraft.makeRoutine()
+        routine.isEnabled = false
+        permissionPrompt = nil
+        await persistDraft(routine)
+    }
+
+    public func dismissPermissionPrompt() {
+        permissionPrompt = nil
     }
 
     public func deleteRoutine(_ routine: HydrationRoutine) async {
@@ -303,6 +397,25 @@ public final class ProfileRoutineViewModel {
 
     public func clearErrorMessage() {
         errorMessage = nil
+    }
+
+    private func persistDraft(_ routine: HydrationRoutine) async {
+        isSaving = true
+        defer { isSaving = false }
+
+        do {
+            try await routineUseCase.saveRoutine(routine)
+            await load()
+            dismissEditor()
+        } catch let error as RoutineError {
+            switch error {
+            case .permissionDenied:
+                notificationStatus = await routineUseCase.notificationAuthorizationStatus()
+                permissionPrompt = .openSettings
+            }
+        } catch {
+            errorMessage = L10n.tr("profileRoutineSaveError")
+        }
     }
 
     private var activeRoutineCountText: String {

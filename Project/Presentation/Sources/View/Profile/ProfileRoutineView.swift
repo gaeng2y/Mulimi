@@ -187,17 +187,19 @@ public struct ProfileRoutineView: View {
         case .denied:
             Section {
                 Button(L10n.tr("profileRoutineOpenSettingsTitle")) {
-                    guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
-                        return
-                    }
-
-                    openURL(settingsURL)
+                    openSettings()
                 }
             } footer: {
                 Text(L10n.tr("profileRoutinePermissionDeniedDescription"))
             }
         case .authorized:
-            EmptyView()
+            Section {
+                Label(
+                    L10n.tr("profileRoutinePermissionAuthorizedDescription"),
+                    systemImage: "checkmark.circle.fill"
+                )
+                .foregroundStyle(.green)
+            }
         }
     }
 
@@ -231,5 +233,13 @@ public struct ProfileRoutineView: View {
         .padding(12)
         .background(Color.secondary.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+
+        openURL(settingsURL)
     }
 }
