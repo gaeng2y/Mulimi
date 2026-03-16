@@ -21,6 +21,8 @@ public final class SettingsViewModel {
     // MARK: - Published State
     public private(set) var currentMainAppearance: MainAppearance
     public private(set) var currentDailyWaterLimit: Double
+    public let appVersion: String
+    public let appBuildNumber: String
     public var showWithdrawalConfirmation: Bool = false
     public var isWithdrawing: Bool = false
     public var withdrawalError: String?
@@ -29,7 +31,9 @@ public final class SettingsViewModel {
         settingsRouting: any SettingsRouting,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
-        authenticationViewModel: AuthenticationViewModel
+        authenticationViewModel: AuthenticationViewModel,
+        appVersion: String? = nil,
+        appBuildNumber: String? = nil
     ) {
         self.settingsRouting = settingsRouting
         self.userPreferencesUseCase = userPreferencesUseCase
@@ -37,6 +41,8 @@ public final class SettingsViewModel {
         self.authenticationViewModel = authenticationViewModel
         self.currentMainAppearance = userPreferencesUseCase.getMainAppearance()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
+        self.appVersion = appVersion ?? Self.bundleValue(for: "CFBundleShortVersionString")
+        self.appBuildNumber = appBuildNumber ?? Self.bundleValue(for: "CFBundleVersion")
     }
     
     // MARK: - Navigation State
@@ -51,6 +57,8 @@ public final class SettingsViewModel {
     
     // MARK: - Settings Data
     public let settingMenus = SettingMenu.allCases
+    public let personalizationMenus: [SettingMenu] = [.dailyLimit, .mainShape]
+    public let accountManagementMenus: [SettingMenu] = [.withdrawal]
     
     // MARK: - Navigation Actions
     public func navigate(to menu: SettingMenu) {
@@ -77,7 +85,7 @@ public final class SettingsViewModel {
     public func getSettingSystemImage(for menu: SettingMenu) -> String {
         menu.systemImage
     }
-    
+
     // MARK: - User Preferences Actions
     public func setMainAppearance(_ appearance: MainAppearance) {
         currentMainAppearance = appearance
@@ -138,5 +146,9 @@ public final class SettingsViewModel {
     public func cancelWithdrawal() {
         showWithdrawalConfirmation = false
         withdrawalError = nil
+    }
+
+    private static func bundleValue(for key: String) -> String {
+        (Bundle.main.object(forInfoDictionaryKey: key) as? String) ?? "-"
     }
 }

@@ -3,13 +3,6 @@ import Foundation
 import Localization
 import Observation
 
-struct RoutineDetailRow: Identifiable, Equatable {
-    let id: String
-    let title: String
-    let value: String
-    let systemImage: String
-}
-
 struct RoutineGuidanceSummary: Equatable {
     let badgeText: String
     let headline: String
@@ -154,35 +147,6 @@ public final class ProfileRoutineViewModel {
         }
 
         return "\(primaryRoutine.timeText) · \(primaryRoutine.weekdayText)"
-    }
-
-    var detailRows: [RoutineDetailRow] {
-        [
-            RoutineDetailRow(
-                id: "notificationStatus",
-                title: L10n.tr("profileRoutineNotificationStatusTitle"),
-                value: notificationStatus.displayName,
-                systemImage: "bell.badge"
-            ),
-            RoutineDetailRow(
-                id: "activeRoutineCount",
-                title: L10n.tr("profileRoutineActiveCountTitle"),
-                value: activeRoutineCountText,
-                systemImage: "clock.badge"
-            ),
-            RoutineDetailRow(
-                id: "time",
-                title: L10n.tr("profileRoutineTimeTitle"),
-                value: primaryRoutine?.timeText ?? L10n.tr("profileRoutineDetailEmptyValue"),
-                systemImage: "clock"
-            ),
-            RoutineDetailRow(
-                id: "repeat",
-                title: L10n.tr("profileRoutineRepeatTitle"),
-                value: primaryRoutine?.weekdayText ?? L10n.tr("profileRoutineDetailEmptyValue"),
-                systemImage: "calendar"
-            )
-        ]
     }
 
     var displayedRoutines: [HydrationRoutine] {
@@ -417,15 +381,6 @@ public final class ProfileRoutineViewModel {
             errorMessage = L10n.tr("profileRoutineSaveError")
         }
     }
-
-    private var activeRoutineCountText: String {
-        if activeRoutineCount == 0 {
-            return L10n.tr("profileRoutineActiveCountNoneValue")
-        }
-
-        return L10n.tr("profileRoutineCountFormat", activeRoutineCount)
-    }
-
     private var primaryRoutine: HydrationRoutine? {
         routines.first(where: \.isEnabled) ?? routines.first
     }

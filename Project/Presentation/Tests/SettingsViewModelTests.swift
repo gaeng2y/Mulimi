@@ -62,11 +62,15 @@ struct SettingsViewModelTests {
             settingsRouting: settingsRouting,
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel
+            authenticationViewModel: authenticationViewModel,
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
 
         #expect(viewModel.currentMainAppearance == .heart)
         #expect(viewModel.currentDailyWaterLimit == 2100)
+        #expect(viewModel.appVersion == "1.2.0")
+        #expect(viewModel.appBuildNumber == "15")
         #expect(userPreferencesUseCase.getMainAppearanceCallCount == 1)
         #expect(userPreferencesUseCase.getDailyWaterLimitCallCount == 1)
     }
@@ -79,7 +83,9 @@ struct SettingsViewModelTests {
             settingsRouting: settingsRouting,
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
+            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
 
         viewModel.navigate(to: .dailyLimit)
@@ -107,7 +113,9 @@ struct SettingsViewModelTests {
             settingsRouting: SpySettingsRouting(),
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
+            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
 
         viewModel.setMainAppearance(.cloud)
@@ -125,7 +133,9 @@ struct SettingsViewModelTests {
             settingsRouting: SpySettingsRouting(),
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
+            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
 
         viewModel.dailyWaterLimit = 2750
@@ -142,7 +152,9 @@ struct SettingsViewModelTests {
             settingsRouting: SpySettingsRouting(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase())
+            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
 
         viewModel.requestWithdrawal()
@@ -165,7 +177,9 @@ struct SettingsViewModelTests {
             settingsRouting: SpySettingsRouting(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel
+            authenticationViewModel: authenticationViewModel,
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
         viewModel.requestWithdrawal()
 
@@ -189,7 +203,9 @@ struct SettingsViewModelTests {
             settingsRouting: SpySettingsRouting(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel
+            authenticationViewModel: authenticationViewModel,
+            appVersion: "1.2.0",
+            appBuildNumber: "15"
         )
         viewModel.requestWithdrawal()
 

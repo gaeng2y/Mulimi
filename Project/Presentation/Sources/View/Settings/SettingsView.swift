@@ -33,13 +33,8 @@ public struct SettingsView: View {
     }
 
     private var settingsListStandalone: some View {
-        List(viewModel.settingMenus) { menu in
-            Button {
-                viewModel.navigate(to: menu)
-            } label: {
-                rowLabel(for: menu)
-            }
-            .buttonStyle(PlainButtonStyle())
+        List {
+            settingsSections(isEmbedded: false)
         }
         .navigationTitle(L10n.tr("settingsTitle"))
         .navigationBarTitleDisplayMode(.large)
@@ -49,15 +44,53 @@ public struct SettingsView: View {
     }
 
     private var settingsListEmbedded: some View {
-        List(viewModel.settingMenus) { menu in
-            NavigationLink(value: menu) {
-                rowLabel(for: menu)
-            }
+        List {
+            settingsSections(isEmbedded: true)
         }
         .navigationTitle(L10n.tr("settingsTitle"))
         .navigationBarTitleDisplayMode(.large)
         .navigationDestination(for: SettingMenu.self) { menu in
             SettingDetailView(menu: menu, viewModel: viewModel)
+        }
+    }
+
+    @ViewBuilder
+    private func settingsSections(isEmbedded: Bool) -> some View {
+        Section {
+            ForEach(viewModel.personalizationMenus) { menu in
+                if isEmbedded {
+                    NavigationLink(value: menu) {
+                        rowLabel(for: menu)
+                    }
+                } else {
+                    Button {
+                        viewModel.navigate(to: menu)
+                    } label: {
+                        rowLabel(for: menu)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+        } header: {
+            Text(L10n.tr("settingsPersonalizationSectionTitle"))
+        }
+        Section {
+            ForEach(viewModel.accountManagementMenus) { menu in
+                if isEmbedded {
+                    NavigationLink(value: menu) {
+                        rowLabel(for: menu)
+                    }
+                } else {
+                    Button {
+                        viewModel.navigate(to: menu)
+                    } label: {
+                        rowLabel(for: menu)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+        } header: {
+            Text(L10n.tr("settingsAccountManagementSectionTitle"))
         }
     }
 

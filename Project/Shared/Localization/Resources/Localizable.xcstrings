@@ -815,6 +815,17 @@
         }
       }
     },
+    "settingsPersonalizationSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인화"
+          }
+        }
+      }
+    },
     "profileCurrentSettingsSectionTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -822,6 +833,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "현재 설정"
+          }
+        }
+      }
+    },
+    "profileAccountSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정"
+          }
+        }
+      }
+    },
+    "profileAppBuildTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빌드 번호"
+          }
+        }
+      }
+    },
+    "profileAppInfoSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 정보"
+          }
+        }
+      }
+    },
+    "profileAppVersionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버전"
+          }
+        }
+      }
+    },
+    "profileQuickSettingsSectionFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 쓰는 개인화 항목은 프로필에서 바로 수정할 수 있어요."
+          }
+        }
+      }
+    },
+    "profileQuickSettingsSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 설정"
           }
         }
       }
@@ -1596,6 +1673,28 @@
         }
       }
     },
+    "profileSignOutDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 계정에서 로그아웃합니다."
+          }
+        }
+      }
+    },
+    "profileSignOutTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃"
+          }
+        }
+      }
+    },
     "profileTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1607,6 +1706,17 @@
         }
       }
     },
+    "profileWithdrawalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정과 연결된 데이터를 영구적으로 삭제합니다."
+          }
+        }
+      }
+    },
     "settingsTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1614,6 +1724,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정"
+          }
+        }
+      }
+    },
+    "settingsAccountManagementSectionFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃은 프로필 탭에서 바로 사용할 수 있습니다."
+          }
+        }
+      }
+    },
+    "settingsAccountManagementSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 관리"
           }
         }
       }
