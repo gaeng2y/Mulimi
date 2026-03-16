@@ -13,6 +13,7 @@ struct ProfileRoutineViewModelTests {
         var requestAuthorizationResult: Result<RoutineNotificationAuthorizationStatus, Error> = .success(.authorized)
         private(set) var savedRoutine: HydrationRoutine?
         private(set) var deletedRoutineID: UUID?
+        private(set) var requestAuthorizationCallCount = 0
 
         func fetchRoutines() -> [HydrationRoutine] {
             routines
@@ -23,6 +24,7 @@ struct ProfileRoutineViewModelTests {
         }
 
         func requestNotificationAuthorization() async throws -> RoutineNotificationAuthorizationStatus {
+            requestAuthorizationCallCount += 1
             switch requestAuthorizationResult {
             case .success(let status):
                 authorizationStatus = status
@@ -166,6 +168,7 @@ struct ProfileRoutineViewModelTests {
     @Test("saveDraft는 유효한 루틴을 저장하고 시트를 닫는다")
     func saveDraft() async {
         let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .authorized
         let viewModel = makeViewModel(routineUseCase: useCase)
 
         viewModel.presentCreateRoutine()
@@ -177,6 +180,80 @@ struct ProfileRoutineViewModelTests {
         #expect(useCase.savedRoutine?.title == "오후 루틴")
         #expect(viewModel.isEditorPresented == false)
         #expect(viewModel.displayedRoutines.count == 1)
+    }
+
+    @MainActor
+    @Test("saveDraft는 권한이 미정이면 권한 요청 안내를 먼저 노출한다")
+    func saveDraftShowsAuthorizationPromptWhenStatusIsNotDetermined() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .notDetermined
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+
+        await viewModel.saveDraft()
+
+        #expect(useCase.savedRoutine == nil)
+        #expect(viewModel.permissionPrompt == .requestAuthorization)
+        #expect(viewModel.isEditorPresented == true)
+    }
+
+    @MainActor
+    @Test("권한 요청이 허용되면 활성 루틴을 저장하고 에디터를 닫는다")
+    func requestDraftAuthorizationAndSave() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .notDetermined
+        useCase.requestAuthorizationResult = .success(.authorized)
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+        await viewModel.saveDraft()
+        await viewModel.requestDraftNotificationAuthorization()
+
+        #expect(useCase.requestAuthorizationCallCount == 1)
+        #expect(useCase.savedRoutine?.isEnabled == true)
+        #expect(viewModel.permissionPrompt == nil)
+        #expect(viewModel.isEditorPresented == false)
+    }
+
+    @MainActor
+    @Test("saveDraft는 권한이 거부된 상태면 설정 이동 안내를 노출한다")
+    func saveDraftShowsOpenSettingsPromptWhenDenied() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .denied
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+
+        await viewModel.saveDraft()
+
+        #expect(useCase.savedRoutine == nil)
+        #expect(viewModel.permissionPrompt == .openSettings)
+        #expect(viewModel.isEditorPresented == true)
+    }
+
+    @MainActor
+    @Test("알림 없이 저장을 선택하면 비활성 루틴으로 저장한다")
+    func saveDraftWithoutNotifications() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .denied
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+        await viewModel.saveDraft()
+        await viewModel.saveDraftWithoutNotifications()
+
+        #expect(useCase.savedRoutine?.isEnabled == false)
+        #expect(viewModel.permissionPrompt == nil)
+        #expect(viewModel.isEditorPresented == false)
     }
 
     @MainActor

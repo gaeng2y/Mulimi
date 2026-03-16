@@ -1,8 +1,10 @@
 import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 struct RoutineEditorView: View {
+    @Environment(\.openURL) private var openURL
     @Bindable private var viewModel: ProfileRoutineViewModel
 
     init(viewModel: ProfileRoutineViewModel) {
@@ -41,6 +43,28 @@ struct RoutineEditorView: View {
                     )
                 }
 
+                if let guidance = viewModel.editorPermissionGuidance {
+                    Section(L10n.tr("profileRoutineEditorPermissionSectionTitle")) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(guidance.title)
+                                .font(.headline)
+
+                            Text(guidance.description)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            if guidance.showsOpenSettingsAction {
+                                Button(L10n.tr("profileRoutineOpenSettingsTitle")) {
+                                    openSettings()
+                                }
+                                .padding(.top, 4)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+
                 Section {
                     weekdayGrid
                 } header: {
@@ -71,6 +95,47 @@ struct RoutineEditorView: View {
                     .disabled(!viewModel.canSaveDraft || viewModel.isSaving)
                 }
             }
+        }
+        .alert(
+            viewModel.permissionPromptTitle,
+            isPresented: Binding(
+                get: { viewModel.permissionPrompt != nil },
+                set: { if !$0 { viewModel.dismissPermissionPrompt() } }
+            )
+        ) {
+            switch viewModel.permissionPrompt {
+            case .requestAuthorization:
+                Button(L10n.tr("profileRoutineRequestPermissionTitle")) {
+                    Task {
+                        await viewModel.requestDraftNotificationAuthorization()
+                    }
+                }
+
+                Button(L10n.tr("commonCancelTitle"), role: .cancel) {
+                    viewModel.dismissPermissionPrompt()
+                }
+            case .openSettings:
+                Button(L10n.tr("profileRoutineOpenSettingsTitle")) {
+                    viewModel.dismissPermissionPrompt()
+                    openSettings()
+                }
+
+                Button(L10n.tr("profileRoutineSaveWithoutNotificationsTitle")) {
+                    Task {
+                        await viewModel.saveDraftWithoutNotifications()
+                    }
+                }
+
+                Button(L10n.tr("commonCancelTitle"), role: .cancel) {
+                    viewModel.dismissPermissionPrompt()
+                }
+            case .none:
+                Button(L10n.tr("commonConfirmTitle"), role: .cancel) {
+                    viewModel.dismissPermissionPrompt()
+                }
+            }
+        } message: {
+            Text(viewModel.permissionPromptMessage)
         }
     }
 
@@ -103,5 +168,13 @@ struct RoutineEditorView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+
+        openURL(settingsURL)
     }
 }
