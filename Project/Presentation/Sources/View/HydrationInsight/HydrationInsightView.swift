@@ -56,19 +56,6 @@ public struct HydrationInsightView: View {
         ScrollView {
             VStack(spacing: 18) {
                 overviewCard
-
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: 14),
-                        GridItem(.flexible(), spacing: 14)
-                    ],
-                    spacing: 14
-                ) {
-                    ForEach(viewModel.metrics) { metric in
-                        MetricCard(metric: metric)
-                    }
-                }
-
                 streakCard
                 weekdayPatternCard
             }
@@ -105,30 +92,18 @@ public struct HydrationInsightView: View {
                     Text(L10n.tr("insightDailyGoalFormat", viewModel.dailyGoalText))
                         .font(.title3.weight(.bold))
                         .foregroundStyle(.white)
-                    Text(
-                        L10n.tr(
-                            "insightAchievementSummaryFormat",
-                            viewModel.weeklyAchievementText,
-                            viewModel.monthlyAchievementText
-                        )
-                    )
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.88))
-                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                HStack(spacing: 12) {
-                    PillLabel(
-                        title: L10n.tr("insightStreakPillTitle"),
-                        value: viewModel.streakText
-                    )
-                    PillLabel(
-                        title: L10n.tr("insightThisMonthLabel"),
-                        value: L10n.tr(
-                            "commonMilliliterFormat",
-                            Int(viewModel.monthlyAverageML.rounded())
-                        )
-                    )
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 12),
+                        GridItem(.flexible(), spacing: 12)
+                    ],
+                    spacing: 12
+                ) {
+                    ForEach(viewModel.metrics) { metric in
+                        OverviewMetricTile(metric: metric)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -308,32 +283,27 @@ private struct InsightCard<Content: View>: View {
     }
 }
 
-private struct MetricCard: View {
+private struct OverviewMetricTile: View {
     let metric: HydrationInsightMetric
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(metric.title)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.78))
 
             Text(metric.value)
                 .font(.title3.weight(.bold))
+                .foregroundStyle(.white)
 
             Text(metric.detail)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.72))
         }
-        .frame(maxWidth: .infinity, minHeight: 118, alignment: .leading)
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color(uiColor: .systemBackground))
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.black.opacity(0.04), lineWidth: 1)
-        }
+        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
 
@@ -377,24 +347,5 @@ private struct BadgeView: View {
             Capsule(style: .continuous)
                 .fill(Color(uiColor: .systemBackground))
         )
-    }
-}
-
-private struct PillLabel: View {
-    let title: String
-    let value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(.white.opacity(0.75))
-            Text(value)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(.white.opacity(0.14), in: Capsule(style: .continuous))
     }
 }

@@ -270,23 +270,22 @@ struct ProfileRoutineViewModelTests {
     @MainActor
     @Test("오늘 활성 루틴과 현재 섭취량으로 권장 섭취 가이드를 계산한다")
     func guidanceSummary() async {
+        let morningRoutine = HydrationRoutine(
+            title: "오전 루틴",
+            hour: 9,
+            minute: 0,
+            weekdays: [.monday],
+            isEnabled: true
+        )
+        let eveningRoutine = HydrationRoutine(
+            title: "오후 루틴",
+            hour: 18,
+            minute: 0,
+            weekdays: [.monday],
+            isEnabled: true
+        )
         let routineUseCase = SpyRoutineUseCase()
-        routineUseCase.routines = [
-            HydrationRoutine(
-                title: "오전 루틴",
-                hour: 9,
-                minute: 0,
-                weekdays: [.monday],
-                isEnabled: true
-            ),
-            HydrationRoutine(
-                title: "오후 루틴",
-                hour: 18,
-                minute: 0,
-                weekdays: [.monday],
-                isEnabled: true
-            )
-        ]
+        routineUseCase.routines = [morningRoutine, eveningRoutine]
         let drinkWaterUseCase = SpyDrinkWaterUseCase()
         drinkWaterUseCase.currentWaterValue = 3
         let userPreferencesUseCase = SpyUserPreferencesUseCase()
@@ -301,11 +300,32 @@ struct ProfileRoutineViewModelTests {
 
         await viewModel.load()
 
-        #expect(viewModel.guidanceSummary.badgeText == L10n.tr("profileRoutineGuidanceProgressFormat", 50))
+        #expect(viewModel.guidanceSummary.badgeText == L10n.tr("profileRoutineGuidanceProgressCountFormat", 1, 2))
         #expect(viewModel.guidanceSummary.headline == L10n.tr("profileRoutineGuidanceBehindHeadlineFormat", L10n.tr("commonMilliliterFormat", 250)))
-        #expect(viewModel.guidanceSummary.description == L10n.tr("profileRoutineGuidanceDescriptionFormat", L10n.tr("commonMilliliterFormat", 1000), L10n.tr("commonMilliliterFormat", 750)))
-        #expect(viewModel.guidanceSummary.recommendedValueText == L10n.tr("commonMilliliterFormat", 1000))
-        #expect(viewModel.guidanceSummary.actualValueText == L10n.tr("commonMilliliterFormat", 750))
+        #expect(
+            viewModel.guidanceSummary.description ==
+                L10n.tr(
+                    "profileRoutineGuidanceUpcomingDescriptionFormat",
+                    L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", eveningRoutine.timeText, eveningRoutine.title),
+                    1
+                )
+        )
+        #expect(
+            viewModel.guidanceSummary.footnote ==
+                L10n.tr("profileRoutineGuidanceFootnoteDetailFormat", L10n.tr("commonMilliliterFormat", 2000), 2)
+        )
+        #expect(viewModel.guidanceSummary.tone == .behind)
+        #expect(viewModel.guidanceSummary.metrics.count == 3)
+        #expect(viewModel.guidanceSummary.metrics[0].value == L10n.tr("commonMilliliterFormat", 1000))
+        #expect(viewModel.guidanceSummary.metrics[1].value == L10n.tr("commonMilliliterFormat", 750))
+        #expect(viewModel.guidanceSummary.metrics[2].title == L10n.tr("profileRoutineGuidanceDifferenceTitle"))
+        #expect(viewModel.guidanceSummary.metrics[2].detail == L10n.tr("profileRoutineGuidanceDifferenceBehindDetail"))
+        #expect(
+            viewModel.guidanceSummary.nextRoutineValueText ==
+                L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", eveningRoutine.timeText, eveningRoutine.title)
+        )
+        #expect(viewModel.guidanceSummary.remainingRoutineValueText == L10n.tr("profileRoutineGuidanceRemainingCountFormat", 1))
+        #expect(viewModel.guidanceSummary.slots.map(\.status) == [.elapsed, .next])
     }
 
     @MainActor
@@ -327,7 +347,78 @@ struct ProfileRoutineViewModelTests {
 
         #expect(viewModel.guidanceSummary.badgeText == L10n.tr("profileRoutineGuidanceNoScheduleBadge"))
         #expect(viewModel.guidanceSummary.headline == L10n.tr("profileRoutineGuidanceNoScheduleHeadline"))
-        #expect(viewModel.guidanceSummary.recommendedValueText == nil)
-        #expect(viewModel.guidanceSummary.actualValueText == nil)
+        #expect(viewModel.guidanceSummary.metrics.isEmpty)
+        #expect(viewModel.guidanceSummary.nextRoutineValueText == nil)
+        #expect(viewModel.guidanceSummary.remainingRoutineValueText == nil)
+        #expect(viewModel.guidanceSummary.slots.isEmpty)
+    }
+
+    @MainActor
+    @Test("첫 루틴 전에는 다음 루틴과 예정 슬롯을 함께 안내한다")
+    func guidanceSummaryBeforeFirstRoutine() async {
+        let morningRoutine = HydrationRoutine(
+            title: "오전 루틴",
+            hour: 9,
+            minute: 0,
+            weekdays: [.monday],
+            isEnabled: true
+        )
+        let eveningRoutine = HydrationRoutine(
+            title: "오후 루틴",
+            hour: 18,
+            minute: 0,
+            weekdays: [.monday],
+            isEnabled: true
+        )
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.routines = [morningRoutine, eveningRoutine]
+        let now = makeDate(year: 2026, month: 3, day: 16, hour: 8, minute: 30)
+        let viewModel = makeViewModel(routineUseCase: routineUseCase, now: now)
+
+        await viewModel.load()
+
+        #expect(viewModel.guidanceSummary.tone == .neutral)
+        #expect(viewModel.guidanceSummary.headline == L10n.tr("profileRoutineGuidanceBeforeStartHeadline"))
+        #expect(
+            viewModel.guidanceSummary.description ==
+                L10n.tr(
+                    "profileRoutineGuidanceBeforeStartDescriptionFormat",
+                    L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", morningRoutine.timeText, morningRoutine.title),
+                    2
+                )
+        )
+        #expect(viewModel.guidanceSummary.metrics[2].detail == L10n.tr("profileRoutineGuidanceDifferencePendingDetail"))
+        #expect(viewModel.guidanceSummary.slots.map(\.status) == [.next, .upcoming])
+    }
+
+    @MainActor
+    @Test("오늘 루틴 시간이 모두 지나면 남은 루틴 없음 상태를 계산한다")
+    func guidanceSummaryAfterAllRoutines() async {
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.routines = [
+            HydrationRoutine(
+                title: "오전 루틴",
+                hour: 9,
+                minute: 0,
+                weekdays: [.monday],
+                isEnabled: true
+            ),
+            HydrationRoutine(
+                title: "오후 루틴",
+                hour: 18,
+                minute: 0,
+                weekdays: [.monday],
+                isEnabled: true
+            )
+        ]
+        let now = makeDate(year: 2026, month: 3, day: 16, hour: 21, minute: 0)
+        let viewModel = makeViewModel(routineUseCase: routineUseCase, now: now)
+
+        await viewModel.load()
+
+        #expect(viewModel.guidanceSummary.description == L10n.tr("profileRoutineGuidanceCompletedDescription"))
+        #expect(viewModel.guidanceSummary.nextRoutineValueText == L10n.tr("profileRoutineGuidanceNextRoutineDoneValue"))
+        #expect(viewModel.guidanceSummary.remainingRoutineValueText == L10n.tr("profileRoutineGuidanceRemainingCountFormat", 0))
+        #expect(viewModel.guidanceSummary.slots.map(\.status) == [.elapsed, .elapsed])
     }
 }

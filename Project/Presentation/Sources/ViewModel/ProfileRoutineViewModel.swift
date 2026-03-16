@@ -3,13 +3,44 @@ import Foundation
 import Localization
 import Observation
 
+enum RoutineGuidanceTone: Equatable {
+    case neutral
+    case onTrack
+    case behind
+    case ahead
+}
+
+struct RoutineGuidanceMetric: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let value: String
+    let detail: String
+    let tone: RoutineGuidanceTone
+}
+
+enum RoutineGuidanceSlotStatus: Equatable {
+    case elapsed
+    case next
+    case upcoming
+}
+
+struct RoutineGuidanceSlot: Identifiable, Equatable {
+    let id: UUID
+    let title: String
+    let timeText: String
+    let status: RoutineGuidanceSlotStatus
+}
+
 struct RoutineGuidanceSummary: Equatable {
     let badgeText: String
     let headline: String
     let description: String
     let footnote: String
-    let recommendedValueText: String?
-    let actualValueText: String?
+    let tone: RoutineGuidanceTone
+    let metrics: [RoutineGuidanceMetric]
+    let nextRoutineValueText: String?
+    let remainingRoutineValueText: String?
+    let slots: [RoutineGuidanceSlot]
 }
 
 enum RoutinePermissionPrompt: String, Identifiable, Equatable {
@@ -219,36 +250,84 @@ public final class ProfileRoutineViewModel {
                 headline: L10n.tr("profileRoutineGuidanceNoScheduleHeadline"),
                 description: L10n.tr("profileRoutineGuidanceNoScheduleDescription"),
                 footnote: L10n.tr("profileRoutineGuidanceNoScheduleFootnote"),
-                recommendedValueText: nil,
-                actualValueText: nil
+                tone: .neutral,
+                metrics: [],
+                nextRoutineValueText: nil,
+                remainingRoutineValueText: nil,
+                slots: []
             )
         }
 
         let elapsedCount = elapsedRoutineCount(for: todayRoutines)
+        let nextRoutine = nextRoutine(for: todayRoutines)
+        let remainingCount = remainingRoutineCount(for: todayRoutines)
         let actualIntakeML = currentWaterCount * 250
         let recommendedIntakeML = recommendedIntakeML(
             elapsedCount: elapsedCount,
             totalCount: todayRoutines.count
         )
+        let tone = guidanceTone(
+            elapsedCount: elapsedCount,
+            recommendedIntakeML: recommendedIntakeML,
+            actualIntakeML: actualIntakeML
+        )
+        let recommendedValueText = L10n.tr("commonMilliliterFormat", recommendedIntakeML)
+        let actualValueText = L10n.tr("commonMilliliterFormat", actualIntakeML)
+        let gapValueText = L10n.tr("commonMilliliterFormat", abs(actualIntakeML - recommendedIntakeML))
 
         return RoutineGuidanceSummary(
             badgeText: L10n.tr(
-                "profileRoutineGuidanceProgressFormat",
-                Int(routineProgressPercentage(elapsedCount: elapsedCount, totalCount: todayRoutines.count).rounded())
+                "profileRoutineGuidanceProgressCountFormat",
+                elapsedCount,
+                todayRoutines.count
             ),
             headline: guidanceHeadline(
                 elapsedCount: elapsedCount,
                 recommendedIntakeML: recommendedIntakeML,
                 actualIntakeML: actualIntakeML
             ),
-            description: L10n.tr(
-                "profileRoutineGuidanceDescriptionFormat",
-                L10n.tr("commonMilliliterFormat", recommendedIntakeML),
-                L10n.tr("commonMilliliterFormat", actualIntakeML)
+            description: guidanceDescription(
+                elapsedCount: elapsedCount,
+                nextRoutine: nextRoutine,
+                remainingCount: remainingCount
             ),
-            footnote: L10n.tr("profileRoutineGuidanceFootnoteFormat", todayRoutines.count, elapsedCount),
-            recommendedValueText: L10n.tr("commonMilliliterFormat", recommendedIntakeML),
-            actualValueText: L10n.tr("commonMilliliterFormat", actualIntakeML)
+            footnote: L10n.tr(
+                "profileRoutineGuidanceFootnoteDetailFormat",
+                L10n.tr("commonMilliliterFormat", dailyWaterLimitML),
+                todayRoutines.count
+            ),
+            tone: tone,
+            metrics: [
+                RoutineGuidanceMetric(
+                    id: "recommended",
+                    title: L10n.tr("profileRoutineGuidanceRecommendedTitle"),
+                    value: recommendedValueText,
+                    detail: L10n.tr("profileRoutineGuidanceRecommendedDetail"),
+                    tone: .neutral
+                ),
+                RoutineGuidanceMetric(
+                    id: "actual",
+                    title: L10n.tr("profileRoutineGuidanceActualTitle"),
+                    value: actualValueText,
+                    detail: L10n.tr("profileRoutineGuidanceActualDetail"),
+                    tone: .neutral
+                ),
+                RoutineGuidanceMetric(
+                    id: "difference",
+                    title: L10n.tr("profileRoutineGuidanceDifferenceTitle"),
+                    value: gapValueText,
+                    detail: differenceDetailText(
+                        elapsedCount: elapsedCount,
+                        tone: tone
+                    ),
+                    tone: tone
+                )
+            ],
+            nextRoutineValueText: nextRoutine.map {
+                L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", $0.timeText, $0.title)
+            } ?? L10n.tr("profileRoutineGuidanceNextRoutineDoneValue"),
+            remainingRoutineValueText: L10n.tr("profileRoutineGuidanceRemainingCountFormat", remainingCount),
+            slots: guidanceSlots(for: todayRoutines, nextRoutineID: nextRoutine?.id)
         )
     }
 
@@ -411,6 +490,21 @@ public final class ProfileRoutineViewModel {
         .count
     }
 
+    private func nextRoutine(for routines: [HydrationRoutine]) -> HydrationRoutine? {
+        let currentMinutes = minuteOfDay(for: nowProvider())
+        return routines.first { routine in
+            minuteOfDay(hour: routine.hour, minute: routine.minute) > currentMinutes
+        }
+    }
+
+    private func remainingRoutineCount(for routines: [HydrationRoutine]) -> Int {
+        let currentMinutes = minuteOfDay(for: nowProvider())
+        return routines.filter { routine in
+            minuteOfDay(hour: routine.hour, minute: routine.minute) > currentMinutes
+        }
+        .count
+    }
+
     private func recommendedIntakeML(elapsedCount: Int, totalCount: Int) -> Int {
         guard totalCount > 0 else {
             return 0
@@ -419,12 +513,20 @@ public final class ProfileRoutineViewModel {
         return Int((Double(dailyWaterLimitML) * Double(elapsedCount) / Double(totalCount)).rounded())
     }
 
-    private func routineProgressPercentage(elapsedCount: Int, totalCount: Int) -> Double {
-        guard totalCount > 0 else {
-            return 0
+    private func guidanceTone(
+        elapsedCount: Int,
+        recommendedIntakeML: Int,
+        actualIntakeML: Int
+    ) -> RoutineGuidanceTone {
+        if elapsedCount == 0 {
+            return .neutral
         }
 
-        return Double(elapsedCount) / Double(totalCount) * 100
+        if actualIntakeML == recommendedIntakeML {
+            return .onTrack
+        }
+
+        return actualIntakeML < recommendedIntakeML ? .behind : .ahead
     }
 
     private func guidanceHeadline(
@@ -448,6 +550,71 @@ public final class ProfileRoutineViewModel {
         }
 
         return L10n.tr("profileRoutineGuidanceAheadHeadlineFormat", gapText)
+    }
+
+    private func guidanceDescription(
+        elapsedCount: Int,
+        nextRoutine: HydrationRoutine?,
+        remainingCount: Int
+    ) -> String {
+        if elapsedCount == 0, let nextRoutine {
+            return L10n.tr(
+                "profileRoutineGuidanceBeforeStartDescriptionFormat",
+                L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", nextRoutine.timeText, nextRoutine.title),
+                remainingCount
+            )
+        }
+
+        if let nextRoutine {
+            return L10n.tr(
+                "profileRoutineGuidanceUpcomingDescriptionFormat",
+                L10n.tr("profileRoutineGuidanceNextRoutineValueFormat", nextRoutine.timeText, nextRoutine.title),
+                remainingCount
+            )
+        }
+
+        return L10n.tr("profileRoutineGuidanceCompletedDescription")
+    }
+
+    private func differenceDetailText(
+        elapsedCount: Int,
+        tone: RoutineGuidanceTone
+    ) -> String {
+        if elapsedCount == 0 {
+            return L10n.tr("profileRoutineGuidanceDifferencePendingDetail")
+        }
+
+        switch tone {
+        case .neutral, .onTrack:
+            return L10n.tr("profileRoutineGuidanceDifferenceOnTrackDetail")
+        case .behind:
+            return L10n.tr("profileRoutineGuidanceDifferenceBehindDetail")
+        case .ahead:
+            return L10n.tr("profileRoutineGuidanceDifferenceAheadDetail")
+        }
+    }
+
+    private func guidanceSlots(
+        for routines: [HydrationRoutine],
+        nextRoutineID: UUID?
+    ) -> [RoutineGuidanceSlot] {
+        routines.map { routine in
+            let status: RoutineGuidanceSlotStatus
+            if let nextRoutineID, routine.id == nextRoutineID {
+                status = .next
+            } else if nextRoutineID == nil || minuteOfDay(hour: routine.hour, minute: routine.minute) < minuteOfDay(for: nowProvider()) {
+                status = .elapsed
+            } else {
+                status = .upcoming
+            }
+
+            return RoutineGuidanceSlot(
+                id: routine.id,
+                title: routine.title,
+                timeText: routine.timeText,
+                status: status
+            )
+        }
     }
 
     private func minuteOfDay(for date: Date) -> Int {
