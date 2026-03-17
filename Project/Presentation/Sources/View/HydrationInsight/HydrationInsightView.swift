@@ -56,7 +56,6 @@ public struct HydrationInsightView: View {
         ScrollView {
             VStack(spacing: 18) {
                 overviewCard
-                streakCard
                 weekdayPatternCard
             }
             .padding(.vertical, 20)
@@ -111,44 +110,6 @@ public struct HydrationInsightView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
-    }
-
-    private var streakCard: some View {
-        InsightCard(
-            title: L10n.tr("insightStreakCardTitle"),
-            subtitle: L10n.tr("insightStreakCardSubtitle")
-        ) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Text(viewModel.streakText)
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
-                    Text(L10n.tr("insightStreakAchievementLabel"))
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    AchievementProgressRow(
-                        title: L10n.tr("insightThisWeekLabel"),
-                        detail: L10n.tr(
-                            "insightAchievementDaysFormat",
-                            viewModel.weeklyAchievedDays,
-                            max(viewModel.weeklyElapsedDays, 1)
-                        ),
-                        progress: viewModel.weeklyAchievementRate
-                    )
-                    AchievementProgressRow(
-                        title: L10n.tr("insightThisMonthLabel"),
-                        detail: L10n.tr(
-                            "insightAchievementDaysFormat",
-                            viewModel.monthlyAchievedDays,
-                            max(viewModel.monthlyElapsedDays, 1)
-                        ),
-                        progress: viewModel.monthlyAchievementRate
-                    )
-                }
-            }
-        }
     }
 
     private var weekdayPatternCard: some View {
@@ -304,28 +265,6 @@ private struct OverviewMetricTile: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-    }
-}
-
-private struct AchievementProgressRow: View {
-    let title: String
-    let detail: String
-    let progress: Double
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Text(detail)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            ProgressView(value: progress, total: 1)
-                .tint(Color.accent)
-        }
     }
 }
 
