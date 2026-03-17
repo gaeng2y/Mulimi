@@ -53,25 +53,23 @@ public final class PresentationAssembly: Assembly {
 
         container.register(HydrationInsightViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
-            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HydrationInsightViewModel(
                     waterUseCase: waterUseCase,
-                    userPreferencesUseCase: userPreferencesUseCase
+                    progressUseCase: progressUseCase
                 )
             }
         }
         .inObjectScope(.container)
 
         container.register(ChallengeViewModel.self) { resolver in
-            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
-            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ChallengeViewModel(
-                    waterUseCase: waterUseCase,
-                    userPreferencesUseCase: userPreferencesUseCase
+                    progressUseCase: progressUseCase
                 )
             }
         }

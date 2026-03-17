@@ -25,6 +25,9 @@ public final class PreviewAssembly: Assembly {
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCase()
         }
+        container.register(HydrationProgressUseCase.self) { _ in
+            MockHydrationProgressUseCase()
+        }
 
         container.register(SignInUseCase.self) { _ in
             MockSignInUseCase()
@@ -54,15 +57,14 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationInsightViewModel.self) { resolver in
             HydrationInsightViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
             )
         }
         .inObjectScope(.container)
 
         container.register(ChallengeViewModel.self) { resolver in
             ChallengeViewModel(
-                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
             )
         }
         .inObjectScope(.container)
