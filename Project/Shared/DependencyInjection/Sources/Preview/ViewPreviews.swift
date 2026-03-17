@@ -29,6 +29,11 @@ import SwiftUI
     HydrationInsightView(viewModel: viewModel)
 }
 
+#Preview("ChallengeView") {
+    let viewModel = DIContainer.preview.resolve(ChallengeViewModel.self)
+    ChallengeView(viewModel: viewModel)
+}
+
 // MARK: - ProfileView Preview
 #Preview("ProfileView") {
     let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)

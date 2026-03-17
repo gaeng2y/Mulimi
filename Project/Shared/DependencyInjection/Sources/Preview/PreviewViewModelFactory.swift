@@ -25,6 +25,12 @@ public struct PreviewViews {
         return HydrationRecordListView(viewModel: viewModel)
     }
 
+    /// ChallengeView Preview 생성
+    public static var challenge: some View {
+        let viewModel = DIContainer.preview.resolve(ChallengeViewModel.self)
+        return ChallengeView(viewModel: viewModel)
+    }
+
     /// ProfileView Preview 생성
     public static var profile: some View {
         let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)

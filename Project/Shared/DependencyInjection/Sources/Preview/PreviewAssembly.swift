@@ -59,6 +59,14 @@ public final class PreviewAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(ChallengeViewModel.self) { resolver in
+            ChallengeViewModel(
+                waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+            )
+        }
+        .inObjectScope(.container)
+
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!

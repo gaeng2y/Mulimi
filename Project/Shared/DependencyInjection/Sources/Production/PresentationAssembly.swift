@@ -64,6 +64,19 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(ChallengeViewModel.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ChallengeViewModel(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
