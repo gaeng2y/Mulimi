@@ -12,18 +12,11 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
-        container.register(SettingsCoordinator.self) { _ in
-            SettingsCoordinator()
-        }
-        .inObjectScope(.container)
-        container.register(SettingsRouting.self) { resolver in
-            resolver.resolve(SettingsCoordinator.self)!
-        }
         container.register(RecordCoordinator.self) { _ in
             RecordCoordinator()
         }
         .inObjectScope(.container)
-        container.register(RecordRouting.self) { resolver in
+        container.register((any RecordRouting).self) { resolver in
             resolver.resolve(RecordCoordinator.self)!
         }
         
@@ -47,21 +40,50 @@ public final class PresentationAssembly: Assembly {
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                recordRouting: resolver.resolve(RecordRouting.self)!
+                recordRouting: resolver.resolve((any RecordRouting).self)!
             )
         }
 
         container.register(HydrationInsightViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
-            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HydrationInsightViewModel(
                     waterUseCase: waterUseCase,
+                    progressUseCase: progressUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(ChallengeViewModel.self) { resolver in
+            let challengeUseCase = resolver.resolve(ChallengeUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ChallengeViewModel(
+                    challengeUseCase: challengeUseCase,
+                    progressUseCase: progressUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(ProfileRoutineViewModel.self) { resolver in
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ProfileRoutineViewModel(
+                    routineUseCase: routineUseCase,
+                    drinkWaterUseCase: drinkWaterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase
                 )
             }
         }
+        .inObjectScope(.container)
         
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
@@ -74,7 +96,6 @@ public final class PresentationAssembly: Assembly {
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                settingsRouting: resolver.resolve(SettingsRouting.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!

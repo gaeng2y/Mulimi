@@ -56,20 +56,6 @@ public struct HydrationInsightView: View {
         ScrollView {
             VStack(spacing: 18) {
                 overviewCard
-
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: 14),
-                        GridItem(.flexible(), spacing: 14)
-                    ],
-                    spacing: 14
-                ) {
-                    ForEach(viewModel.metrics) { metric in
-                        MetricCard(metric: metric)
-                    }
-                }
-
-                streakCard
                 weekdayPatternCard
             }
             .padding(.vertical, 20)
@@ -77,7 +63,7 @@ public struct HydrationInsightView: View {
     }
 
     private var overviewCard: some View {
-        ZStack(alignment: .topTrailing) {
+        ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .fill(
                     LinearGradient(
@@ -94,6 +80,7 @@ public struct HydrationInsightView: View {
                 .fill(.white.opacity(0.18))
                 .frame(width: 120, height: 120)
                 .offset(x: 30, y: -30)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
 
             VStack(alignment: .leading, spacing: 16) {
                 Label(L10n.tr("insightOverviewTitle"), systemImage: "chart.bar.xaxis")
@@ -104,73 +91,25 @@ public struct HydrationInsightView: View {
                     Text(L10n.tr("insightDailyGoalFormat", viewModel.dailyGoalText))
                         .font(.title3.weight(.bold))
                         .foregroundStyle(.white)
-                    Text(
-                        L10n.tr(
-                            "insightAchievementSummaryFormat",
-                            viewModel.weeklyAchievementText,
-                            viewModel.monthlyAchievementText
-                        )
-                    )
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.88))
-                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-                HStack(spacing: 12) {
-                    PillLabel(
-                        title: L10n.tr("insightStreakPillTitle"),
-                        value: viewModel.streakText
-                    )
-                    PillLabel(
-                        title: L10n.tr("insightThisMonthLabel"),
-                        value: L10n.tr(
-                            "commonMilliliterFormat",
-                            Int(viewModel.monthlyAverageML.rounded())
-                        )
-                    )
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 12),
+                        GridItem(.flexible(), spacing: 12)
+                    ],
+                    spacing: 12
+                ) {
+                    ForEach(viewModel.metrics) { metric in
+                        OverviewMetricTile(metric: metric)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(22)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
-    }
-
-    private var streakCard: some View {
-        InsightCard(
-            title: L10n.tr("insightStreakCardTitle"),
-            subtitle: L10n.tr("insightStreakCardSubtitle")
-        ) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Text(viewModel.streakText)
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
-                    Text(L10n.tr("insightStreakAchievementLabel"))
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    AchievementProgressRow(
-                        title: L10n.tr("insightThisWeekLabel"),
-                        detail: L10n.tr(
-                            "insightAchievementDaysFormat",
-                            viewModel.weeklyAchievedDays,
-                            max(viewModel.weeklyElapsedDays, 1)
-                        ),
-                        progress: viewModel.weeklyAchievementRate
-                    )
-                    AchievementProgressRow(
-                        title: L10n.tr("insightThisMonthLabel"),
-                        detail: L10n.tr(
-                            "insightAchievementDaysFormat",
-                            viewModel.monthlyAchievedDays,
-                            max(viewModel.monthlyElapsedDays, 1)
-                        ),
-                        progress: viewModel.monthlyAchievementRate
-                    )
-                }
-            }
-        }
     }
 
     private var weekdayPatternCard: some View {
@@ -305,54 +244,27 @@ private struct InsightCard<Content: View>: View {
     }
 }
 
-private struct MetricCard: View {
+private struct OverviewMetricTile: View {
     let metric: HydrationInsightMetric
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(metric.title)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.78))
 
             Text(metric.value)
                 .font(.title3.weight(.bold))
+                .foregroundStyle(.white)
 
             Text(metric.detail)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.72))
         }
-        .frame(maxWidth: .infinity, minHeight: 118, alignment: .leading)
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color(uiColor: .systemBackground))
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.black.opacity(0.04), lineWidth: 1)
-        }
-    }
-}
-
-private struct AchievementProgressRow: View {
-    let title: String
-    let detail: String
-    let progress: Double
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Text(detail)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
-            ProgressView(value: progress, total: 1)
-                .tint(Color.accent)
-        }
+        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
 
@@ -374,24 +286,5 @@ private struct BadgeView: View {
             Capsule(style: .continuous)
                 .fill(Color(uiColor: .systemBackground))
         )
-    }
-}
-
-private struct PillLabel: View {
-    let title: String
-    let value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(.white.opacity(0.75))
-            Text(value)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(.white.opacity(0.14), in: Capsule(style: .continuous))
     }
 }

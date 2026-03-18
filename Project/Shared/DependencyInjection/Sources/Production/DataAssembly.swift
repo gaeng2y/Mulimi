@@ -50,6 +50,33 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        // MARK: - Routine
+        container.register(RoutineStorageDataSource.self) { _ in
+            RoutineStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(RoutineNotificationDataSource.self) { _ in
+            RoutineNotificationDataSourceImpl()
+        }
+
+        container.register(RoutineRepository.self) { resolver in
+            RoutineRepositoryImpl(
+                storageDataSource: resolver.resolve(RoutineStorageDataSource.self)!,
+                notificationDataSource: resolver.resolve(RoutineNotificationDataSource.self)!
+            )
+        }
+
+        // MARK: - Challenge
+        container.register(ChallengeStorageDataSource.self) { _ in
+            ChallengeStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(ChallengeRepository.self) { resolver in
+            ChallengeRepositoryImpl(
+                storageDataSource: resolver.resolve(ChallengeStorageDataSource.self)!
+            )
+        }
+
         // MARK: - Authentication
         container.register(KeyChainDataSource.self) { resolver in
             KeyChainDataSourceImpl()

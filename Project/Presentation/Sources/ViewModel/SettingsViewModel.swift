@@ -13,7 +13,6 @@ import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
-    private let settingsRouting: any SettingsRouting
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let authenticationViewModel: AuthenticationViewModel
@@ -21,63 +20,28 @@ public final class SettingsViewModel {
     // MARK: - Published State
     public private(set) var currentMainAppearance: MainAppearance
     public private(set) var currentDailyWaterLimit: Double
+    public let appVersion: String
+    public let appBuildNumber: String
     public var showWithdrawalConfirmation: Bool = false
     public var isWithdrawing: Bool = false
     public var withdrawalError: String?
 
     public init(
-        settingsRouting: any SettingsRouting,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
-        authenticationViewModel: AuthenticationViewModel
+        authenticationViewModel: AuthenticationViewModel,
+        appVersion: String? = nil,
+        appBuildNumber: String? = nil
     ) {
-        self.settingsRouting = settingsRouting
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
         self.currentMainAppearance = userPreferencesUseCase.getMainAppearance()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
+        self.appVersion = appVersion ?? Self.bundleValue(for: "CFBundleShortVersionString")
+        self.appBuildNumber = appBuildNumber ?? Self.bundleValue(for: "CFBundleVersion")
     }
-    
-    // MARK: - Navigation State
-    public var navigationPath: NavigationPath {
-        get { settingsRouting.path }
-        set { settingsRouting.path = newValue }
-    }
-    
-    public var hasNavigationPath: Bool {
-        settingsRouting.hasPath
-    }
-    
-    // MARK: - Settings Data
-    public let settingMenus = SettingMenu.allCases
-    
-    // MARK: - Navigation Actions
-    public func navigate(to menu: SettingMenu) {
-        settingsRouting.push(SettingsRoute(menu: menu))
-    }
-    
-    public func navigateBack() {
-        settingsRouting.pop()
-    }
-    
-    public func resetNavigation() {
-        settingsRouting.reset()
-    }
-    
-    // MARK: - Settings Actions
-    public func getSettingTitle(for menu: SettingMenu) -> String {
-        menu.title
-    }
-    
-    public func getSettingDescription(for menu: SettingMenu) -> String {
-        menu.description
-    }
-    
-    public func getSettingSystemImage(for menu: SettingMenu) -> String {
-        menu.systemImage
-    }
-    
+
     // MARK: - User Preferences Actions
     public func setMainAppearance(_ appearance: MainAppearance) {
         currentMainAppearance = appearance
@@ -138,5 +102,9 @@ public final class SettingsViewModel {
     public func cancelWithdrawal() {
         showWithdrawalConfirmation = false
         withdrawalError = nil
+    }
+
+    private static func bundleValue(for key: String) -> String {
+        (Bundle.main.object(forInfoDictionaryKey: key) as? String) ?? "-"
     }
 }

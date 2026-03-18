@@ -12,6 +12,358 @@
         }
       }
     },
+    "challengeAchievementDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 달성"
+          }
+        }
+      }
+    },
+    "challengeAchievedAtFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득일 %@"
+          }
+        }
+      }
+    },
+    "challengeCompletedBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        }
+      }
+    },
+    "challengeCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 연속 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "달성한 챌린지를 다시 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득한 챌린지"
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakEmptyValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0일"
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 streak"
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일"
+          }
+        }
+      }
+    },
+    "challengeEarnedBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득 완료"
+          }
+        }
+      }
+    },
+    "challengeEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 연속 달성 챌린지 진행이 여기에 표시됩니다."
+          }
+        }
+      }
+    },
+    "challengeEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 챌린지가 시작되지 않았어요"
+          }
+        }
+      }
+    },
+    "challengeGoalCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성 30회"
+          }
+        }
+      }
+    },
+    "challengeGoalCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성 챌린지를 획득했어요."
+          }
+        }
+      }
+    },
+    "challengeGoalRemainingCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30회까지 %lld회 남았어요."
+          }
+        }
+      }
+    },
+    "challengeGoalStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 달성한 날이 누적되면 챌린지를 획득해요."
+          }
+        }
+      }
+    },
+    "challengeGoalValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회"
+          }
+        }
+      }
+    },
+    "challengeInProgressBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeInProgressSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 달성 중인 챌린지를 확인하고 다음 목표를 이어가세요."
+          }
+        }
+      }
+    },
+    "challengeInProgressSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중 챌린지"
+          }
+        }
+      }
+    },
+    "challengeLoadingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지를 불러오는 중..."
+          }
+        }
+      }
+    },
+    "challengeMetricMonthlyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 달 달성률"
+          }
+        }
+      }
+    },
+    "challengeMetricWeeklyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 달성률"
+          }
+        }
+      }
+    },
+    "challengeRemainingDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 챌린지까지 %lld일 남았어요."
+          }
+        }
+      }
+    },
+    "challengeProgressCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회"
+          }
+        }
+      }
+    },
+    "challengeProgressDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일"
+          }
+        }
+      }
+    },
+    "challengeStreakCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 연속 목표 달성"
+          }
+        }
+      }
+    },
+    "challengeStreakStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 streak가 시작돼요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간 달성률 80%"
+          }
+        }
+      }
+    },
+    "challengeWeeklyCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 80% 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyProgressDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld/%lld일 목표를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지"
+          }
+        }
+      }
+    },
     "commonCancelTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30,6 +382,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "확인"
+          }
+        }
+      }
+    },
+    "commonDeleteTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제"
           }
         }
       }
@@ -804,6 +1167,1139 @@
         }
       }
     },
+    "settingsPersonalizationSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인화"
+          }
+        }
+      }
+    },
+    "profileCurrentSettingsSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 설정"
+          }
+        }
+      }
+    },
+    "profileAccountSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정"
+          }
+        }
+      }
+    },
+    "profileAppBuildTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빌드 번호"
+          }
+        }
+      }
+    },
+    "profileAppInfoSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 정보"
+          }
+        }
+      }
+    },
+    "profileAppVersionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버전"
+          }
+        }
+      }
+    },
+    "profileQuickSettingsSectionFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 쓰는 개인화 항목은 프로필에서 바로 수정할 수 있어요."
+          }
+        }
+      }
+    },
+    "profileQuickSettingsSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 설정"
+          }
+        }
+      }
+    },
+    "profileRoutineActiveCountNoneValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "없음"
+          }
+        }
+      }
+    },
+    "profileRoutineActiveCountTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineAddTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 추가"
+          }
+        }
+      }
+    },
+    "profileRoutineAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 안내"
+          }
+        }
+      }
+    },
+    "profileRoutineAuthorizationRequestError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한 상태를 확인하지 못했어요."
+          }
+        }
+      }
+    },
+    "profileRoutineConfiguredHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 루틴 상태를 확인해보세요"
+          }
+        }
+      }
+    },
+    "profileRoutineCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        }
+      }
+    },
+    "profileRoutineComingSoonTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 중"
+          }
+        }
+      }
+    },
+    "profileRoutineDeleteError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 삭제 중 문제가 발생했어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceActualDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 누적 섭취"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceActualTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 섭취"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceAheadHeadlineFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 %@ 앞서 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBeforeStartDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴은 %@부터 시작되고, 오늘 %lld개가 예정돼 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBeforeStartHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴 전이에요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceBehindHeadlineFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 %@ 부족해요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 시간대가 모두 지났어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 권장 %@ · 현재 섭취 %@"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceAheadDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 앞섰어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceBehindDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량보다 부족해요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceOnTrackDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장량과 같아요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferencePendingDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 루틴 전이에요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceDifferenceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권장 대비 차이"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceFootnoteDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루 목표 %@를 오늘 활성 루틴 %lld개 기준으로 나눠 계산했어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceFootnoteFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 활성 루틴 %lld개 중 %lld개 시간대가 지났어요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 없음"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반복 요일이 오늘에 맞는 활성 루틴을 추가하면 지금까지 권장 섭취량을 보여드릴게요."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기준으로 계산할 활성 루틴이 생기면 진행률도 함께 안내합니다."
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNoScheduleHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 적용되는 루틴이 없어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNextRoutineDoneValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 일정 종료"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNextRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceNextRoutineValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceOnTrackHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 루틴을 잘 따라가고 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceProgressCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 %lld/%lld 루틴 경과"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceProgressFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 진행률 %lld%%"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRecommendedDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경과한 루틴 기준"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRecommendedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금까지 권장"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRemainingCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceRemainingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 가이드"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotElapsedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지남"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotNextTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceSlotUpcomingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예정"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceTimelineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 루틴 흐름"
+          }
+        }
+      }
+    },
+    "profileRoutineGuidanceUpcomingDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴은 %@이고, 오늘 %lld개가 남아 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineDisabledBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성"
+          }
+        }
+      }
+    },
+    "profileRoutineDetailEmptyValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 전"
+          }
+        }
+      }
+    },
+    "profileRoutineEditTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 편집"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorBasicSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 정보"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorEnabledTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 활성화"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionAuthorizedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 루틴을 활성 상태로 저장하면 선택한 시간에 알림을 보냅니다."
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionAuthorizedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 켜져 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionDeniedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 알림이 거부되어 있어 활성 루틴을 저장할 수 없습니다. 설정에서 허용하거나 알림 없이 저장하세요."
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionDeniedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먼저 알림 권한을 켜주세요"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionPendingDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 루틴을 활성 상태로 저장하면 시스템 알림 권한 요청이 표시됩니다."
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionPendingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장할 때 권한을 요청해요"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorPermissionSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 안내"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorTimeSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorTitlePlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 오전 수분 리마인더"
+          }
+        }
+      }
+    },
+    "profileRoutineEditorWeekdaysFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하나 이상의 요일을 선택하세요."
+          }
+        }
+      }
+    },
+    "profileRoutineEditorWeekdaysSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반복 요일 설정"
+          }
+        }
+      }
+    },
+    "profileRoutineEnabledBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성"
+          }
+        }
+      }
+    },
+    "profileRoutineEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한, 시간, 반복 요일을 정해 개인 루틴을 만들어보세요."
+          }
+        }
+      }
+    },
+    "profileRoutineEmptyHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴을 아직 설정하지 않았어요"
+          }
+        }
+      }
+    },
+    "profileRoutineNoSchedulesDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 저장된 루틴이 없습니다."
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationAuthorizedValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용됨"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationDeniedValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거부됨"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationPendingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결 전"
+          }
+        }
+      }
+    },
+    "profileRoutineNotificationStatusTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한"
+          }
+        }
+      }
+    },
+    "profileRoutineOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 변경"
+          }
+        }
+      }
+    },
+    "profileRoutineOverviewSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 상태"
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionDeniedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 거부되어 있어 루틴을 활성화해도 스케줄할 수 없습니다."
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionDeniedAlertMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 알림을 허용하면 이 루틴을 활성 상태로 저장할 수 있습니다. 지금은 알림 없이 저장할 수도 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionDeniedAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한이 꺼져 있어요"
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionDeniedError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한이 없어 루틴을 비활성 상태로 저장했어요. 설정에서 알림을 허용하면 다시 켤 수 있습니다."
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionPrompt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴을 활성화하려면 알림 권한이 필요합니다."
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionRequestAlertMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 루틴은 설정한 시간마다 알림을 보내기 위해 권한이 필요합니다."
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionRequestAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 알림을 허용할까요?"
+          }
+        }
+      }
+    },
+    "profileRoutinePermissionAuthorizedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 허용되어 있어 활성 루틴을 저장하면 바로 스케줄됩니다."
+          }
+        }
+      }
+    },
+    "profileRoutineRepeatEverydayValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매일"
+          }
+        }
+      }
+    },
+    "profileRoutineSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간대별 알림과 반복 요일을 관리하는 루틴 기능을 곧 추가합니다."
+          }
+        }
+      }
+    },
+    "profileRoutineSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRepeatTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반복 요일"
+          }
+        }
+      }
+    },
+    "profileRoutineRequestPermissionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한 요청"
+          }
+        }
+      }
+    },
+    "profileRoutineSaveError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 저장 중 문제가 발생했어요. 잠시 후 다시 시도해주세요."
+          }
+        }
+      }
+    },
+    "profileRoutineSaveWithoutNotificationsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 없이 저장"
+          }
+        }
+      }
+    },
+    "profileRoutineSchedulesSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineStatusActiveCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 %lld개"
+          }
+        }
+      }
+    },
+    "profileRoutineStatusEmptyBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미설정"
+          }
+        }
+      }
+    },
+    "profileRoutineTimeTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 시간"
+          }
+        }
+      }
+    },
+    "profileRoutineValidationError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 이름과 반복 요일을 확인해주세요."
+          }
+        }
+      }
+    },
+    "profileSettingsToolbarAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 열기"
+          }
+        }
+      }
+    },
+    "profileSignOutDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 계정에서 로그아웃합니다."
+          }
+        }
+      }
+    },
+    "profileSignOutTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃"
+          }
+        }
+      }
+    },
+    "profileTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로필"
+          }
+        }
+      }
+    },
+    "profileWithdrawalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정과 연결된 데이터를 영구적으로 삭제합니다."
+          }
+        }
+      }
+    },
     "settingsTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -811,6 +2307,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정"
+          }
+        }
+      }
+    },
+    "settingsAccountManagementSectionFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃은 프로필 탭에서 바로 사용할 수 있습니다."
+          }
+        }
+      }
+    },
+    "settingsAccountManagementSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 관리"
+          }
+        }
+      }
+    },
+    "routineNotificationBodyFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 시간이에요. 물 한 잔 마셔볼까요?"
+          }
+        }
+      }
+    },
+    "routineNotificationTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물을 마실 시간이에요"
           }
         }
       }

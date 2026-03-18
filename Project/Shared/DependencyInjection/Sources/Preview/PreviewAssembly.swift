@@ -25,9 +25,19 @@ public final class PreviewAssembly: Assembly {
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCase()
         }
+        container.register(HydrationProgressUseCase.self) { _ in
+            MockHydrationProgressUseCase()
+        }
+        container.register(ChallengeUseCase.self) { _ in
+            MockChallengeUseCase()
+        }
 
         container.register(SignInUseCase.self) { _ in
             MockSignInUseCase()
+        }
+
+        container.register(RoutineUseCase.self) { _ in
+            MockRoutineUseCase()
         }
 
         // MARK: - ViewModels
@@ -43,30 +53,47 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                recordRouting: resolver.resolve(RecordRouting.self)!
+                recordRouting: resolver.resolve((any RecordRouting).self)!
             )
         }
 
         container.register(HydrationInsightViewModel.self) { resolver in
             HydrationInsightViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
             )
         }
-        
-        // MARK: - Navigation (Preview)
-        container.register(SettingsCoordinator.self) { _ in
-            MockSettingsCoordinator()
+        .inObjectScope(.container)
+
+        container.register(ChallengeViewModel.self) { resolver in
+            ChallengeViewModel(
+                challengeUseCase: resolver.resolve(ChallengeUseCase.self)!,
+                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
+            )
         }
         .inObjectScope(.container)
-        container.register(SettingsRouting.self) { resolver in
-            resolver.resolve(SettingsCoordinator.self)!
+
+        container.register(ProfileRoutineViewModel.self) { resolver in
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ProfileRoutineViewModel(
+                    routineUseCase: routineUseCase,
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
         }
+        .inObjectScope(.container)
+        
+        // MARK: - Navigation (Preview)
         container.register(RecordCoordinator.self) { _ in
             MockRecordCoordinator()
         }
         .inObjectScope(.container)
-        container.register(RecordRouting.self) { resolver in
+        container.register((any RecordRouting).self) { resolver in
             resolver.resolve(RecordCoordinator.self)!
         }
 
@@ -81,7 +108,6 @@ public final class PreviewAssembly: Assembly {
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(
-                settingsRouting: resolver.resolve(SettingsRouting.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!
