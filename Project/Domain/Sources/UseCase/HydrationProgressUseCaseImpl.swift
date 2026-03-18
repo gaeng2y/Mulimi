@@ -45,9 +45,15 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
             calendar: calendar,
             dailyGoalML: dailyGoalML
         )
+        let todayTotalIntake = await totalIntake(
+            on: calendar.startOfDay(for: referenceDate),
+            calendar: calendar
+        )
 
         return HydrationProgressSnapshot(
             dailyGoalML: dailyGoalML,
+            todayIntakeML: todayTotalIntake,
+            hasAchievedTodayGoal: todayTotalIntake >= dailyGoalML && dailyGoalML > 0,
             weeklyAverageML: averageIntake(from: weeklyTotals, dayCount: weeklyElapsedDays),
             monthlyAverageML: averageIntake(from: monthlyTotals, dayCount: monthlyElapsedDays),
             weeklyAchievementRate: achievementRate(achievedDays: weeklyAchievedDays, dayCount: weeklyElapsedDays),

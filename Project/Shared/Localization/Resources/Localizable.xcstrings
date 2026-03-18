@@ -166,6 +166,17 @@
         }
       }
     },
+    "challengeGoalRemainingConditionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회 더 목표를 달성하면 획득해요."
+          }
+        }
+      }
+    },
     "challengeGoalRemainingCountFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -276,6 +287,28 @@
         }
       }
     },
+    "challengeRemainingConditionDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 더 연속으로 목표를 달성하면 돼요."
+          }
+        }
+      }
+    },
+    "challengeRemainingConditionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 조건"
+          }
+        }
+      }
+    },
     "challengeProgressCountFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -320,6 +353,83 @@
         }
       }
     },
+    "challengeTodayActionAlreadyDoneGoalFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 1회가 이미 반영됐어요. 누적 %lld/%lld회예요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionAlreadyDoneStreakFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표는 이미 달성했어요. 현재 %lld일 streak예요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionAlreadyDoneWeeklyFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 1일이 이미 반영됐어요. 현재 %lld/%lld일 달성 중이에요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionGoalFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 누적 %lld/%lld회가 돼요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionStreakFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 %lld일 streak가 돼요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 액션"
+          }
+        }
+      }
+    },
+    "challengeTodayActionWeeklyFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 이번 주 %lld/%lld일 달성으로 올라가요."
+          }
+        }
+      }
+    },
     "challengeWeeklyCardTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -349,6 +459,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld/%lld일 목표를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyRemainingConditionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 기준 80%%까지 %lld일 더 달성해야 해요. (%lld/%lld일 필요)"
+          }
+        }
+      }
+    },
+    "challengeWeeklyRemainingConditionSatisfiedFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 기준 80%%를 유지 중이에요. (%lld/%lld일 충족)"
           }
         }
       }
