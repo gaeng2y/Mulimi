@@ -42,6 +42,7 @@ struct HydrationProgressUseCaseTests {
         #expect(snapshot.weeklyAchievementRate == 0.75)
         #expect(snapshot.monthlyAchievementRate == (4.0 / 12.0))
         #expect(snapshot.currentStreak == 3)
+        #expect(snapshot.currentStreakStartDate == calendar.date(from: DateComponents(year: 2026, month: 3, day: 9))!)
         #expect(snapshot.isEmpty == false)
     }
 
@@ -60,6 +61,7 @@ struct HydrationProgressUseCaseTests {
         #expect(snapshot.weeklyAverageML == 0)
         #expect(snapshot.monthlyAverageML == 0)
         #expect(snapshot.currentStreak == 0)
+        #expect(snapshot.currentStreakStartDate == nil)
     }
 
     private func appendTotal(_ volumeML: Int, on date: Date, into events: inout [HydrationEvent]) {
