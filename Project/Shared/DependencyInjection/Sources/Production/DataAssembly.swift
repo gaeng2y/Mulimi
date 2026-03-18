@@ -66,6 +66,17 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        // MARK: - Challenge
+        container.register(ChallengeStorageDataSource.self) { _ in
+            ChallengeStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(ChallengeRepository.self) { resolver in
+            ChallengeRepositoryImpl(
+                storageDataSource: resolver.resolve(ChallengeStorageDataSource.self)!
+            )
+        }
+
         // MARK: - Authentication
         container.register(KeyChainDataSource.self) { resolver in
             KeyChainDataSourceImpl()

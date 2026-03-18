@@ -12,6 +12,182 @@
         }
       }
     },
+    "challengeAchievementDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 달성"
+          }
+        }
+      }
+    },
+    "challengeCompletedBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        }
+      }
+    },
+    "challengeCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 연속 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakEmptyValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0일"
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 streak"
+          }
+        }
+      }
+    },
+    "challengeCurrentStreakValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일"
+          }
+        }
+      }
+    },
+    "challengeEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 연속 달성 챌린지 진행이 여기에 표시됩니다."
+          }
+        }
+      }
+    },
+    "challengeEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 챌린지가 시작되지 않았어요"
+          }
+        }
+      }
+    },
+    "challengeInProgressBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeLoadingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지를 불러오는 중..."
+          }
+        }
+      }
+    },
+    "challengeMetricMonthlyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 달 달성률"
+          }
+        }
+      }
+    },
+    "challengeMetricWeeklyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 달성률"
+          }
+        }
+      }
+    },
+    "challengeRemainingDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 챌린지까지 %lld일 남았어요."
+          }
+        }
+      }
+    },
+    "challengeStreakCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7일 연속 목표 달성"
+          }
+        }
+      }
+    },
+    "challengeStreakStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 streak가 시작돼요."
+          }
+        }
+      }
+    },
+    "challengeTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지"
+          }
+        }
+      }
+    },
     "commonCancelTitle" : {
       "extractionState" : "manual",
       "localizations" : {
