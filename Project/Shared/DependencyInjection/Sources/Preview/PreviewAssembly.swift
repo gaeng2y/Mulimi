@@ -28,6 +28,9 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationProgressUseCase.self) { _ in
             MockHydrationProgressUseCase()
         }
+        container.register(ChallengeUseCase.self) { _ in
+            MockChallengeUseCase()
+        }
 
         container.register(SignInUseCase.self) { _ in
             MockSignInUseCase()
@@ -64,6 +67,7 @@ public final class PreviewAssembly: Assembly {
 
         container.register(ChallengeViewModel.self) { resolver in
             ChallengeViewModel(
+                challengeUseCase: resolver.resolve(ChallengeUseCase.self)!,
                 progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
             )
         }

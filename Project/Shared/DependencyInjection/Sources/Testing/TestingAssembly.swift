@@ -27,6 +27,9 @@ public final class TestingAssembly: Assembly {
         container.register(HydrationProgressUseCase.self) { _ in
             MockHydrationProgressUseCaseForTesting()
         }
+        container.register(ChallengeUseCase.self) { _ in
+            MockChallengeUseCaseForTesting()
+        }
 
         container.register(RoutineUseCase.self) { _ in
             MockRoutineUseCaseForTesting()
