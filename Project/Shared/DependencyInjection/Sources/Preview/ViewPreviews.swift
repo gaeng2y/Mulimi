@@ -68,20 +68,13 @@ import SwiftUI
     )
 }
 
-#Preview("SettingsView") {
-    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    SettingsView(viewModel: viewModel)
-}
-
 // MARK: - SettingDetailView Previews
 #Preview("DailyLimit Setting") {
-    SettingDetailView(menu: .dailyLimit)
-}
-
-#Preview("AccentColor Setting") {
-    SettingDetailView(menu: .accentColor)
+    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    SettingDetailView(menu: .dailyLimit, viewModel: viewModel)
 }
 
 #Preview("MainShape Setting") {
-    SettingDetailView(menu: .mainShape)
+    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    SettingDetailView(menu: .mainShape, viewModel: viewModel)
 }

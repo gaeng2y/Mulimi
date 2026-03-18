@@ -62,7 +62,7 @@ public struct ProfileView: View {
                             title: L10n.tr("settingWithdrawalTitle"),
                             description: L10n.tr("profileWithdrawalDescription"),
                             systemImage: "person.crop.circle.badge.xmark",
-                            showsChevron: true
+                            showsChevron: false
                         )
                     }
                 }
