@@ -23,6 +23,17 @@
         }
       }
     },
+    "challengeAchievedAtFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득일 %@"
+          }
+        }
+      }
+    },
     "challengeCompletedBadge" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41,6 +52,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7일 연속 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "달성한 챌린지를 다시 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득한 챌린지"
           }
         }
       }
@@ -78,6 +111,17 @@
         }
       }
     },
+    "challengeEarnedBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득 완료"
+          }
+        }
+      }
+    },
     "challengeEmptyDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -100,6 +144,61 @@
         }
       }
     },
+    "challengeGoalCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성 30회"
+          }
+        }
+      }
+    },
+    "challengeGoalCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성 챌린지를 획득했어요."
+          }
+        }
+      }
+    },
+    "challengeGoalRemainingCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30회까지 %lld회 남았어요."
+          }
+        }
+      }
+    },
+    "challengeGoalStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 달성한 날이 누적되면 챌린지를 획득해요."
+          }
+        }
+      }
+    },
+    "challengeGoalValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회"
+          }
+        }
+      }
+    },
     "challengeInProgressBadge" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -107,6 +206,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeInProgressSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 달성 중인 챌린지를 확인하고 다음 목표를 이어가세요."
+          }
+        }
+      }
+    },
+    "challengeInProgressSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중 챌린지"
           }
         }
       }
@@ -155,6 +276,28 @@
         }
       }
     },
+    "challengeProgressCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회"
+          }
+        }
+      }
+    },
+    "challengeProgressDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일"
+          }
+        }
+      }
+    },
     "challengeStreakCardTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -173,6 +316,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오늘 목표를 달성하면 streak가 시작돼요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간 달성률 80%"
+          }
+        }
+      }
+    },
+    "challengeWeeklyCompletedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 80% 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyProgressDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld/%lld일 목표를 달성했어요."
           }
         }
       }

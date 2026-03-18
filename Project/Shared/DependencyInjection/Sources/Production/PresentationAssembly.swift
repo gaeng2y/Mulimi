@@ -58,10 +58,12 @@ public final class PresentationAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register(ChallengeViewModel.self) { resolver in
+            let challengeUseCase = resolver.resolve(ChallengeUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ChallengeViewModel(
+                    challengeUseCase: challengeUseCase,
                     progressUseCase: progressUseCase
                 )
             }

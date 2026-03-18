@@ -15,7 +15,7 @@ public struct ChallengeView: View {
                 LinearGradient(
                     colors: [
                         Color.background,
-                        Color.orange.opacity(0.06),
+                        Color.orange.opacity(0.05),
                         Color.background
                     ],
                     startPoint: .topLeading,
@@ -45,48 +45,30 @@ public struct ChallengeView: View {
     }
 
     private var challengeContent: some View {
-        let summary = viewModel.streakSummary
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                if viewModel.inProgressChallenges.isEmpty == false {
+                    ChallengeSectionHeader(
+                        title: L10n.tr("challengeInProgressSectionTitle"),
+                        subtitle: L10n.tr("challengeInProgressSectionDescription")
+                    )
 
-        return ScrollView {
-            VStack(spacing: 18) {
-                ChallengeCard {
-                    VStack(alignment: .leading, spacing: 18) {
-                        Text(summary.badgeText)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(challengeBadgeColor)
-
-                        Text(summary.title)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-
-                        HStack(alignment: .firstTextBaseline, spacing: 10) {
-                            Text(summary.valueText)
-                                .font(.system(size: 36, weight: .bold, design: .rounded))
-                                .foregroundStyle(.primary)
-
-                            Text(L10n.tr("challengeCurrentStreakLabel"))
-                                .font(.headline)
-                                .foregroundStyle(.secondary)
+                    VStack(spacing: 14) {
+                        ForEach(viewModel.inProgressChallenges) { challenge in
+                            ChallengeCard(challenge: challenge)
                         }
+                    }
+                }
 
-                        Text(summary.description)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
+                if viewModel.completedChallenges.isEmpty == false {
+                    ChallengeSectionHeader(
+                        title: L10n.tr("challengeCompletedSectionTitle"),
+                        subtitle: L10n.tr("challengeCompletedSectionDescription")
+                    )
 
-                        ProgressView(value: summary.progress, total: 1)
-                            .tint(challengeBadgeColor)
-
-                        LazyVGrid(
-                            columns: [
-                                GridItem(.flexible(), spacing: 10),
-                                GridItem(.flexible(), spacing: 10)
-                            ],
-                            spacing: 10
-                        ) {
-                            ForEach(summary.metrics) { metric in
-                                ChallengeMetricTile(metric: metric)
-                            }
+                    VStack(spacing: 14) {
+                        ForEach(viewModel.completedChallenges) { challenge in
+                            ChallengeCard(challenge: challenge)
                         }
                     }
                 }
@@ -117,51 +99,139 @@ public struct ChallengeView: View {
         }
         .frame(maxWidth: .infinity)
     }
+}
 
-    private var challengeBadgeColor: Color {
-        viewModel.currentStreak >= 7 ? .orange : .accentColor
+private struct ChallengeSectionHeader: View {
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.title3.weight(.bold))
+                .foregroundStyle(.primary)
+
+            Text(subtitle)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
     }
 }
 
-private struct ChallengeCard<Content: View>: View {
-    let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
+private struct ChallengeCard: View {
+    let challenge: ChallengeCardModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            content
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 10) {
+                    ChallengeBadge(
+                        title: challenge.badgeText,
+                        color: accentColor
+                    )
+
+                    Text(challenge.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text(challenge.description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Image(systemName: challenge.symbolName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(accentColor)
+                    .frame(width: 42, height: 42)
+                    .background(
+                        Circle()
+                            .fill(accentColor.opacity(challenge.isCompleted ? 0.18 : 0.12))
+                    )
+            }
+
+            HStack(alignment: .lastTextBaseline, spacing: 10) {
+                Text(challenge.valueText)
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
+
+                Text(challenge.progressText)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+            }
+
+            ProgressView(value: challenge.progress, total: 1)
+                .tint(accentColor)
+
+            if let achievedAtText = challenge.achievedAtText {
+                Label(achievedAtText, systemImage: "checkmark.seal.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(accentColor)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemBackground).opacity(0.95))
-        )
+        .background(cardBackground)
+        .overlay(alignment: .topTrailing) {
+            if challenge.isCompleted {
+                Image(systemName: "sparkles")
+                    .font(.headline.weight(.bold))
+                    .foregroundStyle(accentColor.opacity(0.9))
+                    .padding(16)
+            }
+        }
+    }
+
+    private var accentColor: Color {
+        switch challenge.kind {
+        case .streak7:
+            return .orange
+        case .weeklyAchievement80:
+            return .mint
+        case .goalAchievement30:
+            return .blue
+        }
+    }
+
+    private var cardBackground: some View {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: challenge.isCompleted
+                        ? [
+                            accentColor.opacity(0.22),
+                            Color(uiColor: .secondarySystemBackground).opacity(0.96)
+                        ]
+                        : [
+                            Color(uiColor: .secondarySystemBackground).opacity(0.98),
+                            accentColor.opacity(0.06)
+                        ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .stroke(accentColor.opacity(challenge.isCompleted ? 0.22 : 0.08), lineWidth: 1)
+            )
     }
 }
 
-private struct ChallengeMetricTile: View {
-    let metric: ChallengeMetric
+private struct ChallengeBadge: View {
+    let title: String
+    let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(metric.title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            Text(metric.value)
-                .font(.headline.weight(.bold))
-                .foregroundStyle(.primary)
-
-            Text(metric.detail)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        Text(title)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(
+                Capsule(style: .continuous)
+                    .fill(color.opacity(0.12))
+            )
     }
 }
