@@ -13,7 +13,6 @@ import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
-    private let settingsRouting: any SettingsRouting
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let authenticationViewModel: AuthenticationViewModel
@@ -28,14 +27,12 @@ public final class SettingsViewModel {
     public var withdrawalError: String?
 
     public init(
-        settingsRouting: any SettingsRouting,
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
         authenticationViewModel: AuthenticationViewModel,
         appVersion: String? = nil,
         appBuildNumber: String? = nil
     ) {
-        self.settingsRouting = settingsRouting
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
@@ -43,47 +40,6 @@ public final class SettingsViewModel {
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
         self.appVersion = appVersion ?? Self.bundleValue(for: "CFBundleShortVersionString")
         self.appBuildNumber = appBuildNumber ?? Self.bundleValue(for: "CFBundleVersion")
-    }
-    
-    // MARK: - Navigation State
-    public var navigationPath: NavigationPath {
-        get { settingsRouting.path }
-        set { settingsRouting.path = newValue }
-    }
-    
-    public var hasNavigationPath: Bool {
-        settingsRouting.hasPath
-    }
-    
-    // MARK: - Settings Data
-    public let settingMenus = SettingMenu.allCases
-    public let personalizationMenus: [SettingMenu] = [.dailyLimit, .mainShape]
-    public let accountManagementMenus: [SettingMenu] = [.withdrawal]
-    
-    // MARK: - Navigation Actions
-    public func navigate(to menu: SettingMenu) {
-        settingsRouting.push(SettingsRoute(menu: menu))
-    }
-    
-    public func navigateBack() {
-        settingsRouting.pop()
-    }
-    
-    public func resetNavigation() {
-        settingsRouting.reset()
-    }
-    
-    // MARK: - Settings Actions
-    public func getSettingTitle(for menu: SettingMenu) -> String {
-        menu.title
-    }
-    
-    public func getSettingDescription(for menu: SettingMenu) -> String {
-        menu.description
-    }
-    
-    public func getSettingSystemImage(for menu: SettingMenu) -> String {
-        menu.systemImage
     }
 
     // MARK: - User Preferences Actions

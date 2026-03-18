@@ -9,8 +9,6 @@
 import DomainLayerInterface
 import Localization
 import SwiftUI
-import WidgetKit
-import UIKit
 
 public struct SettingDetailView: View {
     let menu: SettingMenu
@@ -56,17 +54,11 @@ private struct DailyLimitSettingView: View {
                 get: { viewModel.dailyWaterLimit },
                 set: {
                     viewModel.dailyWaterLimit = $0
-                    // 위젯 즉시 업데이트
-                    WidgetCenter.shared.reloadAllTimelines()
                 }
             ), in: 1000...4000, step: 250) {
                 Text(L10n.tr("settingsDailyLimitSliderTitle"))
             }
             .padding(.horizontal)
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
-                // 앱이 활성화될 때 위젯 새로고침
-                WidgetCenter.shared.reloadAllTimelines()
-            }
             
             HStack {
                 Text(L10n.tr("commonMilliliterFormat", 1000))
