@@ -11,6 +11,7 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
     public let weeklyElapsedDays: Int
     public let monthlyElapsedDays: Int
     public let currentStreak: Int
+    public let currentStreakStartDate: Date?
     public let isEmpty: Bool
 
     public init(
@@ -24,6 +25,7 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
         weeklyElapsedDays: Int,
         monthlyElapsedDays: Int,
         currentStreak: Int,
+        currentStreakStartDate: Date? = nil,
         isEmpty: Bool
     ) {
         self.dailyGoalML = dailyGoalML
@@ -36,6 +38,7 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
         self.weeklyElapsedDays = weeklyElapsedDays
         self.monthlyElapsedDays = monthlyElapsedDays
         self.currentStreak = currentStreak
+        self.currentStreakStartDate = currentStreakStartDate
         self.isEmpty = isEmpty
     }
 
@@ -51,6 +54,7 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
             weeklyElapsedDays: 0,
             monthlyElapsedDays: 0,
             currentStreak: 0,
+            currentStreakStartDate: nil,
             isEmpty: true
         )
     }
