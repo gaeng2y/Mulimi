@@ -13,6 +13,9 @@ struct ChallengeCardModel: Identifiable, Equatable {
     let description: String
     let progress: Double
     let progressText: String
+    let remainingConditionText: String?
+    let todayActionText: String?
+    let todayActionCompleted: Bool
     let achievedAt: Date?
     let achievedAtText: String?
     let isCompleted: Bool
@@ -65,7 +68,7 @@ public final class ChallengeViewModel {
             calendar: calendar
         )
 
-        let cards = challenges.map(makeCardModel)
+        let cards = challenges.map { makeCardModel(from: $0, snapshot: snapshot) }
 
         inProgressChallenges = cards
             .filter { $0.isCompleted == false }
@@ -75,7 +78,10 @@ public final class ChallengeViewModel {
             .sorted(by: completedSort)
     }
 
-    private func makeCardModel(from challenge: HydrationChallenge) -> ChallengeCardModel {
+    private func makeCardModel(
+        from challenge: HydrationChallenge,
+        snapshot: HydrationProgressSnapshot
+    ) -> ChallengeCardModel {
         ChallengeCardModel(
             id: challenge.kind,
             kind: challenge.kind,
@@ -88,6 +94,9 @@ public final class ChallengeViewModel {
             description: description(for: challenge),
             progress: challenge.progress,
             progressText: progressText(for: challenge),
+            remainingConditionText: challenge.isCompleted ? nil : remainingConditionText(for: challenge),
+            todayActionText: challenge.isCompleted ? nil : todayActionText(for: challenge, snapshot: snapshot),
+            todayActionCompleted: challenge.isCompleted ? false : todayActionCompleted(for: challenge, snapshot: snapshot),
             achievedAt: challenge.achievedAt,
             achievedAtText: challenge.achievedAt.map(achievedAtText),
             isCompleted: challenge.isCompleted
@@ -186,6 +195,96 @@ public final class ChallengeViewModel {
         }
     }
 
+    private func remainingConditionText(for challenge: HydrationChallenge) -> String {
+        switch challenge.kind {
+        case .streak7:
+            let remainingDays = max(challenge.primaryTargetValue - challenge.primaryCurrentValue, 0)
+            return L10n.tr("challengeRemainingConditionDaysFormat", remainingDays)
+
+        case .weeklyAchievement80:
+            let achievedDays = challenge.secondaryCurrentValue ?? 0
+            let elapsedDays = max(challenge.secondaryTargetValue ?? 1, 1)
+            let requiredDays = requiredWeeklyAchievedDays(for: elapsedDays)
+            let remainingDays = max(requiredDays - achievedDays, 0)
+
+            if remainingDays == 0 {
+                return L10n.tr("challengeWeeklyRemainingConditionSatisfiedFormat", requiredDays, elapsedDays)
+            }
+
+            return L10n.tr(
+                "challengeWeeklyRemainingConditionFormat",
+                remainingDays,
+                requiredDays,
+                elapsedDays
+            )
+
+        case .goalAchievement30:
+            let remainingCount = max(challenge.primaryTargetValue - challenge.primaryCurrentValue, 0)
+            return L10n.tr("challengeGoalRemainingConditionFormat", remainingCount)
+        }
+    }
+
+    private func todayActionText(
+        for challenge: HydrationChallenge,
+        snapshot: HydrationProgressSnapshot
+    ) -> String {
+        switch challenge.kind {
+        case .streak7:
+            if snapshot.hasAchievedTodayGoal {
+                return L10n.tr("challengeTodayActionAlreadyDoneStreakFormat", challenge.primaryCurrentValue)
+            }
+
+            return L10n.tr(
+                "challengeTodayActionStreakFormat",
+                challenge.primaryCurrentValue + 1
+            )
+
+        case .weeklyAchievement80:
+            let achievedDays = challenge.secondaryCurrentValue ?? 0
+            let elapsedDays = max(challenge.secondaryTargetValue ?? 1, 1)
+
+            if snapshot.hasAchievedTodayGoal {
+                return L10n.tr(
+                    "challengeTodayActionAlreadyDoneWeeklyFormat",
+                    achievedDays,
+                    elapsedDays
+                )
+            }
+
+            let projectedAchievedDays = min(achievedDays + 1, elapsedDays)
+            return L10n.tr(
+                "challengeTodayActionWeeklyFormat",
+                projectedAchievedDays,
+                elapsedDays
+            )
+
+        case .goalAchievement30:
+            if snapshot.hasAchievedTodayGoal {
+                return L10n.tr(
+                    "challengeTodayActionAlreadyDoneGoalFormat",
+                    challenge.primaryCurrentValue,
+                    challenge.primaryTargetValue
+                )
+            }
+
+            return L10n.tr(
+                "challengeTodayActionGoalFormat",
+                challenge.primaryCurrentValue + 1,
+                challenge.primaryTargetValue
+            )
+        }
+    }
+
+    private func todayActionCompleted(
+        for challenge: HydrationChallenge,
+        snapshot: HydrationProgressSnapshot
+    ) -> Bool {
+        switch challenge.kind {
+        case .streak7, .weeklyAchievement80, .goalAchievement30:
+            return snapshot.hasAchievedTodayGoal
+        }
+    }
+
     private func achievedAtText(for date: Date) -> String {
         let formattedDate = date.formatted(
             .dateTime
@@ -194,6 +293,10 @@ public final class ChallengeViewModel {
                 .day()
         )
         return L10n.tr("challengeAchievedAtFormat", formattedDate)
+    }
+
+    private func requiredWeeklyAchievedDays(for elapsedDays: Int) -> Int {
+        Int(ceil(Double(max(elapsedDays, 1)) * 0.8))
     }
 
     private func inProgressSort(lhs: ChallengeCardModel, rhs: ChallengeCardModel) -> Bool {

@@ -165,6 +165,27 @@ private struct ChallengeCard: View {
             ProgressView(value: challenge.progress, total: 1)
                 .tint(accentColor)
 
+            if challenge.isCompleted == false {
+                VStack(spacing: 10) {
+                    if let remainingConditionText = challenge.remainingConditionText {
+                        ChallengeInfoRow(
+                            title: L10n.tr("challengeRemainingConditionTitle"),
+                            message: remainingConditionText,
+                            systemImage: "flag.2.crossed"
+                        )
+                    }
+
+                    if let todayActionText = challenge.todayActionText {
+                        ChallengeInfoRow(
+                            title: L10n.tr("challengeTodayActionTitle"),
+                            message: todayActionText,
+                            systemImage: challenge.todayActionCompleted ? "checkmark.circle.fill" : "figure.walk",
+                            tintColor: challenge.todayActionCompleted ? .green : accentColor
+                        )
+                    }
+                }
+            }
+
             if let achievedAtText = challenge.achievedAtText {
                 Label(achievedAtText, systemImage: "checkmark.seal.fill")
                     .font(.caption.weight(.semibold))
@@ -233,5 +254,41 @@ private struct ChallengeBadge: View {
                 Capsule(style: .continuous)
                     .fill(color.opacity(0.12))
             )
+    }
+}
+
+private struct ChallengeInfoRow: View {
+    let title: String
+    let message: String
+    let systemImage: String
+    var tintColor: Color = .secondary
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(tintColor)
+                .frame(width: 18, height: 18)
+                .padding(.top, 1)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color.secondary.opacity(0.08))
+        )
     }
 }
