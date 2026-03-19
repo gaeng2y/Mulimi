@@ -29,6 +29,7 @@ struct ChallengeViewModelTests {
             isEmpty: false
         )
         let challengeUseCase = MockChallengeUseCase()
+        let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
         challengeUseCase.challenges = [
             HydrationChallenge(
                 kind: .streak7,
@@ -63,9 +64,26 @@ struct ChallengeViewModelTests {
                 achievedAt: nil
             )
         ]
+        personalizedChallengeUseCase.challenges = [
+            PersonalizedHydrationChallenge(
+                kind: .routineAnchor,
+                tier: .steady,
+                source: .routine,
+                primaryCurrentValue: 5,
+                primaryTargetValue: 5,
+                anchorRoutine: HydrationRoutine(
+                    title: "출근 전 물",
+                    hour: 8,
+                    minute: 30,
+                    weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+                    isEnabled: true
+                )
+            )
+        ]
 
         let viewModel = ChallengeViewModel(
             challengeUseCase: challengeUseCase,
+            personalizedChallengeUseCase: personalizedChallengeUseCase,
             progressUseCase: progressUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }
@@ -74,8 +92,11 @@ struct ChallengeViewModelTests {
         await viewModel.loadChallenges()
 
         #expect(viewModel.isEmpty == false)
+        #expect(viewModel.recommendedChallenges.count == 1)
         #expect(viewModel.inProgressChallenges.count == 2)
         #expect(viewModel.completedChallenges.count == 1)
+        #expect(viewModel.recommendedChallenges.first?.kind == .routineAnchor)
+        #expect(viewModel.recommendedChallenges.first?.sourceText == L10n.tr("challengeRecommendationSourceRoutine"))
         #expect(viewModel.inProgressChallenges.first?.kind == .streak7)
         #expect(viewModel.completedChallenges.first?.kind == .weeklyAchievement80)
         #expect(viewModel.completedChallenges.first?.badgeText == L10n.tr("challengeEarnedBadge"))
@@ -86,6 +107,7 @@ struct ChallengeViewModelTests {
         #expect(viewModel.inProgressChallenges.last?.title == L10n.tr("challengeGoalCardTitle"))
         #expect(viewModel.inProgressChallenges.last?.todayActionText == L10n.tr("challengeTodayActionGoalFormat", 13, 30))
         #expect(challengeUseCase.requestedReferenceDate == referenceDate)
+        #expect(personalizedChallengeUseCase.requestedReferenceDate == referenceDate)
     }
 
     @MainActor
@@ -96,9 +118,11 @@ struct ChallengeViewModelTests {
         let progressUseCase = MockHydrationProgressUseCase()
         progressUseCase.snapshot = .empty(dailyGoalML: 2000)
         let challengeUseCase = MockChallengeUseCase()
+        let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
 
         let viewModel = ChallengeViewModel(
             challengeUseCase: challengeUseCase,
+            personalizedChallengeUseCase: personalizedChallengeUseCase,
             progressUseCase: progressUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }
@@ -107,9 +131,11 @@ struct ChallengeViewModelTests {
         await viewModel.loadChallenges()
 
         #expect(viewModel.isEmpty == true)
+        #expect(viewModel.recommendedChallenges.isEmpty)
         #expect(viewModel.inProgressChallenges.isEmpty)
         #expect(viewModel.completedChallenges.isEmpty)
         #expect(challengeUseCase.requestedReferenceDate == nil)
+        #expect(personalizedChallengeUseCase.requestedReferenceDate == nil)
     }
 
     @MainActor
@@ -134,6 +160,7 @@ struct ChallengeViewModelTests {
             isEmpty: false
         )
         let challengeUseCase = MockChallengeUseCase()
+        let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
         challengeUseCase.challenges = [
             HydrationChallenge(
                 kind: .goalAchievement30,
@@ -159,6 +186,7 @@ struct ChallengeViewModelTests {
 
         let viewModel = ChallengeViewModel(
             challengeUseCase: challengeUseCase,
+            personalizedChallengeUseCase: personalizedChallengeUseCase,
             progressUseCase: progressUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }
@@ -197,6 +225,7 @@ struct ChallengeViewModelTests {
             isEmpty: false
         )
         let challengeUseCase = MockChallengeUseCase()
+        let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
         challengeUseCase.challenges = [
             HydrationChallenge(
                 kind: .goalAchievement30,
@@ -224,6 +253,7 @@ struct ChallengeViewModelTests {
 
         let viewModel = ChallengeViewModel(
             challengeUseCase: challengeUseCase,
+            personalizedChallengeUseCase: personalizedChallengeUseCase,
             progressUseCase: progressUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }

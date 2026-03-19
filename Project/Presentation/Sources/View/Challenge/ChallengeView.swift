@@ -47,6 +47,19 @@ public struct ChallengeView: View {
     private var challengeContent: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                if viewModel.recommendedChallenges.isEmpty == false {
+                    ChallengeSectionHeader(
+                        title: L10n.tr("challengeRecommendedSectionTitle"),
+                        subtitle: L10n.tr("challengeRecommendedSectionDescription")
+                    )
+
+                    VStack(spacing: 14) {
+                        ForEach(viewModel.recommendedChallenges) { challenge in
+                            PersonalizedChallengeCard(challenge: challenge)
+                        }
+                    }
+                }
+
                 if viewModel.inProgressChallenges.isEmpty == false {
                     ChallengeSectionHeader(
                         title: L10n.tr("challengeInProgressSectionTitle"),
@@ -98,6 +111,103 @@ public struct ChallengeView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+private struct PersonalizedChallengeCard: View {
+    let challenge: PersonalizedChallengeCardModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 8) {
+                        ChallengeBadge(
+                            title: L10n.tr("challengeRecommendedBadge"),
+                            color: accentColor
+                        )
+
+                        ChallengeBadge(
+                            title: challenge.sourceText,
+                            color: .secondary
+                        )
+
+                        ChallengeBadge(
+                            title: challenge.tierText,
+                            color: accentColor.opacity(0.85)
+                        )
+                    }
+
+                    Text(challenge.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text(challenge.description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Image(systemName: challenge.symbolName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(accentColor)
+                    .frame(width: 42, height: 42)
+                    .background(
+                        Circle()
+                            .fill(accentColor.opacity(0.12))
+                    )
+            }
+
+            VStack(spacing: 10) {
+                ChallengeInfoRow(
+                    title: L10n.tr("challengeRecommendationReasonTitle"),
+                    message: challenge.reasonText,
+                    systemImage: "lightbulb.fill",
+                    tintColor: accentColor
+                )
+
+                ChallengeInfoRow(
+                    title: L10n.tr("challengeRecommendationActionTitle"),
+                    message: challenge.actionText,
+                    systemImage: "figure.walk",
+                    tintColor: accentColor
+                )
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(uiColor: .secondarySystemBackground).opacity(0.98),
+                            accentColor.opacity(0.08)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(accentColor.opacity(0.1), lineWidth: 1)
+                )
+        )
+    }
+
+    private var accentColor: Color {
+        switch challenge.kind {
+        case .routineAnchor:
+            return .mint
+        case .morningKickstart:
+            return .orange
+        case .dailyGoalBooster:
+            return .blue
+        case .consistencyDefender:
+            return .green
+        }
     }
 }
 

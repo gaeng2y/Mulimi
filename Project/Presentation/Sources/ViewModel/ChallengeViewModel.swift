@@ -21,26 +21,42 @@ struct ChallengeCardModel: Identifiable, Equatable {
     let isCompleted: Bool
 }
 
+struct PersonalizedChallengeCardModel: Identifiable, Equatable {
+    let id: PersonalizedHydrationChallengeKind
+    let kind: PersonalizedHydrationChallengeKind
+    let sourceText: String
+    let tierText: String
+    let title: String
+    let description: String
+    let reasonText: String
+    let actionText: String
+    let symbolName: String
+}
+
 @MainActor
 @Observable
 public final class ChallengeViewModel {
     private(set) var isLoading = false
     private(set) var isEmpty = false
+    private(set) var recommendedChallenges: [PersonalizedChallengeCardModel] = []
     private(set) var inProgressChallenges: [ChallengeCardModel] = []
     private(set) var completedChallenges: [ChallengeCardModel] = []
 
     private let challengeUseCase: ChallengeUseCase
+    private let personalizedChallengeUseCase: PersonalizedChallengeUseCase
     private let progressUseCase: HydrationProgressUseCase
     private let calendar: Calendar
     private let currentDateProvider: @Sendable () -> Date
 
     public init(
         challengeUseCase: ChallengeUseCase,
+        personalizedChallengeUseCase: PersonalizedChallengeUseCase,
         progressUseCase: HydrationProgressUseCase,
         calendar: Calendar = .autoupdatingCurrent,
         currentDateProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.challengeUseCase = challengeUseCase
+        self.personalizedChallengeUseCase = personalizedChallengeUseCase
         self.progressUseCase = progressUseCase
         self.calendar = calendar
         self.currentDateProvider = currentDateProvider
@@ -58,17 +74,28 @@ public final class ChallengeViewModel {
 
         isEmpty = snapshot.isEmpty
         guard snapshot.isEmpty == false else {
+            recommendedChallenges = []
             inProgressChallenges = []
             completedChallenges = []
             return
         }
 
-        let challenges = await challengeUseCase.fetchChallenges(
+        async let recommended = personalizedChallengeUseCase.fetchPersonalizedChallenges(
+            snapshot: snapshot,
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
+        async let challenges = challengeUseCase.fetchChallenges(
             referenceDate: referenceDate,
             calendar: calendar
         )
 
-        let cards = challenges.map { makeCardModel(from: $0, snapshot: snapshot) }
+        let recommendedCards = await recommended
+        let fixedCards = await challenges
+
+        recommendedChallenges = recommendedCards.map(makePersonalizedCardModel(from:))
+
+        let cards = fixedCards.map { makeCardModel(from: $0, snapshot: snapshot) }
 
         inProgressChallenges = cards
             .filter { $0.isCompleted == false }
@@ -76,6 +103,22 @@ public final class ChallengeViewModel {
         completedChallenges = cards
             .filter(\.isCompleted)
             .sorted(by: completedSort)
+    }
+
+    private func makePersonalizedCardModel(
+        from challenge: PersonalizedHydrationChallenge
+    ) -> PersonalizedChallengeCardModel {
+        PersonalizedChallengeCardModel(
+            id: challenge.kind,
+            kind: challenge.kind,
+            sourceText: sourceText(for: challenge.source),
+            tierText: tierText(for: challenge.tier),
+            title: personalizedTitle(for: challenge),
+            description: personalizedDescription(for: challenge),
+            reasonText: personalizedReasonText(for: challenge),
+            actionText: personalizedActionText(for: challenge),
+            symbolName: personalizedSymbolName(for: challenge.kind)
+        )
     }
 
     private func makeCardModel(
@@ -293,6 +336,119 @@ public final class ChallengeViewModel {
                 .day()
         )
         return L10n.tr("challengeAchievedAtFormat", formattedDate)
+    }
+
+    private func sourceText(for source: HydrationChallengeRecommendationSource) -> String {
+        switch source {
+        case .routine:
+            return L10n.tr("challengeRecommendationSourceRoutine")
+        case .recentRecords:
+            return L10n.tr("challengeRecommendationSourceRecentRecords")
+        }
+    }
+
+    private func tierText(for tier: HydrationChallengeTier) -> String {
+        switch tier {
+        case .beginner:
+            return L10n.tr("challengeRecommendationTierBeginner")
+        case .steady:
+            return L10n.tr("challengeRecommendationTierSteady")
+        case .stretch:
+            return L10n.tr("challengeRecommendationTierStretch")
+        }
+    }
+
+    private func personalizedTitle(for challenge: PersonalizedHydrationChallenge) -> String {
+        switch challenge.kind {
+        case .routineAnchor:
+            return L10n.tr(
+                "challengePersonalizedRoutineTitleFormat",
+                challenge.anchorRoutine?.title ?? L10n.tr("challengeRecommendationSourceRoutine")
+            )
+        case .morningKickstart:
+            return L10n.tr("challengePersonalizedMorningTitle")
+        case .dailyGoalBooster:
+            return L10n.tr("challengePersonalizedBoosterTitle")
+        case .consistencyDefender:
+            return L10n.tr("challengePersonalizedConsistencyTitle")
+        }
+    }
+
+    private func personalizedDescription(for challenge: PersonalizedHydrationChallenge) -> String {
+        switch challenge.kind {
+        case .routineAnchor:
+            return L10n.tr(
+                "challengePersonalizedRoutineDescriptionFormat",
+                challenge.anchorRoutine?.weekdayText ?? "",
+                challenge.anchorRoutine?.timeText ?? ""
+            )
+        case .morningKickstart:
+            return L10n.tr("challengePersonalizedMorningDescription")
+        case .dailyGoalBooster:
+            return L10n.tr("challengePersonalizedBoosterDescription")
+        case .consistencyDefender:
+            return L10n.tr("challengePersonalizedConsistencyDescription")
+        }
+    }
+
+    private func personalizedReasonText(for challenge: PersonalizedHydrationChallenge) -> String {
+        switch challenge.kind {
+        case .routineAnchor:
+            return L10n.tr("challengePersonalizedRoutineReason")
+        case .morningKickstart:
+            return L10n.tr(
+                "challengePersonalizedMorningReasonFormat",
+                challenge.primaryCurrentValue,
+                challenge.secondaryCurrentValue ?? 14
+            )
+        case .dailyGoalBooster:
+            return L10n.tr(
+                "challengePersonalizedBoosterReasonFormat",
+                challenge.currentAverageML ?? challenge.primaryCurrentValue,
+                challenge.dailyGoalML ?? 0
+            )
+        case .consistencyDefender:
+            return L10n.tr(
+                "challengePersonalizedConsistencyReasonFormat",
+                challenge.primaryCurrentValue,
+                challenge.secondaryCurrentValue ?? 7
+            )
+        }
+    }
+
+    private func personalizedActionText(for challenge: PersonalizedHydrationChallenge) -> String {
+        switch challenge.kind {
+        case .routineAnchor:
+            return L10n.tr(
+                "challengePersonalizedRoutineActionFormat",
+                challenge.primaryTargetValue
+            )
+        case .morningKickstart:
+            return L10n.tr("challengePersonalizedMorningAction")
+        case .dailyGoalBooster:
+            return L10n.tr(
+                "challengePersonalizedBoosterActionFormat",
+                challenge.recommendedTargetML ?? challenge.primaryTargetValue
+            )
+        case .consistencyDefender:
+            return L10n.tr(
+                "challengePersonalizedConsistencyActionFormat",
+                challenge.primaryTargetValue
+            )
+        }
+    }
+
+    private func personalizedSymbolName(for kind: PersonalizedHydrationChallengeKind) -> String {
+        switch kind {
+        case .routineAnchor:
+            return "calendar.badge.clock"
+        case .morningKickstart:
+            return "sun.max.fill"
+        case .dailyGoalBooster:
+            return "drop.circle.fill"
+        case .consistencyDefender:
+            return "shield.checkered"
+        }
     }
 
     private func requiredWeeklyAchievedDays(for elapsedDays: Int) -> Int {
