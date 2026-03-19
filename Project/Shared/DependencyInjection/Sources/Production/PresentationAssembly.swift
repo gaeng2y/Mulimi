@@ -59,11 +59,13 @@ public final class PresentationAssembly: Assembly {
 
         container.register(ChallengeViewModel.self) { resolver in
             let challengeUseCase = resolver.resolve(ChallengeUseCase.self)!
+            let personalizedChallengeUseCase = resolver.resolve(PersonalizedChallengeUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ChallengeViewModel(
                     challengeUseCase: challengeUseCase,
+                    personalizedChallengeUseCase: personalizedChallengeUseCase,
                     progressUseCase: progressUseCase
                 )
             }
