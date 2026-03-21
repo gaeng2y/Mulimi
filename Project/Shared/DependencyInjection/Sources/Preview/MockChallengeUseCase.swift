@@ -3,6 +3,7 @@ import Foundation
 
 public final class MockChallengeUseCase: ChallengeUseCase, @unchecked Sendable {
     public var challenges: [HydrationChallenge]
+    public var badgeHistories: [HydrationChallengeBadgeHistory]
 
     public init(
         challenges: [HydrationChallenge] = [
@@ -38,12 +39,28 @@ public final class MockChallengeUseCase: ChallengeUseCase, @unchecked Sendable {
                 isCompleted: false,
                 achievedAt: nil
             )
+        ],
+        badgeHistories: [HydrationChallengeBadgeHistory] = [
+            HydrationChallengeBadgeHistory(
+                kind: .weeklyAchievement80,
+                achievedAt: Date()
+            ),
+            HydrationChallengeBadgeHistory(
+                kind: .streak7,
+                achievedAt: Date().addingTimeInterval(-86_400),
+                cycleID: "streak:preview"
+            )
         ]
     ) {
         self.challenges = challenges
+        self.badgeHistories = badgeHistories
     }
 
     public func fetchChallenges(referenceDate: Date, calendar: Calendar) async -> [HydrationChallenge] {
         challenges
+    }
+
+    public func fetchBadgeHistories() async -> [HydrationChallengeBadgeHistory] {
+        badgeHistories
     }
 }

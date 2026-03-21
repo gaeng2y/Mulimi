@@ -15,4 +15,12 @@ public struct ChallengeRepositoryImpl: ChallengeRepository {
     public func saveChallengeStates(_ states: [HydrationChallengeState]) {
         storageDataSource.saveChallengeStates(states)
     }
+
+    public func fetchBadgeHistories() -> [HydrationChallengeBadgeHistory] {
+        storageDataSource.fetchBadgeHistories()
+    }
+
+    public func saveBadgeHistories(_ histories: [HydrationChallengeBadgeHistory]) {
+        storageDataSource.saveBadgeHistories(histories)
+    }
 }

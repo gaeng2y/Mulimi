@@ -81,7 +81,7 @@ public struct ChallengeView: View {
 
                     VStack(spacing: 14) {
                         ForEach(viewModel.completedChallenges) { challenge in
-                            ChallengeCard(challenge: challenge)
+                            ChallengeHistoryCard(challenge: challenge)
                         }
                     }
                 }
@@ -346,6 +346,85 @@ private struct ChallengeCard: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                     .stroke(accentColor.opacity(challenge.isCompleted ? 0.22 : 0.08), lineWidth: 1)
+            )
+    }
+}
+
+private struct ChallengeHistoryCard: View {
+    let challenge: ChallengeHistoryCardModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 10) {
+                    ChallengeBadge(
+                        title: challenge.badgeText,
+                        color: accentColor
+                    )
+
+                    Text(challenge.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text(challenge.description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                Image(systemName: challenge.symbolName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(accentColor)
+                    .frame(width: 42, height: 42)
+                    .background(
+                        Circle()
+                            .fill(accentColor.opacity(0.18))
+                    )
+            }
+
+            Label(challenge.achievedAtText, systemImage: "checkmark.seal.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(accentColor)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
+        .background(cardBackground)
+        .overlay(alignment: .topTrailing) {
+            Image(systemName: "sparkles")
+                .font(.headline.weight(.bold))
+                .foregroundStyle(accentColor.opacity(0.9))
+                .padding(16)
+        }
+    }
+
+    private var accentColor: Color {
+        switch challenge.kind {
+        case .streak7:
+            return .orange
+        case .weeklyAchievement80:
+            return .mint
+        case .goalAchievement30:
+            return .blue
+        }
+    }
+
+    private var cardBackground: some View {
+        RoundedRectangle(cornerRadius: 24, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: [
+                        accentColor.opacity(0.22),
+                        Color(uiColor: .secondarySystemBackground).opacity(0.96)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .stroke(accentColor.opacity(0.22), lineWidth: 1)
             )
     }
 }
