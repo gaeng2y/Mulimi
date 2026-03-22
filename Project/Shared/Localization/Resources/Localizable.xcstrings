@@ -2773,6 +2773,17 @@
         }
       }
     },
+    "routineAlarmStopTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지"
+          }
+        }
+      }
+    },
     "settingWithdrawalDescription" : {
       "extractionState" : "manual",
       "localizations" : {
