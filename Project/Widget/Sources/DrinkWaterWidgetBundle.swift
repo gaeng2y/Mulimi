@@ -12,5 +12,6 @@ import SwiftUI
 struct DrinkWaterWidgetBundle: WidgetBundle {
     var body: some Widget {
         DrinkWaterWidget()
+        DrinkWaterLockScreenWidget()
     }
 }

@@ -1,117 +1,16 @@
-//
-//  DrinkWaterWidget.swift
-//  DrinkWaterWidget
-//
-//  Created by Kyeongmo Yang on 2023/06/24.
-//
-
 import SwiftUI
 import Utils
 import WidgetKit
-import DependencyInjection
-import DomainLayerInterface
 
-struct Provider: AppIntentTimelineProvider {
-    private let waterUseCase: DrinkWaterUseCase
-    private let userPreferencesUseCase: UserPreferencesUseCase
+struct DrinkWaterWidgetEntryView: View {
+    let entry: DrinkWaterEntry
     
-    init() {
-        self.waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
-        self.userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-    }
-    
-    func placeholder(in context: Context) -> DrinkWaterEntry {
-        .init(
-            date: .now,
-            numberOfGlasses: 0,
-            dailyLimit: 2000,
-            mainAppearanceIcon: "drop.fill",
-            configuration: ConfigurationAppIntent()
-        )
-    }
-    
-    func snapshot(
-        for configuration: ConfigurationAppIntent,
-        in context: Context
-    ) async -> DrinkWaterEntry {
-        await waterUseCase.migrateLegacyDataIfNeeded()
-        let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-        let mainAppearance = userPreferencesUseCase.getMainAppearance()
-        let appearanceIcon = mainAppearance.systemImage
-        
-        return .init(
-            date: .now,
-            numberOfGlasses: await waterUseCase.currentWater,
-            dailyLimit: dailyLimit,
-            mainAppearanceIcon: appearanceIcon,
-            configuration: ConfigurationAppIntent()
-        )
-    }
-    
-    func timeline(
-        for configuration: ConfigurationAppIntent,
-        in context: Context
-    ) async -> Timeline<DrinkWaterEntry> {
-        await waterUseCase.migrateLegacyDataIfNeeded()
-        let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-        let mainAppearance = userPreferencesUseCase.getMainAppearance()
-        let appearanceIcon = mainAppearance.systemImage
-        let currentCount = await waterUseCase.currentWater
-        
-        var entries: [DrinkWaterEntry] = []
-        
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = DrinkWaterEntry(
-                date: entryDate,
-                numberOfGlasses: currentCount,
-                dailyLimit: dailyLimit,
-                mainAppearanceIcon: appearanceIcon,
-                configuration: ConfigurationAppIntent()
-            )
-            entries.append(entry)
-        }
-        
-        return Timeline(entries: entries, policy: .atEnd)
-    }
-}
-
-struct DrinkWaterEntry: TimelineEntry {
-    let date: Date
-    let numberOfGlasses: Int
-    let dailyLimit: Double
-    let mainAppearanceIcon: String
-    let configuration: ConfigurationAppIntent
-}
-
-struct DrinkWaterWidgetEntryView : View {
-    var entry: Provider.Entry
-    
-    private var numberOfGlasses: Int {
-        entry.numberOfGlasses
-    }
-    
-    private var mililiters: Int {
-        250 * numberOfGlasses
-    }
-    
-    private var progress: CGFloat {
-        CGFloat(mililiters) / entry.dailyLimit
-    }
-    
-    private var percentage: Int {
-        Int(progress * 100.0)
-    }
-    
-    private var isLimitReached: Bool {
-        Double(mililiters) >= entry.dailyLimit
+    private var accentColor: Color {
+        entry.isLimitReached ? .green : .accentColor
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // 상단: MainAppearance 아이콘 (좌) + 마시기 버튼 (우)
             HStack {
                 Image(systemName: entry.mainAppearanceIcon)
                     .font(.system(size: 20, weight: .semibold))
@@ -119,11 +18,11 @@ struct DrinkWaterWidgetEntryView : View {
                 
                 Spacer()
                 
-                Button(intent: ConfigurationAppIntent()) {
+                Button(intent: LogWaterAppIntent()) {
                     HStack(spacing: 4) {
-                        Image(systemName: isLimitReached ? "checkmark.circle.fill" : "plus.circle.fill")
+                        Image(systemName: entry.isLimitReached ? "checkmark.circle.fill" : "plus.circle.fill")
                             .font(.system(size: 12, weight: .medium))
-                        Text(isLimitReached ? "완료" : "마시기")
+                        Text(entry.isLimitReached ? "완료" : "마시기")
                             .font(.system(size: 11, weight: .semibold))
                     }
                     .foregroundColor(.white)
@@ -131,29 +30,26 @@ struct DrinkWaterWidgetEntryView : View {
                     .padding(.vertical, 4)
                     .background(
                         RoundedRectangle(cornerRadius: 6)
-                            .fill(isLimitReached ? Color.green : Color.accentColor)
+                            .fill(accentColor)
                     )
                 }
-                .buttonStyle(PlainButtonStyle())
-                .disabled(isLimitReached)
+                .buttonStyle(.plain)
+                .disabled(entry.isLimitReached)
             }
             
-            // 마신 ml (큰 글씨)
-            Text("\(mililiters.formatted())ml")
+            Text("\(entry.mililiters.formatted())ml")
                 .font(.system(size: 25, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
             
-            // 잔수 / 목표
-            Text("\(numberOfGlasses)잔 / 목표 \(Int(entry.dailyLimit.rounded()))ml")
+            Text("\(entry.numberOfGlasses)잔 / 목표 \(entry.dailyLimitText)ml")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
             
             Spacer()
             
-            // 하단: 프로그레스 바
-            ProgressView(value: progress)
-                .progressViewStyle(LinearProgressViewStyle())
-                .tint(isLimitReached ? .green : .accentColor)
+            ProgressView(value: entry.progressFraction)
+                .progressViewStyle(.linear)
+                .tint(accentColor)
                 .scaleEffect(y: 1.5)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -168,13 +64,13 @@ struct DrinkWaterWidget: Widget {
         AppIntentConfiguration(
             kind: kind,
             intent: ConfigurationAppIntent.self,
-            provider: Provider()
+            provider: DrinkWaterWidgetProvider()
         ) { entry in
             DrinkWaterWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("물 마시기")
-        .description("오늘 마신 물의 양을 확인하고 기록하세요")
+        .description("홈 화면에서 오늘 마신 물의 양을 확인하고 기록하세요")
         .supportedFamilies([.systemSmall])
     }
 }
@@ -186,21 +82,18 @@ struct DrinkWaterWidget: Widget {
         date: .now,
         numberOfGlasses: 0,
         dailyLimit: 2000,
-        mainAppearanceIcon: "drop.fill",
-        configuration: .init()
+        mainAppearanceIcon: "drop.fill"
     )
     DrinkWaterEntry(
         date: .now,
         numberOfGlasses: 4,
         dailyLimit: 2000,
-        mainAppearanceIcon: "heart.fill",
-        configuration: .init()
+        mainAppearanceIcon: "heart.fill"
     )
     DrinkWaterEntry(
         date: .now,
         numberOfGlasses: 8,
         dailyLimit: 2000,
-        mainAppearanceIcon: "cloud.fill",
-        configuration: .init()
+        mainAppearanceIcon: "cloud.fill"
     )
 }
