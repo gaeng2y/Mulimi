@@ -53,8 +53,21 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         }
 
         challengeRepository.saveChallengeStates(results.map(\.state))
+        let persistedHistories = challengeRepository.fetchBadgeHistories()
+        let mergedHistories = mergeBadgeHistories(
+            persistedHistories: persistedHistories,
+            results: results
+        )
+
+        if mergedHistories != persistedHistories {
+            challengeRepository.saveBadgeHistories(mergedHistories)
+        }
 
         return results.map(\.challenge)
+    }
+
+    public func fetchBadgeHistories() async -> [HydrationChallengeBadgeHistory] {
+        challengeRepository.fetchBadgeHistories()
     }
 
     private func mergeChallenge(
@@ -249,5 +262,46 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         }
 
         return totals.values.filter { $0 >= dailyGoalML }.count
+    }
+
+    private func mergeBadgeHistories(
+        persistedHistories: [HydrationChallengeBadgeHistory],
+        results: [ChallengeMergeResult]
+    ) -> [HydrationChallengeBadgeHistory] {
+        var mergedHistories = persistedHistories
+        var knownIDs = Set(persistedHistories.map(\.id))
+
+        for history in results.compactMap(makeBadgeHistory(from:)) {
+            guard knownIDs.insert(history.id).inserted else {
+                continue
+            }
+
+            mergedHistories.append(history)
+        }
+
+        return mergedHistories.sorted(by: badgeHistorySort)
+    }
+
+    private func makeBadgeHistory(from result: ChallengeMergeResult) -> HydrationChallengeBadgeHistory? {
+        guard result.challenge.isCompleted, let achievedAt = result.challenge.achievedAt else {
+            return nil
+        }
+
+        return HydrationChallengeBadgeHistory(
+            kind: result.challenge.kind,
+            achievedAt: achievedAt,
+            cycleID: result.state.recurringState?.cycleID
+        )
+    }
+
+    private func badgeHistorySort(
+        lhs: HydrationChallengeBadgeHistory,
+        rhs: HydrationChallengeBadgeHistory
+    ) -> Bool {
+        if lhs.achievedAt != rhs.achievedAt {
+            return lhs.achievedAt > rhs.achievedAt
+        }
+
+        return lhs.id < rhs.id
     }
 }

@@ -49,6 +49,31 @@ struct ChallengeStorageDataSourceTests {
         #expect(dataSource.fetchChallengeStates() == states)
     }
 
+    @Test("badge history를 저장하고 다시 읽어온다")
+    func saveAndFetchBadgeHistories() {
+        let suiteName = "ChallengeStorageDataSourceTests.\(UUID().uuidString)"
+        let userDefaults = makeIsolatedUserDefaults(suiteName: suiteName)
+        defer { userDefaults.removePersistentDomain(forName: suiteName) }
+
+        let dataSource = ChallengeStorageDataSourceImpl(userDefaults: userDefaults)
+        let achievedAt = Date(timeIntervalSince1970: 1_710_000_000)
+        let histories = [
+            HydrationChallengeBadgeHistory(
+                kind: .weeklyAchievement80,
+                achievedAt: achievedAt,
+                cycleID: "week:1710000000"
+            ),
+            HydrationChallengeBadgeHistory(
+                kind: .goalAchievement30,
+                achievedAt: achievedAt.addingTimeInterval(3_600)
+            )
+        ]
+
+        dataSource.saveBadgeHistories(histories)
+
+        #expect(dataSource.fetchBadgeHistories() == histories)
+    }
+
     @Test("legacy challenge state를 새 모델로 마이그레이션한다")
     func migrateLegacyStates() throws {
         let suiteName = "ChallengeStorageDataSourceTests.\(UUID().uuidString)"
@@ -96,6 +121,40 @@ struct ChallengeStorageDataSourceTests {
         let dataSource = ChallengeStorageDataSourceImpl(userDefaults: userDefaults)
 
         #expect(dataSource.fetchChallengeStates().isEmpty)
+        #expect(dataSource.fetchBadgeHistories().isEmpty)
+    }
+
+    @Test("challenge state와 badge history는 분리 저장된다")
+    func stateAndHistoryAreStoredIndependently() {
+        let suiteName = "ChallengeStorageDataSourceTests.\(UUID().uuidString)"
+        let userDefaults = makeIsolatedUserDefaults(suiteName: suiteName)
+        defer { userDefaults.removePersistentDomain(forName: suiteName) }
+
+        let dataSource = ChallengeStorageDataSourceImpl(userDefaults: userDefaults)
+        let timestamp = Date(timeIntervalSince1970: 1_710_000_000)
+        let states = [
+            HydrationChallengeState.cumulative(
+                HydrationCumulativeChallengeState(
+                    kind: .goalAchievement30,
+                    progress: 1,
+                    isCompleted: true,
+                    achievedAt: timestamp,
+                    updatedAt: timestamp
+                )
+            )
+        ]
+        let histories = [
+            HydrationChallengeBadgeHistory(
+                kind: .goalAchievement30,
+                achievedAt: timestamp
+            )
+        ]
+
+        dataSource.saveChallengeStates(states)
+        dataSource.saveBadgeHistories(histories)
+
+        #expect(dataSource.fetchChallengeStates() == states)
+        #expect(dataSource.fetchBadgeHistories() == histories)
     }
 
     private func makeIsolatedUserDefaults(suiteName: String) -> UserDefaults {

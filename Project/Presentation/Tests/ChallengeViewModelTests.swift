@@ -64,6 +64,13 @@ struct ChallengeViewModelTests {
                 achievedAt: nil
             )
         ]
+        challengeUseCase.badgeHistories = [
+            HydrationChallengeBadgeHistory(
+                kind: .weeklyAchievement80,
+                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 11))!,
+                cycleID: "week:1710115200"
+            )
+        ]
         personalizedChallengeUseCase.challenges = [
             PersonalizedHydrationChallenge(
                 kind: .routineAnchor,
@@ -107,6 +114,7 @@ struct ChallengeViewModelTests {
         #expect(viewModel.inProgressChallenges.last?.title == L10n.tr("challengeGoalCardTitle"))
         #expect(viewModel.inProgressChallenges.last?.todayActionText == L10n.tr("challengeTodayActionGoalFormat", 13, 30))
         #expect(challengeUseCase.requestedReferenceDate == referenceDate)
+        #expect(challengeUseCase.fetchBadgeHistoriesCallCount == 1)
         #expect(personalizedChallengeUseCase.requestedReferenceDate == referenceDate)
     }
 
@@ -135,6 +143,7 @@ struct ChallengeViewModelTests {
         #expect(viewModel.inProgressChallenges.isEmpty)
         #expect(viewModel.completedChallenges.isEmpty)
         #expect(challengeUseCase.requestedReferenceDate == nil)
+        #expect(challengeUseCase.fetchBadgeHistoriesCallCount == 0)
         #expect(personalizedChallengeUseCase.requestedReferenceDate == nil)
     }
 
@@ -161,26 +170,20 @@ struct ChallengeViewModelTests {
         )
         let challengeUseCase = MockChallengeUseCase()
         let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
-        challengeUseCase.challenges = [
-            HydrationChallenge(
+        challengeUseCase.badgeHistories = [
+            HydrationChallengeBadgeHistory(
                 kind: .goalAchievement30,
-                progress: 1,
-                currentValue: 30,
-                targetValue: 30,
-                primaryCurrentValue: 30,
-                primaryTargetValue: 30,
-                isCompleted: true,
-                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 10))
+                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 10))!
             ),
-            HydrationChallenge(
+            HydrationChallengeBadgeHistory(
                 kind: .streak7,
-                progress: 1,
-                currentValue: 7,
-                targetValue: 7,
-                primaryCurrentValue: 7,
-                primaryTargetValue: 7,
-                isCompleted: true,
-                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 12))
+                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 12))!,
+                cycleID: "streak:1710201600"
+            ),
+            HydrationChallengeBadgeHistory(
+                kind: .streak7,
+                achievedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 9))!,
+                cycleID: "streak:1710028800"
             )
         ]
 
@@ -197,7 +200,8 @@ struct ChallengeViewModelTests {
         #expect(
             viewModel.completedChallenges.map { $0.kind } == [
                 HydrationChallengeKind.streak7,
-                HydrationChallengeKind.goalAchievement30
+                HydrationChallengeKind.goalAchievement30,
+                HydrationChallengeKind.streak7
             ]
         )
         #expect(viewModel.completedChallenges.first?.description == L10n.tr("challengeCompletedDescription"))
