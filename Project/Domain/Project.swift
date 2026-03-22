@@ -23,7 +23,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DomainLayer.Interface",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Interfaces/**"],
             dependencies: [
                 .project(
@@ -37,7 +37,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DomainLayer",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/**"],
             dependencies: [
                 .target(name: "DomainLayerInterface"),
@@ -52,7 +52,7 @@ let project = Project(
             destinations: .iOS,
             product: .unitTests,
             bundleId: "\(bundleId).DomainLayer.Tests",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Tests/**"],
             dependencies: [
                 .target(name: "DomainLayer")

@@ -30,7 +30,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).PresentationLayer",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/**"],
             dependencies: [
                 .project(
@@ -56,7 +56,7 @@ let project = Project(
             destinations: .iOS,
             product: .unitTests,
             bundleId: "\(bundleId).PresentationLayer.Tests",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Tests/**"],
             dependencies: [
                 .target(name: "PresentationLayer"),

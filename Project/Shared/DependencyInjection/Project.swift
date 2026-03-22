@@ -31,7 +31,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DependencyInjection",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/Production/**", "Sources/Core/**"],
             dependencies: [
                 .external(name: "Swinject"),
@@ -64,7 +64,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DependencyInjection.Preview",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/Preview/**", "Sources/Core/**"],
             dependencies: [
                 .target(name: "DependencyInjection"),
@@ -86,7 +86,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DependencyInjection.Testing",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/Testing/**", "Sources/Core/**"],
             dependencies: [
                 .target(name: "DependencyInjection"),

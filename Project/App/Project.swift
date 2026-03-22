@@ -30,7 +30,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             infoPlist: .file(path: .path("Supports/Info.plist")),
             sources: ["Sources/**"],
             resources: [
@@ -67,7 +67,7 @@ let project = Project(
             destinations: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).WidgetExtension",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             infoPlist: .file(path: .relativeToRoot("Project/Widget/Resources/Info.plist")),
             sources: .paths([.relativeToRoot("Project/Widget/Sources/**")]),
             resources: .resources([.glob(pattern: .relativeToRoot("Project/Widget/Resources/Assets.xcassets"))]),

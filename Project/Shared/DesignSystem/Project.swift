@@ -30,7 +30,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DesignSystem",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             infoPlist: .default,
             sources: ["Sources/**"],
             resources: ["Resources/**"],
