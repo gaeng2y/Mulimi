@@ -52,6 +52,24 @@ let project = Project(
             ]
         ),
         .target(
+            name: "WatchDataLayer",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDataLayer",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchSources/**"],
+            dependencies: [
+                .project(
+                    target: "WatchDomainLayerInterface",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "PersistenceWatch",
+                    path: .relativeToRoot("Project/Shared/Persistence")
+                )
+            ]
+        ),
+        .target(
             name: "DataLayerTests",
             destinations: .iOS,
             product: .unitTests,

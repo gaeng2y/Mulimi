@@ -10,14 +10,14 @@ import SwiftData
 
 @Model
 public final class HydrationEventModel {
-    @Attribute(.unique) public var id: UUID
-    public var consumedAt: Date
-    public var volumeML: Int
+    public var id: UUID = UUID()
+    public var consumedAt: Date = Date.now
+    public var volumeML: Int = 250
 
     public init(
         id: UUID = UUID(),
-        consumedAt: Date,
-        volumeML: Int
+        consumedAt: Date = Date.now,
+        volumeML: Int = 250
     ) {
         self.id = id
         self.consumedAt = consumedAt

@@ -57,6 +57,32 @@ let project = Project(
                 )
             ]
         ),
+        .target(
+            name: "WatchDependencyInjection",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDependencyInjection",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["Sources/Watch/**"],
+            dependencies: [
+                .project(
+                    target: "WatchDataLayer",
+                    path: .relativeToRoot("Project/Data")
+                ),
+                .project(
+                    target: "WatchDomainLayerInterface",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "WatchDomainLayer",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "WatchPresentationLayer",
+                    path: .relativeToRoot("Project/Presentation")
+                )
+            ]
+        ),
 
         // Preview Support
         .target(
