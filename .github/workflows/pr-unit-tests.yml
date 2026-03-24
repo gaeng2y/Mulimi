@@ -22,7 +22,7 @@ jobs:
       TEAM_ID: "8UV3Y69NB7"
       GITHUB_TOKEN: ${{ github.token }}
       AQUA_GITHUB_TOKEN: ${{ github.token }}
-      IOS_SIMULATOR_OS_PREFIX: "26."
+      IOS_SIMULATOR_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro,OS=latest"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,93 +61,23 @@ jobs:
           tuist install
           tuist generate
 
-      - name: Resolve iOS Simulator destination
-        id: destination
+      - name: Log Xcode SDKs
         run: |
           set -euo pipefail
           xcodebuild -version
           xcodebuild -showsdks
-          RUNTIME_ID="$(xcrun simctl list runtimes available \
-            | awk -v os_prefix="$IOS_SIMULATOR_OS_PREFIX" '
-              index($0, "iOS " os_prefix) {
-                match($0, /com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]+/)
-                if (RSTART > 0) {
-                  print substr($0, RSTART, RLENGTH)
-                  exit
-                }
-              }
-            ')"
-
-          DEVICE_TYPE_ID="$(xcrun simctl list devicetypes \
-            | awk '
-              /iPhone 16 Pro/ {
-                match($0, /\((com\.apple\.CoreSimulator\.SimDeviceType\.[^)]+)\)/)
-                if (RSTART > 0) {
-                  preferred = substr($0, RSTART + 1, RLENGTH - 2)
-                  found = 1
-                  print preferred
-                  exit
-                }
-              }
-              /iPhone/ && fallback == "" {
-                match($0, /\((com\.apple\.CoreSimulator\.SimDeviceType\.[^)]+)\)/)
-                if (RSTART > 0) {
-                  fallback = substr($0, RSTART + 1, RLENGTH - 2)
-                }
-              }
-              END {
-                if (!found && fallback != "") {
-                  print fallback
-                }
-              }
-            ')"
-
-          if [ -z "$RUNTIME_ID" ]; then
-            echo "No available iOS simulator runtime matching ${IOS_SIMULATOR_OS_PREFIX} was found."
-            xcrun simctl list runtimes || true
-            exit 1
-          fi
-
-          if [ -z "$DEVICE_TYPE_ID" ]; then
-            echo "No iPhone simulator device type was found."
-            xcrun simctl list devicetypes || true
-            exit 1
-          fi
-
-          SIM_NAME="Mulimi-CI-iOS-${IOS_SIMULATOR_OS_PREFIX%?}"
-          IOS_SIM_ID="$(xcrun simctl list devices available \
-            | awk -F '[()]' -v name="$SIM_NAME" '
-              $1 ~ name {
-                gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
-                print $2
-                exit
-              }
-            ')"
-
-          if [ -z "$IOS_SIM_ID" ]; then
-            IOS_SIM_ID="$(xcrun simctl create "$SIM_NAME" "$DEVICE_TYPE_ID" "$RUNTIME_ID")"
-          fi
-
-          xcrun simctl boot "$IOS_SIM_ID" || true
-          xcrun simctl bootstatus "$IOS_SIM_ID" -b
-          xcrun simctl list devices available
-
-          echo "destination=platform=iOS Simulator,id=$IOS_SIM_ID" >> "$GITHUB_OUTPUT"
-          echo "Using runtime $RUNTIME_ID"
-          echo "Using device type $DEVICE_TYPE_ID"
-          echo "Using destination platform=iOS Simulator,id=$IOS_SIM_ID"
+          echo "Using destination ${IOS_SIMULATOR_DESTINATION}"
 
       - name: Run unit tests
         run: |
           set -euo pipefail
-          DESTINATION="${{ steps.destination.outputs.destination }}"
           for SCHEME in DomainLayer DataLayer PresentationLayer; do
             echo "Running tests for $SCHEME"
             xcodebuild test \
               -workspace Mulimi.xcworkspace \
               -scheme "$SCHEME" \
               -sdk iphonesimulator \
-              -destination "$DESTINATION" \
+              -destination "$IOS_SIMULATOR_DESTINATION" \
               -destination-timeout 180 \
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO
