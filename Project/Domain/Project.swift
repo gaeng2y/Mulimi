@@ -48,6 +48,25 @@ let project = Project(
             ]
         ),
         .target(
+            name: "WatchDomainLayerInterface",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDomainLayer.Interface",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchInterfaces/**"]
+        ),
+        .target(
+            name: "WatchDomainLayer",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDomainLayer",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchSources/**"],
+            dependencies: [
+                .target(name: "WatchDomainLayerInterface")
+            ]
+        ),
+        .target(
             name: "DomainLayerTests",
             destinations: .iOS,
             product: .unitTests,
