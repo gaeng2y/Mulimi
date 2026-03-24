@@ -30,6 +30,12 @@ public final class DomainAssembly: Assembly {
                 drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
             )
         }
+        container.register(PersonalizedChallengeUseCase.self) { resolver in
+            PersonalizedChallengeUseCaseImpl(
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!,
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
+            )
+        }
         
         // MARK: - HealthKit
         container.register(HealthKitUseCase.self) { resolver in

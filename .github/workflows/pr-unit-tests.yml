@@ -22,9 +22,15 @@ jobs:
       TEAM_ID: "8UV3Y69NB7"
       GITHUB_TOKEN: ${{ github.token }}
       AQUA_GITHUB_TOKEN: ${{ github.token }}
+      IOS_SIMULATOR_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro,OS=latest"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Prepare Secrets.xcconfig
         run: |
@@ -55,39 +61,23 @@ jobs:
           tuist install
           tuist generate
 
-      - name: Resolve iOS Simulator destination
-        id: destination
+      - name: Log Xcode SDKs
         run: |
           set -euo pipefail
-          xcrun simctl list devices available
-
-          IOS_SIM_ID="$(xcrun simctl list devices available \
-            | awk -F '[()]' '/iPhone/ && /(Booted|Shutdown)/ {gsub(/^[[:space:]]+/, "", $2); print $2; exit}')"
-
-          if [ -z "$IOS_SIM_ID" ]; then
-            IOS_SIM_ID="$(xcrun simctl list devices available \
-              | awk -F '[()]' '/iPad/ && /(Booted|Shutdown)/ {gsub(/^[[:space:]]+/, "", $2); print $2; exit}')"
-          fi
-
-          if [ -z "$IOS_SIM_ID" ]; then
-            echo "No concrete iOS simulator device found."
-            xcodebuild -showdestinations -workspace Mulimi.xcworkspace -scheme DomainLayer || true
-            exit 1
-          fi
-
-          echo "destination=id=$IOS_SIM_ID" >> "$GITHUB_OUTPUT"
-          echo "Using destination id=$IOS_SIM_ID"
+          xcodebuild -version
+          xcodebuild -showsdks
+          echo "Using destination ${IOS_SIMULATOR_DESTINATION}"
 
       - name: Run unit tests
         run: |
           set -euo pipefail
-          DESTINATION="${{ steps.destination.outputs.destination }}"
           for SCHEME in DomainLayer DataLayer PresentationLayer; do
             echo "Running tests for $SCHEME"
             xcodebuild test \
               -workspace Mulimi.xcworkspace \
               -scheme "$SCHEME" \
-              -destination "$DESTINATION" \
+              -sdk iphonesimulator \
+              -destination "$IOS_SIMULATOR_DESTINATION" \
               -destination-timeout 180 \
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO

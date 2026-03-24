@@ -29,6 +29,10 @@ public enum SharedHydrationStore {
     public static let appGroupIdentifier = "group.com.gaeng2y.drinkwater"
     public static let cloudKitContainerIdentifier = "iCloud.gaeng2y.DrinkWater"
 
+    private static var isICloudAccountAvailable: Bool {
+        FileManager.default.ubiquityIdentityToken != nil
+    }
+
     public static func makeModelContainer(
         cloudKitDatabase: ModelConfiguration.CloudKitDatabase = .automatic,
         isStoredInMemoryOnly: Bool = false,
@@ -45,8 +49,10 @@ public enum SharedHydrationStore {
             }
         }
 
+        let resolvedCloudSyncEnabled = cloudSyncEnabled && isICloudAccountAvailable
+
         let effectiveCloudKitDatabase: ModelConfiguration.CloudKitDatabase =
-            (isStoredInMemoryOnly || !cloudSyncEnabled) ? .none : cloudKitDatabase
+            (isStoredInMemoryOnly || !resolvedCloudSyncEnabled) ? .none : cloudKitDatabase
 
         let configuration = ModelConfiguration(
             "Hydration",
@@ -65,7 +71,7 @@ public enum SharedHydrationStore {
         } catch let primaryError {
             guard shouldFallbackToLocalStore,
                   !isStoredInMemoryOnly,
-                  cloudSyncEnabled else {
+                  resolvedCloudSyncEnabled else {
                 throw primaryError
             }
 

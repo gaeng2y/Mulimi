@@ -2,6 +2,8 @@ import Foundation
 
 public struct HydrationProgressSnapshot: Equatable, Sendable {
     public let dailyGoalML: Double
+    public let todayIntakeML: Double
+    public let hasAchievedTodayGoal: Bool
     public let weeklyAverageML: Double
     public let monthlyAverageML: Double
     public let weeklyAchievementRate: Double
@@ -16,6 +18,8 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
 
     public init(
         dailyGoalML: Double,
+        todayIntakeML: Double = 0,
+        hasAchievedTodayGoal: Bool = false,
         weeklyAverageML: Double,
         monthlyAverageML: Double,
         weeklyAchievementRate: Double,
@@ -29,6 +33,8 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
         isEmpty: Bool
     ) {
         self.dailyGoalML = dailyGoalML
+        self.todayIntakeML = todayIntakeML
+        self.hasAchievedTodayGoal = hasAchievedTodayGoal
         self.weeklyAverageML = weeklyAverageML
         self.monthlyAverageML = monthlyAverageML
         self.weeklyAchievementRate = weeklyAchievementRate
@@ -45,6 +51,8 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
     public static func empty(dailyGoalML: Double) -> HydrationProgressSnapshot {
         HydrationProgressSnapshot(
             dailyGoalML: dailyGoalML,
+            todayIntakeML: 0,
+            hasAchievedTodayGoal: false,
             weeklyAverageML: 0,
             monthlyAverageML: 0,
             weeklyAchievementRate: 0,

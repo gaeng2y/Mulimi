@@ -166,6 +166,17 @@
         }
       }
     },
+    "challengeGoalRemainingConditionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회 더 목표를 달성하면 획득해요."
+          }
+        }
+      }
+    },
     "challengeGoalRemainingCountFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -243,6 +254,292 @@
         }
       }
     },
+    "challengePersonalizedBoosterActionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 평균을 %lldml까지 끌어올리는 흐름을 만들어보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedBoosterDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 평균에서 한 컵만 더해도 목표에 가까워질 수 있어요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedBoosterReasonFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 월 평균이 %lldml로 목표 %lldml보다 낮아요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedBoosterTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루 평균 한 컵 더"
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyActionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld일 달성으로 안정적인 페이스를 굳혀보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미 안정적인 흐름이 보이니 유지 난이도의 도전이 맞아요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyReasonFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld/%lld일 목표를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 흐름 유지하기"
+          }
+        }
+      }
+    },
+    "challengePersonalizedMorningAction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 7일 중 5일은 정오 전에 첫 물 250ml를 마셔보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedMorningDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하루 첫 섭취 시점을 앞당기면 전체 수분 흐름이 더 안정됩니다."
+          }
+        }
+      }
+    },
+    "challengePersonalizedMorningReasonFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 %2$lld일 중 %1$lld일만 오전에 첫 섭취가 있었어요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedMorningTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오전 첫 물 습관 만들기"
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineActionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld일은 루틴 직전에 250ml를 먼저 마셔보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@ 흐름에 물 섭취를 묶어보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineReason" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미 설정한 루틴이 있어 실행 장벽이 가장 낮아요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 루틴에 물 한 잔 붙이기"
+          }
+        }
+      }
+    },
+    "challengeRecommendationActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제안 액션"
+          }
+        }
+      }
+    },
+    "challengeRecommendationReasonTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 이유"
+          }
+        }
+      }
+    },
+    "challengeRecommendedBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "맞춤 추천"
+          }
+        }
+      }
+    },
+    "challengeRecommendedSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴과 최근 기록을 기반으로 지금 가장 맞는 도전을 골랐어요."
+          }
+        }
+      }
+    },
+    "challengeRecommendedSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 챌린지"
+          }
+        }
+      }
+    },
+    "challengeRecommendationSourceRecentRecords" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 기반"
+          }
+        }
+      }
+    },
+    "challengeRecommendationSourceRoutine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 기반"
+          }
+        }
+      }
+    },
+    "challengeRecommendationTierBeginner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가볍게"
+          }
+        }
+      }
+    },
+    "challengeRecommendationTierSteady" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "습관화"
+          }
+        }
+      }
+    },
+    "challengeRecommendationTierStretch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스트레치"
+          }
+        }
+      }
+    },
     "challengeMetricMonthlyTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -272,6 +569,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7일 챌린지까지 %lld일 남았어요."
+          }
+        }
+      }
+    },
+    "challengeRemainingConditionDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 더 연속으로 목표를 달성하면 돼요."
+          }
+        }
+      }
+    },
+    "challengeRemainingConditionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 조건"
           }
         }
       }
@@ -320,6 +639,83 @@
         }
       }
     },
+    "challengeTodayActionAlreadyDoneGoalFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 1회가 이미 반영됐어요. 누적 %lld/%lld회예요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionAlreadyDoneStreakFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표는 이미 달성했어요. 현재 %lld일 streak예요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionAlreadyDoneWeeklyFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 1일이 이미 반영됐어요. 현재 %lld/%lld일 달성 중이에요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionGoalFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 누적 %lld/%lld회가 돼요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionStreakFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 %lld일 streak가 돼요."
+          }
+        }
+      }
+    },
+    "challengeTodayActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 액션"
+          }
+        }
+      }
+    },
+    "challengeTodayActionWeeklyFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성하면 이번 주 %lld/%lld일 달성으로 올라가요."
+          }
+        }
+      }
+    },
     "challengeWeeklyCardTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -349,6 +745,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld/%lld일 목표를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeWeeklyRemainingConditionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 기준 80%%까지 %lld일 더 달성해야 해요. (%lld/%lld일 필요)"
+          }
+        }
+      }
+    },
+    "challengeWeeklyRemainingConditionSatisfiedFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 기준 80%%를 유지 중이에요. (%lld/%lld일 충족)"
           }
         }
       }
@@ -2351,6 +2769,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "물을 마실 시간이에요"
+          }
+        }
+      }
+    },
+    "routineAlarmStopTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지"
           }
         }
       }

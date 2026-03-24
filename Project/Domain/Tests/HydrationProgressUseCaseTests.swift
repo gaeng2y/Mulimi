@@ -33,6 +33,8 @@ struct HydrationProgressUseCaseTests {
         let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         #expect(snapshot.dailyGoalML == 2000)
+        #expect(snapshot.todayIntakeML == 1000)
+        #expect(snapshot.hasAchievedTodayGoal == false)
         #expect(snapshot.weeklyElapsedDays == 4)
         #expect(snapshot.monthlyElapsedDays == 12)
         #expect(snapshot.weeklyAchievedDays == 3)
@@ -58,6 +60,8 @@ struct HydrationProgressUseCaseTests {
         let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         #expect(snapshot.isEmpty == true)
+        #expect(snapshot.todayIntakeML == 0)
+        #expect(snapshot.hasAchievedTodayGoal == false)
         #expect(snapshot.weeklyAverageML == 0)
         #expect(snapshot.monthlyAverageML == 0)
         #expect(snapshot.currentStreak == 0)

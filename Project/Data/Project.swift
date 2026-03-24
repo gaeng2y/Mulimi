@@ -30,12 +30,16 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DataLayer",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/**"],
             dependencies: [
                 .project(
                     target: "DomainLayerInterface",
                     path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "Localization",
+                    path: .relativeToRoot("Project/Shared/Localization")
                 ),
                 .project(
                     target: "Utils",
@@ -48,11 +52,29 @@ let project = Project(
             ]
         ),
         .target(
+            name: "WatchDataLayer",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDataLayer",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchSources/**"],
+            dependencies: [
+                .project(
+                    target: "WatchDomainLayerInterface",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
+                    target: "PersistenceWatch",
+                    path: .relativeToRoot("Project/Shared/Persistence")
+                )
+            ]
+        ),
+        .target(
             name: "DataLayerTests",
             destinations: .iOS,
             product: .unitTests,
             bundleId: "\(bundleId).DataLayer.Tests",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Tests/**"],
             dependencies: [
                 .target(name: "DataLayer")

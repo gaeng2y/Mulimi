@@ -23,7 +23,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DomainLayer.Interface",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Interfaces/**"],
             dependencies: [
                 .project(
@@ -37,7 +37,7 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).DomainLayer",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Sources/**"],
             dependencies: [
                 .target(name: "DomainLayerInterface"),
@@ -48,11 +48,30 @@ let project = Project(
             ]
         ),
         .target(
+            name: "WatchDomainLayerInterface",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDomainLayer.Interface",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchInterfaces/**"]
+        ),
+        .target(
+            name: "WatchDomainLayer",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).WatchDomainLayer",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["WatchSources/**"],
+            dependencies: [
+                .target(name: "WatchDomainLayerInterface")
+            ]
+        ),
+        .target(
             name: "DomainLayerTests",
             destinations: .iOS,
             product: .unitTests,
             bundleId: "\(bundleId).DomainLayer.Tests",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
             sources: ["Tests/**"],
             dependencies: [
                 .target(name: "DomainLayer")

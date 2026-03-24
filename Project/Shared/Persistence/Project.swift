@@ -30,7 +30,15 @@ let project = Project(
             destinations: .iOS,
             product: .framework,
             bundleId: "\(bundleId).Persistence",
-            deploymentTargets: .iOS("18.0"),
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Sources/**"]
+        ),
+        .target(
+            name: "PersistenceWatch",
+            destinations: [.appleWatch],
+            product: .framework,
+            bundleId: "\(bundleId).PersistenceWatch",
+            deploymentTargets: .watchOS("26.0"),
             sources: ["Sources/**"]
         )
     ]

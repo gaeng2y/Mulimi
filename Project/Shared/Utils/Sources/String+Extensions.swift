@@ -25,4 +25,5 @@ public extension String {
     static let dailyWaterLimit: String = "dailyWaterLimit"
     static let hydrationRoutines: String = "hydrationRoutines"
     static let hydrationChallengeStates: String = "hydrationChallengeStates"
+    static let hydrationChallengeBadgeHistories: String = "hydrationChallengeBadgeHistories"
 }
