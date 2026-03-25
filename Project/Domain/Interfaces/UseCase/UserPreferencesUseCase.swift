@@ -9,8 +9,8 @@
 import Foundation
 
 public protocol UserPreferencesUseCase: Sendable {
-    func getMainAppearance() -> MainAppearance
-    func setMainAppearance(_ appearance: MainAppearance)
+    func getMainIcon() -> MainIcon
+    func setMainIcon(_ icon: MainIcon)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
 }

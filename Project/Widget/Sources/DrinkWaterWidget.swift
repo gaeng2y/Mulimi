@@ -12,7 +12,7 @@ struct DrinkWaterWidgetEntryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: entry.mainAppearanceIcon)
+                Image(systemName: entry.mainIconSymbol)
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.accentColor)
                 
@@ -82,18 +82,18 @@ struct DrinkWaterWidget: Widget {
         date: .now,
         numberOfGlasses: 0,
         dailyLimit: 2000,
-        mainAppearanceIcon: "drop.fill"
+        mainIconSymbol: "drop.fill"
     )
     DrinkWaterEntry(
         date: .now,
         numberOfGlasses: 4,
         dailyLimit: 2000,
-        mainAppearanceIcon: "heart.fill"
+        mainIconSymbol: "heart.fill"
     )
     DrinkWaterEntry(
         date: .now,
         numberOfGlasses: 8,
         dailyLimit: 2000,
-        mainAppearanceIcon: "cloud.fill"
+        mainIconSymbol: "cloud.fill"
     )
 }

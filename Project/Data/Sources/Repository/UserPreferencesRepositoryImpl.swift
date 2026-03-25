@@ -16,12 +16,12 @@ public struct UserPreferencesRepositoryImpl: UserPreferencesRepository {
         self.dataSource = dataSource
     }
     
-    public func getMainAppearance() -> MainAppearance {
-        dataSource.getMainAppearance()
+    public func getMainIcon() -> MainIcon {
+        dataSource.getMainIcon()
     }
     
-    public func setMainAppearance(_ appearance: MainAppearance) {
-        dataSource.setMainAppearance(appearance)
+    public func setMainIcon(_ icon: MainIcon) {
+        dataSource.setMainIcon(icon)
     }
     
     public func getDailyWaterLimit() -> Double {

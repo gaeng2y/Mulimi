@@ -76,5 +76,5 @@ import SwiftUI
 
 #Preview("MainShape Setting") {
     let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    SettingDetailView(menu: .mainShape, viewModel: viewModel)
+    SettingDetailView(menu: .mainIcon, viewModel: viewModel)
 }

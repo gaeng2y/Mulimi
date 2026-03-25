@@ -44,10 +44,6 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                ),
-                .project(
-                    target: "Persistence",
-                    path: .relativeToRoot("Project/Shared/Persistence")
                 )
             ]
         ),
@@ -62,10 +58,6 @@ let project = Project(
                 .project(
                     target: "WatchDomainLayerInterface",
                     path: .relativeToRoot("Project/Domain")
-                ),
-                .project(
-                    target: "PersistenceWatch",
-                    path: .relativeToRoot("Project/Shared/Persistence")
                 )
             ]
         ),

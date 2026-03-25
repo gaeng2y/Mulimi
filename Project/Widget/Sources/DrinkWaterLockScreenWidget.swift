@@ -24,7 +24,7 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
     }
     
     private var inlineView: some View {
-        Label("\(entry.mililiters.formatted())ml", systemImage: entry.mainAppearanceIcon)
+        Label("\(entry.mililiters.formatted())ml", systemImage: entry.mainIconSymbol)
     }
     
     private var circularView: some View {
@@ -48,7 +48,7 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
     private var rectangularView: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
-                Image(systemName: entry.mainAppearanceIcon)
+                Image(systemName: entry.mainIconSymbol)
                     .foregroundStyle(accentColor)
                 
                 Text("오늘 수분")
@@ -98,7 +98,7 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         numberOfGlasses: 5,
         dailyLimit: 2000,
-        mainAppearanceIcon: "drop.fill"
+        mainIconSymbol: "drop.fill"
     )
 }
 
@@ -109,7 +109,7 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         numberOfGlasses: 6,
         dailyLimit: 2000,
-        mainAppearanceIcon: "heart.fill"
+        mainIconSymbol: "heart.fill"
     )
 }
 
@@ -120,6 +120,6 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         numberOfGlasses: 3,
         dailyLimit: 2000,
-        mainAppearanceIcon: "cloud.fill"
+        mainIconSymbol: "cloud.fill"
     )
 }

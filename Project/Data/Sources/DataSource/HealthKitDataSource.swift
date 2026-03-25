@@ -15,6 +15,7 @@ public protocol HealthKitDataSource: Sendable {
     
     func requestAuthorization() async throws
     func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)]
+    func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent]
     func setAGlassOfWater() async throws
     func resetWaterInTakeInToday() async throws
 }
@@ -22,6 +23,7 @@ public protocol HealthKitDataSource: Sendable {
 public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Sendable {
     private enum Constant {
         static let aGlassOfWater: Double = 250
+        static let appSourcePrefix = "gaeng2y.DrinkWater"
     }
     
     private let healthStore: HKHealthStore
@@ -60,6 +62,10 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
     }
     
     public func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)] {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            return []
+        }
+
         return try await withCheckedThrowingContinuation { continuation in
             guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
                 continuation.resume(throwing: HealthKitError.invalidObjectType)
@@ -92,8 +98,62 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             healthStore.execute(query)
         }
     }
+
+    public func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent] {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            return []
+        }
+
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[HydrationEvent], Error>) in
+            guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
+                continuation.resume(throwing: HealthKitError.invalidObjectType)
+                return
+            }
+
+            let predicate = HKQuery.predicateForSamples(
+                withStart: startDate,
+                end: endDate,
+                options: .strictStartDate
+            )
+
+            let query = HKSampleQuery(
+                sampleType: waterType,
+                predicate: predicate,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+            ) { _, samples, error in
+                if error != nil {
+                    continuation.resume(throwing: HealthKitError.healthKitInternalError)
+                    return
+                }
+
+                guard let samples = samples as? [HKQuantitySample] else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                let events = samples.map { sample in
+                    HydrationEvent(
+                        id: sample.uuid,
+                        consumedAt: sample.startDate,
+                        volumeML: Int(
+                            sample.quantity.doubleValue(for: .literUnit(with: .milli)).rounded()
+                        )
+                    )
+                }
+
+                continuation.resume(returning: events)
+            }
+
+            healthStore.execute(query)
+        }
+    }
     
     public func setAGlassOfWater() async throws {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            throw HealthKitError.permissionDenied
+        }
+
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
@@ -105,6 +165,10 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
     }
     
     public func resetWaterInTakeInToday() async throws {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            throw HealthKitError.permissionDenied
+        }
+
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
@@ -130,15 +194,18 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                     continuation.resume(throwing: error)
                     return
                 }
-                
-                guard let samples = samples, !samples.isEmpty else {
+
+                let ownedSamples = (samples as? [HKQuantitySample])?.filter { sample in
+                    sample.sourceRevision.source.bundleIdentifier.hasPrefix(Constant.appSourcePrefix)
+                } ?? []
+
+                guard !ownedSamples.isEmpty else {
                     // No samples to delete, operation complete
                     continuation.resume(returning: ())
                     return
                 }
-                
-                // Delete all found samples
-                self.healthStore.delete(samples) { success, error in
+
+                self.healthStore.delete(ownedSamples) { _, error in
                     if let error = error {
                         continuation.resume(throwing: error)
                     } else {

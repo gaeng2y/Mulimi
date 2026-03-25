@@ -21,5 +21,9 @@
 	<string>$(APP_BUILD_NUMBER)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(APP_MARKETING_VERSION)</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>We need access to your health data to display your water intake.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We need access to your health data to log your water intake.</string>
 </dict>
 </plist>

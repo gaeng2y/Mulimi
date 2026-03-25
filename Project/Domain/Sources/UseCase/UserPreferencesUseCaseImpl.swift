@@ -15,12 +15,12 @@ public struct UserPreferencesUseCaseImpl: UserPreferencesUseCase {
         self.repository = repository
     }
 
-    public func getMainAppearance() -> MainAppearance {
-        repository.getMainAppearance()
+    public func getMainIcon() -> MainIcon {
+        repository.getMainIcon()
     }
 
-    public func setMainAppearance(_ appearance: MainAppearance) {
-        repository.setMainAppearance(appearance)
+    public func setMainIcon(_ icon: MainIcon) {
+        repository.setMainIcon(icon)
     }
 
     public func getDailyWaterLimit() -> Double {

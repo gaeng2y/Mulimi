@@ -20,9 +20,13 @@ public extension UserDefaults {
         set { self.set(newValue, forKey: .glassesOfToday) }
     }
 
-    @objc dynamic var mainAppearance: String {
-        get { self.string(forKey: .mainAppearance) ?? "drop" }
-        set { self.set(newValue, forKey: .mainAppearance) }
+    @objc dynamic var mainIcon: String {
+        get {
+            self.string(forKey: .mainIcon)
+            ?? self.string(forKey: .legacyMainAppearance)
+            ?? "drop"
+        }
+        set { self.set(newValue, forKey: .mainIcon) }
     }
 
     @objc dynamic var dailyLimit: Double {

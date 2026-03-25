@@ -14,20 +14,12 @@ public final class DataAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - DrinkWater
         container.register(DrinkWaterDataSource.self) { resolver in
-            do {
-                return try DrinkWaterPersistentDataSource(userDefaults: .appGroup)
-            } catch {
-                fatalError("Failed to initialize DrinkWaterPersistentDataSource: \(error)")
-            }
-        }
-        .inObjectScope(.container)
-        
-        container.register(DrinkWaterRepository.self) { resolver in
-            DrinkWaterRepositoryImpl(
-                dataSource: resolver.resolve(DrinkWaterDataSource.self)!
+            DrinkWaterHealthKitDataSource(
+                healthKitDataSource: resolver.resolve(HealthKitDataSource.self)!
             )
         }
-        
+        .inObjectScope(.container)
+
         // MARK: - HealthKit
         container.register(HealthKitDataSource.self) { resolver in
             HealthKitDataSourceImpl()
@@ -36,6 +28,12 @@ public final class DataAssembly: Assembly {
         container.register(HealthKitRepository.self) { resolver in
             HealthKitRepositoryImpl(
                 dataSource: resolver.resolve(HealthKitDataSource.self)!
+            )
+        }
+
+        container.register(DrinkWaterRepository.self) { resolver in
+            DrinkWaterRepositoryImpl(
+                dataSource: resolver.resolve(DrinkWaterDataSource.self)!
             )
         }
         

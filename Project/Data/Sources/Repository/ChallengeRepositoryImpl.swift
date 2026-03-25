@@ -8,14 +8,6 @@ public struct ChallengeRepositoryImpl: ChallengeRepository {
         self.storageDataSource = storageDataSource
     }
 
-    public func fetchChallengeStates() -> [HydrationChallengeState] {
-        storageDataSource.fetchChallengeStates()
-    }
-
-    public func saveChallengeStates(_ states: [HydrationChallengeState]) {
-        storageDataSource.saveChallengeStates(states)
-    }
-
     public func fetchBadgeHistories() -> [HydrationChallengeBadgeHistory] {
         storageDataSource.fetchBadgeHistories()
     }

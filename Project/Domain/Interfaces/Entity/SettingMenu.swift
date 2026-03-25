@@ -11,7 +11,7 @@ import Localization
 
 public enum SettingMenu: CaseIterable, Identifiable {
     case dailyLimit
-    case mainShape
+    case mainIcon
     case withdrawal
 
     public var id: Self { self }
@@ -19,7 +19,7 @@ public enum SettingMenu: CaseIterable, Identifiable {
     public var title: String {
         switch self {
         case .dailyLimit: L10n.tr("settingDailyLimitTitle")
-        case .mainShape: L10n.tr("settingMainShapeTitle")
+        case .mainIcon: L10n.tr("settingMainShapeTitle")
         case .withdrawal: L10n.tr("settingWithdrawalTitle")
         }
     }
@@ -28,7 +28,7 @@ public enum SettingMenu: CaseIterable, Identifiable {
         switch self {
         case .dailyLimit:
             return "target"
-        case .mainShape:
+        case .mainIcon:
             return "square.grid.2x2"
         case .withdrawal:
             return "person.crop.circle.badge.xmark"
@@ -39,7 +39,7 @@ public enum SettingMenu: CaseIterable, Identifiable {
         switch self {
         case .dailyLimit:
             return L10n.tr("settingDailyLimitDescription")
-        case .mainShape:
+        case .mainIcon:
             return L10n.tr("settingMainShapeDescription")
         case .withdrawal:
             return L10n.tr("settingWithdrawalDescription")
@@ -50,8 +50,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
         switch self {
         case .dailyLimit:
             return "dailyWaterLimit"
-        case .mainShape:
-            return "mainScreenAppearance"
+        case .mainIcon:
+            return "mainIcon"
         case .withdrawal:
             return "accountWithdrawal"
         }

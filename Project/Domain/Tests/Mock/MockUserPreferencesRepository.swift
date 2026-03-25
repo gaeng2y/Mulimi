@@ -9,28 +9,28 @@
 import DomainLayerInterface
 
 final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked Sendable {
-    private var _mainAppearance: MainAppearance = .default
+    private var _mainIcon: MainIcon = .default
     private var _dailyWaterLimit: Double = 2000.0
 
     // Call tracking properties
-    private(set) var getMainAppearanceCallCount = 0
-    private(set) var setMainAppearanceCallCount = 0
+    private(set) var getMainIconCallCount = 0
+    private(set) var setMainIconCallCount = 0
     private(set) var getDailyWaterLimitCallCount = 0
     private(set) var setDailyWaterLimitCallCount = 0
 
     // Captured values for verification
-    private(set) var capturedMainAppearance: MainAppearance?
+    private(set) var capturedMainIcon: MainIcon?
     private(set) var capturedDailyWaterLimit: Double?
 
-    func getMainAppearance() -> MainAppearance {
-        getMainAppearanceCallCount += 1
-        return _mainAppearance
+    func getMainIcon() -> MainIcon {
+        getMainIconCallCount += 1
+        return _mainIcon
     }
 
-    func setMainAppearance(_ appearance: MainAppearance) {
-        setMainAppearanceCallCount += 1
-        capturedMainAppearance = appearance
-        _mainAppearance = appearance
+    func setMainIcon(_ icon: MainIcon) {
+        setMainIconCallCount += 1
+        capturedMainIcon = icon
+        _mainIcon = icon
     }
 
     func getDailyWaterLimit() -> Double {
@@ -47,19 +47,19 @@ final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked
     // MARK: - Test Helper Methods
 
     func resetCallCounts() {
-        getMainAppearanceCallCount = 0
-        setMainAppearanceCallCount = 0
+        getMainIconCallCount = 0
+        setMainIconCallCount = 0
         getDailyWaterLimitCallCount = 0
         setDailyWaterLimitCallCount = 0
     }
 
     func resetCapturedValues() {
-        capturedMainAppearance = nil
+        capturedMainIcon = nil
         capturedDailyWaterLimit = nil
     }
 
     func resetToDefaults() {
-        _mainAppearance = .default
+        _mainIcon = .default
         _dailyWaterLimit = 2000.0
         resetCallCounts()
         resetCapturedValues()
