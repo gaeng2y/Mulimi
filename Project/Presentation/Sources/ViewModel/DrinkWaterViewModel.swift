@@ -19,8 +19,10 @@ public final class DrinkWaterViewModel {
     // MARK: - Published State
     private(set) var drinkWaterCount: Int
     private(set) var offset: CGFloat = 0
-    private(set) var mainAppearance: MainAppearance
+    private(set) var mainIcon: MainIcon
     private(set) var currentDailyLimit: Double
+    private(set) var healthKitAuthorizationStatus: HealthKitAuthorizationStatus
+    var showHealthKitPermissionAlert = false
     
     private let waterUseCase: DrinkWaterUseCase
     private let healthKitUseCase: HealthKitUseCase
@@ -58,8 +60,9 @@ public final class DrinkWaterViewModel {
         self.userPreferencesUseCase = userPreferencesUseCase
 
         self.drinkWaterCount = 0
-        self.mainAppearance = userPreferencesUseCase.getMainAppearance()
+        self.mainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
+        self.healthKitAuthorizationStatus = healthKitUseCase.authorisationStatus
         
         setupUserPreferencesObservation()
     }
@@ -88,10 +91,10 @@ public final class DrinkWaterViewModel {
             .store(in: &cancellables)
     }
     
-    private func updateMainAppearance() {
-        let newAppearance = userPreferencesUseCase.getMainAppearance()
-        if mainAppearance != newAppearance {
-            mainAppearance = newAppearance
+    private func updateMainIcon() {
+        let newAppearance = userPreferencesUseCase.getMainIcon()
+        if mainIcon != newAppearance {
+            mainIcon = newAppearance
         }
     }
     
@@ -108,6 +111,39 @@ public final class DrinkWaterViewModel {
             currentDailyLimit = newLimit
         }
     }
+
+    private func updateHealthKitAuthorizationStatus() {
+        let newStatus = healthKitUseCase.authorisationStatus
+        if healthKitAuthorizationStatus != newStatus {
+            healthKitAuthorizationStatus = newStatus
+        }
+    }
+
+    private func ensureHealthKitAuthorization() async -> Bool {
+        updateHealthKitAuthorizationStatus()
+
+        switch healthKitAuthorizationStatus {
+        case .sharingAuthorized:
+            showHealthKitPermissionAlert = false
+            return true
+        case .notDetermined:
+            do {
+                try await healthKitUseCase.requestAuthorization()
+            } catch {
+                updateHealthKitAuthorizationStatus()
+                showHealthKitPermissionAlert = true
+                return false
+            }
+
+            updateHealthKitAuthorizationStatus()
+            let isAuthorized = healthKitAuthorizationStatus == .sharingAuthorized
+            showHealthKitPermissionAlert = !isAuthorized
+            return isAuthorized
+        case .sharingDenied:
+            showHealthKitPermissionAlert = true
+            return false
+        }
+    }
     
     public func loadInitialState() async {
         await waterUseCase.migrateLegacyDataIfNeeded()
@@ -115,6 +151,10 @@ public final class DrinkWaterViewModel {
     }
 
     func drinkWater() async {
+        guard await ensureHealthKitAuthorization() else {
+            return
+        }
+
         // Check if adding one more glass would exceed daily limit
         let nextIntake = currentWaterIntakeInMl + 250.0
 
@@ -123,31 +163,19 @@ public final class DrinkWaterViewModel {
             return // Do not allow drinking more than daily limit
         }
         
-        drinkWaterCount += 1
         await waterUseCase.drinkWater()
-        
-        // Reload Widget timeline
+        await refreshState()
         WidgetCenter.shared.reloadAllTimelines()
-        
-        do {
-            try await healthKitUseCase.drinkWater()
-        } catch {
-            print("Failed to log water to HealthKit: \(error)")
-        }
     }
     
     func reset() async {
-        drinkWaterCount = 0
-        await waterUseCase.reset()
-        
-        // Reload Widget timeline
-        WidgetCenter.shared.reloadAllTimelines()
-        
-        do {
-            try await healthKitUseCase.reset()
-        } catch {
-            print("Failed to reset HealthKit data: \(error)")
+        guard await ensureHealthKitAuthorization() else {
+            return
         }
+
+        await waterUseCase.reset()
+        await refreshState()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func resetAnimation() {
@@ -157,11 +185,16 @@ public final class DrinkWaterViewModel {
     func startAnimation() {
         offset = 360
     }
+
+    func dismissHealthKitPermissionAlert() {
+        showHealthKitPermissionAlert = false
+    }
     
     public func refreshState() async {
         // Refresh from persistence and user preferences.
-        updateMainAppearance()
+        updateMainIcon()
         await updateWaterCount()
         updateDailyLimit()
+        updateHealthKitAuthorizationStatus()
     }
 }
