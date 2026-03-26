@@ -15,73 +15,73 @@ import DomainLayerInterface
 @Suite("UserPreferencesUseCase Tests")
 struct UserPreferencesUseCaseTests {
 
-    // MARK: - MainAppearance Tests
+    // MARK: - MainIcon Tests
 
     @Test("초기 메인 외관 조회 테스트")
-    func getMainAppearanceInitial() {
+    func getMainIconInitial() {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
         let mockRepository = MockUserPreferencesRepository()
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // When: 메인 외관을 조회하면
-        let appearance = useCase.getMainAppearance()
+        let appearance = useCase.getMainIcon()
 
         // Then: 기본값인 .drop을 반환한다
         #expect(appearance == .drop)
-        // Then: Repository의 getMainAppearance가 1번 호출된다
-        #expect(mockRepository.getMainAppearanceCallCount == 1)
+        // Then: Repository의 getMainIcon가 1번 호출된다
+        #expect(mockRepository.getMainIconCallCount == 1)
     }
 
     @Test("메인 외관 설정 테스트")
-    func setMainAppearance() {
+    func setMainIcon() {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
         let mockRepository = MockUserPreferencesRepository()
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // When: 메인 외관을 .heart로 설정하면
-        useCase.setMainAppearance(.heart)
+        useCase.setMainIcon(.heart)
 
-        // Then: Repository의 setMainAppearance가 1번 호출된다
-        #expect(mockRepository.setMainAppearanceCallCount == 1)
+        // Then: Repository의 setMainIcon가 1번 호출된다
+        #expect(mockRepository.setMainIconCallCount == 1)
         // Then: Repository에 .heart가 전달된다
-        #expect(mockRepository.capturedMainAppearance == .heart)
+        #expect(mockRepository.capturedMainIcon == .heart)
         // Then: 조회 시 .heart를 반환한다
-        #expect(useCase.getMainAppearance() == .heart)
+        #expect(useCase.getMainIcon() == .heart)
     }
 
     @Test("메인 외관 여러 번 변경 테스트")
-    func setMainAppearanceMultipleTimes() {
+    func setMainIconMultipleTimes() {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
         let mockRepository = MockUserPreferencesRepository()
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // When: 메인 외관을 여러 번 변경하면
-        useCase.setMainAppearance(.heart)
-        useCase.setMainAppearance(.cloud)
-        useCase.setMainAppearance(.drop)
+        useCase.setMainIcon(.heart)
+        useCase.setMainIcon(.cloud)
+        useCase.setMainIcon(.drop)
 
-        // Then: Repository의 setMainAppearance가 3번 호출된다
-        #expect(mockRepository.setMainAppearanceCallCount == 3)
+        // Then: Repository의 setMainIcon가 3번 호출된다
+        #expect(mockRepository.setMainIconCallCount == 3)
         // Then: 마지막으로 설정한 .drop이 저장된다
-        #expect(mockRepository.capturedMainAppearance == .drop)
+        #expect(mockRepository.capturedMainIcon == .drop)
         // Then: 조회 시 마지막 값인 .drop을 반환한다
-        #expect(useCase.getMainAppearance() == .drop)
+        #expect(useCase.getMainIcon() == .drop)
     }
 
-    @Test("모든 MainAppearance 타입 설정 테스트")
-    func setAllMainAppearanceTypes() {
+    @Test("모든 MainIcon 타입 설정 테스트")
+    func setAllMainIconTypes() {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
         let mockRepository = MockUserPreferencesRepository()
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
-        // When & Then: 각 MainAppearance 타입을 설정하고 검증한다
-        for appearance in MainAppearance.allCases {
-            useCase.setMainAppearance(appearance)
-            #expect(useCase.getMainAppearance() == appearance)
+        // When & Then: 각 MainIcon 타입을 설정하고 검증한다
+        for appearance in MainIcon.allCases {
+            useCase.setMainIcon(appearance)
+            #expect(useCase.getMainIcon() == appearance)
         }
 
-        // Then: Repository의 setMainAppearance가 allCases 개수만큼 호출된다
-        #expect(mockRepository.setMainAppearanceCallCount == MainAppearance.allCases.count)
+        // Then: Repository의 setMainIcon가 allCases 개수만큼 호출된다
+        #expect(mockRepository.setMainIconCallCount == MainIcon.allCases.count)
     }
 
     // MARK: - DailyWaterLimit Tests
@@ -181,13 +181,13 @@ struct UserPreferencesUseCaseTests {
         // When & Then: 단계별로 시나리오를 실행한다
 
         // 1단계: 초기값 확인
-        #expect(useCase.getMainAppearance() == .drop)
+        #expect(useCase.getMainIcon() == .drop)
         #expect(useCase.getDailyWaterLimit() == 2000.0)
 
         // 2단계: 외관 변경
-        useCase.setMainAppearance(.heart)
-        #expect(useCase.getMainAppearance() == .heart)
-        #expect(mockRepository.setMainAppearanceCallCount == 1)
+        useCase.setMainIcon(.heart)
+        #expect(useCase.getMainIcon() == .heart)
+        #expect(mockRepository.setMainIconCallCount == 1)
 
         // 3단계: 목표량 변경
         useCase.setDailyWaterLimit(2500.0)
@@ -195,9 +195,9 @@ struct UserPreferencesUseCaseTests {
         #expect(mockRepository.setDailyWaterLimitCallCount == 1)
 
         // 4단계: 외관 재변경
-        useCase.setMainAppearance(.cloud)
-        #expect(useCase.getMainAppearance() == .cloud)
-        #expect(mockRepository.setMainAppearanceCallCount == 2)
+        useCase.setMainIcon(.cloud)
+        #expect(useCase.getMainIcon() == .cloud)
+        #expect(mockRepository.setMainIconCallCount == 2)
 
         // 5단계: 목표량 재변경
         useCase.setDailyWaterLimit(3000.0)
@@ -212,13 +212,13 @@ struct UserPreferencesUseCaseTests {
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // When: 외관과 목표량을 동시에 변경하면
-        useCase.setMainAppearance(.heart)
+        useCase.setMainIcon(.heart)
         useCase.setDailyWaterLimit(2500.0)
 
         // Then: 각각의 설정이 독립적으로 저장된다
-        #expect(useCase.getMainAppearance() == .heart)
+        #expect(useCase.getMainIcon() == .heart)
         #expect(useCase.getDailyWaterLimit() == 2500.0)
-        #expect(mockRepository.setMainAppearanceCallCount == 1)
+        #expect(mockRepository.setMainIconCallCount == 1)
         #expect(mockRepository.setDailyWaterLimitCallCount == 1)
     }
 
@@ -231,12 +231,12 @@ struct UserPreferencesUseCaseTests {
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // Then: UseCase는 정상적으로 생성되고 동작한다
-        #expect(useCase.getMainAppearance() == .drop)
+        #expect(useCase.getMainIcon() == .drop)
         #expect(useCase.getDailyWaterLimit() == 2000.0)
 
         // Repository의 상태를 직접 변경하면 UseCase의 결과도 변경된다
-        mockRepository.setMainAppearance(.cloud)
-        #expect(useCase.getMainAppearance() == .cloud)
+        mockRepository.setMainIcon(.cloud)
+        #expect(useCase.getMainIcon() == .cloud)
 
         mockRepository.setDailyWaterLimit(3500.0)
         #expect(useCase.getDailyWaterLimit() == 3500.0)
@@ -249,9 +249,9 @@ struct UserPreferencesUseCaseTests {
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
         // When: 다양한 메소드를 호출하면
-        let _ = useCase.getMainAppearance()
-        let _ = useCase.getMainAppearance()
-        useCase.setMainAppearance(.heart)
+        let _ = useCase.getMainIcon()
+        let _ = useCase.getMainIcon()
+        useCase.setMainIcon(.heart)
 
         let _ = useCase.getDailyWaterLimit()
         let _ = useCase.getDailyWaterLimit()
@@ -260,8 +260,8 @@ struct UserPreferencesUseCaseTests {
         useCase.setDailyWaterLimit(3000.0)
 
         // Then: 각 메소드의 호출 횟수가 정확히 기록된다
-        #expect(mockRepository.getMainAppearanceCallCount == 2)
-        #expect(mockRepository.setMainAppearanceCallCount == 1)
+        #expect(mockRepository.getMainIconCallCount == 2)
+        #expect(mockRepository.setMainIconCallCount == 1)
         #expect(mockRepository.getDailyWaterLimitCallCount == 3)
         #expect(mockRepository.setDailyWaterLimitCallCount == 2)
     }
@@ -272,12 +272,12 @@ struct UserPreferencesUseCaseTests {
         let mockRepository = MockUserPreferencesRepository()
         let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
 
-        useCase.setMainAppearance(.heart)
+        useCase.setMainIcon(.heart)
         useCase.setDailyWaterLimit(2500.0)
 
         // When: 여러 번 조회하면
-        let appearance1 = useCase.getMainAppearance()
-        let appearance2 = useCase.getMainAppearance()
+        let appearance1 = useCase.getMainIcon()
+        let appearance2 = useCase.getMainIcon()
         let limit1 = useCase.getDailyWaterLimit()
         let limit2 = useCase.getDailyWaterLimit()
 

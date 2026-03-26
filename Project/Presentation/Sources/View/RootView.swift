@@ -9,23 +9,31 @@
 import SwiftUI
 
 public struct RootView<Content: View>: View {
-    @State private var viewModel: AuthenticationViewModel
+    @State private var authenticationViewModel: AuthenticationViewModel
+    @State private var healthKitPermissionViewModel: HealthKitPermissionViewModel
     private let content: () -> Content
     
     public init(
-        viewModel: @autoclosure @escaping () -> AuthenticationViewModel,
+        authenticationViewModel: @autoclosure @escaping () -> AuthenticationViewModel,
+        healthKitPermissionViewModel: @autoclosure @escaping () -> HealthKitPermissionViewModel,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self._viewModel = State(wrappedValue: viewModel())
+        self._authenticationViewModel = State(wrappedValue: authenticationViewModel())
+        self._healthKitPermissionViewModel = State(wrappedValue: healthKitPermissionViewModel())
         self.content = content
     }
     
     public var body: some View {
         Group {
-            if viewModel.isAuthenticated {
-                content()
+            if authenticationViewModel.isAuthenticated {
+                HealthKitPermissionGateView(viewModel: healthKitPermissionViewModel) {
+                    content()
+                }
             } else {
-                SignInView(viewModel: viewModel)
+                SignInView(viewModel: authenticationViewModel)
+                    .onAppear {
+                        healthKitPermissionViewModel.markSignedOut()
+                    }
             }
         }
     }

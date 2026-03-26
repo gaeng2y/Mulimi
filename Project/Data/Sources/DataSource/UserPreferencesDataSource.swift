@@ -11,22 +11,34 @@ import Foundation
 import Utils
 
 public protocol UserPreferencesDataSource: Sendable {
-    func getMainAppearance() -> MainAppearance
-    func setMainAppearance(_ appearance: MainAppearance)
+    func getMainIcon() -> MainIcon
+    func setMainIcon(_ icon: MainIcon)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
 }
 
 public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @unchecked Sendable {
+    private enum Constants {
+        static let defaultDailyWaterLimit = 2000.0
+    }
+
     private let userDefaults: UserDefaults
-    
-    public init(userDefaults: UserDefaults) {
+    private let ubiquitousStore: NSUbiquitousKeyValueStore
+
+    public init(
+        userDefaults: UserDefaults,
+        ubiquitousStore: NSUbiquitousKeyValueStore = .default
+    ) {
         self.userDefaults = userDefaults
+        self.ubiquitousStore = ubiquitousStore
     }
     
-    // MARK: - MainAppearance
-    public func getMainAppearance() -> MainAppearance {
-        switch userDefaults.mainAppearance {
+    // MARK: - MainIcon
+    public func getMainIcon() -> MainIcon {
+        let storedValue = userDefaults.mainIcon
+        migrateLegacyMainIconIfNeeded(currentValue: storedValue)
+
+        return switch userDefaults.mainIcon {
         case "drop": .drop
         case "heart": .heart
         case "cloud": .cloud
@@ -34,9 +46,9 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         }
     }
     
-    public func setMainAppearance(_ appearance: MainAppearance) {
+    public func setMainIcon(_ icon: MainIcon) {
         let stringValue: String
-        switch appearance {
+        switch icon {
         case .drop:
             stringValue = "drop"
         case .heart:
@@ -44,29 +56,50 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         case .cloud:
             stringValue = "cloud"
         }
-        userDefaults.mainAppearance = stringValue
+        userDefaults.mainIcon = stringValue
+        userDefaults.removeObject(forKey: .legacyMainAppearance)
+        userDefaults.synchronize()
     }
     
     // MARK: - Daily Water Limit
     public func getDailyWaterLimit() -> Double {
-        let limit = userDefaults.dailyLimit
-        return limit == 0 ? 2000 : limit // Default 2000ml
+        ubiquitousStore.synchronize()
+
+        let localValue = userDefaults.dailyLimit
+        let syncedValue = ubiquitousStore.double(forKey: .dailyWaterLimit)
+
+        if syncedValue > 0 {
+            if localValue != syncedValue {
+                userDefaults.dailyLimit = syncedValue
+                userDefaults.synchronize()
+            }
+            return syncedValue
+        }
+
+        if localValue > 0 {
+            ubiquitousStore.set(localValue, forKey: .dailyWaterLimit)
+            ubiquitousStore.synchronize()
+            return localValue
+        }
+
+        return Constants.defaultDailyWaterLimit
     }
 
     public func setDailyWaterLimit(_ limit: Double) {
-        print("🔍 DEBUG - UserPreferencesDataSource.setDailyWaterLimit:")
-        print("  - Setting daily limit: \(limit)ml")
-        print("  - Using key: \(String.dailyWaterLimit)")
-        
         userDefaults.dailyLimit = limit
-        
-        // Force synchronization for cross-process communication
         userDefaults.synchronize()
-        
-        print("  - Value saved and synchronized")
-        
-        // Verify the saved value
-        let savedValue = userDefaults.dailyLimit
-        print("  - Verification - saved value: \(savedValue)ml")
+        ubiquitousStore.set(limit, forKey: .dailyWaterLimit)
+        ubiquitousStore.synchronize()
+    }
+
+    private func migrateLegacyMainIconIfNeeded(currentValue: String) {
+        guard userDefaults.object(forKey: .mainIcon) == nil,
+              userDefaults.object(forKey: .legacyMainAppearance) != nil else {
+            return
+        }
+
+        userDefaults.mainIcon = currentValue
+        userDefaults.removeObject(forKey: .legacyMainAppearance)
+        userDefaults.synchronize()
     }
 }

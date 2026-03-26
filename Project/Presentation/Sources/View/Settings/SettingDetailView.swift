@@ -24,8 +24,8 @@ public struct SettingDetailView: View {
             switch menu {
             case .dailyLimit:
                 DailyLimitSettingView(viewModel: viewModel)
-            case .mainShape:
-                MainShapeSettingView(viewModel: viewModel)
+            case .mainIcon:
+                MainIconSettingView(viewModel: viewModel)
             case .withdrawal:
                 WithdrawalSettingView(viewModel: viewModel)
             }
@@ -79,7 +79,7 @@ private struct DailyLimitSettingView: View {
     }
 }
 
-private struct MainShapeSettingView: View {
+private struct MainIconSettingView: View {
     private let viewModel: SettingsViewModel
     
     init(viewModel: SettingsViewModel) {
@@ -88,23 +88,23 @@ private struct MainShapeSettingView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            ForEach(MainAppearance.allCases) { appearance in
+            ForEach(MainIcon.allCases) { icon in
                 Button {
-                    viewModel.selectMainAppearance(appearance)
+                    viewModel.selectMainIcon(icon)
                 } label: {
                     VStack(spacing: 12) {
                         HStack {
-                            Image(systemName: appearance.systemImage)
+                            Image(systemName: icon.systemImage)
                                 .font(.title2)
                                 .frame(width: 40)
                                 .foregroundColor(.accentColor)
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(appearance.displayName)
+                                Text(icon.displayName)
                                     .font(.headline)
                                     .foregroundColor(.primary)
                                 
-                                Text(appearance.description)
+                                Text(icon.description)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                     .multilineTextAlignment(.leading)
@@ -112,7 +112,7 @@ private struct MainShapeSettingView: View {
                             
                             Spacer()
                             
-                            if viewModel.isMainAppearanceSelected(appearance) {
+                            if viewModel.isMainIconSelected(icon) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(.accentColor)
                                     .font(.title3)
@@ -122,14 +122,14 @@ private struct MainShapeSettingView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(viewModel.isMainAppearanceSelected(appearance) ?
+                            .fill(viewModel.isMainIconSelected(icon) ?
                                   Color.accentColor.opacity(0.1) :
                                     Color(uiColor: .systemGray6))
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(
-                                viewModel.isMainAppearanceSelected(appearance) ?
+                                viewModel.isMainIconSelected(icon) ?
                                 Color.accentColor.opacity(0.3) :
                                     Color.clear,
                                 lineWidth: 1

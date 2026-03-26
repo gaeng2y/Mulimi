@@ -7,7 +7,7 @@ import Testing
 
 @Suite("ChallengeUseCase Tests")
 struct ChallengeUseCaseTests {
-    @Test("3종 챌린지를 계산하고 반복형/누적형 상태로 저장한다")
+    @Test("3종 챌린지를 계산하고 새 완료 이력을 저장한다")
     func fetchChallenges() async {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
@@ -57,14 +57,6 @@ struct ChallengeUseCaseTests {
         #expect(count?.primaryTargetValue == 30)
         #expect(count?.isCompleted == false)
 
-        #expect(challengeRepository.saveChallengeStatesCallCount == 1)
-        #expect(challengeRepository.lastSavedStates.count == 3)
-        #expect(challengeRepository.lastSavedStates[0].kind == .streak7)
-        #expect(challengeRepository.lastSavedStates[0].recurringState != nil)
-        #expect(challengeRepository.lastSavedStates[1].kind == .weeklyAchievement80)
-        #expect(challengeRepository.lastSavedStates[1].recurringState != nil)
-        #expect(challengeRepository.lastSavedStates[2].kind == .goalAchievement30)
-        #expect(challengeRepository.lastSavedStates[2].cumulativeState != nil)
         #expect(challengeRepository.saveBadgeHistoriesCallCount == 1)
         #expect(challengeRepository.lastSavedBadgeHistories.count == 1)
         #expect(challengeRepository.lastSavedBadgeHistories.first?.kind == .streak7)
@@ -95,20 +87,6 @@ struct ChallengeUseCaseTests {
         let weeklyCycleID = HydrationChallengeKind.weeklyAchievement80.recurringCycleID(
             referenceDate: referenceDate,
             calendar: calendar
-        )
-        challengeRepository.setChallengeStates(
-            [
-                .recurring(
-                    HydrationRecurringChallengeState(
-                        kind: .weeklyAchievement80,
-                        cycleID: weeklyCycleID,
-                        progress: 1,
-                        isCompleted: true,
-                        achievedAt: achievedAt,
-                        updatedAt: achievedAt
-                    )
-                )
-            ]
         )
         challengeRepository.setBadgeHistories(
             [
@@ -161,20 +139,6 @@ struct ChallengeUseCaseTests {
             referenceDate: previousWeekDate,
             calendar: calendar
         )
-        challengeRepository.setChallengeStates(
-            [
-                .recurring(
-                    HydrationRecurringChallengeState(
-                        kind: .weeklyAchievement80,
-                        cycleID: previousCycleID,
-                        progress: 1,
-                        isCompleted: true,
-                        achievedAt: achievedAt,
-                        updatedAt: achievedAt
-                    )
-                )
-            ]
-        )
         challengeRepository.setBadgeHistories(
             [
                 HydrationChallengeBadgeHistory(
@@ -223,16 +187,11 @@ struct ChallengeUseCaseTests {
         let drinkWaterRepository = MockDrinkWaterRepository()
         drinkWaterRepository.setHydrationEvents(makeGoalAchievementEvents(calendar: calendar, achievedDays: [1, 2, 3, 4, 5]))
         let challengeRepository = MockChallengeRepository()
-        challengeRepository.setChallengeStates(
+        challengeRepository.setBadgeHistories(
             [
-                .cumulative(
-                    HydrationCumulativeChallengeState(
-                        kind: .goalAchievement30,
-                        progress: 1,
-                        isCompleted: true,
-                        achievedAt: achievedAt,
-                        updatedAt: achievedAt
-                    )
+                HydrationChallengeBadgeHistory(
+                    kind: .goalAchievement30,
+                    achievedAt: achievedAt
                 )
             ]
         )
@@ -249,10 +208,7 @@ struct ChallengeUseCaseTests {
         #expect(count?.isCompleted == true)
         #expect(count?.progress == 1)
         #expect(count?.achievedAt == achievedAt)
-        #expect(challengeRepository.saveBadgeHistoriesCallCount == 1)
-        #expect(challengeRepository.lastSavedBadgeHistories.count == 1)
-        #expect(challengeRepository.lastSavedBadgeHistories.first?.kind == .goalAchievement30)
-        #expect(challengeRepository.lastSavedBadgeHistories.first?.achievedAt == achievedAt)
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 0)
     }
 
     @Test("반복형 챌린지는 새 주기 완료 시 배지 이력을 누적 저장한다")

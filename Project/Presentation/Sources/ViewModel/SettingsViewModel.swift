@@ -18,7 +18,7 @@ public final class SettingsViewModel {
     private let authenticationViewModel: AuthenticationViewModel
 
     // MARK: - Published State
-    public private(set) var currentMainAppearance: MainAppearance
+    public private(set) var currentMainIcon: MainIcon
     public private(set) var currentDailyWaterLimit: Double
     public let appVersion: String
     public let appBuildNumber: String
@@ -36,16 +36,16 @@ public final class SettingsViewModel {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.authenticationViewModel = authenticationViewModel
-        self.currentMainAppearance = userPreferencesUseCase.getMainAppearance()
+        self.currentMainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
         self.appVersion = appVersion ?? Self.bundleValue(for: "CFBundleShortVersionString")
         self.appBuildNumber = appBuildNumber ?? Self.bundleValue(for: "CFBundleVersion")
     }
 
     // MARK: - User Preferences Actions
-    public func setMainAppearance(_ appearance: MainAppearance) {
-        currentMainAppearance = appearance
-        userPreferencesUseCase.setMainAppearance(appearance)
+    public func setMainIcon(_ icon: MainIcon) {
+        currentMainIcon = icon
+        userPreferencesUseCase.setMainIcon(icon)
         WidgetCenter.shared.reloadAllTimelines()
     }
     
@@ -67,13 +67,13 @@ public final class SettingsViewModel {
         }
     }
 
-    // MARK: - MainAppearance Specific
-    func selectMainAppearance(_ appearance: MainAppearance) {
-        setMainAppearance(appearance)
+    // MARK: - MainIcon Specific
+    func selectMainIcon(_ icon: MainIcon) {
+        setMainIcon(icon)
     }
     
-    func isMainAppearanceSelected(_ appearance: MainAppearance) -> Bool {
-        currentMainAppearance == appearance
+    func isMainIconSelected(_ icon: MainIcon) -> Bool {
+        currentMainIcon == icon
     }
 
     // MARK: - Withdrawal Actions

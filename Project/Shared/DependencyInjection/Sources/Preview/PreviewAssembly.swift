@@ -109,6 +109,15 @@ public final class PreviewAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HealthKitPermissionViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+
+            HealthKitPermissionViewModel(
+                healthKitUseCase: healthKitUseCase
+            )
+        }
+        .inObjectScope(.container)
+
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(

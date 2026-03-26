@@ -9,7 +9,7 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
 
     private struct ChallengeMergeResult {
         let challenge: HydrationChallenge
-        let state: HydrationChallengeState
+        let cycleID: String?
     }
 
     private let progressUseCase: HydrationProgressUseCase
@@ -31,8 +31,9 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
             referenceDate: referenceDate,
             calendar: calendar
         )
-        let persistedStatesByKind = Dictionary(
-            uniqueKeysWithValues: challengeRepository.fetchChallengeStates().map { ($0.kind, $0) }
+        let persistedHistories = challengeRepository.fetchBadgeHistories()
+        let persistedHistoriesByID = Dictionary(
+            uniqueKeysWithValues: persistedHistories.map { ($0.id, $0) }
         )
         let totalAchievedDays = await totalAchievedDayCount(
             upTo: referenceDate,
@@ -47,13 +48,14 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         ].map { evaluation in
             mergeChallenge(
                 evaluation: evaluation,
-                persistedState: persistedStatesByKind[evaluation.challenge.kind],
+                persistedHistory: persistedHistory(
+                    for: evaluation,
+                    persistedHistoriesByID: persistedHistoriesByID
+                ),
                 referenceDate: referenceDate
             )
         }
 
-        challengeRepository.saveChallengeStates(results.map(\.state))
-        let persistedHistories = challengeRepository.fetchBadgeHistories()
         let mergedHistories = mergeBadgeHistories(
             persistedHistories: persistedHistories,
             results: results
@@ -72,20 +74,20 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
 
     private func mergeChallenge(
         evaluation: ChallengeEvaluation,
-        persistedState: HydrationChallengeState?,
+        persistedHistory: HydrationChallengeBadgeHistory?,
         referenceDate: Date
     ) -> ChallengeMergeResult {
         switch evaluation.challenge.kind.stateType {
         case .recurring:
             return mergeRecurringChallenge(
                 evaluation: evaluation,
-                persistedState: persistedState?.recurringState,
+                persistedHistory: persistedHistory,
                 referenceDate: referenceDate
             )
         case .cumulative:
             return mergeCumulativeChallenge(
                 challenge: evaluation.challenge,
-                persistedState: persistedState?.cumulativeState,
+                persistedHistory: persistedHistory,
                 referenceDate: referenceDate
             )
         }
@@ -161,16 +163,13 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
 
     private func mergeRecurringChallenge(
         evaluation: ChallengeEvaluation,
-        persistedState: HydrationRecurringChallengeState?,
+        persistedHistory: HydrationChallengeBadgeHistory?,
         referenceDate: Date
     ) -> ChallengeMergeResult {
         let challenge = evaluation.challenge
-        let isSameCycle = evaluation.cycleID != nil && persistedState?.cycleID == evaluation.cycleID
         let completedInCurrentCycle = challenge.progress >= 1
-        let isCompleted = (isSameCycle && persistedState?.isCompleted == true) || completedInCurrentCycle
-        let achievedAt = isSameCycle
-            ? persistedState?.achievedAt ?? (completedInCurrentCycle ? referenceDate : nil)
-            : (completedInCurrentCycle ? referenceDate : nil)
+        let isCompleted = persistedHistory != nil || completedInCurrentCycle
+        let achievedAt = persistedHistory?.achievedAt ?? (completedInCurrentCycle ? referenceDate : nil)
 
         let mergedChallenge = HydrationChallenge(
             kind: challenge.kind,
@@ -184,27 +183,20 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
             isCompleted: isCompleted,
             achievedAt: achievedAt
         )
-        let state = HydrationChallengeState.recurring(
-            HydrationRecurringChallengeState(
-                kind: challenge.kind,
-                cycleID: evaluation.cycleID,
-                progress: mergedChallenge.progress,
-                isCompleted: isCompleted,
-                achievedAt: achievedAt,
-                updatedAt: referenceDate
-            )
-        )
 
-        return ChallengeMergeResult(challenge: mergedChallenge, state: state)
+        return ChallengeMergeResult(
+            challenge: mergedChallenge,
+            cycleID: evaluation.cycleID
+        )
     }
 
     private func mergeCumulativeChallenge(
         challenge: HydrationChallenge,
-        persistedState: HydrationCumulativeChallengeState?,
+        persistedHistory: HydrationChallengeBadgeHistory?,
         referenceDate: Date
     ) -> ChallengeMergeResult {
-        let achievedAt = persistedState?.achievedAt ?? (challenge.progress >= 1 ? referenceDate : nil)
-        let isCompleted = persistedState?.isCompleted == true || challenge.progress >= 1
+        let achievedAt = persistedHistory?.achievedAt ?? (challenge.progress >= 1 ? referenceDate : nil)
+        let isCompleted = persistedHistory != nil || challenge.progress >= 1
         let mergedChallenge = HydrationChallenge(
             kind: challenge.kind,
             progress: isCompleted ? 1 : challenge.progress,
@@ -217,17 +209,8 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
             isCompleted: isCompleted,
             achievedAt: achievedAt
         )
-        let state = HydrationChallengeState.cumulative(
-            HydrationCumulativeChallengeState(
-                kind: challenge.kind,
-                progress: mergedChallenge.progress,
-                isCompleted: isCompleted,
-                achievedAt: achievedAt,
-                updatedAt: referenceDate
-            )
-        )
 
-        return ChallengeMergeResult(challenge: mergedChallenge, state: state)
+        return ChallengeMergeResult(challenge: mergedChallenge, cycleID: nil)
     }
 
     private func progress(current: Double, target: Double) -> Double {
@@ -290,8 +273,20 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         return HydrationChallengeBadgeHistory(
             kind: result.challenge.kind,
             achievedAt: achievedAt,
-            cycleID: result.state.recurringState?.cycleID
+            cycleID: result.cycleID
         )
+    }
+
+    private func persistedHistory(
+        for evaluation: ChallengeEvaluation,
+        persistedHistoriesByID: [String: HydrationChallengeBadgeHistory]
+    ) -> HydrationChallengeBadgeHistory? {
+        let historyID = HydrationChallengeBadgeHistory.makeID(
+            kind: evaluation.challenge.kind,
+            cycleID: evaluation.cycleID
+        )
+
+        return persistedHistoriesByID[historyID]
     }
 
     private func badgeHistorySort(

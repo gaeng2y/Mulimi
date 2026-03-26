@@ -17,7 +17,7 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
             date: .now,
             numberOfGlasses: 0,
             dailyLimit: 2000,
-            mainAppearanceIcon: "drop.fill"
+            mainIconSymbol: "drop.fill"
         )
     }
 
@@ -32,8 +32,6 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
         for configuration: ConfigurationAppIntent,
         in context: Context
     ) async -> Timeline<DrinkWaterEntry> {
-        await waterUseCase.migrateLegacyDataIfNeeded()
-
         let currentDate = Date()
         var entries: [DrinkWaterEntry] = []
 
@@ -47,15 +45,14 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
     }
 
     private func makeEntry(date: Date) async -> DrinkWaterEntry {
-        await waterUseCase.migrateLegacyDataIfNeeded()
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-        let appearanceIcon = userPreferencesUseCase.getMainAppearance().fillSystemImage
+        let mainIconSymbol = userPreferencesUseCase.getMainIcon().fillSystemImage
 
         return DrinkWaterEntry(
             date: date,
             numberOfGlasses: await waterUseCase.currentWater,
             dailyLimit: dailyLimit,
-            mainAppearanceIcon: appearanceIcon
+            mainIconSymbol: mainIconSymbol
         )
     }
 }
@@ -64,7 +61,7 @@ struct DrinkWaterEntry: TimelineEntry {
     let date: Date
     let numberOfGlasses: Int
     let dailyLimit: Double
-    let mainAppearanceIcon: String
+    let mainIconSymbol: String
 }
 
 extension DrinkWaterEntry {

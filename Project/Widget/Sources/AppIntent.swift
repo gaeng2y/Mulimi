@@ -27,9 +27,6 @@ struct LogWaterAppIntent: AppIntent {
     public func perform() async throws -> some IntentResult {
         let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-        let healthKitUseCase = DIContainer.shared.resolve(HealthKitUseCase.self)
-
-        await waterUseCase.migrateLegacyDataIfNeeded()
         let currentGlasses = await waterUseCase.currentWater
         let currentMl = Double(currentGlasses * 250)
         
@@ -40,14 +37,6 @@ struct LogWaterAppIntent: AppIntent {
         let nextMl = currentMl + 250.0
         if nextMl <= dailyLimit {
             await waterUseCase.drinkWater()
-            
-            // Log to HealthKit via UseCase
-            do {
-                try await healthKitUseCase.drinkWater()
-            } catch {
-                // Silent fail - Widget should not show errors to user
-                print("Failed to log water to HealthKit from Widget: \(error)")
-            }
         }
         
         WidgetCenter.shared.reloadAllTimelines()

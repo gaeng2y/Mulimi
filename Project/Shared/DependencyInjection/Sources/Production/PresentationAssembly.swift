@@ -95,6 +95,17 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HealthKitPermissionViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HealthKitPermissionViewModel(
+                    healthKitUseCase: healthKitUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(

@@ -40,12 +40,12 @@ public struct ProfileView: View {
                     }
 
                     NavigationLink {
-                        SettingDetailView(menu: .mainShape, viewModel: settingsViewModel)
+                        SettingDetailView(menu: .mainIcon, viewModel: settingsViewModel)
                     } label: {
                         settingsRow(
                             title: L10n.tr("settingMainShapeTitle"),
-                            value: settingsViewModel.currentMainAppearance.displayName,
-                            systemImage: settingsViewModel.currentMainAppearance.fillSystemImage
+                            value: settingsViewModel.currentMainIcon.displayName,
+                            systemImage: settingsViewModel.currentMainIcon.fillSystemImage
                         )
                     }
                 } header: {

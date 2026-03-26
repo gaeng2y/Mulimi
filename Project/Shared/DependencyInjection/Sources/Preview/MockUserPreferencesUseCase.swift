@@ -9,18 +9,18 @@
 import DomainLayerInterface
 
 public final class MockUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
-    private var mainAppearance: MainAppearance = .drop
+    private var mainIcon: MainIcon = .drop
     private var dailyWaterLimit: Double = 2000
     private var accentColor: String = "blue"
 
     public init() {}
 
-    public func getMainAppearance() -> MainAppearance {
-        mainAppearance
+    public func getMainIcon() -> MainIcon {
+        mainIcon
     }
 
-    public func setMainAppearance(_ appearance: MainAppearance) {
-        mainAppearance = appearance
+    public func setMainIcon(_ appearance: MainIcon) {
+        mainIcon = appearance
     }
 
     public func getDailyWaterLimit() -> Double {
