@@ -13,6 +13,7 @@ final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
     var drinkWaterError: Error?
     var resetError: Error?
     var fetchHistoryError: Error?
+    var authorizationStatusAfterRequest: HealthKitAuthorizationStatus = .sharingAuthorized
 
     var historyToReturn: [HydrationRecord] = []
 
@@ -28,7 +29,7 @@ final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
         if let requestAuthorizationError {
             throw requestAuthorizationError
         }
-        authorizationStatusValue = .sharingAuthorized
+        authorizationStatusValue = authorizationStatusAfterRequest
     }
 
     func drinkWater() async throws {

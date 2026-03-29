@@ -30,8 +30,8 @@ struct HealthKitPermissionViewModelTests {
     }
 
     @MainActor
-    @Test("prepareIfNeeded는 최초 notDetermined 상태에서 권한을 요청한다")
-    func prepareIfNeededRequestsAuthorization() async {
+    @Test("prepareIfNeeded는 최초 notDetermined 상태에서도 자동 권한 요청을 하지 않는다")
+    func prepareIfNeededDoesNotRequestAuthorizationAutomatically() async {
         let healthKitUseCase = MockHealthKitUseCase()
         healthKitUseCase.authorizationStatusValue = .notDetermined
 
@@ -39,13 +39,28 @@ struct HealthKitPermissionViewModelTests {
 
         await viewModel.prepareIfNeeded()
 
+        #expect(healthKitUseCase.requestAuthorizationCallCount == 0)
+        #expect(viewModel.authorizationStatus == .notDetermined)
+        #expect(viewModel.isAuthorized == false)
+    }
+
+    @Test("requestAuthorization 성공 시 권한 상태를 갱신한다")
+    func requestAuthorizationSuccess() async {
+        let healthKitUseCase = MockHealthKitUseCase()
+        healthKitUseCase.authorizationStatusValue = .notDetermined
+
+        let viewModel = HealthKitPermissionViewModel(healthKitUseCase: healthKitUseCase)
+
+        await viewModel.requestAuthorization()
+
         #expect(healthKitUseCase.requestAuthorizationCallCount == 1)
         #expect(viewModel.authorizationStatus == .sharingAuthorized)
         #expect(viewModel.isAuthorized == true)
+        #expect(viewModel.errorMessage == nil)
     }
 
     @MainActor
-    @Test("requestAuthorization 실패 시 에러 메시지를 유지한다")
+    @Test("requestAuthorization 실패 시 사용자용 에러 메시지를 유지한다")
     func requestAuthorizationFailure() async {
         let healthKitUseCase = MockHealthKitUseCase()
         healthKitUseCase.authorizationStatusValue = .notDetermined
@@ -57,22 +72,37 @@ struct HealthKitPermissionViewModelTests {
 
         #expect(healthKitUseCase.requestAuthorizationCallCount == 1)
         #expect(viewModel.isAuthorized == false)
-        #expect(viewModel.errorMessage == MockError.failed.localizedDescription)
+        #expect(viewModel.errorMessage == "건강 권한을 확인하는 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.")
     }
 
     @MainActor
-    @Test("markSignedOut는 자동 요청 상태를 초기화한다")
-    func markSignedOutResetsLaunchState() async {
+    @Test("requestAuthorization 이후 거부 상태면 설정 안내 메시지를 노출한다")
+    func requestAuthorizationShowsDeniedMessage() async {
         let healthKitUseCase = MockHealthKitUseCase()
         healthKitUseCase.authorizationStatusValue = .notDetermined
+        healthKitUseCase.authorizationStatusAfterRequest = .sharingDenied
 
         let viewModel = HealthKitPermissionViewModel(healthKitUseCase: healthKitUseCase)
 
-        await viewModel.prepareIfNeeded()
-        healthKitUseCase.authorizationStatusValue = .notDetermined
-        viewModel.markSignedOut()
-        await viewModel.prepareIfNeeded()
+        await viewModel.requestAuthorization()
 
-        #expect(healthKitUseCase.requestAuthorizationCallCount == 2)
+        #expect(viewModel.isAuthorized == false)
+        #expect(viewModel.errorMessage == "한 번 거부한 건강 권한은 앱에서 다시 요청할 수 없어요. 설정에서 다시 허용해 주세요.")
+    }
+
+    @MainActor
+    @Test("markSignedOut는 에러 메시지를 초기화한다")
+    func markSignedOutClearsErrorMessage() async {
+        let healthKitUseCase = MockHealthKitUseCase()
+        healthKitUseCase.authorizationStatusValue = .notDetermined
+        healthKitUseCase.authorizationStatusAfterRequest = .sharingDenied
+
+        let viewModel = HealthKitPermissionViewModel(healthKitUseCase: healthKitUseCase)
+
+        await viewModel.requestAuthorization()
+        viewModel.markSignedOut()
+
+        #expect(viewModel.errorMessage == nil)
+        #expect(viewModel.authorizationStatus == .sharingDenied)
     }
 }
