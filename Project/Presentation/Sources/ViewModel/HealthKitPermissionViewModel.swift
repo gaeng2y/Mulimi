@@ -18,7 +18,6 @@ public final class HealthKitPermissionViewModel {
     public var errorMessage: String?
 
     private let healthKitUseCase: HealthKitUseCase
-    private var hasRequestedOnLaunch = false
 
     public init(healthKitUseCase: HealthKitUseCase) {
         self.healthKitUseCase = healthKitUseCase
@@ -34,13 +33,6 @@ public final class HealthKitPermissionViewModel {
             errorMessage = nil
             return
         }
-
-        guard authorizationStatus == .notDetermined, !hasRequestedOnLaunch else {
-            return
-        }
-
-        hasRequestedOnLaunch = true
-        await requestAuthorization()
     }
 
     public func refreshStatus() {
@@ -59,16 +51,32 @@ public final class HealthKitPermissionViewModel {
         do {
             try await healthKitUseCase.requestAuthorization()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = defaultErrorMessage
         }
 
         refreshStatus()
+
+        if authorizationStatus == .sharingDenied {
+            errorMessage = deniedMessage
+        } else if isAuthorized {
+            errorMessage = nil
+        } else if errorMessage == nil {
+            errorMessage = defaultErrorMessage
+        }
+
         isLoading = false
     }
 
     public func markSignedOut() {
-        hasRequestedOnLaunch = false
         errorMessage = nil
         refreshStatus()
+    }
+
+    private var deniedMessage: String {
+        "한 번 거부한 건강 권한은 앱에서 다시 요청할 수 없어요. 설정에서 다시 허용해 주세요."
+    }
+
+    private var defaultErrorMessage: String {
+        "건강 권한을 확인하는 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요."
     }
 }
