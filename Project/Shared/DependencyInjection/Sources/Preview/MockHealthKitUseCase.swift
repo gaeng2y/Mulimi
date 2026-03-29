@@ -10,6 +10,7 @@ import Foundation
 
 public final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
     public var authorisationStatus: HealthKitAuthorizationStatus = .sharingAuthorized
+    public var bodyProfile: BodyProfile = .empty
 
     public init() {}
     
@@ -47,5 +48,9 @@ public final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
                 date: calendar.date(byAdding: .hour, value: -5, to: today) ?? today
             )
         ]
+    }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        bodyProfile
     }
 }

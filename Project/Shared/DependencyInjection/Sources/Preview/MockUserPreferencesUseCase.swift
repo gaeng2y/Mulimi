@@ -11,6 +11,7 @@ import DomainLayerInterface
 public final class MockUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
     private var mainIcon: MainIcon = .drop
     private var dailyWaterLimit: Double = 2000
+    private var manualBodyProfile: BodyProfile = .empty
     private var accentColor: String = "blue"
 
     public init() {}
@@ -29,6 +30,14 @@ public final class MockUserPreferencesUseCase: UserPreferencesUseCase, @unchecke
 
     public func setDailyWaterLimit(_ limit: Double) {
         dailyWaterLimit = limit
+    }
+
+    public func getManualBodyProfile() -> BodyProfile {
+        manualBodyProfile
+    }
+
+    public func setManualBodyProfile(_ profile: BodyProfile) {
+        manualBodyProfile = profile
     }
 
     public func getAccentColor() -> String {

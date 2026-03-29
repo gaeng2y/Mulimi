@@ -153,11 +153,11 @@ public struct HealthKitPermissionGateView<Content: View>: View {
     private var descriptionText: String {
         switch viewModel.authorizationStatus {
         case .notDetermined:
-            return "물리미는 물 섭취 기록을 저장하고 불러오기 위해 건강 앱 권한이 필요합니다."
+            return "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요합니다."
         case .sharingDenied:
             return "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
         case .sharingAuthorized:
-            return "물리미는 물 섭취 기록을 저장하고 불러오기 위해 건강 앱 권한이 필요합니다."
+            return "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요합니다."
         }
     }
 

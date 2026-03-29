@@ -16,6 +16,7 @@ public protocol HealthKitDataSource: Sendable {
     func requestAuthorization() async throws
     func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)]
     func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent]
+    func readBodyProfile() async throws -> BodyProfile
     func setAGlassOfWater() async throws
     func resetWaterInTakeInToday() async throws
 }
@@ -50,12 +51,17 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
     }
     
     public func requestAuthorization() async throws {
-        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
+        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater),
+              let heightType = HKObjectType.quantityType(forIdentifier: .height),
+              let bodyMassType = HKObjectType.quantityType(forIdentifier: .bodyMass) else {
             throw HealthKitError.invalidObjectType
         }
         
         do {
-            try await healthStore.requestAuthorization(toShare: [waterType], read: [waterType])
+            try await healthStore.requestAuthorization(
+                toShare: [waterType],
+                read: [waterType, heightType, bodyMassType]
+            )
         } catch {
             throw HealthKitError.permissionDenied
         }
@@ -148,6 +154,29 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             healthStore.execute(query)
         }
     }
+
+    public func readBodyProfile() async throws -> BodyProfile {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            throw HealthKitError.permissionDenied
+        }
+
+        async let heightCM = latestQuantityValue(
+            for: .height,
+            unit: .meterUnit(with: .centi)
+        )
+        async let weightKG = latestQuantityValue(
+            for: .bodyMass,
+            unit: .gramUnit(with: .kilo)
+        )
+
+        let latestHeightCM = try await heightCM
+        let latestWeightKG = try await weightKG
+
+        return BodyProfile(
+            heightCM: latestHeightCM.map { BodyProfileValue(value: $0, source: .healthKit) },
+            weightKG: latestWeightKG.map { BodyProfileValue(value: $0, source: .healthKit) }
+        )
+    }
     
     public func setAGlassOfWater() async throws {
         guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
@@ -215,6 +244,39 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             }
             
             healthStore.execute(sampleQuery)
+        }
+    }
+
+    private func latestQuantityValue(
+        for identifier: HKQuantityTypeIdentifier,
+        unit: HKUnit
+    ) async throws -> Double? {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Double?, Error>) in
+            guard let quantityType = HKObjectType.quantityType(forIdentifier: identifier) else {
+                continuation.resume(throwing: HealthKitError.invalidObjectType)
+                return
+            }
+
+            let query = HKSampleQuery(
+                sampleType: quantityType,
+                predicate: nil,
+                limit: 1,
+                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)]
+            ) { _, samples, error in
+                if error != nil {
+                    continuation.resume(throwing: HealthKitError.healthKitInternalError)
+                    return
+                }
+
+                guard let sample = (samples as? [HKQuantitySample])?.first else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                continuation.resume(returning: sample.quantity.doubleValue(for: unit))
+            }
+
+            healthStore.execute(query)
         }
     }
 }

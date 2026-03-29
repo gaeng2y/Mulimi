@@ -10,6 +10,7 @@ import SwiftUI
 import Localization
 
 public enum SettingMenu: CaseIterable, Identifiable {
+    case bodyProfile
     case dailyLimit
     case mainIcon
     case withdrawal
@@ -18,6 +19,7 @@ public enum SettingMenu: CaseIterable, Identifiable {
 
     public var title: String {
         switch self {
+        case .bodyProfile: L10n.tr("settingBodyProfileTitle")
         case .dailyLimit: L10n.tr("settingDailyLimitTitle")
         case .mainIcon: L10n.tr("settingMainShapeTitle")
         case .withdrawal: L10n.tr("settingWithdrawalTitle")
@@ -26,6 +28,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
 
     public var systemImage: String {
         switch self {
+        case .bodyProfile:
+            return "figure"
         case .dailyLimit:
             return "target"
         case .mainIcon:
@@ -37,6 +41,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
 
     public var description: String {
         switch self {
+        case .bodyProfile:
+            return L10n.tr("settingBodyProfileDescription")
         case .dailyLimit:
             return L10n.tr("settingDailyLimitDescription")
         case .mainIcon:
@@ -48,6 +54,8 @@ public enum SettingMenu: CaseIterable, Identifiable {
 
     public var settingKey: String {
         switch self {
+        case .bodyProfile:
+            return "bodyProfile"
         case .dailyLimit:
             return "dailyWaterLimit"
         case .mainIcon:

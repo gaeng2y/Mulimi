@@ -222,6 +222,33 @@ struct UserPreferencesUseCaseTests {
         #expect(mockRepository.setDailyWaterLimitCallCount == 1)
     }
 
+    @Test("직접 입력 신체 정보 저장 테스트")
+    func setManualBodyProfile() {
+        let mockRepository = MockUserPreferencesRepository()
+        let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
+        let profile = BodyProfile(
+            heightCM: BodyProfileValue(value: 171, source: .manual),
+            weightKG: BodyProfileValue(value: 61, source: .manual)
+        )
+
+        useCase.setManualBodyProfile(profile)
+
+        #expect(mockRepository.setManualBodyProfileCallCount == 1)
+        #expect(mockRepository.capturedManualBodyProfile == profile)
+        #expect(useCase.getManualBodyProfile() == profile)
+    }
+
+    @Test("초기 직접 입력 신체 정보 조회 테스트")
+    func getManualBodyProfileInitial() {
+        let mockRepository = MockUserPreferencesRepository()
+        let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
+
+        let profile = useCase.getManualBodyProfile()
+
+        #expect(profile == .empty)
+        #expect(mockRepository.getManualBodyProfileCallCount == 1)
+    }
+
     @Test("UseCase는 Repository에만 의존해야 한다")
     func useCaseDependencyTest() {
         // Given: Mock Repository가 있을 때

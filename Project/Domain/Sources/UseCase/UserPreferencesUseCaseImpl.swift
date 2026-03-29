@@ -30,4 +30,12 @@ public struct UserPreferencesUseCaseImpl: UserPreferencesUseCase {
     public func setDailyWaterLimit(_ limit: Double) {
         repository.setDailyWaterLimit(limit)
     }
+
+    public func getManualBodyProfile() -> BodyProfile {
+        repository.getManualBodyProfile()
+    }
+
+    public func setManualBodyProfile(_ profile: BodyProfile) {
+        repository.setManualBodyProfile(profile)
+    }
 }

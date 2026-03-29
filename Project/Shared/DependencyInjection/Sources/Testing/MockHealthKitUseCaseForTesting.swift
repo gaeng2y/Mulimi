@@ -12,11 +12,13 @@ public final class MockHealthKitUseCaseForTesting: HealthKitUseCase, @unchecked 
     public var authorisationStatus: HealthKitAuthorizationStatus = .sharingAuthorized
     public var shouldThrowError = false
     public var fetchHistoryResult: [HydrationRecord] = []
+    public var bodyProfileResult: BodyProfile = .empty
 
     public var drinkWaterCallCount = 0
     public var resetCallCount = 0
     public var requestAuthorizationCallCount = 0
     public var fetchHistoryCallCount = 0
+    public var fetchBodyProfileCallCount = 0
 
     public init() {}
 
@@ -45,6 +47,16 @@ public final class MockHealthKitUseCaseForTesting: HealthKitUseCase, @unchecked 
         }
 
         return fetchHistoryResult
+    }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        fetchBodyProfileCallCount += 1
+
+        if shouldThrowError {
+            throw HealthKitError.healthKitInternalError
+        }
+
+        return bodyProfileResult
     }
 
     // Testing helpers

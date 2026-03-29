@@ -4,13 +4,16 @@ import SwiftUI
 
 public struct ProfileView: View {
     @Bindable private var settingsViewModel: SettingsViewModel
+    @Bindable private var bodyProfileViewModel: BodyProfileViewModel
     @Bindable private var routineViewModel: ProfileRoutineViewModel
 
     public init(
         settingsViewModel: SettingsViewModel,
+        bodyProfileViewModel: BodyProfileViewModel,
         routineViewModel: ProfileRoutineViewModel
     ) {
         self.settingsViewModel = settingsViewModel
+        self.bodyProfileViewModel = bodyProfileViewModel
         self.routineViewModel = routineViewModel
     }
 
@@ -26,6 +29,20 @@ public struct ProfileView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        SettingDetailView(
+                            menu: .bodyProfile,
+                            viewModel: settingsViewModel,
+                            bodyProfileViewModel: bodyProfileViewModel
+                        )
+                    } label: {
+                        settingsRow(
+                            title: L10n.tr("settingBodyProfileTitle"),
+                            value: bodyProfileViewModel.summaryText,
+                            systemImage: "figure"
+                        )
+                    }
+
                     NavigationLink {
                         SettingDetailView(menu: .dailyLimit, viewModel: settingsViewModel)
                     } label: {
@@ -84,6 +101,7 @@ public struct ProfileView: View {
             .navigationTitle(L10n.tr("profileTitle"))
             .task {
                 await routineViewModel.load()
+                await bodyProfileViewModel.load()
             }
         }
     }

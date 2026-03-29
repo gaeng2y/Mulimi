@@ -35,4 +35,8 @@ public struct HealthKitUseCaseImpl: HealthKitUseCase {
     public func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord] {
         try await repository.fetchHistory(from: startDate, to: endDate)
     }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        try await repository.fetchBodyProfile()
+    }
 }

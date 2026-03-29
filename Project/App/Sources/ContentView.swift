@@ -44,6 +44,7 @@ struct ContentView: View {
 
             ProfileView(
                 settingsViewModel: DIContainer.shared.resolve(SettingsViewModel.self),
+                bodyProfileViewModel: DIContainer.shared.resolve(BodyProfileViewModel.self),
                 routineViewModel: DIContainer.shared.resolve(ProfileRoutineViewModel.self)
             )
             .tabItem {
