@@ -44,6 +44,7 @@ struct HealthKitPermissionViewModelTests {
         #expect(viewModel.isAuthorized == false)
     }
 
+    @MainActor
     @Test("requestAuthorization 성공 시 권한 상태를 갱신한다")
     func requestAuthorizationSuccess() async {
         let healthKitUseCase = MockHealthKitUseCase()
