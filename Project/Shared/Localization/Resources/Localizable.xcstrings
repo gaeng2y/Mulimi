@@ -1519,6 +1519,347 @@
         }
       }
     },
+    "bodyProfileConnectHealthKitTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에서 가져오기"
+          }
+        }
+      }
+    },
+    "bodyProfileHealthKitSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 연동"
+          }
+        }
+      }
+    },
+    "bodyProfileHealthSyncFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에서 신체 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "bodyProfileHeightMissingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키 입력 필요"
+          }
+        }
+      }
+    },
+    "bodyProfileHeightPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키를 입력해 주세요 (cm)"
+          }
+        }
+      }
+    },
+    "bodyProfileHeightTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키"
+          }
+        }
+      }
+    },
+    "bodyProfileHeightValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld cm"
+          }
+        }
+      }
+    },
+    "bodyProfileIncompleteDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에서 값을 가져오거나 직접 입력해 주세요. 키와 몸무게가 모두 있어야 추천에 사용할 수 있어요."
+          }
+        }
+      }
+    },
+    "bodyProfileManualInputValidationDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키와 몸무게는 0보다 큰 숫자로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "bodyProfileManualSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 값이 없을 때 사용할 fallback 정보를 직접 입력할 수 있어요."
+          }
+        }
+      }
+    },
+    "bodyProfileManualSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력"
+          }
+        }
+      }
+    },
+    "bodyProfileMissingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "입력 필요"
+          }
+        }
+      }
+    },
+    "bodyProfileNoDataDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 키와 몸무게가 없어요. 직접 입력하거나 건강 앱에 값을 추가한 뒤 다시 가져와 주세요."
+          }
+        }
+      }
+    },
+    "bodyProfileOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 열기"
+          }
+        }
+      }
+    },
+    "bodyProfilePermissionDeniedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한이 꺼져 있어요. 설정에서 권한을 다시 허용하거나 직접 입력해 주세요."
+          }
+        }
+      }
+    },
+    "bodyProfilePermissionNeededDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천에 쓸 키와 몸무게를 불러오려면 건강 앱 접근이 필요해요."
+          }
+        }
+      }
+    },
+    "bodyProfilePermissionRequestFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한을 확인하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "bodyProfileRetryHealthSyncTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에서 다시 가져오기"
+          }
+        }
+      }
+    },
+    "bodyProfileSaveManualChangesTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력 수정하기"
+          }
+        }
+      }
+    },
+    "bodyProfileSaveManualTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력 저장하기"
+          }
+        }
+      }
+    },
+    "bodyProfileSourceHealthKit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱"
+          }
+        }
+      }
+    },
+    "bodyProfileSourceManual" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력"
+          }
+        }
+      }
+    },
+    "bodyProfileSourcePriorityDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천에는 건강 앱 값이 우선 사용되고, 값이 없으면 직접 입력한 값이 사용돼요."
+          }
+        }
+      }
+    },
+    "bodyProfileSummaryCardTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 신체 정보"
+          }
+        }
+      }
+    },
+    "bodyProfileSummaryNeedsInput" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키와 몸무게를 입력해 주세요"
+          }
+        }
+      }
+    },
+    "bodyProfileWeightMissingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몸무게 입력 필요"
+          }
+        }
+      }
+    },
+    "bodyProfileWeightPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몸무게를 입력해 주세요 (kg)"
+          }
+        }
+      }
+    },
+    "bodyProfileWeightTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몸무게"
+          }
+        }
+      }
+    },
+    "bodyProfileWeightValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kg"
+          }
+        }
+      }
+    },
+    "settingBodyProfileDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키와 몸무게를 관리합니다"
+          }
+        }
+      }
+    },
+    "settingBodyProfileTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보"
+          }
+        }
+      }
+    },
     "settingDailyLimitDescription" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -37,8 +37,13 @@ import SwiftUI
 // MARK: - ProfileView Preview
 #Preview("ProfileView") {
     let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
     let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
-    ProfileView(settingsViewModel: settingsViewModel, routineViewModel: routineViewModel)
+    ProfileView(
+        settingsViewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel,
+        routineViewModel: routineViewModel
+    )
 }
 
 #Preview("ProfileRoutineView") {
@@ -72,6 +77,16 @@ import SwiftUI
 #Preview("DailyLimit Setting") {
     let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
     SettingDetailView(menu: .dailyLimit, viewModel: viewModel)
+}
+
+#Preview("BodyProfile Setting") {
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    SettingDetailView(
+        menu: .bodyProfile,
+        viewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel
+    )
 }
 
 #Preview("MainShape Setting") {

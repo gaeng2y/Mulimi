@@ -118,6 +118,14 @@ public final class PreviewAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(BodyProfileViewModel.self) { resolver in
+            BodyProfileViewModel(
+                healthKitUseCase: resolver.resolve(HealthKitUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+            )
+        }
+        .inObjectScope(.container)
+
         // MARK: - Settings (Preview)
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(

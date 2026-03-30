@@ -12,22 +12,26 @@ import Foundation
 final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
     private var _authorizationStatus: HealthKitAuthorizationStatus = .notDetermined
     private var _hydrationRecords: [HydrationRecord] = []
+    private var _bodyProfile: BodyProfile = .empty
 
     // Call tracking properties
     private(set) var requestAuthorizationCallCount = 0
     private(set) var drinkWaterCallCount = 0
     private(set) var resetCallCount = 0
     private(set) var fetchHistoryCallCount = 0
+    private(set) var fetchBodyProfileCallCount = 0
 
     // Error simulation properties
     var shouldThrowAuthorizationError = false
     var shouldThrowDrinkWaterError = false
     var shouldThrowResetError = false
     var shouldThrowFetchHistoryError = false
+    var shouldThrowFetchBodyProfileError = false
     var authorizationErrorToThrow: HealthKitError = .permissionDenied
     var drinkWaterErrorToThrow: HealthKitError = .healthKitInternalError
     var resetErrorToThrow: HealthKitError = .healthKitInternalError
     var fetchHistoryErrorToThrow: HealthKitError = .healthKitInternalError
+    var fetchBodyProfileErrorToThrow: HealthKitError = .healthKitInternalError
 
     // Captured parameters for verification
     private(set) var capturedStartDate: Date?
@@ -94,6 +98,20 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
         }.sorted { $0.date < $1.date }
     }
 
+    func fetchBodyProfile() async throws -> BodyProfile {
+        fetchBodyProfileCallCount += 1
+
+        if shouldThrowFetchBodyProfileError {
+            throw fetchBodyProfileErrorToThrow
+        }
+
+        if _authorizationStatus != .sharingAuthorized {
+            throw HealthKitError.permissionDenied
+        }
+
+        return _bodyProfile
+    }
+
     // MARK: - Test Helper Methods
     
     func setAuthorizationStatus(_ status: HealthKitAuthorizationStatus) {
@@ -105,6 +123,7 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
         drinkWaterCallCount = 0
         resetCallCount = 0
         fetchHistoryCallCount = 0
+        fetchBodyProfileCallCount = 0
     }
 
     func resetErrorFlags() {
@@ -112,6 +131,7 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
         shouldThrowDrinkWaterError = false
         shouldThrowResetError = false
         shouldThrowFetchHistoryError = false
+        shouldThrowFetchBodyProfileError = false
     }
 
     func resetCapturedValues() {
@@ -129,6 +149,10 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
 
     func setHydrationRecords(_ records: [HydrationRecord]) {
         _hydrationRecords = records
+    }
+
+    func setBodyProfile(_ profile: BodyProfile) {
+        _bodyProfile = profile
     }
 
     func addHydrationRecord(_ record: HydrationRecord) {

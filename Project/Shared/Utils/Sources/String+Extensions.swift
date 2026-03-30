@@ -24,6 +24,8 @@ public extension String {
     static let mainIcon: String = "mainIcon"
     static let legacyMainAppearance: String = "mainAppearance"
     static let dailyWaterLimit: String = "dailyWaterLimit"
+    static let manualBodyHeightCM: String = "manualBodyHeightCM"
+    static let manualBodyWeightKG: String = "manualBodyWeightKG"
     static let hydrationRoutines: String = "hydrationRoutines"
     static let hydrationChallengeStates: String = "hydrationChallengeStates"
     static let hydrationChallengeBadgeHistories: String = "hydrationChallengeBadgeHistories"

@@ -33,4 +33,14 @@ public extension UserDefaults {
         get { self.double(forKey: .dailyWaterLimit) }
         set { self.set(newValue, forKey: .dailyWaterLimit) }
     }
+
+    @objc dynamic var manualBodyHeightCM: Double {
+        get { self.double(forKey: .manualBodyHeightCM) }
+        set { self.set(newValue, forKey: .manualBodyHeightCM) }
+    }
+
+    @objc dynamic var manualBodyWeightKG: Double {
+        get { self.double(forKey: .manualBodyWeightKG) }
+        set { self.set(newValue, forKey: .manualBodyWeightKG) }
+    }
 }

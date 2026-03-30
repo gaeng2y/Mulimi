@@ -89,6 +89,12 @@ struct ProfileRoutineViewModelTests {
         func setDailyWaterLimit(_ limit: Double) {
             dailyWaterLimit = limit
         }
+
+        func getManualBodyProfile() -> BodyProfile {
+            .empty
+        }
+
+        func setManualBodyProfile(_ profile: BodyProfile) {}
     }
 
     @MainActor

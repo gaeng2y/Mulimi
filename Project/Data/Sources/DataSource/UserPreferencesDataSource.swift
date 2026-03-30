@@ -15,6 +15,8 @@ public protocol UserPreferencesDataSource: Sendable {
     func setMainIcon(_ icon: MainIcon)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
+    func getManualBodyProfile() -> BodyProfile
+    func setManualBodyProfile(_ profile: BodyProfile)
 }
 
 public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @unchecked Sendable {
@@ -92,6 +94,27 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         ubiquitousStore.synchronize()
     }
 
+    // MARK: - Manual Body Profile
+    public func getManualBodyProfile() -> BodyProfile {
+        let heightValue = userDefaults.object(forKey: .manualBodyHeightCM) as? Double
+        let weightValue = userDefaults.object(forKey: .manualBodyWeightKG) as? Double
+
+        return BodyProfile(
+            heightCM: sanitizedValue(heightValue).map {
+                BodyProfileValue(value: $0, source: .manual)
+            },
+            weightKG: sanitizedValue(weightValue).map {
+                BodyProfileValue(value: $0, source: .manual)
+            }
+        )
+    }
+
+    public func setManualBodyProfile(_ profile: BodyProfile) {
+        store(profile.heightCM?.value, forKey: .manualBodyHeightCM)
+        store(profile.weightKG?.value, forKey: .manualBodyWeightKG)
+        userDefaults.synchronize()
+    }
+
     private func migrateLegacyMainIconIfNeeded(currentValue: String) {
         guard userDefaults.object(forKey: .mainIcon) == nil,
               userDefaults.object(forKey: .legacyMainAppearance) != nil else {
@@ -101,5 +124,22 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         userDefaults.mainIcon = currentValue
         userDefaults.removeObject(forKey: .legacyMainAppearance)
         userDefaults.synchronize()
+    }
+
+    private func store(_ value: Double?, forKey key: String) {
+        guard let value = sanitizedValue(value) else {
+            userDefaults.removeObject(forKey: key)
+            return
+        }
+
+        userDefaults.set(value, forKey: key)
+    }
+
+    private func sanitizedValue(_ value: Double?) -> Double? {
+        guard let value, value > 0 else {
+            return nil
+        }
+
+        return value
     }
 }

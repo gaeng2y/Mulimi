@@ -106,6 +106,19 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(BodyProfileViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                BodyProfileViewModel(
+                    healthKitUseCase: healthKitUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: - Settings
         container.register(SettingsViewModel.self) { resolver in
             SettingsViewModel(

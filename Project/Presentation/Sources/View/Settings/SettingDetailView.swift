@@ -9,19 +9,32 @@
 import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 public struct SettingDetailView: View {
     let menu: SettingMenu
     private let viewModel: SettingsViewModel
+    private let bodyProfileViewModel: BodyProfileViewModel?
     
-    public init(menu: SettingMenu, viewModel: SettingsViewModel) {
+    public init(
+        menu: SettingMenu,
+        viewModel: SettingsViewModel,
+        bodyProfileViewModel: BodyProfileViewModel? = nil
+    ) {
         self.menu = menu
         self.viewModel = viewModel
+        self.bodyProfileViewModel = bodyProfileViewModel
     }
     
     public var body: some View {
         Group {
             switch menu {
+            case .bodyProfile:
+                if let bodyProfileViewModel {
+                    BodyProfileSettingView(viewModel: bodyProfileViewModel)
+                } else {
+                    EmptyView()
+                }
             case .dailyLimit:
                 DailyLimitSettingView(viewModel: viewModel)
             case .mainIcon:
@@ -35,6 +48,253 @@ public struct SettingDetailView: View {
 }
 
 // MARK: - Setting Detail Views
+private struct BodyProfileSettingView: View {
+    @Bindable private var viewModel: BodyProfileViewModel
+    @Environment(\.openURL) private var openURL
+
+    init(viewModel: BodyProfileViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                summaryCard
+                healthSyncCard
+                manualInputCard
+            }
+            .padding()
+        }
+        .navigationTitle(L10n.tr("settingBodyProfileTitle"))
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await viewModel.load()
+        }
+    }
+
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(L10n.tr("bodyProfileSummaryCardTitle"))
+                .font(.headline)
+
+            profileMetricRow(
+                title: L10n.tr("bodyProfileHeightTitle"),
+                value: viewModel.resolvedHeightText ?? L10n.tr("bodyProfileMissingValue"),
+                source: viewModel.heightSourceText
+            )
+
+            profileMetricRow(
+                title: L10n.tr("bodyProfileWeightTitle"),
+                value: viewModel.resolvedWeightText ?? L10n.tr("bodyProfileMissingValue"),
+                source: viewModel.weightSourceText
+            )
+
+            Text(L10n.tr("bodyProfileSourcePriorityDescription"))
+                .font(.footnote)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .systemGray6))
+        )
+    }
+
+    private var healthSyncCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(L10n.tr("bodyProfileHealthKitSectionTitle"))
+                .font(.headline)
+
+            Text(viewModel.helperText)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .font(.footnote)
+                    .foregroundColor(.red)
+            }
+
+            switch viewModel.availabilityState {
+            case .needsPermission:
+                primaryButton(
+                    title: L10n.tr("bodyProfileConnectHealthKitTitle"),
+                    isLoading: viewModel.isLoading
+                ) {
+                    await viewModel.requestHealthKitBodyProfile()
+                }
+            case .permissionDenied:
+                VStack(spacing: 10) {
+                    primaryButton(
+                        title: L10n.tr("bodyProfileOpenSettingsTitle"),
+                        isLoading: false
+                    ) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            openURL(url)
+                        }
+                    }
+
+                    secondaryAsyncButton(title: L10n.tr("bodyProfileRetryHealthSyncTitle")) {
+                        await viewModel.requestHealthKitBodyProfile()
+                    }
+                }
+            case .noData, .incomplete, .ready:
+                primaryButton(
+                    title: L10n.tr("bodyProfileRetryHealthSyncTitle"),
+                    isLoading: viewModel.isLoading
+                ) {
+                    await viewModel.requestHealthKitBodyProfile()
+                }
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .systemGray6))
+        )
+    }
+
+    private var manualInputCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(L10n.tr("bodyProfileManualSectionTitle"))
+                .font(.headline)
+
+            Text(L10n.tr("bodyProfileManualSectionDescription"))
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            VStack(spacing: 12) {
+                TextField(
+                    L10n.tr("bodyProfileHeightPlaceholder"),
+                    text: $viewModel.heightInput
+                )
+                .keyboardType(.decimalPad)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(uiColor: .secondarySystemBackground))
+                )
+
+                TextField(
+                    L10n.tr("bodyProfileWeightPlaceholder"),
+                    text: $viewModel.weightInput
+                )
+                .keyboardType(.decimalPad)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(uiColor: .secondarySystemBackground))
+                )
+            }
+
+            secondaryButton(title: viewModel.manualSaveButtonTitle) {
+                viewModel.saveManualBodyProfile()
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .systemGray6))
+        )
+    }
+
+    private func profileMetricRow(title: String, value: String, source: String?) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                Text(value)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
+
+            Spacer()
+
+            if let source {
+                Text(source)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.accentColor)
+            }
+        }
+    }
+
+    private func primaryButton(
+        title: String,
+        isLoading: Bool,
+        action: @escaping () async -> Void
+    ) -> some View {
+        Button {
+            Task {
+                await action()
+            }
+        } label: {
+            HStack {
+                Spacer()
+
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(.white)
+                } else {
+                    Text(title)
+                        .fontWeight(.semibold)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .background(Color.accentColor)
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func secondaryButton(title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func secondaryAsyncButton(
+        title: String,
+        action: @escaping () async -> Void
+    ) -> some View {
+        Button {
+            Task {
+                await action()
+            }
+        } label: {
+            Text(title)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 private struct DailyLimitSettingView: View {
     private let viewModel: SettingsViewModel
     

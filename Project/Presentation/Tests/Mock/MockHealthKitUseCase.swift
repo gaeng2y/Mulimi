@@ -3,16 +3,19 @@ import Foundation
 
 final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
     var authorizationStatusValue: HealthKitAuthorizationStatus = .notDetermined
+    var bodyProfileToReturn: BodyProfile = .empty
 
     private(set) var requestAuthorizationCallCount = 0
     private(set) var drinkWaterCallCount = 0
     private(set) var resetCallCount = 0
     private(set) var fetchHistoryCallCount = 0
+    private(set) var fetchBodyProfileCallCount = 0
 
     var requestAuthorizationError: Error?
     var drinkWaterError: Error?
     var resetError: Error?
     var fetchHistoryError: Error?
+    var fetchBodyProfileError: Error?
     var authorizationStatusAfterRequest: HealthKitAuthorizationStatus = .sharingAuthorized
 
     var historyToReturn: [HydrationRecord] = []
@@ -54,5 +57,13 @@ final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
             throw fetchHistoryError
         }
         return historyToReturn
+    }
+
+    func fetchBodyProfile() async throws -> BodyProfile {
+        fetchBodyProfileCallCount += 1
+        if let fetchBodyProfileError {
+            throw fetchBodyProfileError
+        }
+        return bodyProfileToReturn
     }
 }
