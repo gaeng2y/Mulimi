@@ -43,6 +43,21 @@ public final class DomainAssembly: Assembly {
                 repository: resolver.resolve(HealthKitRepository.self)!
             )
         }
+
+        container.register(BodyProfileUseCase.self) { resolver in
+            BodyProfileUseCaseImpl(
+                healthKitRepository: resolver.resolve(HealthKitRepository.self)!
+            )
+        }
+
+        container.register(HydrationGoalRecommendationUseCase.self) { resolver in
+            HydrationGoalRecommendationUseCaseImpl(
+                bodyProfileUseCase: resolver.resolve(BodyProfileUseCase.self)!,
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!,
+                userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!,
+                recommendationRepository: resolver.resolve(HydrationGoalRecommendationRepository.self)!
+            )
+        }
         
         // MARK: - UserPreferences
         container.register(UserPreferencesUseCase.self) { resolver in

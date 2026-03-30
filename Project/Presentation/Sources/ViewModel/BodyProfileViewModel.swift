@@ -13,52 +13,28 @@ import Observation
 @Observable
 @MainActor
 public final class BodyProfileViewModel {
-    public enum AvailabilityState: Equatable {
-        case ready
-        case needsPermission
-        case permissionDenied
-        case noData
-        case incomplete
-    }
-
     public private(set) var authorizationStatus: HealthKitAuthorizationStatus
     public private(set) var resolvedBodyProfile: BodyProfile = .empty
     public private(set) var healthKitBodyProfile: BodyProfile = .empty
-    public private(set) var manualBodyProfile: BodyProfile = .empty
     public private(set) var isLoading = false
     public private(set) var hasLoaded = false
-    public var heightInput = ""
-    public var weightInput = ""
     public var errorMessage: String?
 
-    private let healthKitUseCase: HealthKitUseCase
-    private let userPreferencesUseCase: UserPreferencesUseCase
+    private let bodyProfileUseCase: BodyProfileUseCase
 
     public init(
-        healthKitUseCase: HealthKitUseCase,
-        userPreferencesUseCase: UserPreferencesUseCase
+        bodyProfileUseCase: BodyProfileUseCase
     ) {
-        self.healthKitUseCase = healthKitUseCase
-        self.userPreferencesUseCase = userPreferencesUseCase
-        self.authorizationStatus = healthKitUseCase.authorisationStatus
+        self.bodyProfileUseCase = bodyProfileUseCase
+        self.authorizationStatus = .notDetermined
     }
 
-    public var availabilityState: AvailabilityState {
+    public var availabilityState: BodyProfileAvailability {
         if resolvedBodyProfile.isComplete {
             return .ready
         }
 
-        switch authorizationStatus {
-        case .notDetermined:
-            return .needsPermission
-        case .sharingDenied:
-            return .permissionDenied
-        case .sharingAuthorized:
-            if healthKitBodyProfile.isEmpty && manualBodyProfile.isEmpty {
-                return .noData
-            }
-            return .incomplete
-        }
+        return currentSnapshot?.availability ?? .needsPermission
     }
 
     public var summaryText: String {
@@ -112,11 +88,7 @@ public final class BodyProfileViewModel {
         sourceText(for: resolvedBodyProfile.weightKG?.source)
     }
 
-    public var manualSaveButtonTitle: String {
-        manualBodyProfile.isEmpty
-            ? L10n.tr("bodyProfileSaveManualTitle")
-            : L10n.tr("bodyProfileSaveManualChangesTitle")
-    }
+    private var currentSnapshot: BodyProfileSnapshot?
 
     public func load() async {
         guard !hasLoaded else {
@@ -130,18 +102,12 @@ public final class BodyProfileViewModel {
 
     public func refresh() async {
         isLoading = true
-        authorizationStatus = healthKitUseCase.authorisationStatus
-        manualBodyProfile = userPreferencesUseCase.getManualBodyProfile()
-        syncInputsFromManualProfile()
         errorMessage = nil
-
-        if authorizationStatus == .sharingAuthorized {
-            await refreshHealthKitBodyProfile()
-        } else {
-            healthKitBodyProfile = .empty
-            updateResolvedProfile()
+        let snapshot = await bodyProfileUseCase.loadBodyProfile()
+        apply(snapshot)
+        if snapshot.didFailHealthKitSync {
+            errorMessage = L10n.tr("bodyProfileHealthSyncFailureDescription")
         }
-
         isLoading = false
     }
 
@@ -149,70 +115,30 @@ public final class BodyProfileViewModel {
         isLoading = true
         errorMessage = nil
 
-        if authorizationStatus == .notDetermined {
-            do {
-                try await healthKitUseCase.requestAuthorization()
-            } catch {
-                authorizationStatus = healthKitUseCase.authorisationStatus
-                errorMessage = L10n.tr("bodyProfilePermissionRequestFailureDescription")
-                updateResolvedProfile()
-                isLoading = false
-                return
+        do {
+            let snapshot = try await bodyProfileUseCase.requestHealthKitSync()
+            apply(snapshot)
+
+            if snapshot.authorizationStatus != .sharingAuthorized {
+                errorMessage = L10n.tr("bodyProfilePermissionDeniedDescription")
+            } else if snapshot.didFailHealthKitSync {
+                errorMessage = L10n.tr("bodyProfileHealthSyncFailureDescription")
             }
-        }
-
-        authorizationStatus = healthKitUseCase.authorisationStatus
-
-        guard authorizationStatus == .sharingAuthorized else {
-            errorMessage = L10n.tr("bodyProfilePermissionDeniedDescription")
-            updateResolvedProfile()
+        } catch {
+            let snapshot = await bodyProfileUseCase.loadBodyProfile()
+            apply(snapshot)
+            errorMessage = L10n.tr("bodyProfilePermissionRequestFailureDescription")
             isLoading = false
             return
         }
-
-        await refreshHealthKitBodyProfile()
         isLoading = false
     }
 
-    public func saveManualBodyProfile() {
-        let height = parseInput(heightInput)
-        let weight = parseInput(weightInput)
-
-        guard height.isValid, weight.isValid else {
-            errorMessage = L10n.tr("bodyProfileManualInputValidationDescription")
-            return
-        }
-
-        let profile = BodyProfile(
-            heightCM: height.value.map { BodyProfileValue(value: $0, source: .manual) },
-            weightKG: weight.value.map { BodyProfileValue(value: $0, source: .manual) }
-        )
-
-        userPreferencesUseCase.setManualBodyProfile(profile)
-        manualBodyProfile = userPreferencesUseCase.getManualBodyProfile()
-        syncInputsFromManualProfile()
-        updateResolvedProfile()
-        errorMessage = nil
-    }
-
-    private func refreshHealthKitBodyProfile() async {
-        do {
-            healthKitBodyProfile = try await healthKitUseCase.fetchBodyProfile()
-        } catch {
-            healthKitBodyProfile = .empty
-            errorMessage = L10n.tr("bodyProfileHealthSyncFailureDescription")
-        }
-
-        updateResolvedProfile()
-    }
-
-    private func updateResolvedProfile() {
-        resolvedBodyProfile = manualBodyProfile.merging(preferred: healthKitBodyProfile)
-    }
-
-    private func syncInputsFromManualProfile() {
-        heightInput = manualBodyProfile.heightCM.map { Self.inputText(for: $0.value) } ?? ""
-        weightInput = manualBodyProfile.weightKG.map { Self.inputText(for: $0.value) } ?? ""
+    private func apply(_ snapshot: BodyProfileSnapshot) {
+        currentSnapshot = snapshot
+        authorizationStatus = snapshot.authorizationStatus
+        healthKitBodyProfile = snapshot.healthKitBodyProfile
+        resolvedBodyProfile = snapshot.resolvedBodyProfile
     }
 
     private func sourceText(for source: BodyProfileSource?) -> String? {
@@ -226,25 +152,25 @@ public final class BodyProfileViewModel {
         }
     }
 
-    private func parseInput(_ value: String) -> (value: Double?, isValid: Bool) {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard !trimmed.isEmpty else {
-            return (nil, true)
+    private func currentAvailability(
+        authorizationStatus: HealthKitAuthorizationStatus,
+        healthKitBodyProfile: BodyProfile,
+        resolvedBodyProfile: BodyProfile
+    ) -> BodyProfileAvailability {
+        if resolvedBodyProfile.isComplete {
+            return .ready
         }
 
-        guard let number = Double(trimmed), number > 0 else {
-            return (nil, false)
+        switch authorizationStatus {
+        case .notDetermined:
+            return .needsPermission
+        case .sharingDenied:
+            return .permissionDenied
+        case .sharingAuthorized:
+            if healthKitBodyProfile.isEmpty {
+                return .noData
+            }
+            return .incomplete
         }
-
-        return (number, true)
-    }
-
-    private static func inputText(for value: Double) -> String {
-        if value.rounded(.towardZero) == value {
-            return String(Int(value))
-        }
-
-        return String(value)
     }
 }

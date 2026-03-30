@@ -107,14 +107,21 @@ public final class PresentationAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register(BodyProfileViewModel.self) { resolver in
-            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
-            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let bodyProfileUseCase = resolver.resolve(BodyProfileUseCase.self)!
 
             return MainActor.assumeIsolated {
                 BodyProfileViewModel(
-                    healthKitUseCase: healthKitUseCase,
-                    userPreferencesUseCase: userPreferencesUseCase
+                    bodyProfileUseCase: bodyProfileUseCase
                 )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationGoalRecommendationViewModel.self) { resolver in
+            let useCase = resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationGoalRecommendationViewModel(useCase: useCase)
             }
         }
         .inObjectScope(.container)

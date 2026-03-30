@@ -48,6 +48,16 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        container.register(HydrationGoalRecommendationDataSource.self) { _ in
+            FoundationModelsHydrationGoalRecommendationDataSource()
+        }
+
+        container.register(HydrationGoalRecommendationRepository.self) { resolver in
+            HydrationGoalRecommendationRepositoryImpl(
+                dataSource: resolver.resolve(HydrationGoalRecommendationDataSource.self)!
+            )
+        }
+
         // MARK: - Routine
         container.register(RoutineStorageDataSource.self) { _ in
             RoutineStorageDataSourceImpl(userDefaults: .appGroup)

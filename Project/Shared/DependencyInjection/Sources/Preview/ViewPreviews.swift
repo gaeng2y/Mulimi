@@ -38,10 +38,12 @@ import SwiftUI
 #Preview("ProfileView") {
     let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
     let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    let recommendationViewModel = DIContainer.preview.resolve(HydrationGoalRecommendationViewModel.self)
     let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
     ProfileView(
         settingsViewModel: settingsViewModel,
         bodyProfileViewModel: bodyProfileViewModel,
+        recommendationViewModel: recommendationViewModel,
         routineViewModel: routineViewModel
     )
 }
@@ -75,8 +77,15 @@ import SwiftUI
 
 // MARK: - SettingDetailView Previews
 #Preview("DailyLimit Setting") {
-    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    SettingDetailView(menu: .dailyLimit, viewModel: viewModel)
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    let recommendationViewModel = DIContainer.preview.resolve(HydrationGoalRecommendationViewModel.self)
+    SettingDetailView(
+        menu: .dailyLimit,
+        viewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel,
+        recommendationViewModel: recommendationViewModel
+    )
 }
 
 #Preview("BodyProfile Setting") {

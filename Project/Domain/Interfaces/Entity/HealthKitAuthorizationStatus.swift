@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum HealthKitAuthorizationStatus: Int {
+public enum HealthKitAuthorizationStatus: Int, Sendable {
     case notDetermined
     case sharingDenied
     case sharingAuthorized
