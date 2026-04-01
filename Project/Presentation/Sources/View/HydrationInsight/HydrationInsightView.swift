@@ -18,37 +18,35 @@ public struct HydrationInsightView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            ZStack {
-                LinearGradient(
-                    colors: [
-                        Color.background,
-                        Color.accent.opacity(0.08),
-                        Color.background
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color.background,
+                    Color.accent.opacity(0.08),
+                    Color.background
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-                Group {
-                    if viewModel.isLoading {
-                        ProgressView(L10n.tr("insightLoadingTitle"))
-                    } else if viewModel.isEmpty {
-                        emptyState
-                    } else {
-                        insightContent
-                    }
+            Group {
+                if viewModel.isLoading {
+                    ProgressView(L10n.tr("insightLoadingTitle"))
+                } else if viewModel.isEmpty {
+                    emptyState
+                } else {
+                    insightContent
                 }
-                .padding(.horizontal, 20)
             }
-            .navigationTitle(L10n.tr("insightNavigationTitle"))
-            .task {
-                await viewModel.loadInsights()
-            }
-            .refreshable {
-                await viewModel.loadInsights()
-            }
+            .padding(.horizontal, 20)
+        }
+        .navigationTitle(L10n.tr("insightNavigationTitle"))
+        .task {
+            await viewModel.loadInsights()
+        }
+        .refreshable {
+            await viewModel.loadInsights()
         }
     }
 

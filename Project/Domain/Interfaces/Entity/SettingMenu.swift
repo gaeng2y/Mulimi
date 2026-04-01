@@ -9,7 +9,7 @@
 import SwiftUI
 import Localization
 
-public enum SettingMenu: CaseIterable, Identifiable {
+public enum SettingMenu: CaseIterable, Hashable, Identifiable, Sendable {
     case bodyProfile
     case dailyLimit
     case mainIcon

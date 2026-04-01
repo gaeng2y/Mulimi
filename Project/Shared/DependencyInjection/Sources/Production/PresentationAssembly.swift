@@ -12,12 +12,12 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
-        container.register(RecordCoordinator.self) { _ in
-            RecordCoordinator()
+        container.register(AppCoordinator.self) { _ in
+            AppCoordinator()
         }
         .inObjectScope(.container)
         container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(RecordCoordinator.self)!
+            resolver.resolve(AppCoordinator.self)!
         }
         
         // MARK: - DrinkWater

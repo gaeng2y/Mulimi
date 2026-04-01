@@ -21,96 +21,75 @@ public struct ProfileView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            List {
-                Section(L10n.tr("profileRoutineSectionTitle")) {
-                    NavigationLink {
-                        ProfileRoutineView(viewModel: routineViewModel)
-                    } label: {
-                        routineCard
-                    }
+        List {
+            Section(L10n.tr("profileRoutineSectionTitle")) {
+                NavigationLink(value: AppRoute.profileRoutine) {
+                    routineCard
                 }
+            }
 
-                Section {
-                    NavigationLink {
-                        SettingDetailView(
-                            menu: .bodyProfile,
-                            viewModel: settingsViewModel,
-                            bodyProfileViewModel: bodyProfileViewModel
-                        )
-                    } label: {
-                        settingsRow(
-                            title: L10n.tr("settingBodyProfileTitle"),
-                            value: bodyProfileViewModel.summaryText,
-                            systemImage: "figure"
-                        )
-                    }
-
-                    NavigationLink {
-                        SettingDetailView(
-                            menu: .dailyLimit,
-                            viewModel: settingsViewModel,
-                            bodyProfileViewModel: bodyProfileViewModel,
-                            recommendationViewModel: recommendationViewModel
-                        )
-                    } label: {
-                        settingsRow(
-                            title: L10n.tr("settingDailyLimitTitle"),
-                            value: L10n.tr(
-                                "commonMilliliterFormat",
-                                Int(settingsViewModel.currentDailyWaterLimit.rounded())
-                            ),
-                            systemImage: "target"
-                        )
-                    }
-
-                    NavigationLink {
-                        SettingDetailView(menu: .mainIcon, viewModel: settingsViewModel)
-                    } label: {
-                        settingsRow(
-                            title: L10n.tr("settingMainShapeTitle"),
-                            value: settingsViewModel.currentMainIcon.displayName,
-                            systemImage: settingsViewModel.currentMainIcon.fillSystemImage
-                        )
-                    }
-                } header: {
-                    Text(L10n.tr("profileQuickSettingsSectionTitle"))
-                } footer: {
-                    Text(L10n.tr("profileQuickSettingsSectionFooter"))
-                }
-
-                Section(L10n.tr("profileAccountSectionTitle")) {
-                    NavigationLink {
-                        SettingDetailView(menu: .withdrawal, viewModel: settingsViewModel)
-                    } label: {
-                        actionRow(
-                            title: L10n.tr("settingWithdrawalTitle"),
-                            description: L10n.tr("profileWithdrawalDescription"),
-                            systemImage: "person.crop.circle.badge.xmark",
-                            showsChevron: false
-                        )
-                    }
-                }
-
-                Section(L10n.tr("profileAppInfoSectionTitle")) {
-                    infoRow(
-                        title: L10n.tr("profileAppVersionTitle"),
-                        value: settingsViewModel.appVersion,
-                        systemImage: "app.badge"
+            Section {
+                NavigationLink(value: AppRoute.setting(.bodyProfile)) {
+                    settingsRow(
+                        title: L10n.tr("settingBodyProfileTitle"),
+                        value: bodyProfileViewModel.summaryText,
+                        systemImage: "figure"
                     )
+                }
 
-                    infoRow(
-                        title: L10n.tr("profileAppBuildTitle"),
-                        value: settingsViewModel.appBuildNumber,
-                        systemImage: "number"
+                NavigationLink(value: AppRoute.setting(.dailyLimit)) {
+                    settingsRow(
+                        title: L10n.tr("settingDailyLimitTitle"),
+                        value: L10n.tr(
+                            "commonMilliliterFormat",
+                            Int(settingsViewModel.currentDailyWaterLimit.rounded())
+                        ),
+                        systemImage: "target"
+                    )
+                }
+
+                NavigationLink(value: AppRoute.setting(.mainIcon)) {
+                    settingsRow(
+                        title: L10n.tr("settingMainShapeTitle"),
+                        value: settingsViewModel.currentMainIcon.displayName,
+                        systemImage: settingsViewModel.currentMainIcon.fillSystemImage
+                    )
+                }
+            } header: {
+                Text(L10n.tr("profileQuickSettingsSectionTitle"))
+            } footer: {
+                Text(L10n.tr("profileQuickSettingsSectionFooter"))
+            }
+
+            Section(L10n.tr("profileAccountSectionTitle")) {
+                NavigationLink(value: AppRoute.setting(.withdrawal)) {
+                    actionRow(
+                        title: L10n.tr("settingWithdrawalTitle"),
+                        description: L10n.tr("profileWithdrawalDescription"),
+                        systemImage: "person.crop.circle.badge.xmark",
+                        showsChevron: false
                     )
                 }
             }
-            .navigationTitle(L10n.tr("profileTitle"))
-            .task {
-                await routineViewModel.load()
-                await bodyProfileViewModel.load()
+
+            Section(L10n.tr("profileAppInfoSectionTitle")) {
+                infoRow(
+                    title: L10n.tr("profileAppVersionTitle"),
+                    value: settingsViewModel.appVersion,
+                    systemImage: "app.badge"
+                )
+
+                infoRow(
+                    title: L10n.tr("profileAppBuildTitle"),
+                    value: settingsViewModel.appBuildNumber,
+                    systemImage: "number"
+                )
             }
+        }
+        .navigationTitle(L10n.tr("profileTitle"))
+        .task {
+            await routineViewModel.load()
+            await bodyProfileViewModel.load()
         }
     }
 

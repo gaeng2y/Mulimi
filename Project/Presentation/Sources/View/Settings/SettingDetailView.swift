@@ -424,14 +424,8 @@ private struct HydrationGoalRecommendationCard: View {
                     .foregroundColor(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
 
-                if let bodyProfileViewModel {
-                    NavigationLink {
-                        SettingDetailView(
-                            menu: .bodyProfile,
-                            viewModel: settingsViewModel,
-                            bodyProfileViewModel: bodyProfileViewModel
-                        )
-                    } label: {
+                if bodyProfileViewModel != nil {
+                    NavigationLink(value: AppRoute.setting(.bodyProfile)) {
                         actionLabel(
                             title: L10n.tr("hydrationGoalRecommendationBodyProfileActionTitle"),
                             fillsBackground: true
