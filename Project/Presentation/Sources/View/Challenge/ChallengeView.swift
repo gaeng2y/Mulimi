@@ -10,37 +10,35 @@ public struct ChallengeView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            ZStack {
-                LinearGradient(
-                    colors: [
-                        Color.background,
-                        Color.orange.opacity(0.05),
-                        Color.background
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color.background,
+                    Color.orange.opacity(0.05),
+                    Color.background
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-                Group {
-                    if viewModel.isLoading {
-                        ProgressView(L10n.tr("challengeLoadingTitle"))
-                    } else if viewModel.isEmpty {
-                        emptyState
-                    } else {
-                        challengeContent
-                    }
+            Group {
+                if viewModel.isLoading {
+                    ProgressView(L10n.tr("challengeLoadingTitle"))
+                } else if viewModel.isEmpty {
+                    emptyState
+                } else {
+                    challengeContent
                 }
-                .padding(.horizontal, 20)
             }
-            .navigationTitle(L10n.tr("challengeTitle"))
-            .task {
-                await viewModel.loadChallenges()
-            }
-            .refreshable {
-                await viewModel.loadChallenges()
-            }
+            .padding(.horizontal, 20)
+        }
+        .navigationTitle(L10n.tr("challengeTitle"))
+        .task {
+            await viewModel.loadChallenges()
+        }
+        .refreshable {
+            await viewModel.loadChallenges()
         }
     }
 

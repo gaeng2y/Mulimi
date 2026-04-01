@@ -19,20 +19,13 @@ public struct HydrationRecordListView: View {
     }
     
     public var body: some View {
-        NavigationStack(
-            path: Binding(
-                get: { viewModel.navigationPath },
-                set: { viewModel.navigationPath = $0 }
-            )
-        ) {
-            RecordCalendarView(viewModel: viewModel)
-            .navigationTitle(L10n.tr("historyTitle"))
-            .navigationBarTitleDisplayMode(.large)
-            .background(
-                Color.background
-                    .ignoresSafeArea()
-            )
-        }
+        RecordCalendarView(viewModel: viewModel)
+        .navigationTitle(L10n.tr("historyTitle"))
+        .navigationBarTitleDisplayMode(.large)
+        .background(
+            Color.background
+                .ignoresSafeArea()
+        )
         .task {
             await viewModel.onAppear()
         }

@@ -101,12 +101,12 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
         
         // MARK: - Navigation (Preview)
-        container.register(RecordCoordinator.self) { _ in
-            MockRecordCoordinator()
+        container.register(AppCoordinator.self) { _ in
+            AppCoordinator()
         }
         .inObjectScope(.container)
         container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(RecordCoordinator.self)!
+            resolver.resolve(AppCoordinator.self)!
         }
 
         // MARK: - Authentication (Preview)
