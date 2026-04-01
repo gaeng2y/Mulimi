@@ -21,8 +21,11 @@ public extension String {
         return dateFormatter.string(from: now)
     }
     
-    static let mainAppearance: String = "mainAppearance"
+    static let mainIcon: String = "mainIcon"
+    static let legacyMainAppearance: String = "mainAppearance"
     static let dailyWaterLimit: String = "dailyWaterLimit"
+    static let manualBodyHeightCM: String = "manualBodyHeightCM"
+    static let manualBodyWeightKG: String = "manualBodyWeightKG"
     static let hydrationRoutines: String = "hydrationRoutines"
     static let hydrationChallengeStates: String = "hydrationChallengeStates"
     static let hydrationChallengeBadgeHistories: String = "hydrationChallengeBadgeHistories"

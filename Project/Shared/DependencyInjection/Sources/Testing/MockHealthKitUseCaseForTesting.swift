@@ -9,48 +9,59 @@ import DomainLayerInterface
 import Foundation
 
 public final class MockHealthKitUseCaseForTesting: HealthKitUseCase, @unchecked Sendable {
-    public var requestAuthorizationResult: HealthKitAuthorizationStatus = .authorized
+    public var authorisationStatus: HealthKitAuthorizationStatus = .sharingAuthorized
     public var shouldThrowError = false
-    public var fetchRecordsResult: [HydrationRecord] = []
+    public var fetchHistoryResult: [HydrationRecord] = []
+    public var bodyProfileResult: BodyProfile = .empty
 
     public var drinkWaterCallCount = 0
     public var resetCallCount = 0
     public var requestAuthorizationCallCount = 0
-    public var fetchRecordsCallCount = 0
+    public var fetchHistoryCallCount = 0
+    public var fetchBodyProfileCallCount = 0
 
     public init() {}
 
-    public func requestAuthorization() async throws -> HealthKitAuthorizationStatus {
+    public func requestAuthorization() async throws {
         requestAuthorizationCallCount += 1
 
         if shouldThrowError {
-            throw HealthKitError.authorizationDenied
+            throw HealthKitError.permissionDenied
         }
-
-        return requestAuthorizationResult
+        authorisationStatus = .sharingAuthorized
     }
 
-    public func drinkWater() {
+    public func drinkWater() async throws {
         drinkWaterCallCount += 1
     }
 
-    public func reset() {
+    public func reset() async throws {
         resetCallCount += 1
     }
 
-    public func fetchRecords() async throws -> [HydrationRecord] {
-        fetchRecordsCallCount += 1
+    public func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord] {
+        fetchHistoryCallCount += 1
 
         if shouldThrowError {
-            throw HealthKitError.dataNotAvailable
+            throw HealthKitError.healthKitInternalError
         }
 
-        return fetchRecordsResult
+        return fetchHistoryResult
+    }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        fetchBodyProfileCallCount += 1
+
+        if shouldThrowError {
+            throw HealthKitError.healthKitInternalError
+        }
+
+        return bodyProfileResult
     }
 
     // Testing helpers
-    public func setFetchRecordsResult(_ records: [HydrationRecord]) {
-        fetchRecordsResult = records
+    public func setFetchHistoryResult(_ records: [HydrationRecord]) {
+        fetchHistoryResult = records
     }
 
     public func setShouldThrowError(_ shouldThrow: Bool) {

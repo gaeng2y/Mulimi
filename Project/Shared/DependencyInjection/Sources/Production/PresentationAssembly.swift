@@ -12,12 +12,12 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
-        container.register(RecordCoordinator.self) { _ in
-            RecordCoordinator()
+        container.register(AppCoordinator.self) { _ in
+            AppCoordinator()
         }
         .inObjectScope(.container)
         container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(RecordCoordinator.self)!
+            resolver.resolve(AppCoordinator.self)!
         }
         
         // MARK: - DrinkWater
@@ -92,6 +92,37 @@ public final class PresentationAssembly: Assembly {
             AuthenticationViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!
             )
+        }
+        .inObjectScope(.container)
+
+        container.register(HealthKitPermissionViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HealthKitPermissionViewModel(
+                    healthKitUseCase: healthKitUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(BodyProfileViewModel.self) { resolver in
+            let bodyProfileUseCase = resolver.resolve(BodyProfileUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                BodyProfileViewModel(
+                    bodyProfileUseCase: bodyProfileUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationGoalRecommendationViewModel.self) { resolver in
+            let useCase = resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationGoalRecommendationViewModel(useCase: useCase)
+            }
         }
         .inObjectScope(.container)
 

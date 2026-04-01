@@ -1,5 +1,5 @@
 //
-//  MainAppearance.swift
+//  MainIcon.swift
 //  DomainLayerInterface
 //
 //  Created by Assistant on 2025-01-28.
@@ -9,7 +9,7 @@
 import Foundation
 import Localization
 
-public enum MainAppearance: CaseIterable, Identifiable, Sendable {
+public enum MainIcon: CaseIterable, Identifiable, Sendable {
     case drop
     case heart
     case cloud
@@ -61,5 +61,5 @@ public enum MainAppearance: CaseIterable, Identifiable, Sendable {
     }
     
     // Default appearance
-    public static var `default`: MainAppearance { .drop }
+    public static var `default`: MainIcon { .drop }
 }

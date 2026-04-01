@@ -5,7 +5,7 @@ public struct WatchHydrationRepositoryImpl: WatchHydrationRepository {
     private let localDataSource: WatchHydrationLocalDataSource
 
     public init() {
-        self.localDataSource = WatchHydrationSwiftDataSource()
+        self.localDataSource = WatchHydrationHealthKitDataSource()
     }
 
     init(localDataSource: WatchHydrationLocalDataSource) {

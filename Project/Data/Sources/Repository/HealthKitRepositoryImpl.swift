@@ -39,4 +39,8 @@ public struct HealthKitRepositoryImpl: HealthKitRepository {
         }
         
     }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        try await dataSource.readBodyProfile()
+    }
 }

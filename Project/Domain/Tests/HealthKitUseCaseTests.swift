@@ -243,6 +243,38 @@ struct HealthKitUseCaseTests {
             #expect(mockRepository.resetCallCount == 1)
         }
     }
+
+    @Test("신체 정보 조회 성공 테스트")
+    func fetchBodyProfileSuccess() async throws {
+        let mockRepository = MockHealthKitRepository()
+        mockRepository.simulateAuthorizationSuccess()
+        let profile = BodyProfile(
+            heightCM: BodyProfileValue(value: 173, source: .healthKit),
+            weightKG: BodyProfileValue(value: 66, source: .healthKit)
+        )
+        mockRepository.setBodyProfile(profile)
+        let useCase = HealthKitUseCaseImpl(repository: mockRepository)
+
+        let fetchedProfile = try await useCase.fetchBodyProfile()
+
+        #expect(mockRepository.fetchBodyProfileCallCount == 1)
+        #expect(fetchedProfile == profile)
+    }
+
+    @Test("권한 없이 신체 정보 조회 시도 테스트")
+    func fetchBodyProfileWithoutPermission() async {
+        let mockRepository = MockHealthKitRepository()
+        mockRepository.setAuthorizationStatus(.sharingDenied)
+        let useCase = HealthKitUseCaseImpl(repository: mockRepository)
+
+        do {
+            try await useCase.fetchBodyProfile()
+            #expect(Bool(false), "Expected error to be thrown")
+        } catch {
+            #expect(error as? HealthKitError == .permissionDenied)
+            #expect(mockRepository.fetchBodyProfileCallCount == 1)
+        }
+    }
     
     // MARK: - Integration Tests
     

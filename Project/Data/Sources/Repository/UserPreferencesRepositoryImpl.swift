@@ -16,12 +16,12 @@ public struct UserPreferencesRepositoryImpl: UserPreferencesRepository {
         self.dataSource = dataSource
     }
     
-    public func getMainAppearance() -> MainAppearance {
-        dataSource.getMainAppearance()
+    public func getMainIcon() -> MainIcon {
+        dataSource.getMainIcon()
     }
     
-    public func setMainAppearance(_ appearance: MainAppearance) {
-        dataSource.setMainAppearance(appearance)
+    public func setMainIcon(_ icon: MainIcon) {
+        dataSource.setMainIcon(icon)
     }
     
     public func getDailyWaterLimit() -> Double {
@@ -30,5 +30,13 @@ public struct UserPreferencesRepositoryImpl: UserPreferencesRepository {
     
     public func setDailyWaterLimit(_ limit: Double) {
         dataSource.setDailyWaterLimit(limit)
+    }
+
+    public func getManualBodyProfile() -> BodyProfile {
+        dataSource.getManualBodyProfile()
+    }
+
+    public func setManualBodyProfile(_ profile: BodyProfile) {
+        dataSource.setManualBodyProfile(profile)
     }
 }

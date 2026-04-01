@@ -76,11 +76,11 @@ struct ProfileRoutineViewModelTests {
     private final class SpyUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
         var dailyWaterLimit: Double = 2000
 
-        func getMainAppearance() -> MainAppearance {
+        func getMainIcon() -> MainIcon {
             .drop
         }
 
-        func setMainAppearance(_ appearance: MainAppearance) {}
+        func setMainIcon(_ icon: MainIcon) {}
 
         func getDailyWaterLimit() -> Double {
             dailyWaterLimit
@@ -89,6 +89,12 @@ struct ProfileRoutineViewModelTests {
         func setDailyWaterLimit(_ limit: Double) {
             dailyWaterLimit = limit
         }
+
+        func getManualBodyProfile() -> BodyProfile {
+            .empty
+        }
+
+        func setManualBodyProfile(_ profile: BodyProfile) {}
     }
 
     @MainActor

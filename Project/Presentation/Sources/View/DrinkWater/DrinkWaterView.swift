@@ -9,6 +9,7 @@ import DesignSystem
 import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 public struct DrinkWaterView: View {
     private var viewModel: DrinkWaterViewModel
@@ -18,106 +19,128 @@ public struct DrinkWaterView: View {
     }
     
     public var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.background
-                    .ignoresSafeArea()
+        ZStack {
+            Color.background
+                .ignoresSafeArea()
+            
+            VStack {
+                GeometryReader { proxy in
+                    WaterDropView(
+                        appearance: viewModel.mainIcon,
+                        progress: viewModel.progress,
+                        offset: viewModel.offset
+                    )
+                    .animation(
+                        .linear(duration: 2.0).repeatForever(autoreverses: false),
+                        value: viewModel.offset
+                    )
+                    .frame(
+                        width: proxy.size.width,
+                        height: proxy.size.height,
+                        alignment: .center
+                    )
+                }
+                .frame(height: 450)
                 
-                VStack {
-                    GeometryReader { proxy in
-                        WaterDropView(
-                            appearance: viewModel.mainAppearance,
-                            progress: viewModel.progress,
-                            offset: viewModel.offset
-                        )
-                        .animation(
-                            .linear(duration: 2.0).repeatForever(autoreverses: false),
-                            value: viewModel.offset
-                        )
-                        .frame(
-                            width: proxy.size.width,
-                            height: proxy.size.height,
-                            alignment: .center
-                        )
+                VStack(spacing: 8) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
+                            .font(.title)
+                        Text("\(viewModel.mililiters)")
+                            .font(.callout)
                     }
-                    .frame(height: 450)
                     
-                    VStack(spacing: 8) {
-                        HStack(alignment: .firstTextBaseline) {
-                            Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
-                                .font(.title)
-                            Text("\(viewModel.mililiters)")
-                                .font(.callout)
-                        }
-                        
-                        HStack(alignment: .firstTextBaseline) {
-                            Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        if viewModel.isLimitReached {
+                            Text(L10n.tr("drinkWaterCompleteLabel"))
                                 .font(.caption)
-                                .foregroundColor(.secondary)
-                            if viewModel.isLimitReached {
-                                Text(L10n.tr("drinkWaterCompleteLabel"))
-                                    .font(.caption)
-                                    .foregroundColor(.green)
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                    }
-                    .padding()
-                    
-                    HStack {
-                        Button {
-                            Task {
-                                await viewModel.drinkWater()
-                            }
-                        } label: {
-                            Text(
-                                viewModel.isLimitReached ?
-                                L10n.tr("drinkWaterButtonReachedTitle") :
-                                L10n.tr("drinkWaterButtonTitle")
-                            )
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .padding()
-                                .background(viewModel.isLimitReached ? Color.gray : Color.accent)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        }
-                        .disabled(viewModel.isLimitReached)
-                        
-                        Button {
-                            Task {
-                                await viewModel.reset()
-                            }
-                        } label: {
-                            Text(L10n.tr("commonResetTitle"))
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .padding()
-                                .background(.white)
-                                .foregroundColor(.black)
-                                .cornerRadius(10)
+                                .foregroundColor(.green)
+                                .fontWeight(.semibold)
                         }
                     }
                 }
-            }
-            .navigationTitle(L10n.tr("drinkTitle"))
-            .navigationBarTitleDisplayMode(.large)
-            .task {
-                // Refresh data when view appears to catch any Widget changes.
-                await viewModel.loadInitialState()
-            }
-            .task {
-                // Start the repeating wave after the initial frame is committed.
-                viewModel.resetAnimation()
-                await Task.yield()
-                viewModel.startAnimation()
+                .padding()
+                
+                HStack {
+                    Button {
+                        Task {
+                            await viewModel.drinkWater()
+                        }
+                    } label: {
+                        Text(
+                            viewModel.isLimitReached ?
+                            L10n.tr("drinkWaterButtonReachedTitle") :
+                            L10n.tr("drinkWaterButtonTitle")
+                        )
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .padding()
+                            .background(viewModel.isLimitReached ? Color.gray : Color.accent)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .disabled(viewModel.isLimitReached)
+                    
+                    Button {
+                        Task {
+                            await viewModel.reset()
+                        }
+                    } label: {
+                        Text(L10n.tr("commonResetTitle"))
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .padding()
+                            .background(.white)
+                            .foregroundColor(.black)
+                            .cornerRadius(10)
+                    }
+                }
             }
         }
+        .navigationTitle(L10n.tr("drinkTitle"))
+        .navigationBarTitleDisplayMode(.large)
+        .task {
+            // Refresh data when view appears to catch any Widget changes.
+            await viewModel.loadInitialState()
+        }
+        .task {
+            // Start the repeating wave after the initial frame is committed.
+            viewModel.resetAnimation()
+            await Task.yield()
+            viewModel.startAnimation()
+        }
+        .alert(
+            "건강 접근 권한이 필요해요",
+            isPresented: Binding(
+                get: { viewModel.showHealthKitPermissionAlert },
+                set: { if !$0 { viewModel.dismissHealthKitPermissionAlert() } }
+            )
+        ) {
+            Button("설정") {
+                openSettings()
+            }
+            Button(L10n.tr("commonCancelTitle"), role: .cancel) {
+                viewModel.dismissHealthKitPermissionAlert()
+            }
+        } message: {
+            Text("물 기록을 저장하고 불러오려면 건강 앱 접근을 허용해주세요.")
+        }
+    }
+
+    private func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+
+        UIApplication.shared.open(settingsURL)
     }
 }
 
 fileprivate struct WaterDropView: View {
-    let appearance: MainAppearance
+    let appearance: MainIcon
     let progress: CGFloat
     let offset: CGFloat
     

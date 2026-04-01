@@ -21,7 +21,7 @@ struct SettingsViewModelTests {
     @Test("초기화 시 사용자 설정 상태를 반영한다")
     func initializeState() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
-        userPreferencesUseCase.mainAppearanceValue = .heart
+        userPreferencesUseCase.mainIconValue = .heart
         userPreferencesUseCase.dailyWaterLimitValue = 2100
         let signInUseCase = MockSignInUseCase()
         let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
@@ -34,17 +34,17 @@ struct SettingsViewModelTests {
             appBuildNumber: "15"
         )
 
-        #expect(viewModel.currentMainAppearance == .heart)
+        #expect(viewModel.currentMainIcon == .heart)
         #expect(viewModel.currentDailyWaterLimit == 2100)
         #expect(viewModel.appVersion == "1.2.0")
         #expect(viewModel.appBuildNumber == "15")
-        #expect(userPreferencesUseCase.getMainAppearanceCallCount == 1)
+        #expect(userPreferencesUseCase.getMainIconCallCount == 1)
         #expect(userPreferencesUseCase.getDailyWaterLimitCallCount == 1)
     }
 
     @MainActor
-    @Test("setMainAppearance는 상태와 UseCase를 함께 갱신한다")
-    func setMainAppearance() {
+    @Test("setMainIcon는 상태와 UseCase를 함께 갱신한다")
+    func setMainIcon() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
@@ -54,11 +54,11 @@ struct SettingsViewModelTests {
             appBuildNumber: "15"
         )
 
-        viewModel.setMainAppearance(.cloud)
+        viewModel.setMainIcon(.cloud)
 
-        #expect(viewModel.currentMainAppearance == .cloud)
-        #expect(userPreferencesUseCase.setMainAppearanceCallCount == 1)
-        #expect(userPreferencesUseCase.capturedMainAppearance == .cloud)
+        #expect(viewModel.currentMainIcon == .cloud)
+        #expect(userPreferencesUseCase.setMainIconCallCount == 1)
+        #expect(userPreferencesUseCase.capturedMainIcon == .cloud)
     }
 
     @MainActor

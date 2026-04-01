@@ -9,21 +9,24 @@ import DomainLayerInterface
 import Foundation
 
 public final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
+    public var authorisationStatus: HealthKitAuthorizationStatus = .sharingAuthorized
+    public var bodyProfile: BodyProfile = .empty
+
     public init() {}
     
-    public func requestAuthorization() async throws -> HealthKitAuthorizationStatus {
-        return .authorized
+    public func requestAuthorization() async throws {
+        authorisationStatus = .sharingAuthorized
     }
     
-    public func drinkWater() {
+    public func drinkWater() async throws {
         // Mock implementation - no actual HealthKit operation
     }
     
-    public func reset() {
+    public func reset() async throws {
         // Mock implementation - no actual HealthKit operation
     }
     
-    public func fetchRecords() async throws -> [HydrationRecord] {
+    public func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord] {
         // Return sample data for preview
         let calendar = Calendar.current
         let today = Date()
@@ -45,5 +48,9 @@ public final class MockHealthKitUseCase: HealthKitUseCase, @unchecked Sendable {
                 date: calendar.date(byAdding: .hour, value: -5, to: today) ?? today
             )
         ]
+    }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        bodyProfile
     }
 }

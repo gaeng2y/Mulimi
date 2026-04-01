@@ -22,6 +22,14 @@ public final class PreviewAssembly: Assembly {
             MockHealthKitUseCase()
         }
 
+        container.register(BodyProfileUseCase.self) { _ in
+            MockBodyProfileUseCase()
+        }
+
+        container.register(HydrationGoalRecommendationUseCase.self) { _ in
+            MockHydrationGoalRecommendationUseCase()
+        }
+
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCase()
         }
@@ -93,12 +101,12 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
         
         // MARK: - Navigation (Preview)
-        container.register(RecordCoordinator.self) { _ in
-            MockRecordCoordinator()
+        container.register(AppCoordinator.self) { _ in
+            AppCoordinator()
         }
         .inObjectScope(.container)
         container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(RecordCoordinator.self)!
+            resolver.resolve(AppCoordinator.self)!
         }
 
         // MARK: - Authentication (Preview)
@@ -106,6 +114,33 @@ public final class PreviewAssembly: Assembly {
             AuthenticationViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!
             )
+        }
+        .inObjectScope(.container)
+
+        container.register(HealthKitPermissionViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+
+            HealthKitPermissionViewModel(
+                healthKitUseCase: healthKitUseCase
+            )
+        }
+        .inObjectScope(.container)
+
+        container.register(BodyProfileViewModel.self) { resolver in
+            MainActor.assumeIsolated {
+                BodyProfileViewModel(
+                    bodyProfileUseCase: resolver.resolve(BodyProfileUseCase.self)!
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationGoalRecommendationViewModel.self) { resolver in
+            MainActor.assumeIsolated {
+                HydrationGoalRecommendationViewModel(
+                    useCase: resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+                )
+            }
         }
         .inObjectScope(.container)
 

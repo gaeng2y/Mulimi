@@ -37,8 +37,15 @@ import SwiftUI
 // MARK: - ProfileView Preview
 #Preview("ProfileView") {
     let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    let recommendationViewModel = DIContainer.preview.resolve(HydrationGoalRecommendationViewModel.self)
     let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
-    ProfileView(settingsViewModel: settingsViewModel, routineViewModel: routineViewModel)
+    ProfileView(
+        settingsViewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel,
+        recommendationViewModel: recommendationViewModel,
+        routineViewModel: routineViewModel
+    )
 }
 
 #Preview("ProfileRoutineView") {
@@ -70,11 +77,28 @@ import SwiftUI
 
 // MARK: - SettingDetailView Previews
 #Preview("DailyLimit Setting") {
-    let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    SettingDetailView(menu: .dailyLimit, viewModel: viewModel)
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    let recommendationViewModel = DIContainer.preview.resolve(HydrationGoalRecommendationViewModel.self)
+    SettingDetailView(
+        menu: .dailyLimit,
+        viewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel,
+        recommendationViewModel: recommendationViewModel
+    )
+}
+
+#Preview("BodyProfile Setting") {
+    let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
+    let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+    SettingDetailView(
+        menu: .bodyProfile,
+        viewModel: settingsViewModel,
+        bodyProfileViewModel: bodyProfileViewModel
+    )
 }
 
 #Preview("MainShape Setting") {
     let viewModel = DIContainer.preview.resolve(SettingsViewModel.self)
-    SettingDetailView(menu: .mainShape, viewModel: viewModel)
+    SettingDetailView(menu: .mainIcon, viewModel: viewModel)
 }

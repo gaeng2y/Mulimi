@@ -6,35 +6,21 @@
 //
 
 import DependencyInjection
-import Persistence
 import PresentationLayer
 import SwiftUI
-import SwiftData
 
 @main
 struct DrinkWaterApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    private let modelContainer: ModelContainer
-
-    init() {
-        do {
-            self.modelContainer = try SharedHydrationStore.makeModelContainer(
-                cloudKitDatabase: .automatic,
-                shouldFallbackToLocalStore: true
-            )
-        } catch {
-            fatalError("Failed to initialize shared hydration store: \(error)")
-        }
-    }
     
     var body: some Scene {
         WindowGroup {
             RootView(
-                viewModel: DIContainer.shared.resolve(AuthenticationViewModel.self)
+                authenticationViewModel: DIContainer.shared.resolve(AuthenticationViewModel.self),
+                healthKitPermissionViewModel: DIContainer.shared.resolve(HealthKitPermissionViewModel.self)
             ) {
                 ContentView()
             }
         }
-        .modelContainer(modelContainer)
     }
 }
