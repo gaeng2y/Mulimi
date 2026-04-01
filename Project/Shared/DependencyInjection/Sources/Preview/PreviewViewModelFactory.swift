@@ -35,10 +35,12 @@ public struct PreviewViews {
     public static var profile: some View {
         let settingsViewModel = DIContainer.preview.resolve(SettingsViewModel.self)
         let bodyProfileViewModel = DIContainer.preview.resolve(BodyProfileViewModel.self)
+        let recommendationViewModel = DIContainer.preview.resolve(HydrationGoalRecommendationViewModel.self)
         let routineViewModel = DIContainer.preview.resolve(ProfileRoutineViewModel.self)
         return ProfileView(
             settingsViewModel: settingsViewModel,
             bodyProfileViewModel: bodyProfileViewModel,
+            recommendationViewModel: recommendationViewModel,
             routineViewModel: routineViewModel
         )
     }

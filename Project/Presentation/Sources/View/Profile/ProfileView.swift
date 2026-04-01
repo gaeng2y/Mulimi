@@ -5,15 +5,18 @@ import SwiftUI
 public struct ProfileView: View {
     @Bindable private var settingsViewModel: SettingsViewModel
     @Bindable private var bodyProfileViewModel: BodyProfileViewModel
+    @Bindable private var recommendationViewModel: HydrationGoalRecommendationViewModel
     @Bindable private var routineViewModel: ProfileRoutineViewModel
 
     public init(
         settingsViewModel: SettingsViewModel,
         bodyProfileViewModel: BodyProfileViewModel,
+        recommendationViewModel: HydrationGoalRecommendationViewModel,
         routineViewModel: ProfileRoutineViewModel
     ) {
         self.settingsViewModel = settingsViewModel
         self.bodyProfileViewModel = bodyProfileViewModel
+        self.recommendationViewModel = recommendationViewModel
         self.routineViewModel = routineViewModel
     }
 
@@ -44,7 +47,12 @@ public struct ProfileView: View {
                     }
 
                     NavigationLink {
-                        SettingDetailView(menu: .dailyLimit, viewModel: settingsViewModel)
+                        SettingDetailView(
+                            menu: .dailyLimit,
+                            viewModel: settingsViewModel,
+                            bodyProfileViewModel: bodyProfileViewModel,
+                            recommendationViewModel: recommendationViewModel
+                        )
                     } label: {
                         settingsRow(
                             title: L10n.tr("settingDailyLimitTitle"),

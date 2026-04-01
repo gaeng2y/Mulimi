@@ -22,6 +22,14 @@ public final class PreviewAssembly: Assembly {
             MockHealthKitUseCase()
         }
 
+        container.register(BodyProfileUseCase.self) { _ in
+            MockBodyProfileUseCase()
+        }
+
+        container.register(HydrationGoalRecommendationUseCase.self) { _ in
+            MockHydrationGoalRecommendationUseCase()
+        }
+
         container.register(UserPreferencesUseCase.self) { _ in
             MockUserPreferencesUseCase()
         }
@@ -119,10 +127,20 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register(BodyProfileViewModel.self) { resolver in
-            BodyProfileViewModel(
-                healthKitUseCase: resolver.resolve(HealthKitUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
-            )
+            MainActor.assumeIsolated {
+                BodyProfileViewModel(
+                    bodyProfileUseCase: resolver.resolve(BodyProfileUseCase.self)!
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationGoalRecommendationViewModel.self) { resolver in
+            MainActor.assumeIsolated {
+                HydrationGoalRecommendationViewModel(
+                    useCase: resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+                )
+            }
         }
         .inObjectScope(.container)
 
