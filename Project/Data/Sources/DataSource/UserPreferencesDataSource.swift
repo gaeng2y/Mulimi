@@ -15,6 +15,8 @@ public protocol UserPreferencesDataSource: Sendable {
     func setMainIcon(_ icon: MainIcon)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
+    func hasCompletedOnboarding() -> Bool
+    func setHasCompletedOnboarding(_ completed: Bool)
     func getManualBodyProfile() -> BodyProfile
     func setManualBodyProfile(_ profile: BodyProfile)
 }
@@ -92,6 +94,16 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         userDefaults.synchronize()
         ubiquitousStore.set(limit, forKey: .dailyWaterLimit)
         ubiquitousStore.synchronize()
+    }
+
+    // MARK: - Onboarding
+    public func hasCompletedOnboarding() -> Bool {
+        userDefaults.hasCompletedOnboarding
+    }
+
+    public func setHasCompletedOnboarding(_ completed: Bool) {
+        userDefaults.hasCompletedOnboarding = completed
+        userDefaults.synchronize()
     }
 
     // MARK: - Manual Body Profile

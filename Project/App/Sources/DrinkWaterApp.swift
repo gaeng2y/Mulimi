@@ -17,6 +17,7 @@ struct DrinkWaterApp: App {
         WindowGroup {
             RootView(
                 authenticationViewModel: DIContainer.shared.resolve(AuthenticationViewModel.self),
+                onboardingViewModel: DIContainer.shared.resolve(OnboardingViewModel.self),
                 healthKitPermissionViewModel: DIContainer.shared.resolve(HealthKitPermissionViewModel.self)
             ) {
                 ContentView()

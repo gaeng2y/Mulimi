@@ -90,6 +90,12 @@ struct ProfileRoutineViewModelTests {
             dailyWaterLimit = limit
         }
 
+        func hasCompletedOnboarding() -> Bool {
+            true
+        }
+
+        func setHasCompletedOnboarding(_ completed: Bool) {}
+
         func getManualBodyProfile() -> BodyProfile {
             .empty
         }
