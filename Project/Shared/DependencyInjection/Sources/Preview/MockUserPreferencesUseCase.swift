@@ -11,6 +11,7 @@ import DomainLayerInterface
 public final class MockUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
     private var mainIcon: MainIcon = .drop
     private var dailyWaterLimit: Double = 2000
+    private var hasCompletedOnboarding = false
     private var manualBodyProfile: BodyProfile = .empty
     private var accentColor: String = "blue"
 
@@ -30,6 +31,14 @@ public final class MockUserPreferencesUseCase: UserPreferencesUseCase, @unchecke
 
     public func setDailyWaterLimit(_ limit: Double) {
         dailyWaterLimit = limit
+    }
+
+    public func hasCompletedOnboarding() -> Bool {
+        hasCompletedOnboarding
+    }
+
+    public func setHasCompletedOnboarding(_ completed: Bool) {
+        hasCompletedOnboarding = completed
     }
 
     public func getManualBodyProfile() -> BodyProfile {

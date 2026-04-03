@@ -31,6 +31,14 @@ public struct UserPreferencesUseCaseImpl: UserPreferencesUseCase {
         repository.setDailyWaterLimit(limit)
     }
 
+    public func hasCompletedOnboarding() -> Bool {
+        repository.hasCompletedOnboarding()
+    }
+
+    public func setHasCompletedOnboarding(_ completed: Bool) {
+        repository.setHasCompletedOnboarding(completed)
+    }
+
     public func getManualBodyProfile() -> BodyProfile {
         repository.getManualBodyProfile()
     }

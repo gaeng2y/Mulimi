@@ -95,6 +95,15 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(OnboardingViewModel.self) { resolver in
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
+            }
+        }
+        .inObjectScope(.container)
+
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
 

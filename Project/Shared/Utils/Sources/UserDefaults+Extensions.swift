@@ -34,6 +34,11 @@ public extension UserDefaults {
         set { self.set(newValue, forKey: .dailyWaterLimit) }
     }
 
+    @objc dynamic var hasCompletedOnboarding: Bool {
+        get { self.bool(forKey: .hasCompletedOnboarding) }
+        set { self.set(newValue, forKey: .hasCompletedOnboarding) }
+    }
+
     @objc dynamic var manualBodyHeightCM: Double {
         get { self.double(forKey: .manualBodyHeightCM) }
         set { self.set(newValue, forKey: .manualBodyHeightCM) }
