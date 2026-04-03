@@ -33,7 +33,6 @@ public struct ChallengeView: View {
             }
             .padding(.horizontal, 20)
         }
-        .navigationTitle(L10n.tr("challengeTitle"))
         .task {
             await viewModel.loadChallenges()
         }
