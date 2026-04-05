@@ -100,8 +100,6 @@ public struct DrinkWaterView: View {
                 }
             }
         }
-        .navigationTitle(L10n.tr("drinkTitle"))
-        .navigationBarTitleDisplayMode(.large)
         .task {
             // Refresh data when view appears to catch any Widget changes.
             await viewModel.loadInitialState()
