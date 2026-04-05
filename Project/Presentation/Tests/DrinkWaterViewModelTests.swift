@@ -11,16 +11,15 @@ struct DrinkWaterViewModelTests {
     @Test("초기화 시 legacy 마이그레이션과 초기 상태를 반영한다")
     func initializeState() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWaterValue = 2
-        let healthKitUseCase = MockHealthKitUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 500
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.mainIconValue = .heart
         userPreferencesUseCase.dailyWaterLimitValue = 1500
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
@@ -29,7 +28,7 @@ struct DrinkWaterViewModelTests {
         #expect(viewModel.drinkWaterCount == 2)
         #expect(viewModel.mainIcon == .heart)
         #expect(viewModel.dailyLimit == 1500)
-        #expect(viewModel.currentWaterIntakeInMl == 500)
+        #expect(viewModel.currentWaterIntakeML == 500)
         #expect(viewModel.mililiters == L10n.tr("commonMilliliterFormat", 500))
         #expect(viewModel.isLimitReached == false)
     }
@@ -38,16 +37,14 @@ struct DrinkWaterViewModelTests {
     @Test("drinkWater는 제한 이하일 때 UseCase 상태를 갱신한다")
     func drinkWaterWithinLimit() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWaterValue = 0
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
+        waterUseCase.currentWaterIntakeMLValue = 0
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
@@ -61,16 +58,14 @@ struct DrinkWaterViewModelTests {
     @Test("drinkWater는 제한을 초과하면 동작하지 않는다")
     func drinkWaterOverLimit() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWaterValue = 4
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
+        waterUseCase.currentWaterIntakeMLValue = 1_000
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
@@ -84,15 +79,13 @@ struct DrinkWaterViewModelTests {
     @Test("drinkWater는 기록 후 최신 UseCase 값을 다시 반영한다")
     func drinkWaterRefreshesState() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
@@ -106,15 +99,13 @@ struct DrinkWaterViewModelTests {
     @Test("reset은 카운트를 0으로 만들고 UseCase 리셋을 호출한다")
     func reset() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        waterUseCase.currentWaterValue = 3
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
+        waterUseCase.currentWaterIntakeMLValue = 750
         let userPreferencesUseCase = MockUserPreferencesUseCase()
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
@@ -128,18 +119,17 @@ struct DrinkWaterViewModelTests {
     @Test("refreshState는 UseCase 최신값으로 상태를 갱신한다")
     func refreshState() async {
         let waterUseCase = MockDrinkWaterUseCase()
-        let healthKitUseCase = MockHealthKitUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
 
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
+            userPreferencesUseCase: userPreferencesUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         await viewModel.loadInitialState()
 
-        waterUseCase.currentWaterValue = 5
+        waterUseCase.currentWaterIntakeMLValue = 1_250
         userPreferencesUseCase.mainIconValue = .cloud
         userPreferencesUseCase.dailyWaterLimitValue = 2300
 
@@ -155,53 +145,12 @@ struct DrinkWaterViewModelTests {
     func startAnimation() {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: MockDrinkWaterUseCase(),
-            healthKitUseCase: MockHealthKitUseCase(),
-            userPreferencesUseCase: MockUserPreferencesUseCase()
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         viewModel.startAnimation()
 
         #expect(viewModel.offset == 360)
-    }
-
-    @MainActor
-    @Test("drinkWater는 권한이 미정이면 권한을 요청한 뒤 기록한다")
-    func drinkWaterRequestsAuthorizationWhenNeeded() async {
-        let waterUseCase = MockDrinkWaterUseCase()
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .notDetermined
-        let userPreferencesUseCase = MockUserPreferencesUseCase()
-
-        let viewModel = DrinkWaterViewModel(
-            waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
-        )
-
-        await viewModel.drinkWater()
-
-        #expect(healthKitUseCase.requestAuthorizationCallCount == 1)
-        #expect(waterUseCase.drinkWaterCallCount == 1)
-        #expect(viewModel.showHealthKitPermissionAlert == false)
-    }
-
-    @MainActor
-    @Test("drinkWater는 권한이 거부된 상태면 설정 안내를 노출한다")
-    func drinkWaterShowsPermissionAlertWhenDenied() async {
-        let waterUseCase = MockDrinkWaterUseCase()
-        let healthKitUseCase = MockHealthKitUseCase()
-        healthKitUseCase.authorizationStatusValue = .sharingDenied
-        let userPreferencesUseCase = MockUserPreferencesUseCase()
-
-        let viewModel = DrinkWaterViewModel(
-            waterUseCase: waterUseCase,
-            healthKitUseCase: healthKitUseCase,
-            userPreferencesUseCase: userPreferencesUseCase
-        )
-
-        await viewModel.drinkWater()
-
-        #expect(waterUseCase.drinkWaterCallCount == 0)
-        #expect(viewModel.showHealthKitPermissionAlert == true)
     }
 }

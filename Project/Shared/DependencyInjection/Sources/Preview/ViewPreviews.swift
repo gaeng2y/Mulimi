@@ -62,7 +62,7 @@ import SwiftUI
         authorizationStatus: .authorized
     )
     let mockDrinkWaterUseCase = MockDrinkWaterUseCase()
-    mockDrinkWaterUseCase.currentWaterValue = 2
+    mockDrinkWaterUseCase.currentWaterIntakeMLValue = 500
     let mockUserPreferencesUseCase = MockUserPreferencesUseCase()
     mockUserPreferencesUseCase.setDailyWaterLimit(2000)
 

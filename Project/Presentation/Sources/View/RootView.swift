@@ -9,17 +9,20 @@
 import SwiftUI
 
 public struct RootView<Content: View>: View {
+    @State private var appSession: AppSession
     @State private var authenticationViewModel: AuthenticationViewModel
     @State private var onboardingViewModel: OnboardingViewModel
     @State private var healthKitPermissionViewModel: HealthKitPermissionViewModel
     private let content: () -> Content
     
     public init(
+        appSession: @autoclosure @escaping () -> AppSession,
         authenticationViewModel: @autoclosure @escaping () -> AuthenticationViewModel,
         onboardingViewModel: @autoclosure @escaping () -> OnboardingViewModel,
         healthKitPermissionViewModel: @autoclosure @escaping () -> HealthKitPermissionViewModel,
         @ViewBuilder content: @escaping () -> Content
     ) {
+        self._appSession = State(wrappedValue: appSession())
         self._authenticationViewModel = State(wrappedValue: authenticationViewModel())
         self._onboardingViewModel = State(wrappedValue: onboardingViewModel())
         self._healthKitPermissionViewModel = State(wrappedValue: healthKitPermissionViewModel())
@@ -28,7 +31,7 @@ public struct RootView<Content: View>: View {
     
     public var body: some View {
         Group {
-            if authenticationViewModel.isAuthenticated {
+            if appSession.isAuthenticated {
                 if onboardingViewModel.hasCompletedOnboarding {
                     HealthKitPermissionGateView(viewModel: healthKitPermissionViewModel) {
                         content()

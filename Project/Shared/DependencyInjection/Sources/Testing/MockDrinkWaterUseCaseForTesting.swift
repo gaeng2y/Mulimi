@@ -9,7 +9,7 @@ import DomainLayerInterface
 import Foundation
 
 public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecked Sendable {
-    public var currentWaterValue: Int = 0
+    public var currentWaterIntakeMLValue: Double = 0
     public var drinkWaterCallCount = 0
     public var resetCallCount = 0
     public var hydrateEventsCallCount = 0
@@ -18,9 +18,9 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
 
     public init() {}
 
-    public var currentWater: Int {
+    public var currentWaterIntakeML: Double {
         get async {
-            currentWaterValue
+            currentWaterIntakeMLValue
         }
     }
 
@@ -40,18 +40,24 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
 
     public func drinkWater() async {
         drinkWaterCallCount += 1
-        currentWaterValue += 1
-        events.append(HydrationEvent(id: UUID(), consumedAt: .now, volumeML: 250))
+        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        events.append(
+            HydrationEvent(
+                id: UUID(),
+                consumedAt: .now,
+                volumeML: Int(HydrationServing.defaultGlassML)
+            )
+        )
     }
 
     public func reset() async {
         resetCallCount += 1
-        currentWaterValue = 0
+        currentWaterIntakeMLValue = 0
         events.removeAll()
     }
 
     // Testing helpers
-    public func setCurrentWater(_ count: Int) {
-        currentWaterValue = count
+    public func setCurrentWaterIntakeML(_ intakeML: Double) {
+        currentWaterIntakeMLValue = intakeML
     }
 }

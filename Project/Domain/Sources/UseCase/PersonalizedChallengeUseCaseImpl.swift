@@ -7,7 +7,7 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
         static let morningCutoffHour = 12
         static let morningTargetDays = 5
         static let weeklyConsistencyTargetDays = 5
-        static let intakeStepML = 250
+        static let intakeStepML = Int(HydrationServing.defaultGlassML)
     }
 
     private let routineUseCase: RoutineUseCase

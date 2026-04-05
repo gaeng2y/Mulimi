@@ -21,20 +21,17 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
 
 struct LogWaterAppIntent: AppIntent {
     static let title: LocalizedStringResource = "물 마시기"
-    static let description = IntentDescription("250ml 물 마시기를 기록합니다.")
+    static let description = IntentDescription("기본 물 섭취량을 기록합니다.")
     static let openAppWhenRun = false
 
     public func perform() async throws -> some IntentResult {
         let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-        let currentGlasses = await waterUseCase.currentWater
-        let currentMl = Double(currentGlasses * 250)
+        let currentMl = await waterUseCase.currentWaterIntakeML
         
-        // Get daily limit from UseCase
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         
-        // Check if adding one more glass would exceed daily limit
-        let nextMl = currentMl + 250.0
+        let nextMl = currentMl + HydrationServing.defaultGlassML
         if nextMl <= dailyLimit {
             await waterUseCase.drinkWater()
         }

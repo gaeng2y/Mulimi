@@ -10,7 +10,7 @@ public enum AppRoute: NavigationRoute, Sendable {
         case .profileRoutine:
             return "profile_routine"
         case let .setting(menu):
-            return "setting_\(menu.settingKey)"
+            return "setting_\(menu.rawValue)"
         }
     }
 

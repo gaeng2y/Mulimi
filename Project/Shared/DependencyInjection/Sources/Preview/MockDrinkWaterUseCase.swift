@@ -9,14 +9,14 @@ import DomainLayerInterface
 import Foundation
 
 public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
-    public var currentWaterValue: Int = 3
+    public var currentWaterIntakeMLValue: Double = 750
     public var events: [HydrationEvent] = []
     
     public init() {}
 
-    public var currentWater: Int {
+    public var currentWaterIntakeML: Double {
         get async {
-            currentWaterValue
+            currentWaterIntakeMLValue
         }
     }
 
@@ -31,12 +31,18 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
     public func migrateLegacyDataIfNeeded() async {}
     
     public func drinkWater() async {
-        currentWaterValue += 1
-        events.append(HydrationEvent(id: UUID(), consumedAt: .now, volumeML: 250))
+        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        events.append(
+            HydrationEvent(
+                id: UUID(),
+                consumedAt: .now,
+                volumeML: Int(HydrationServing.defaultGlassML)
+            )
+        )
     }
     
     public func reset() async {
-        currentWaterValue = 0
+        currentWaterIntakeMLValue = 0
         events.removeAll()
     }
 }

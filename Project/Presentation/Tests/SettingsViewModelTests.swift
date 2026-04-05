@@ -6,6 +6,14 @@ import Testing
 
 @Suite("SettingsViewModel Tests")
 struct SettingsViewModelTests {
+    private struct SpyWidgetTimelineReloader: WidgetTimelineReloading {
+        let onReload: @Sendable () -> Void
+
+        func reloadAllTimelines() {
+            onReload()
+        }
+    }
+
     private enum MockError: LocalizedError {
         case deleteFailed
 
@@ -24,14 +32,14 @@ struct SettingsViewModelTests {
         userPreferencesUseCase.mainIconValue = .heart
         userPreferencesUseCase.dailyWaterLimitValue = 2100
         let signInUseCase = MockSignInUseCase()
-        let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
+        let appSession = AppSession(isAuthenticated: true)
 
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel,
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: appSession,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
 
         #expect(viewModel.currentMainIcon == .heart)
@@ -46,12 +54,18 @@ struct SettingsViewModelTests {
     @Test("setMainIcon는 상태와 UseCase를 함께 갱신한다")
     func setMainIcon() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
+        final class ReloadCounter: @unchecked Sendable {
+            var count = 0
+        }
+        let counter = ReloadCounter()
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: AppSession(),
+            widgetTimelineReloader: SpyWidgetTimelineReloader {
+                counter.count += 1
+            },
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
 
         viewModel.setMainIcon(.cloud)
@@ -59,18 +73,25 @@ struct SettingsViewModelTests {
         #expect(viewModel.currentMainIcon == .cloud)
         #expect(userPreferencesUseCase.setMainIconCallCount == 1)
         #expect(userPreferencesUseCase.capturedMainIcon == .cloud)
+        #expect(counter.count == 1)
     }
 
     @MainActor
     @Test("dailyWaterLimit setter는 상태와 UseCase를 함께 갱신한다")
     func setDailyWaterLimit() {
         let userPreferencesUseCase = MockUserPreferencesUseCase()
+        final class ReloadCounter: @unchecked Sendable {
+            var count = 0
+        }
+        let counter = ReloadCounter()
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: AppSession(),
+            widgetTimelineReloader: SpyWidgetTimelineReloader {
+                counter.count += 1
+            },
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
 
         viewModel.dailyWaterLimit = 2750
@@ -78,6 +99,7 @@ struct SettingsViewModelTests {
         #expect(viewModel.currentDailyWaterLimit == 2750)
         #expect(userPreferencesUseCase.setDailyWaterLimitCallCount == 1)
         #expect(userPreferencesUseCase.capturedDailyWaterLimit == 2750)
+        #expect(counter.count == 1)
     }
 
     @MainActor
@@ -86,9 +108,9 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
-            authenticationViewModel: AuthenticationViewModel(signInUseCase: MockSignInUseCase()),
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: AppSession(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
 
         viewModel.requestWithdrawal()
@@ -105,14 +127,13 @@ struct SettingsViewModelTests {
     func confirmWithdrawalSuccess() async {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.isAuthenticatedValue = true
-        let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
-        authenticationViewModel.isAuthenticated = true
+        let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel,
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: appSession,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
         viewModel.requestWithdrawal()
 
@@ -122,7 +143,7 @@ struct SettingsViewModelTests {
         #expect(viewModel.isWithdrawing == false)
         #expect(viewModel.showWithdrawalConfirmation == false)
         #expect(viewModel.withdrawalError == nil)
-        #expect(authenticationViewModel.isAuthenticated == false)
+        #expect(appSession.isAuthenticated == false)
     }
 
     @MainActor
@@ -130,14 +151,13 @@ struct SettingsViewModelTests {
     func confirmWithdrawalFailure() async {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.deleteAccountError = MockError.deleteFailed
-        let authenticationViewModel = AuthenticationViewModel(signInUseCase: signInUseCase)
-        authenticationViewModel.isAuthenticated = true
+        let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
-            authenticationViewModel: authenticationViewModel,
-            appVersion: "1.2.0",
-            appBuildNumber: "15"
+            appSession: appSession,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
         )
         viewModel.requestWithdrawal()
 
@@ -147,6 +167,6 @@ struct SettingsViewModelTests {
         #expect(viewModel.isWithdrawing == false)
         #expect(viewModel.showWithdrawalConfirmation == true)
         #expect(viewModel.withdrawalError == MockError.deleteFailed.localizedDescription)
-        #expect(authenticationViewModel.isAuthenticated == true)
+        #expect(appSession.isAuthenticated == true)
     }
 }

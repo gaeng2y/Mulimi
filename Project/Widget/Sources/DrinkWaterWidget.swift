@@ -80,19 +80,19 @@ struct DrinkWaterWidget: Widget {
 } timeline: {
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 0,
+        currentIntakeML: 0,
         dailyLimit: 2000,
         mainIconSymbol: "drop.fill"
     )
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 4,
+        currentIntakeML: 1_000,
         dailyLimit: 2000,
         mainIconSymbol: "heart.fill"
     )
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 8,
+        currentIntakeML: 2_000,
         dailyLimit: 2000,
         mainIconSymbol: "cloud.fill"
     )

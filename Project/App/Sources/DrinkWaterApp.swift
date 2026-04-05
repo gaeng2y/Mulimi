@@ -16,6 +16,7 @@ struct DrinkWaterApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(
+                appSession: DIContainer.shared.resolve(AppSession.self),
                 authenticationViewModel: DIContainer.shared.resolve(AuthenticationViewModel.self),
                 onboardingViewModel: DIContainer.shared.resolve(OnboardingViewModel.self),
                 healthKitPermissionViewModel: DIContainer.shared.resolve(HealthKitPermissionViewModel.self)

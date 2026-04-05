@@ -74,7 +74,9 @@ public final class RoutineNotificationDataSourceImpl: RoutineNotificationDataSou
     }
 
     private func alarmPresentation(for routine: HydrationRoutine) -> AlarmPresentation {
-        let title = localizedStringResource(for: routine.notificationBody)
+        let title = localizedStringResource(
+            for: L10n.tr("routineNotificationBodyFormat", routine.title)
+        )
 
         if #available(iOS 26.1, *) {
             return AlarmPresentation(alert: .init(title: title))

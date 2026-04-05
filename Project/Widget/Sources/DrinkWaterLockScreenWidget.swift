@@ -96,7 +96,7 @@ struct DrinkWaterLockScreenWidget: Widget {
 } timeline: {
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 5,
+        currentIntakeML: 1_250,
         dailyLimit: 2000,
         mainIconSymbol: "drop.fill"
     )
@@ -107,7 +107,7 @@ struct DrinkWaterLockScreenWidget: Widget {
 } timeline: {
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 6,
+        currentIntakeML: 1_500,
         dailyLimit: 2000,
         mainIconSymbol: "heart.fill"
     )
@@ -118,7 +118,7 @@ struct DrinkWaterLockScreenWidget: Widget {
 } timeline: {
     DrinkWaterEntry(
         date: .now,
-        numberOfGlasses: 3,
+        currentIntakeML: 750,
         dailyLimit: 2000,
         mainIconSymbol: "cloud.fill"
     )

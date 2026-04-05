@@ -12,19 +12,27 @@ import Observation
 
 @Observable
 public final class AuthenticationViewModel {
-    public var isAuthenticated: Bool = false
     public var isLoading: Bool = false
     public var errorMessage: String?
     
     private let signInUseCase: SignInUseCase
+    private let appSession: AppSession
+
+    public var isAuthenticated: Bool {
+        appSession.isAuthenticated
+    }
     
-    public init(signInUseCase: SignInUseCase) {
+    public init(
+        signInUseCase: SignInUseCase,
+        appSession: AppSession
+    ) {
         self.signInUseCase = signInUseCase
+        self.appSession = appSession
         checkAuthenticationStatus()
     }
     
     public func checkAuthenticationStatus() {
-        isAuthenticated = signInUseCase.isAuthenticated
+        appSession.isAuthenticated = signInUseCase.isAuthenticated
     }
     
     @MainActor
@@ -34,7 +42,7 @@ public final class AuthenticationViewModel {
         
         do {
             try await signInUseCase.signInWithApple()
-            isAuthenticated = true
+            appSession.isAuthenticated = true
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -44,6 +52,6 @@ public final class AuthenticationViewModel {
     
     public func signOut() {
         signInUseCase.signOut()
-        isAuthenticated = false
+        appSession.isAuthenticated = false
     }
 }

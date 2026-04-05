@@ -12,6 +12,8 @@ import PresentationLayer
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
+
     private enum AppTab: Hashable {
         case drink
         case history
@@ -99,6 +101,21 @@ struct ContentView: View {
             }
         }
         .tint(.accent)
+        .task {
+            await refreshSelectedTab()
+        }
+        .task(id: selectedTab) {
+            await refreshSelectedTab()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else {
+                return
+            }
+
+            Task {
+                await refreshSelectedTab()
+            }
+        }
     }
 
     @ViewBuilder
@@ -141,6 +158,23 @@ struct ContentView: View {
             L10n.tr("challengeTitle")
         case .profile:
             L10n.tr("profileTitle")
+        }
+    }
+
+    @MainActor
+    private func refreshSelectedTab() async {
+        switch selectedTab {
+        case .drink:
+            await drinkWaterViewModel.refreshState()
+        case .history:
+            await hydrationRecordListViewModel.refresh()
+        case .insight:
+            await hydrationInsightViewModel.loadInsights()
+        case .challenge:
+            await challengeViewModel.loadChallenges()
+        case .profile:
+            settingsViewModel.refreshState()
+            await bodyProfileViewModel.refresh()
         }
     }
 }
