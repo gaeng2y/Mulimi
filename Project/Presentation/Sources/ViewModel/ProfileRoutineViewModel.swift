@@ -125,7 +125,7 @@ public final class ProfileRoutineViewModel {
 
     public private(set) var notificationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
     public private(set) var routines: [HydrationRoutine] = []
-    public private(set) var currentWaterCount = 0
+    public private(set) var currentWaterIntakeML = 0.0
     public private(set) var dailyWaterLimitML = 0
     public var isEditorPresented = false
     public var isSaving = false
@@ -261,7 +261,7 @@ public final class ProfileRoutineViewModel {
         let elapsedCount = elapsedRoutineCount(for: todayRoutines)
         let nextRoutine = nextRoutine(for: todayRoutines)
         let remainingCount = remainingRoutineCount(for: todayRoutines)
-        let actualIntakeML = currentWaterCount * 250
+        let actualIntakeML = Int(currentWaterIntakeML.rounded())
         let recommendedIntakeML = recommendedIntakeML(
             elapsedCount: elapsedCount,
             totalCount: todayRoutines.count
@@ -334,7 +334,7 @@ public final class ProfileRoutineViewModel {
     public func load() async {
         notificationStatus = await routineUseCase.notificationAuthorizationStatus()
         routines = routineUseCase.fetchRoutines()
-        currentWaterCount = await drinkWaterUseCase.currentWater
+        currentWaterIntakeML = await drinkWaterUseCase.currentWaterIntakeML
         dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
     }
 

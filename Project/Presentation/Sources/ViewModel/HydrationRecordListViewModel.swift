@@ -9,33 +9,18 @@
 import DomainLayerInterface
 import Foundation
 import Localization
-import SwiftUI
 
 @Observable
 public final class HydrationRecordListViewModel {
     private(set) var records: [HydrationRecord] = []
     private(set) var date: Date = .now
+    private(set) var isMonthPickerPresented = false
     
     private(set) var errorMessage: String = ""
     private let useCase: DrinkWaterUseCase
-    private let recordRouting: any RecordRouting
     
-    public init(
-        useCase: DrinkWaterUseCase,
-        recordRouting: any RecordRouting
-    ) {
+    public init(useCase: DrinkWaterUseCase) {
         self.useCase = useCase
-        self.recordRouting = recordRouting
-    }
-
-    public var navigationPath: NavigationPath {
-        get { recordRouting.path }
-        set { recordRouting.path = newValue }
-    }
-
-    public var presentedRoute: RecordRoute? {
-        get { recordRouting.presentedRoute }
-        set { recordRouting.presentedRoute = newValue }
     }
     
     @MainActor
@@ -44,11 +29,16 @@ public final class HydrationRecordListViewModel {
     }
 
     public func showMonthPicker() {
-        recordRouting.present(.monthPicker)
+        isMonthPickerPresented = true
     }
 
-    public func dismissPresentedRoute() {
-        recordRouting.dismissPresentedRoute()
+    public func dismissMonthPicker() {
+        isMonthPickerPresented = false
+    }
+
+    @MainActor
+    public func refresh() async {
+        await fetchHydrationRecord()
     }
     
     @MainActor

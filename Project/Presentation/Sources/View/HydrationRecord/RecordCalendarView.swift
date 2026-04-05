@@ -57,16 +57,15 @@ struct RecordCalendarView: View {
         .task {
             await viewModel.fetchHydrationRecord()
         }
-        .sheet(
-            item: Binding(
-                get: { viewModel.presentedRoute },
-                set: { viewModel.presentedRoute = $0 }
-            )
-        ) { route in
-            switch route {
-            case .monthPicker:
-                yearMonthPickerSheet
+        .sheet(isPresented: Binding(
+            get: { viewModel.isMonthPickerPresented },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissMonthPicker()
+                }
             }
+        )) {
+            yearMonthPickerSheet
         }
     }
 
@@ -232,7 +231,7 @@ struct RecordCalendarView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(L10n.tr("commonCancelTitle")) {
-                        viewModel.dismissPresentedRoute()
+                        viewModel.dismissMonthPicker()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -243,7 +242,7 @@ struct RecordCalendarView: View {
                                 month: selectedMonth
                             )
                         }
-                        viewModel.dismissPresentedRoute()
+                        viewModel.dismissMonthPicker()
                     }
                 }
             }
@@ -276,7 +275,7 @@ private struct CalendarDayView: View {
 
     private var progressLevel: Int {
         guard let record = record else { return 0 }
-        let level = Int(record.mililiter / 250)
+        let level = HydrationServing.glassCount(for: record.mililiter)
         return min(level, 8)
     }
 

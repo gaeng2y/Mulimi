@@ -14,6 +14,11 @@ public final class PreviewAssembly: Assembly {
     
     public func assemble(container: Container) {
         // MARK: - Mock UseCases
+        container.register(AppSession.self) { _ in
+            AppSession(isAuthenticated: true)
+        }
+        .inObjectScope(.container)
+
         container.register(DrinkWaterUseCase.self) { _ in
             MockDrinkWaterUseCase()
         }
@@ -51,20 +56,29 @@ public final class PreviewAssembly: Assembly {
             MockRoutineUseCase()
         }
 
+        container.register((any WidgetTimelineReloading).self) { _ in
+            NoOpWidgetTimelineReloader()
+        }
+        .inObjectScope(.container)
+
+        container.register((any AppInfoProviding).self) { _ in
+            StaticAppInfoProvider(appVersion: "2.0.0", appBuildNumber: "22")
+        }
+        .inObjectScope(.container)
+
         // MARK: - ViewModels
         container.register(DrinkWaterViewModel.self) { resolver in
             DrinkWaterViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                healthKitUseCase: resolver.resolve(HealthKitUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
             )
         }
         .inObjectScope(.container)
         
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                recordRouting: resolver.resolve((any RecordRouting).self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!
             )
         }
 
@@ -105,14 +119,12 @@ public final class PreviewAssembly: Assembly {
             AppCoordinator()
         }
         .inObjectScope(.container)
-        container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(AppCoordinator.self)!
-        }
 
         // MARK: - Authentication (Preview)
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
-                signInUseCase: resolver.resolve(SignInUseCase.self)!
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                appSession: resolver.resolve(AppSession.self)!
             )
         }
         .inObjectScope(.container)
@@ -158,7 +170,9 @@ public final class PreviewAssembly: Assembly {
             SettingsViewModel(
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
-                authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!
+                appSession: resolver.resolve(AppSession.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!,
+                appInfoProvider: resolver.resolve((any AppInfoProviding).self)!
             )
         }
     }

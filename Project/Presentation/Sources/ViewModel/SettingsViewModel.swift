@@ -8,14 +8,13 @@
 
 import SwiftUI
 import DomainLayerInterface
-import Utils
-import WidgetKit
 
 @Observable
 public final class SettingsViewModel {
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
-    private let authenticationViewModel: AuthenticationViewModel
+    private let appSession: AppSession
+    private let widgetTimelineReloader: any WidgetTimelineReloading
 
     // MARK: - Published State
     public private(set) var currentMainIcon: MainIcon
@@ -29,24 +28,25 @@ public final class SettingsViewModel {
     public init(
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
-        authenticationViewModel: AuthenticationViewModel,
-        appVersion: String? = nil,
-        appBuildNumber: String? = nil
+        appSession: AppSession,
+        widgetTimelineReloader: any WidgetTimelineReloading,
+        appInfoProvider: any AppInfoProviding
     ) {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
-        self.authenticationViewModel = authenticationViewModel
+        self.appSession = appSession
+        self.widgetTimelineReloader = widgetTimelineReloader
         self.currentMainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
-        self.appVersion = appVersion ?? Self.bundleValue(for: "CFBundleShortVersionString")
-        self.appBuildNumber = appBuildNumber ?? Self.bundleValue(for: "CFBundleVersion")
+        self.appVersion = appInfoProvider.appVersion
+        self.appBuildNumber = appInfoProvider.appBuildNumber
     }
 
     // MARK: - User Preferences Actions
     public func setMainIcon(_ icon: MainIcon) {
         currentMainIcon = icon
         userPreferencesUseCase.setMainIcon(icon)
-        WidgetCenter.shared.reloadAllTimelines()
+        widgetTimelineReloader.reloadAllTimelines()
     }
     
     public var dailyWaterLimit: Double {
@@ -54,17 +54,13 @@ public final class SettingsViewModel {
         set {
             currentDailyWaterLimit = newValue
             userPreferencesUseCase.setDailyWaterLimit(newValue)
-
-            // Force UserDefaults synchronization for widget
-            UserDefaults.standard.synchronize()
-            UserDefaults(suiteName: "group.com.gaeng2y.drinkwater")?.synchronize()
-
-            // Reload widget timelines
-            WidgetCenter.shared.reloadTimelines(ofKind: .widgetKind)
-
-            // Notify other ViewModels
-            NotificationCenter.default.post(name: UserDefaults.didChangeNotification, object: nil)
+            widgetTimelineReloader.reloadAllTimelines()
         }
+    }
+
+    public func refreshState() {
+        currentMainIcon = userPreferencesUseCase.getMainIcon()
+        currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
     }
 
     // MARK: - MainIcon Specific
@@ -90,8 +86,7 @@ public final class SettingsViewModel {
             try await signInUseCase.deleteAccount()
             showWithdrawalConfirmation = false
 
-            // AuthenticationViewModel 상태 업데이트하여 로그인 화면으로 이동
-            authenticationViewModel.isAuthenticated = false
+            appSession.isAuthenticated = false
         } catch {
             withdrawalError = error.localizedDescription
         }
@@ -102,9 +97,5 @@ public final class SettingsViewModel {
     public func cancelWithdrawal() {
         showWithdrawalConfirmation = false
         withdrawalError = nil
-    }
-
-    private static func bundleValue(for key: String) -> String {
-        (Bundle.main.object(forInfoDictionaryKey: key) as? String) ?? "-"
     }
 }

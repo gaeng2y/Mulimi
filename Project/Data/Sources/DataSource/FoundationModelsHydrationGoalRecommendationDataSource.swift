@@ -29,7 +29,7 @@ public final class FoundationModelsHydrationGoalRecommendationDataSource: Hydrat
     private enum Constants {
         static let minimumLimitML = 1_000
         static let maximumLimitML = 4_000
-        static let stepML = 250
+        static let stepML = Int(HydrationServing.defaultGlassML)
     }
 
     private let model: SystemLanguageModel

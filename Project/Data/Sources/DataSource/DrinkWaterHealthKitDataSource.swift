@@ -10,7 +10,7 @@ import Foundation
 import OSLog
 
 public protocol DrinkWaterDataSource: Sendable {
-    var currentWater: Int { get async }
+    var currentWaterIntakeML: Double { get async }
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
@@ -20,10 +20,6 @@ public protocol DrinkWaterDataSource: Sendable {
 }
 
 public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
-    private enum Constants {
-        static let defaultDrinkVolumeML = 250.0
-    }
-
     private let logger = Logger(
         subsystem: "gaeng2y.DrinkWater",
         category: "DrinkWaterHealthKitDataSource"
@@ -39,7 +35,7 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
         self.calendar = calendar
     }
 
-    public var currentWater: Int {
+    public var currentWaterIntakeML: Double {
         get async {
             let dayInterval = dayInterval(for: .now)
 
@@ -48,11 +44,9 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
                     from: dayInterval.start,
                     to: dayInterval.end
                 )
-                let totalML = samples.reduce(0.0) { partialResult, event in
+                return samples.reduce(0.0) { partialResult, event in
                     partialResult + Double(event.volumeML)
                 }
-
-                return Int((totalML / Constants.defaultDrinkVolumeML).rounded())
             } catch {
                 logger.error("Failed to fetch current hydration samples: \(String(describing: error))")
                 return 0

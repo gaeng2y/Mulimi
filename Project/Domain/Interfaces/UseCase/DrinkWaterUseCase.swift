@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol DrinkWaterUseCase: Sendable {
-    var currentWater: Int { get async }
+    var currentWaterIntakeML: Double { get async }
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]

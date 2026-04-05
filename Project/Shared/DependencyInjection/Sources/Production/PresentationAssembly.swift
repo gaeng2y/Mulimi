@@ -12,25 +12,36 @@ import Swinject
 public final class PresentationAssembly: Assembly {
     public func assemble(container: Container) {
         // MARK: - Navigation
+        container.register(AppSession.self) { _ in
+            AppSession()
+        }
+        .inObjectScope(.container)
         container.register(AppCoordinator.self) { _ in
             AppCoordinator()
         }
         .inObjectScope(.container)
-        container.register((any RecordRouting).self) { resolver in
-            resolver.resolve(AppCoordinator.self)!
+
+        container.register((any WidgetTimelineReloading).self) { _ in
+            SystemWidgetTimelineReloader()
         }
+        .inObjectScope(.container)
+
+        container.register((any AppInfoProviding).self) { _ in
+            BundleAppInfoProvider()
+        }
+        .inObjectScope(.container)
         
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
-            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
                     waterUseCase: waterUseCase,
-                    healthKitUseCase: healthKitUseCase,
-                    userPreferencesUseCase: userPreferencesUseCase
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    widgetTimelineReloader: widgetTimelineReloader
                 )
             }
         }
@@ -39,8 +50,7 @@ public final class PresentationAssembly: Assembly {
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                recordRouting: resolver.resolve((any RecordRouting).self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!
             )
         }
 
@@ -90,7 +100,8 @@ public final class PresentationAssembly: Assembly {
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
-                signInUseCase: resolver.resolve(SignInUseCase.self)!
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                appSession: resolver.resolve(AppSession.self)!
             )
         }
         .inObjectScope(.container)
@@ -140,7 +151,9 @@ public final class PresentationAssembly: Assembly {
             SettingsViewModel(
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
-                authenticationViewModel: resolver.resolve(AuthenticationViewModel.self)!
+                appSession: resolver.resolve(AppSession.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!,
+                appInfoProvider: resolver.resolve((any AppInfoProviding).self)!
             )
         }
     }

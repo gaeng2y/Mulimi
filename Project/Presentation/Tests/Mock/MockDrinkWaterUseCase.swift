@@ -2,7 +2,7 @@ import DomainLayerInterface
 import Foundation
 
 final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
-    var currentWaterValue: Int = 0
+    var currentWaterIntakeMLValue: Double = 0
 
     var migrateLegacyDataIfNeededCallCount: Int = 0
     var drinkWaterCallCount: Int = 0
@@ -10,9 +10,9 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
 
-    var currentWater: Int {
+    var currentWaterIntakeML: Double {
         get async {
-            currentWaterValue
+            currentWaterIntakeMLValue
         }
     }
 
@@ -33,16 +33,19 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
 
     func drinkWater() async {
         drinkWaterCallCount += 1
-        currentWaterValue += 1
+        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
     }
 
     func reset() async {
         resetCallCount += 1
-        currentWaterValue = 0
+        currentWaterIntakeMLValue = 0
     }
 
     func setHydrationEvents(_ events: [HydrationEvent], on date: Date) {
         hydrationEventsByDay[dayKey(for: date)] = events
+        currentWaterIntakeMLValue = hydrationEventsByDay.values
+            .flatMap { $0 }
+            .reduce(0) { $0 + Double($1.volumeML) }
     }
 
     private func dayKey(for date: Date) -> String {

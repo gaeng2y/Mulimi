@@ -6,35 +6,31 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import Combine
+import CoreGraphics
 import DomainLayerInterface
 import Foundation
 import Localization
-import UIKit
-import WidgetKit
+import Observation
 
 @MainActor
 @Observable
 public final class DrinkWaterViewModel {
     // MARK: - Published State
-    private(set) var drinkWaterCount: Int
+    private(set) var currentWaterIntakeML: Double
     private(set) var offset: CGFloat = 0
     private(set) var mainIcon: MainIcon
     private(set) var currentDailyLimit: Double
-    private(set) var healthKitAuthorizationStatus: HealthKitAuthorizationStatus
-    var showHealthKitPermissionAlert = false
     
     private let waterUseCase: DrinkWaterUseCase
-    private let healthKitUseCase: HealthKitUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
-    private var cancellables = Set<AnyCancellable>()
+    private let widgetTimelineReloader: any WidgetTimelineReloading
     
     var mililiters: String {
-        L10n.tr("commonMilliliterFormat", Int(currentWaterIntakeInMl.rounded()))
+        L10n.tr("commonMilliliterFormat", Int(currentWaterIntakeML.rounded()))
     }
-    
-    var currentWaterIntakeInMl: Double {
-        Double(drinkWaterCount) * 250.0
+
+    var drinkWaterCount: Int {
+        HydrationServing.glassCount(for: currentWaterIntakeML)
     }
     
     var dailyLimit: Double {
@@ -42,66 +38,41 @@ public final class DrinkWaterViewModel {
     }
     
     var isLimitReached: Bool {
-        currentWaterIntakeInMl.rounded() >= dailyLimit.rounded()
+        currentWaterIntakeML.rounded() >= dailyLimit.rounded()
     }
     
     var progress: CGFloat {
-        let maxProgress = currentDailyLimit / 250.0  // 목표량을 잔수로 변환
-        return min(CGFloat(drinkWaterCount) / CGFloat(maxProgress), 1.0)
+        guard currentDailyLimit > 0 else {
+            return 0
+        }
+
+        return min(CGFloat(currentWaterIntakeML / currentDailyLimit), 1.0)
     }
     
     public init(
         waterUseCase: DrinkWaterUseCase,
-        healthKitUseCase: HealthKitUseCase,
-        userPreferencesUseCase: UserPreferencesUseCase
+        userPreferencesUseCase: UserPreferencesUseCase,
+        widgetTimelineReloader: any WidgetTimelineReloading
     ) {
         self.waterUseCase = waterUseCase
-        self.healthKitUseCase = healthKitUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
-
-        self.drinkWaterCount = 0
+        self.widgetTimelineReloader = widgetTimelineReloader
+        self.currentWaterIntakeML = 0
         self.mainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-        self.healthKitAuthorizationStatus = healthKitUseCase.authorisationStatus
-        
-        setupUserPreferencesObservation()
-    }
-    
-    private func setupUserPreferencesObservation() {
-        // Observe any UserDefaults changes, not just from specific instance
-        NotificationCenter.default
-            .publisher(for: UserDefaults.didChangeNotification)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    await self?.refreshState()
-                }
-            }
-            .store(in: &cancellables)
-        
-        // Also observe when app becomes active to catch Widget changes
-        NotificationCenter.default
-            .publisher(for: UIApplication.didBecomeActiveNotification)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    await self?.refreshState()
-                }
-            }
-            .store(in: &cancellables)
     }
     
     private func updateMainIcon() {
-        let newAppearance = userPreferencesUseCase.getMainIcon()
-        if mainIcon != newAppearance {
-            mainIcon = newAppearance
+        let newIcon = userPreferencesUseCase.getMainIcon()
+        if mainIcon != newIcon {
+            mainIcon = newIcon
         }
     }
     
-    private func updateWaterCount() async {
-        let newCount = await waterUseCase.currentWater
-        if drinkWaterCount != newCount {
-            drinkWaterCount = newCount
+    private func updateCurrentIntake() async {
+        let newIntake = await waterUseCase.currentWaterIntakeML
+        if currentWaterIntakeML != newIntake {
+            currentWaterIntakeML = newIntake
         }
     }
 
@@ -112,70 +83,27 @@ public final class DrinkWaterViewModel {
         }
     }
 
-    private func updateHealthKitAuthorizationStatus() {
-        let newStatus = healthKitUseCase.authorisationStatus
-        if healthKitAuthorizationStatus != newStatus {
-            healthKitAuthorizationStatus = newStatus
-        }
-    }
-
-    private func ensureHealthKitAuthorization() async -> Bool {
-        updateHealthKitAuthorizationStatus()
-
-        switch healthKitAuthorizationStatus {
-        case .sharingAuthorized:
-            showHealthKitPermissionAlert = false
-            return true
-        case .notDetermined:
-            do {
-                try await healthKitUseCase.requestAuthorization()
-            } catch {
-                updateHealthKitAuthorizationStatus()
-                showHealthKitPermissionAlert = true
-                return false
-            }
-
-            updateHealthKitAuthorizationStatus()
-            let isAuthorized = healthKitAuthorizationStatus == .sharingAuthorized
-            showHealthKitPermissionAlert = !isAuthorized
-            return isAuthorized
-        case .sharingDenied:
-            showHealthKitPermissionAlert = true
-            return false
-        }
-    }
-    
     public func loadInitialState() async {
         await waterUseCase.migrateLegacyDataIfNeeded()
         await refreshState()
     }
 
     func drinkWater() async {
-        guard await ensureHealthKitAuthorization() else {
-            return
-        }
+        let nextIntake = currentWaterIntakeML + HydrationServing.defaultGlassML
 
-        // Check if adding one more glass would exceed daily limit
-        let nextIntake = currentWaterIntakeInMl + 250.0
-
-        // Use rounded comparison to avoid floating point precision issues
         if nextIntake.rounded() > dailyLimit.rounded() {
-            return // Do not allow drinking more than daily limit
+            return
         }
         
         await waterUseCase.drinkWater()
         await refreshState()
-        WidgetCenter.shared.reloadAllTimelines()
+        widgetTimelineReloader.reloadAllTimelines()
     }
     
     func reset() async {
-        guard await ensureHealthKitAuthorization() else {
-            return
-        }
-
         await waterUseCase.reset()
         await refreshState()
-        WidgetCenter.shared.reloadAllTimelines()
+        widgetTimelineReloader.reloadAllTimelines()
     }
 
     func resetAnimation() {
@@ -185,16 +113,10 @@ public final class DrinkWaterViewModel {
     func startAnimation() {
         offset = 360
     }
-
-    func dismissHealthKitPermissionAlert() {
-        showHealthKitPermissionAlert = false
-    }
     
     public func refreshState() async {
-        // Refresh from persistence and user preferences.
         updateMainIcon()
-        await updateWaterCount()
+        await updateCurrentIntake()
         updateDailyLimit()
-        updateHealthKitAuthorizationStatus()
     }
 }
