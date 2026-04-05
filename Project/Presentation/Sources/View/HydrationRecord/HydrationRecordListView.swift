@@ -20,8 +20,6 @@ public struct HydrationRecordListView: View {
     
     public var body: some View {
         RecordCalendarView(viewModel: viewModel)
-        .navigationTitle(L10n.tr("historyTitle"))
-        .navigationBarTitleDisplayMode(.large)
         .background(
             Color.background
                 .ignoresSafeArea()

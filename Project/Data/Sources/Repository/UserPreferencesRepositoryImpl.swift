@@ -32,6 +32,14 @@ public struct UserPreferencesRepositoryImpl: UserPreferencesRepository {
         dataSource.setDailyWaterLimit(limit)
     }
 
+    public func hasCompletedOnboarding() -> Bool {
+        dataSource.hasCompletedOnboarding()
+    }
+
+    public func setHasCompletedOnboarding(_ completed: Bool) {
+        dataSource.setHasCompletedOnboarding(completed)
+    }
+
     public func getManualBodyProfile() -> BodyProfile {
         dataSource.getManualBodyProfile()
     }

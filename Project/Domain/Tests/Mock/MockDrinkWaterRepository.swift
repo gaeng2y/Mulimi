@@ -10,7 +10,7 @@ import DomainLayerInterface
 import Foundation
 
 final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
-    private var currentWaterValue = 0
+    private var currentWaterIntakeMLValue = 0.0
     private var _events: [HydrationEvent] = []
     
     // Call tracking properties
@@ -20,9 +20,9 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var hydrationEventsInIntervalCallCount = 0
     private(set) var migrateCallCount = 0
     
-    var currentWater: Int {
+    var currentWaterIntakeML: Double {
         get async {
-            currentWaterValue
+            currentWaterIntakeMLValue
         }
     }
 
@@ -44,30 +44,30 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     
     func drinkWater() async {
         drinkWaterCallCount += 1
-        currentWaterValue += 1
+        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
         _events.append(
             HydrationEvent(
                 id: UUID(),
                 consumedAt: .now,
-                volumeML: 250
+                volumeML: Int(HydrationServing.defaultGlassML)
             )
         )
     }
     
     func reset() async {
         resetCallCount += 1
-        currentWaterValue = 0
+        currentWaterIntakeMLValue = 0
         _events.removeAll()
     }
     
     // Test helper methods
-    func setCurrentWater(_ value: Int) {
-        currentWaterValue = value
+    func setCurrentWaterIntakeML(_ value: Double) {
+        currentWaterIntakeMLValue = value
     }
 
     func setHydrationEvents(_ events: [HydrationEvent]) {
         _events = events
-        currentWaterValue = events.count
+        currentWaterIntakeMLValue = events.reduce(0) { $0 + Double($1.volumeML) }
     }
     
     func resetCallCounts() {

@@ -22,8 +22,12 @@ struct AuthenticationViewModelTests {
     func initializeAuthenticationState() {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.isAuthenticatedValue = true
+        let appSession = AppSession()
 
-        let viewModel = AuthenticationViewModel(signInUseCase: mockSignInUseCase)
+        let viewModel = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: appSession
+        )
 
         #expect(viewModel.isAuthenticated == true)
     }
@@ -33,7 +37,11 @@ struct AuthenticationViewModelTests {
     func checkAuthenticationStatus() {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.isAuthenticatedValue = false
-        let viewModel = AuthenticationViewModel(signInUseCase: mockSignInUseCase)
+        let appSession = AppSession()
+        let viewModel = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: appSession
+        )
 
         mockSignInUseCase.isAuthenticatedValue = true
         viewModel.checkAuthenticationStatus()
@@ -45,7 +53,10 @@ struct AuthenticationViewModelTests {
     @Test("signInWithApple 성공 시 인증 상태가 true가 된다")
     func signInWithAppleSuccess() async {
         let mockSignInUseCase = MockSignInUseCase()
-        let viewModel = AuthenticationViewModel(signInUseCase: mockSignInUseCase)
+        let viewModel = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: AppSession()
+        )
 
         await viewModel.signInWithApple()
 
@@ -60,7 +71,10 @@ struct AuthenticationViewModelTests {
     func signInWithAppleFailure() async {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.signInError = MockError.signInFailed
-        let viewModel = AuthenticationViewModel(signInUseCase: mockSignInUseCase)
+        let viewModel = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: AppSession()
+        )
 
         await viewModel.signInWithApple()
 
@@ -75,7 +89,10 @@ struct AuthenticationViewModelTests {
     func signOut() {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.isAuthenticatedValue = true
-        let viewModel = AuthenticationViewModel(signInUseCase: mockSignInUseCase)
+        let viewModel = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: AppSession()
+        )
 
         viewModel.signOut()
 

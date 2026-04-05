@@ -291,7 +291,7 @@ private struct DailyLimitSettingView: View {
                             viewModel.dailyWaterLimit = newValue
                             recommendationViewModel?.clearRecommendation()
                         }
-                    ), in: 1000...4000, step: 250) {
+                    ), in: 1000...4000, step: HydrationServing.defaultGlassML) {
                         Text(L10n.tr("settingsDailyLimitSliderTitle"))
                     }
                     .padding(.horizontal)

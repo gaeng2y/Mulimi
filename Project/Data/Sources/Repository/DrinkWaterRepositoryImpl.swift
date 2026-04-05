@@ -16,9 +16,9 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         self.dataSource = dataSource
     }
     
-    public var currentWater: Int {
+    public var currentWaterIntakeML: Double {
         get async {
-            await dataSource.currentWater
+            await dataSource.currentWaterIntakeML
         }
     }
 

@@ -23,7 +23,6 @@ public protocol HealthKitDataSource: Sendable {
 
 public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Sendable {
     private enum Constant {
-        static let aGlassOfWater: Double = 250
         static let appSourcePrefix = "gaeng2y.DrinkWater"
     }
     
@@ -187,7 +186,10 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             throw HealthKitError.invalidObjectType
         }
             
-        let waterQuantity = HKQuantity(unit: .literUnit(with: .milli), doubleValue: Constant.aGlassOfWater)
+        let waterQuantity = HKQuantity(
+            unit: .literUnit(with: .milli),
+            doubleValue: HydrationServing.defaultGlassML
+        )
         let waterSample = HKQuantitySample(type: waterType, quantity: waterQuantity, start: .now, end: .now)
             
         try await healthStore.save(waterSample)

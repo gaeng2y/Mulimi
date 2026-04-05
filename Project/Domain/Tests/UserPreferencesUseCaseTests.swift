@@ -170,6 +170,29 @@ struct UserPreferencesUseCaseTests {
         #expect(mockRepository.capturedDailyWaterLimit == preciseValue)
     }
 
+    // MARK: - Onboarding Tests
+
+    @Test("초기 온보딩 완료 여부 조회 테스트")
+    func getOnboardingCompletionInitial() {
+        let mockRepository = MockUserPreferencesRepository()
+        let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
+
+        #expect(useCase.hasCompletedOnboarding() == false)
+        #expect(mockRepository.hasCompletedOnboardingCallCount == 1)
+    }
+
+    @Test("온보딩 완료 상태 저장 테스트")
+    func setOnboardingCompletion() {
+        let mockRepository = MockUserPreferencesRepository()
+        let useCase = UserPreferencesUseCaseImpl(repository: mockRepository)
+
+        useCase.setHasCompletedOnboarding(true)
+
+        #expect(mockRepository.setHasCompletedOnboardingCallCount == 1)
+        #expect(mockRepository.capturedHasCompletedOnboarding == true)
+        #expect(useCase.hasCompletedOnboarding() == true)
+    }
+
     // MARK: - Integration Tests
 
     @Test("전체 시나리오 테스트: 외관 및 목표량 변경")

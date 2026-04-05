@@ -12,7 +12,18 @@ import PresentationLayer
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
+
+    private enum AppTab: Hashable {
+        case drink
+        case history
+        case insight
+        case challenge
+        case profile
+    }
+
     @State private var appCoordinator: AppCoordinator
+    @State private var selectedTab: AppTab = .drink
     @State private var drinkWaterViewModel: DrinkWaterViewModel
     @State private var hydrationRecordListViewModel: HydrationRecordListViewModel
     @State private var hydrationInsightViewModel: HydrationInsightViewModel
@@ -47,23 +58,27 @@ struct ContentView: View {
                 set: { appCoordinator.path = $0 }
             )
         ) {
-            TabView {
+            TabView(selection: $selectedTab) {
                 DrinkWaterView(viewModel: drinkWaterViewModel)
+                    .tag(AppTab.drink)
                     .tabItem {
                         Label(L10n.tr("drinkTitle"), systemImage: "waterbottle")
                     }
 
                 HydrationRecordListView(viewModel: hydrationRecordListViewModel)
+                    .tag(AppTab.history)
                     .tabItem {
                         Label(L10n.tr("historyTitle"), systemImage: "calendar")
                     }
 
                 HydrationInsightView(viewModel: hydrationInsightViewModel)
+                    .tag(AppTab.insight)
                     .tabItem {
                         Label(L10n.tr("insightNavigationTitle"), systemImage: "chart.bar.xaxis")
                     }
 
                 ChallengeView(viewModel: challengeViewModel)
+                    .tag(AppTab.challenge)
                     .tabItem {
                         Label(L10n.tr("challengeTitle"), systemImage: "trophy")
                     }
@@ -74,15 +89,33 @@ struct ContentView: View {
                     recommendationViewModel: recommendationViewModel,
                     routineViewModel: routineViewModel
                 )
+                .tag(AppTab.profile)
                 .tabItem {
                     Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")
                 }
             }
+            .navigationTitle(navigationTitle)
+            .navigationBarTitleDisplayMode(.large)
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
         }
         .tint(.accent)
+        .task {
+            await refreshSelectedTab()
+        }
+        .task(id: selectedTab) {
+            await refreshSelectedTab()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else {
+                return
+            }
+
+            Task {
+                await refreshSelectedTab()
+            }
+        }
     }
 
     @ViewBuilder
@@ -110,6 +143,38 @@ struct ContentView: View {
             case .withdrawal:
                 SettingDetailView(menu: .withdrawal, viewModel: settingsViewModel)
             }
+        }
+    }
+
+    private var navigationTitle: String {
+        switch selectedTab {
+        case .drink:
+            L10n.tr("drinkTitle")
+        case .history:
+            L10n.tr("historyTitle")
+        case .insight:
+            L10n.tr("insightNavigationTitle")
+        case .challenge:
+            L10n.tr("challengeTitle")
+        case .profile:
+            L10n.tr("profileTitle")
+        }
+    }
+
+    @MainActor
+    private func refreshSelectedTab() async {
+        switch selectedTab {
+        case .drink:
+            await drinkWaterViewModel.refreshState()
+        case .history:
+            await hydrationRecordListViewModel.refresh()
+        case .insight:
+            await hydrationInsightViewModel.loadInsights()
+        case .challenge:
+            await challengeViewModel.loadChallenges()
+        case .profile:
+            settingsViewModel.refreshState()
+            await bodyProfileViewModel.refresh()
         }
     }
 }

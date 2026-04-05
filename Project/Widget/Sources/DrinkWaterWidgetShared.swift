@@ -15,7 +15,7 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> DrinkWaterEntry {
         .init(
             date: .now,
-            numberOfGlasses: 0,
+            currentIntakeML: 0,
             dailyLimit: 2000,
             mainIconSymbol: "drop.fill"
         )
@@ -50,7 +50,7 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
 
         return DrinkWaterEntry(
             date: date,
-            numberOfGlasses: await waterUseCase.currentWater,
+            currentIntakeML: await waterUseCase.currentWaterIntakeML,
             dailyLimit: dailyLimit,
             mainIconSymbol: mainIconSymbol
         )
@@ -59,14 +59,18 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
 
 struct DrinkWaterEntry: TimelineEntry {
     let date: Date
-    let numberOfGlasses: Int
+    let currentIntakeML: Double
     let dailyLimit: Double
     let mainIconSymbol: String
 }
 
 extension DrinkWaterEntry {
     var mililiters: Int {
-        250 * numberOfGlasses
+        Int(currentIntakeML.rounded())
+    }
+
+    var numberOfGlasses: Int {
+        HydrationServing.glassCount(for: currentIntakeML)
     }
 
     var progressFraction: Double {

@@ -86,7 +86,6 @@ public struct ProfileView: View {
                 )
             }
         }
-        .navigationTitle(L10n.tr("profileTitle"))
         .task {
             await routineViewModel.load()
             await bodyProfileViewModel.load()

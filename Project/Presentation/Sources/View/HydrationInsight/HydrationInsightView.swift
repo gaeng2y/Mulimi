@@ -41,7 +41,6 @@ public struct HydrationInsightView: View {
             }
             .padding(.horizontal, 20)
         }
-        .navigationTitle(L10n.tr("insightNavigationTitle"))
         .task {
             await viewModel.loadInsights()
         }

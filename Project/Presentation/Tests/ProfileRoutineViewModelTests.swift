@@ -50,11 +50,11 @@ struct ProfileRoutineViewModelTests {
     }
 
     private final class SpyDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
-        var currentWaterValue = 0
+        var currentWaterIntakeMLValue = 0.0
 
-        var currentWater: Int {
+        var currentWaterIntakeML: Double {
             get async {
-                currentWaterValue
+                currentWaterIntakeMLValue
             }
         }
 
@@ -89,6 +89,12 @@ struct ProfileRoutineViewModelTests {
         func setDailyWaterLimit(_ limit: Double) {
             dailyWaterLimit = limit
         }
+
+        func hasCompletedOnboarding() -> Bool {
+            true
+        }
+
+        func setHasCompletedOnboarding(_ completed: Bool) {}
 
         func getManualBodyProfile() -> BodyProfile {
             .empty
@@ -293,7 +299,7 @@ struct ProfileRoutineViewModelTests {
         let routineUseCase = SpyRoutineUseCase()
         routineUseCase.routines = [morningRoutine, eveningRoutine]
         let drinkWaterUseCase = SpyDrinkWaterUseCase()
-        drinkWaterUseCase.currentWaterValue = 3
+        drinkWaterUseCase.currentWaterIntakeMLValue = 750
         let userPreferencesUseCase = SpyUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimit = 2000
         let now = makeDate(year: 2026, month: 3, day: 16, hour: 10, minute: 30)

@@ -2,9 +2,8 @@ import Foundation
 import SwiftUI
 
 @Observable
-public final class AppCoordinator: RecordRouting {
+public final class AppCoordinator: StackRouting {
     public var path = NavigationPath()
-    public var presentedRoute: RecordRoute?
 
     public init() {}
 

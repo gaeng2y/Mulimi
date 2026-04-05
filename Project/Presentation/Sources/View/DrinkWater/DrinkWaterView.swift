@@ -9,7 +9,6 @@ import DesignSystem
 import DomainLayerInterface
 import Localization
 import SwiftUI
-import UIKit
 
 public struct DrinkWaterView: View {
     private var viewModel: DrinkWaterViewModel
@@ -100,8 +99,6 @@ public struct DrinkWaterView: View {
                 }
             }
         }
-        .navigationTitle(L10n.tr("drinkTitle"))
-        .navigationBarTitleDisplayMode(.large)
         .task {
             // Refresh data when view appears to catch any Widget changes.
             await viewModel.loadInitialState()
@@ -112,30 +109,6 @@ public struct DrinkWaterView: View {
             await Task.yield()
             viewModel.startAnimation()
         }
-        .alert(
-            "건강 접근 권한이 필요해요",
-            isPresented: Binding(
-                get: { viewModel.showHealthKitPermissionAlert },
-                set: { if !$0 { viewModel.dismissHealthKitPermissionAlert() } }
-            )
-        ) {
-            Button("설정") {
-                openSettings()
-            }
-            Button(L10n.tr("commonCancelTitle"), role: .cancel) {
-                viewModel.dismissHealthKitPermissionAlert()
-            }
-        } message: {
-            Text("물 기록을 저장하고 불러오려면 건강 앱 접근을 허용해주세요.")
-        }
-    }
-
-    private func openSettings() {
-        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
-            return
-        }
-
-        UIApplication.shared.open(settingsURL)
     }
 }
 

@@ -13,6 +13,8 @@ public protocol UserPreferencesRepository: Sendable {
     func setMainIcon(_ icon: MainIcon)
     func getDailyWaterLimit() -> Double
     func setDailyWaterLimit(_ limit: Double)
+    func hasCompletedOnboarding() -> Bool
+    func setHasCompletedOnboarding(_ completed: Bool)
     func getManualBodyProfile() -> BodyProfile
     func setManualBodyProfile(_ profile: BodyProfile)
 }

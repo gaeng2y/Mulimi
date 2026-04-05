@@ -11,6 +11,7 @@ import DomainLayerInterface
 final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked Sendable {
     private var _mainIcon: MainIcon = .default
     private var _dailyWaterLimit: Double = 2000.0
+    private var _hasCompletedOnboarding = false
     private var _manualBodyProfile: BodyProfile = .empty
 
     // Call tracking properties
@@ -18,12 +19,15 @@ final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked
     private(set) var setMainIconCallCount = 0
     private(set) var getDailyWaterLimitCallCount = 0
     private(set) var setDailyWaterLimitCallCount = 0
+    private(set) var hasCompletedOnboardingCallCount = 0
+    private(set) var setHasCompletedOnboardingCallCount = 0
     private(set) var getManualBodyProfileCallCount = 0
     private(set) var setManualBodyProfileCallCount = 0
 
     // Captured values for verification
     private(set) var capturedMainIcon: MainIcon?
     private(set) var capturedDailyWaterLimit: Double?
+    private(set) var capturedHasCompletedOnboarding: Bool?
     private(set) var capturedManualBodyProfile: BodyProfile?
 
     func getMainIcon() -> MainIcon {
@@ -48,6 +52,17 @@ final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked
         _dailyWaterLimit = limit
     }
 
+    func hasCompletedOnboarding() -> Bool {
+        hasCompletedOnboardingCallCount += 1
+        return _hasCompletedOnboarding
+    }
+
+    func setHasCompletedOnboarding(_ completed: Bool) {
+        setHasCompletedOnboardingCallCount += 1
+        capturedHasCompletedOnboarding = completed
+        _hasCompletedOnboarding = completed
+    }
+
     func getManualBodyProfile() -> BodyProfile {
         getManualBodyProfileCallCount += 1
         return _manualBodyProfile
@@ -66,6 +81,8 @@ final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked
         setMainIconCallCount = 0
         getDailyWaterLimitCallCount = 0
         setDailyWaterLimitCallCount = 0
+        hasCompletedOnboardingCallCount = 0
+        setHasCompletedOnboardingCallCount = 0
         getManualBodyProfileCallCount = 0
         setManualBodyProfileCallCount = 0
     }
@@ -73,12 +90,14 @@ final class MockUserPreferencesRepository: UserPreferencesRepository, @unchecked
     func resetCapturedValues() {
         capturedMainIcon = nil
         capturedDailyWaterLimit = nil
+        capturedHasCompletedOnboarding = nil
         capturedManualBodyProfile = nil
     }
 
     func resetToDefaults() {
         _mainIcon = .default
         _dailyWaterLimit = 2000.0
+        _hasCompletedOnboarding = false
         _manualBodyProfile = .empty
         resetCallCounts()
         resetCapturedValues()

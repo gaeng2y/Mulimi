@@ -16,9 +16,9 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
         self.repository = repository
     }
     
-    public var currentWater: Int {
+    public var currentWaterIntakeML: Double {
         get async {
-            await repository.currentWater
+            await repository.currentWaterIntakeML
         }
     }
 
