@@ -23,10 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install SwiftLint
+      - name: Install lint tools
         run: |
           set -euo pipefail
           brew install swiftlint
+          brew install ripgrep
 
       - name: Run SwiftLint
         run: |
