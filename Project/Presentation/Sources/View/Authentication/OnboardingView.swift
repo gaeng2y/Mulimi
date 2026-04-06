@@ -187,7 +187,7 @@ public struct OnboardingView: View {
     private var pages: [OnboardingPage] {
         [
             OnboardingPage(
-                eyebrow: "Quick Logging",
+                eyebrow: "빠른 기록",
                 title: "기록은\n가볍고 빠르게",
                 description: "오늘 마신 물을 한 번의 탭으로 기록하고, 현재 목표까지 얼마나 남았는지 바로 확인할 수 있어요.",
                 highlights: [
@@ -201,7 +201,7 @@ public struct OnboardingView: View {
                 ]
             ),
             OnboardingPage(
-                eyebrow: "Daily Rhythm",
+                eyebrow: "루틴 흐름",
                 title: "흐름은\n한눈에 읽기",
                 description: "기록, 인사이트, 챌린지로 하루와 일주일의 수분 루틴을 한 번에 파악할 수 있어요.",
                 highlights: [
@@ -215,7 +215,7 @@ public struct OnboardingView: View {
                 ]
             ),
             OnboardingPage(
-                eyebrow: "Health Sync",
+                eyebrow: "건강 연동",
                 title: "건강 앱과\n연결해서 시작",
                 description: "물리미는 건강 앱과 연동해 수분 기록과 신체 정보를 함께 활용합니다. 온보딩 뒤에 바로 권한을 안내할게요.",
                 highlights: [

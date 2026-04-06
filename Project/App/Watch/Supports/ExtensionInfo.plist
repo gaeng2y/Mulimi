@@ -17,9 +17,9 @@
 	<key>CFBundleVersion</key>
 	<string>$(APP_BUILD_NUMBER)</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>We need access to your health data to display your water intake.</string>
+	<string>물 섭취 기록과 신체 정보를 보여주기 위해 건강 앱 접근 권한이 필요합니다.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>We need access to your health data to log your water intake.</string>
+	<string>마신 물을 건강 앱에 기록하기 위해 건강 앱 쓰기 권한이 필요합니다.</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
