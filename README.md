@@ -147,6 +147,7 @@ make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 1. `XCConfig/Secrets.xcconfig` 생성
 2. `tuist install`
 3. `tuist generate`
+4. `git hooks` 경로 설정
 
 ### 수동 설정
 
@@ -177,6 +178,16 @@ tuist generate
 ```
 
 5. 생성된 `Mulimi.xcworkspace`를 Xcode에서 엽니다.
+
+### 개발용 명령
+
+```bash
+make hooks
+make lint
+make lint-fix
+make arch-check
+make verify
+```
 
 ## ✅ 개발 환경 메모
 

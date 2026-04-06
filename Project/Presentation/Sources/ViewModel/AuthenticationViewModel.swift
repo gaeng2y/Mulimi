@@ -14,14 +14,14 @@ import Observation
 public final class AuthenticationViewModel {
     public var isLoading: Bool = false
     public var errorMessage: String?
-    
+
     private let signInUseCase: SignInUseCase
     private let appSession: AppSession
 
     public var isAuthenticated: Bool {
         appSession.isAuthenticated
     }
-    
+
     public init(
         signInUseCase: SignInUseCase,
         appSession: AppSession
@@ -30,26 +30,26 @@ public final class AuthenticationViewModel {
         self.appSession = appSession
         checkAuthenticationStatus()
     }
-    
+
     public func checkAuthenticationStatus() {
         appSession.isAuthenticated = signInUseCase.isAuthenticated
     }
-    
+
     @MainActor
     public func signInWithApple() async {
         isLoading = true
         errorMessage = nil
-        
+
         do {
             try await signInUseCase.signInWithApple()
             appSession.isAuthenticated = true
         } catch {
             errorMessage = error.localizedDescription
         }
-        
+
         isLoading = false
     }
-    
+
     public func signOut() {
         signInUseCase.signOut()
         appSession.isAuthenticated = false

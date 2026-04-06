@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+cd "$ROOT_DIR"
+
+STAGED_SWIFT_FILES="$(git diff --cached --name-only --diff-filter=ACMR | rg '\.swift$' || true)"
+
+if [ -z "$STAGED_SWIFT_FILES" ]; then
+  exit 0
+fi
+
+COUNT=0
+for FILE in $STAGED_SWIFT_FILES; do
+  eval "export SCRIPT_INPUT_FILE_${COUNT}='$ROOT_DIR/$FILE'"
+  COUNT=$((COUNT + 1))
+done
+export SCRIPT_INPUT_FILE_COUNT="$COUNT"
+
+scripts/lint.sh
+scripts/check-architecture.sh

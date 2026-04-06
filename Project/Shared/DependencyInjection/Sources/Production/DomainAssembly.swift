@@ -36,7 +36,7 @@ public final class DomainAssembly: Assembly {
                 drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
             )
         }
-        
+
         // MARK: - HealthKit
         container.register(HealthKitUseCase.self) { resolver in
             HealthKitUseCaseImpl(
@@ -58,7 +58,7 @@ public final class DomainAssembly: Assembly {
                 recommendationRepository: resolver.resolve(HydrationGoalRecommendationRepository.self)!
             )
         }
-        
+
         // MARK: - UserPreferences
         container.register(UserPreferencesUseCase.self) { resolver in
             UserPreferencesUseCaseImpl(

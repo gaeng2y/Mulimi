@@ -11,7 +11,7 @@ struct GlareCircleView: View {
     let opacity: CGFloat = 0.1
     let sizeConstant: CGFloat
     let offset: CGPoint
-    
+
     var body: some View {
         Circle()
             .fill(.white.opacity(opacity))

@@ -4,20 +4,20 @@ import WidgetKit
 
 struct DrinkWaterWidgetEntryView: View {
     let entry: DrinkWaterEntry
-    
+
     private var accentColor: Color {
         entry.isLimitReached ? .green : .accentColor
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: entry.mainIconSymbol)
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.accentColor)
-                
+
                 Spacer()
-                
+
                 Button(intent: LogWaterAppIntent()) {
                     HStack(spacing: 4) {
                         Image(systemName: entry.isLimitReached ? "checkmark.circle.fill" : "plus.circle.fill")
@@ -36,17 +36,17 @@ struct DrinkWaterWidgetEntryView: View {
                 .buttonStyle(.plain)
                 .disabled(entry.isLimitReached)
             }
-            
+
             Text("\(entry.mililiters.formatted())ml")
                 .font(.system(size: 25, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
-            
+
             Text("\(entry.numberOfGlasses)잔 / 목표 \(entry.dailyLimitText)ml")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
-            
+
             Spacer()
-            
+
             ProgressView(value: entry.progressFraction)
                 .progressViewStyle(.linear)
                 .tint(accentColor)
@@ -59,7 +59,7 @@ struct DrinkWaterWidgetEntryView: View {
 
 struct DrinkWaterWidget: Widget {
     let kind: String = .widgetKind
-    
+
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: kind,

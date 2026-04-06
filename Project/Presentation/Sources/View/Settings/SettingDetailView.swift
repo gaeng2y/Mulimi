@@ -16,7 +16,7 @@ public struct SettingDetailView: View {
     private let viewModel: SettingsViewModel
     private let bodyProfileViewModel: BodyProfileViewModel?
     private let recommendationViewModel: HydrationGoalRecommendationViewModel?
-    
+
     public init(
         menu: SettingMenu,
         viewModel: SettingsViewModel,
@@ -28,7 +28,7 @@ public struct SettingDetailView: View {
         self.bodyProfileViewModel = bodyProfileViewModel
         self.recommendationViewModel = recommendationViewModel
     }
-    
+
     public var body: some View {
         Group {
             switch menu {
@@ -256,7 +256,7 @@ private struct DailyLimitSettingView: View {
     @Bindable private var viewModel: SettingsViewModel
     private let bodyProfileViewModel: BodyProfileViewModel?
     private let recommendationViewModel: HydrationGoalRecommendationViewModel?
-    
+
     init(
         viewModel: SettingsViewModel,
         bodyProfileViewModel: BodyProfileViewModel? = nil,
@@ -266,7 +266,7 @@ private struct DailyLimitSettingView: View {
         self.bodyProfileViewModel = bodyProfileViewModel
         self.recommendationViewModel = recommendationViewModel
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -667,11 +667,11 @@ private struct HydrationGoalRecommendationCard: View {
 
 private struct MainIconSettingView: View {
     private let viewModel: SettingsViewModel
-    
+
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         VStack(spacing: 20) {
             ForEach(MainIcon.allCases) { icon in
@@ -684,20 +684,20 @@ private struct MainIconSettingView: View {
                                 .font(.title2)
                                 .frame(width: 40)
                                 .foregroundColor(.accentColor)
-                            
+
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(icon.displayName)
                                     .font(.headline)
                                     .foregroundColor(.primary)
-                                
+
                                 Text(icon.description)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                     .multilineTextAlignment(.leading)
                             }
-                            
+
                             Spacer()
-                            
+
                             if viewModel.isMainIconSelected(icon) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(.accentColor)
@@ -725,7 +725,7 @@ private struct MainIconSettingView: View {
                 .buttonStyle(PlainButtonStyle())
             }
             .padding(.horizontal)
-            
+
             Spacer()
         }
         .padding()
@@ -819,7 +819,7 @@ private struct WithdrawalSettingView: View {
                 ZStack {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()
-                    
+
                     ProgressView(L10n.tr("withdrawalProgressTitle"))
                         .padding()
                         .background(

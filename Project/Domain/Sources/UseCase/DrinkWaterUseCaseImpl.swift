@@ -11,11 +11,11 @@ import Foundation
 
 public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     private let repository: DrinkWaterRepository
-    
+
     public init(repository: DrinkWaterRepository) {
         self.repository = repository
     }
-    
+
     public var currentWaterIntakeML: Double {
         get async {
             await repository.currentWaterIntakeML
@@ -37,7 +37,7 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     public func drinkWater() async {
         await repository.drinkWater()
     }
-    
+
     public func reset() async {
         await repository.reset()
     }

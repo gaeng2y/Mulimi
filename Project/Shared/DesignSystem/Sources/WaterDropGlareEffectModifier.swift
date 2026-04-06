@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct WaterDropGlareEffectModifier: ViewModifier {
     public init() {}
-    
+
     public func body(content: Content) -> some View {
         content
             .overlay {
@@ -19,22 +19,22 @@ public struct WaterDropGlareEffectModifier: ViewModifier {
                         sizeConstant: 15,
                         offset: .init(x: -20, y: 0)
                     )
-                    
+
                     GlareCircleView(
                         sizeConstant: 15,
                         offset: .init(x: 40, y: 30)
                     )
-                    
+
                     GlareCircleView(
                         sizeConstant: 25,
                         offset: .init(x: -30, y: 80)
                     )
-                    
+
                     GlareCircleView(
                         sizeConstant: 25,
                         offset: .init(x: 50, y: 70)
                     )
-                    
+
                     GlareCircleView(
                         sizeConstant: 10,
                         offset: .init(x: 40, y: 100)

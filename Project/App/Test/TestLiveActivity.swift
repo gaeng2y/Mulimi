@@ -67,7 +67,7 @@ extension TestAttributes.ContentState {
     fileprivate static var smiley: TestAttributes.ContentState {
         TestAttributes.ContentState(emoji: "😀")
      }
-     
+
      fileprivate static var starEyes: TestAttributes.ContentState {
          TestAttributes.ContentState(emoji: "🤩")
      }

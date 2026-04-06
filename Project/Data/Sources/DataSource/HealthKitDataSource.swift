@@ -12,7 +12,7 @@ import HealthKit
 
 public protocol HealthKitDataSource: Sendable {
     var healthKitAuthorizationStatus: HealthKitAuthorizationStatus { get }
-    
+
     func requestAuthorization() async throws
     func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)]
     func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent]
@@ -25,21 +25,21 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
     private enum Constant {
         static let appSourcePrefix = "gaeng2y.DrinkWater"
     }
-    
+
     private let healthStore: HKHealthStore
-    
+
     public init() {
         self.healthStore = HKHealthStore()
     }
-    
+
     private var authorizationStatus: HKAuthorizationStatus {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             return .notDetermined
         }
-        
+
         return healthStore.authorizationStatus(for: waterType)
     }
-    
+
     public var healthKitAuthorizationStatus: HealthKitAuthorizationStatus {
         switch authorizationStatus {
         case .notDetermined: .notDetermined
@@ -48,14 +48,14 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
         @unknown default: .notDetermined
         }
     }
-    
+
     public func requestAuthorization() async throws {
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater),
               let heightType = HKObjectType.quantityType(forIdentifier: .height),
               let bodyMassType = HKObjectType.quantityType(forIdentifier: .bodyMass) else {
             throw HealthKitError.invalidObjectType
         }
-        
+
         do {
             try await healthStore.requestAuthorization(
                 toShare: [waterType],
@@ -65,7 +65,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             throw HealthKitError.permissionDenied
         }
     }
-    
+
     public func readWaterIntake(from startDate: Date, to endDate: Date) async throws -> [(date: Date, amount: Double)] {
         guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
             return []
@@ -83,15 +83,15 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                     continuation.resume(throwing: HealthKitError.healthKitInternalError)
                     return
                 }
-                
+
                 // If this property is not set to nil, the query executes the results handler on a background queue after it has finished calculating the statistics for all matching samples currently stored in HealthKit.
                 guard let result else {
                     continuation.resume(throwing: HealthKitError.incompleteExecuteQuery)
                     return
                 }
-                
+
                 var waterIntakeResults: [(Date, Double)] = []
-                
+
                 result.enumerateStatistics(from: startDate, to: endDate) { statistics, _ in
                     let date = statistics.startDate
                     let waterInTake = statistics.sumQuantity()?.doubleValue(for: .literUnit(with: .milli)) ?? 0
@@ -99,7 +99,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                 }
                 continuation.resume(returning: waterIntakeResults)
             }
-            
+
             healthStore.execute(query)
         }
     }
@@ -176,7 +176,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
             weightKG: latestWeightKG.map { BodyProfileValue(value: $0, source: .healthKit) }
         )
     }
-    
+
     public func setAGlassOfWater() async throws {
         guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
             throw HealthKitError.permissionDenied
@@ -185,16 +185,16 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
-            
+
         let waterQuantity = HKQuantity(
             unit: .literUnit(with: .milli),
             doubleValue: HydrationServing.defaultGlassML
         )
         let waterSample = HKQuantitySample(type: waterType, quantity: waterQuantity, start: .now, end: .now)
-            
+
         try await healthStore.save(waterSample)
     }
-    
+
     public func resetWaterInTakeInToday() async throws {
         guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
             throw HealthKitError.permissionDenied
@@ -203,16 +203,16 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
         guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
             throw HealthKitError.invalidObjectType
         }
-        
+
         // Create date range for today
         let calendar = Calendar.current
         let today = Date()
         let startOfDay = calendar.startOfDay(for: today)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? today
-        
+
         // Create predicate for today's water intake samples
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: endOfDay, options: .strictStartDate)
-        
+
         // Find and delete all water intake samples for today
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             let sampleQuery = HKSampleQuery(
@@ -244,7 +244,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                     }
                 }
             }
-            
+
             healthStore.execute(sampleQuery)
         }
     }

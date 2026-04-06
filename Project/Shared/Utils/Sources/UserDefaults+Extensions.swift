@@ -14,7 +14,7 @@ public extension UserDefaults {
         }
         return appGroupUserDefaults
     }
-    
+
     @objc dynamic var glassesOfToday: Int {
         get { self.integer(forKey: .glassesOfToday) }
         set { self.set(newValue, forKey: .glassesOfToday) }

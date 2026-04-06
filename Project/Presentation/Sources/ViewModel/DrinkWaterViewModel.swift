@@ -20,11 +20,11 @@ public final class DrinkWaterViewModel {
     private(set) var offset: CGFloat = 0
     private(set) var mainIcon: MainIcon
     private(set) var currentDailyLimit: Double
-    
+
     private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let widgetTimelineReloader: any WidgetTimelineReloading
-    
+
     var mililiters: String {
         L10n.tr("commonMilliliterFormat", Int(currentWaterIntakeML.rounded()))
     }
@@ -32,15 +32,15 @@ public final class DrinkWaterViewModel {
     var drinkWaterCount: Int {
         HydrationServing.glassCount(for: currentWaterIntakeML)
     }
-    
+
     var dailyLimit: Double {
         currentDailyLimit
     }
-    
+
     var isLimitReached: Bool {
         currentWaterIntakeML.rounded() >= dailyLimit.rounded()
     }
-    
+
     var progress: CGFloat {
         guard currentDailyLimit > 0 else {
             return 0
@@ -48,7 +48,7 @@ public final class DrinkWaterViewModel {
 
         return min(CGFloat(currentWaterIntakeML / currentDailyLimit), 1.0)
     }
-    
+
     public init(
         waterUseCase: DrinkWaterUseCase,
         userPreferencesUseCase: UserPreferencesUseCase,
@@ -61,14 +61,14 @@ public final class DrinkWaterViewModel {
         self.mainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyLimit = userPreferencesUseCase.getDailyWaterLimit()
     }
-    
+
     private func updateMainIcon() {
         let newIcon = userPreferencesUseCase.getMainIcon()
         if mainIcon != newIcon {
             mainIcon = newIcon
         }
     }
-    
+
     private func updateCurrentIntake() async {
         let newIntake = await waterUseCase.currentWaterIntakeML
         if currentWaterIntakeML != newIntake {
@@ -94,12 +94,12 @@ public final class DrinkWaterViewModel {
         if nextIntake.rounded() > dailyLimit.rounded() {
             return
         }
-        
+
         await waterUseCase.drinkWater()
         await refreshState()
         widgetTimelineReloader.reloadAllTimelines()
     }
-    
+
     func reset() async {
         await waterUseCase.reset()
         await refreshState()
@@ -109,11 +109,11 @@ public final class DrinkWaterViewModel {
     func resetAnimation() {
         offset = 0
     }
-    
+
     func startAnimation() {
         offset = 360
     }
-    
+
     public func refreshState() async {
         updateMainIcon()
         await updateCurrentIntake()

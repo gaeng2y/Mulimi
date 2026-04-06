@@ -28,14 +28,14 @@ struct LogWaterAppIntent: AppIntent {
         let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
         let currentMl = await waterUseCase.currentWaterIntakeML
-        
+
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-        
+
         let nextMl = currentMl + HydrationServing.defaultGlassML
         if nextMl <= dailyLimit {
             await waterUseCase.drinkWater()
         }
-        
+
         WidgetCenter.shared.reloadAllTimelines()
         return .result()
     }

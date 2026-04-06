@@ -10,7 +10,7 @@ import Foundation
 
 public protocol HealthKitRepository: Sendable {
     var authorisationStatus: HealthKitAuthorizationStatus { get }
-    
+
     func requestAuthorization() async throws
     func drinkWater() async throws
     func reset() async throws

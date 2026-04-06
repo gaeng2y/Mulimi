@@ -24,7 +24,7 @@ public final class DataAssembly: Assembly {
         container.register(HealthKitDataSource.self) { resolver in
             HealthKitDataSourceImpl()
         }
-        
+
         container.register(HealthKitRepository.self) { resolver in
             HealthKitRepositoryImpl(
                 dataSource: resolver.resolve(HealthKitDataSource.self)!
@@ -36,12 +36,12 @@ public final class DataAssembly: Assembly {
                 dataSource: resolver.resolve(DrinkWaterDataSource.self)!
             )
         }
-        
+
         // MARK: - UserPreferences
         container.register(UserPreferencesDataSource.self) { resolver in
             UserPreferencesDataSourceImpl(userDefaults: .appGroup)
         }
-        
+
         container.register(UserPreferencesRepository.self) { resolver in
             UserPreferencesRepositoryImpl(
                 dataSource: resolver.resolve(UserPreferencesDataSource.self)!

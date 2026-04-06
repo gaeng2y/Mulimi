@@ -20,6 +20,7 @@ setup:
 	@echo "✅ Secrets.xcconfig created successfully."
 	@make fetch
 	@make generate
+	@make hooks
 	@echo "\n🚀 Project setup complete! Open Mulimi.xcworkspace to get started."
 
 ## fetch: Fetches Tuist dependencies.
@@ -33,6 +34,35 @@ fetch:
 generate:
 	@echo "✨ Generating Xcode project..."
 	@tuist generate
+
+## hooks: Configures the repository git hooks path.
+.PHONY: hooks
+hooks:
+	@echo "🪝 Configuring git hooks..."
+	@git config core.hooksPath .githooks
+	@chmod +x .githooks/pre-commit scripts/lint.sh scripts/lint-fix.sh scripts/check-architecture.sh
+	@echo "✅ Git hooks are configured."
+
+## lint: Runs SwiftLint with the shared project config.
+.PHONY: lint
+lint:
+	@./scripts/lint.sh
+
+## lint-fix: Auto-corrects fixable SwiftLint violations and re-runs lint.
+.PHONY: lint-fix
+lint-fix:
+	@./scripts/lint-fix.sh
+
+## arch-check: Runs architecture guardrail checks.
+.PHONY: arch-check
+arch-check:
+	@./scripts/check-architecture.sh
+
+## verify: Runs lint and architecture checks.
+.PHONY: verify
+verify:
+	@make lint
+	@make arch-check
 
 ## clean: Cleans all generated files by Tuist.
 .PHONY: clean
@@ -49,4 +79,3 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@awk 'BEGIN {FS = ":.*?## "}; /^##/ {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
-
