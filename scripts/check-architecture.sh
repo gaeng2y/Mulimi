@@ -50,7 +50,18 @@ for FILE in Project/Presentation/Sources/ViewModel/*ViewModel.swift; do
 done
 report_violation "ViewModels must not directly reference other ViewModel types." "$CROSS_VIEWMODEL_REFERENCES"
 
-HARD_CODED_GLASS_COUNT="$(rg -n '\b250(\.0)?\b' Project/Domain/Sources Project/Data/Sources Project/Presentation Project/Widget --glob '!**/Tests/**' --glob '!**/Derived/**' || true)"
+HARD_CODED_GLASS_COUNT="$(rg -n '\b250(\.0)?\b' \
+  Project/Domain/Sources \
+  Project/Domain/WatchSources \
+  Project/Domain/WatchInterfaces \
+  Project/Data/Sources \
+  Project/Data/WatchSources \
+  Project/Presentation \
+  Project/Widget \
+  --glob '!**/Tests/**' \
+  --glob '!**/Derived/**' \
+  --glob '!**/HydrationServing.swift' \
+  || true)"
 report_violation "Use HydrationServing instead of hard-coded 250ml literals." "$HARD_CODED_GLASS_COUNT"
 
 if [ "$FAILED" -ne 0 ]; then

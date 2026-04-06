@@ -42,7 +42,7 @@ public struct RootView<Content: View>: View {
             } else {
                 SignInView(viewModel: authenticationViewModel)
                     .onAppear {
-                        onboardingViewModel.refreshState()
+                        onboardingViewModel.prepareForSignedOutState()
                         healthKitPermissionViewModel.markSignedOut()
                     }
             }

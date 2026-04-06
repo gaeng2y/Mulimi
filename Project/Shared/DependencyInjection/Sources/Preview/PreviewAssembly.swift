@@ -136,7 +136,6 @@ public final class PreviewAssembly: Assembly {
                 OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
             }
         }
-        .inObjectScope(.container)
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
