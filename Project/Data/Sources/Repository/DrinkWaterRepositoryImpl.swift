@@ -11,11 +11,11 @@ import Foundation
 
 public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     private let dataSource: DrinkWaterDataSource
-    
+
     public init(dataSource: DrinkWaterDataSource) {
         self.dataSource = dataSource
     }
-    
+
     public var currentWaterIntakeML: Double {
         get async {
             await dataSource.currentWaterIntakeML
@@ -37,7 +37,7 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     public func drinkWater() async {
         await dataSource.drinkWater()
     }
-    
+
     public func reset() async {
         await dataSource.reset()
     }

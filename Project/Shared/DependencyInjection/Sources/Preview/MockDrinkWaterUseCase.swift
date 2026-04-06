@@ -11,7 +11,7 @@ import Foundation
 public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     public var currentWaterIntakeMLValue: Double = 750
     public var events: [HydrationEvent] = []
-    
+
     public init() {}
 
     public var currentWaterIntakeML: Double {
@@ -29,7 +29,7 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
     }
 
     public func migrateLegacyDataIfNeeded() async {}
-    
+
     public func drinkWater() async {
         currentWaterIntakeMLValue += HydrationServing.defaultGlassML
         events.append(
@@ -40,7 +40,7 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
             )
         )
     }
-    
+
     public func reset() async {
         currentWaterIntakeMLValue = 0
         events.removeAll()

@@ -15,7 +15,7 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
     private let keyChainDataSource: KeyChainDataSource
     // 향후 서버 통신 시 추가
     // private let networkDataSource: AuthenticationNetworkDataSource
-    
+
     // MARK: - Initializer
     public init(
         appleSignInDataSource: AppleSignInDataSource,
@@ -24,26 +24,26 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
         self.appleSignInDataSource = appleSignInDataSource
         self.keyChainDataSource = keyChainDataSource
     }
-    
+
     // MARK: - Authentication Status
     public var isAuthenticated: Bool {
         keyChainDataSource.validateToken()
     }
-    
+
     // MARK: - Sign In with Apple
     public func signInWithApple() async throws -> UserCredential {
         // 1. Apple 로그인 수행
         let appleCredential = try await appleSignInDataSource.signIn(
             scopes: ["email", "fullName"]
         )
-        
+
         // 2. 도메인 Entity로 변환
         let userCredential = UserCredential(
             userIdentifier: appleCredential.userIdentifier,
             email: appleCredential.email,
             name: formatName(from: appleCredential.fullName)
         )
-        
+
         // 3. KeyChain에 저장
         keyChainDataSource.save(
             property: .userIdentifier,
@@ -53,15 +53,15 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
             property: .accessToken,
             value: appleCredential.userIdentifier  // 임시로 userIdentifier 사용
         )
-        
+
         if let email = appleCredential.email {
             keyChainDataSource.save(property: .email, value: email)
         }
-        
+
         if let name = userCredential.name, !name.isEmpty {
             keyChainDataSource.save(property: .nickname, value: name)
         }
-        
+
         // 향후 서버 통신 추가 시:
         // 4. 서버로 Identity Token 전송하여 JWT 획득
         // if let identityToken = appleCredential.identityToken {
@@ -71,10 +71,10 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
         //     keyChainDataSource.save(property: .accessToken, value: tokens.accessToken)
         //     keyChainDataSource.save(property: .refreshToken, value: tokens.refreshToken)
         // }
-        
+
         return userCredential
     }
-    
+
     // MARK: - Sign Out
     public func signOut() {
         keyChainDataSource.delete(property: .accessToken)

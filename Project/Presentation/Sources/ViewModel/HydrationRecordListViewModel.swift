@@ -15,14 +15,14 @@ public final class HydrationRecordListViewModel {
     private(set) var records: [HydrationRecord] = []
     private(set) var date: Date = .now
     private(set) var isMonthPickerPresented = false
-    
+
     private(set) var errorMessage: String = ""
     private let useCase: DrinkWaterUseCase
-    
+
     public init(useCase: DrinkWaterUseCase) {
         self.useCase = useCase
     }
-    
+
     @MainActor
     func onAppear() async {
         await fetchHydrationRecord()
@@ -40,7 +40,7 @@ public final class HydrationRecordListViewModel {
     public func refresh() async {
         await fetchHydrationRecord()
     }
-    
+
     @MainActor
     func fetchHydrationRecord() async {
         let monthDates = monthDates(for: date)
@@ -85,7 +85,7 @@ public final class HydrationRecordListViewModel {
         date = newDate
         await fetchHydrationRecord()
     }
-    
+
     private func monthDates(for date: Date) -> [Date] {
         guard let startDate = Calendar.current.date(
             from: Calendar.current.dateComponents([.year, .month], from: date)

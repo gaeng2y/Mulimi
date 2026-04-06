@@ -30,7 +30,7 @@ public final class PresentationAssembly: Assembly {
             BundleAppInfoProvider()
         }
         .inObjectScope(.container)
-        
+
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
@@ -46,7 +46,7 @@ public final class PresentationAssembly: Assembly {
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
@@ -96,7 +96,7 @@ public final class PresentationAssembly: Assembly {
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(

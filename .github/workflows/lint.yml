@@ -1,0 +1,40 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lint tools
+        run: |
+          set -euo pipefail
+          brew install swiftlint
+          brew install ripgrep
+
+      - name: Run SwiftLint
+        run: |
+          set -euo pipefail
+          ./scripts/lint.sh
+
+      - name: Run architecture checks
+        run: |
+          set -euo pipefail
+          ./scripts/check-architecture.sh

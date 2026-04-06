@@ -62,7 +62,7 @@ public enum SharedHydrationStore {
             groupContainer: isStoredInMemoryOnly ? .none : .identifier(appGroupIdentifier),
             cloudKitDatabase: effectiveCloudKitDatabase
         )
-        
+
         do {
             return try ModelContainer(
                 for: HydrationEventModel.self,

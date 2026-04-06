@@ -11,7 +11,7 @@ import Swinject
 
 public final class PreviewAssembly: Assembly {
     public init() {}
-    
+
     public func assemble(container: Container) {
         // MARK: - Mock UseCases
         container.register(AppSession.self) { _ in
@@ -22,7 +22,7 @@ public final class PreviewAssembly: Assembly {
         container.register(DrinkWaterUseCase.self) { _ in
             MockDrinkWaterUseCase()
         }
-        
+
         container.register(HealthKitUseCase.self) { _ in
             MockHealthKitUseCase()
         }
@@ -75,7 +75,7 @@ public final class PreviewAssembly: Assembly {
             )
         }
         .inObjectScope(.container)
-        
+
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!
@@ -113,7 +113,7 @@ public final class PreviewAssembly: Assembly {
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - Navigation (Preview)
         container.register(AppCoordinator.self) { _ in
             AppCoordinator()

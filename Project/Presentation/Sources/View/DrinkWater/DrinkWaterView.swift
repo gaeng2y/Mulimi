@@ -12,16 +12,16 @@ import SwiftUI
 
 public struct DrinkWaterView: View {
     private var viewModel: DrinkWaterViewModel
-    
+
     public init(viewModel: DrinkWaterViewModel) {
         self.viewModel = viewModel
     }
-    
+
     public var body: some View {
         ZStack {
             Color.background
                 .ignoresSafeArea()
-            
+
             VStack {
                 GeometryReader { proxy in
                     WaterDropView(
@@ -40,7 +40,7 @@ public struct DrinkWaterView: View {
                     )
                 }
                 .frame(height: 450)
-                
+
                 VStack(spacing: 8) {
                     HStack(alignment: .firstTextBaseline) {
                         Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
@@ -48,7 +48,7 @@ public struct DrinkWaterView: View {
                         Text("\(viewModel.mililiters)")
                             .font(.callout)
                     }
-                    
+
                     HStack(alignment: .firstTextBaseline) {
                         Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
                             .font(.caption)
@@ -62,7 +62,7 @@ public struct DrinkWaterView: View {
                     }
                 }
                 .padding()
-                
+
                 HStack {
                     Button {
                         Task {
@@ -82,7 +82,7 @@ public struct DrinkWaterView: View {
                             .cornerRadius(10)
                     }
                     .disabled(viewModel.isLimitReached)
-                    
+
                     Button {
                         Task {
                             await viewModel.reset()
@@ -116,7 +116,7 @@ fileprivate struct WaterDropView: View {
     let appearance: MainIcon
     let progress: CGFloat
     let offset: CGFloat
-    
+
     var body: some View {
         ZStack {
             Image(systemName: appearance.fillSystemImage)
@@ -126,7 +126,7 @@ fileprivate struct WaterDropView: View {
                 .foregroundColor(.white)
                 .scaleEffect(x: 1.1, y: 1.1)
                 .offset(y: -1)
-            
+
             WaterWaveView(
                 progress: progress,
                 waveHeight: 0.1,
