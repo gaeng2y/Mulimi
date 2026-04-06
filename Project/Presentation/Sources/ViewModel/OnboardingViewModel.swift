@@ -48,9 +48,19 @@ public final class OnboardingViewModel {
     public func completeOnboarding() {
         userPreferencesUseCase.setHasCompletedOnboarding(true)
         hasCompletedOnboarding = true
+        resetProgress()
     }
 
     public func refreshState() {
         hasCompletedOnboarding = userPreferencesUseCase.hasCompletedOnboarding()
+    }
+
+    func prepareForSignedOutState() {
+        refreshState()
+        resetProgress()
+    }
+
+    private func resetProgress() {
+        currentPage = 0
     }
 }

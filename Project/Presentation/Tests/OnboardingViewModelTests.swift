@@ -42,5 +42,22 @@ struct OnboardingViewModelTests {
         #expect(viewModel.hasCompletedOnboarding == true)
         #expect(userPreferencesUseCase.setHasCompletedOnboardingCallCount == 1)
         #expect(userPreferencesUseCase.capturedHasCompletedOnboarding == true)
+        #expect(viewModel.currentPage == 0)
+    }
+
+    @MainActor
+    @Test("prepareForSignedOutState는 온보딩 상태를 다시 읽고 페이지를 처음으로 되돌린다")
+    func prepareForSignedOutStateResetsProgress() {
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        let viewModel = OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
+
+        viewModel.currentPage = 2
+        userPreferencesUseCase.hasCompletedOnboardingValue = false
+
+        viewModel.prepareForSignedOutState()
+
+        #expect(viewModel.currentPage == 0)
+        #expect(viewModel.hasCompletedOnboarding == false)
+        #expect(userPreferencesUseCase.hasCompletedOnboardingCallCount == 2)
     }
 }
