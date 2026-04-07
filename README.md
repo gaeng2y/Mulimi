@@ -89,6 +89,9 @@ SignIn
 
 ```text
 Mulimi/
+├── AGENTS.md
+├── ARCHITECTURE.md
+├── README.md
 ├── Project/
 │   ├── App/
 │   │   ├── Sources/
@@ -114,9 +117,14 @@ Mulimi/
 │       ├── Localization/
 │       ├── Persistence/
 │       └── Utils/
+├── Docs/
+│   ├── index.md
+│   ├── harness-engineering.md
+│   ├── product-specs/
+│   ├── exec-plans/
+│   └── skills/
 ├── Tuist/
 ├── XCConfig/
-├── Docs/
 └── ci_scripts/
 ```
 
@@ -189,6 +197,19 @@ make arch-check
 make verify
 ```
 
+## 📖 문서 읽기 순서
+
+처음 저장소에 들어오거나 큰 구조 변경을 시작할 때는 아래 순서를 권장합니다.
+
+1. `AGENTS.md`
+2. `README.md`
+3. `ARCHITECTURE.md`
+4. `Docs/index.md`
+5. 작업 대상 이슈
+6. 관련 `Docs/product-specs/`
+7. 관련 `Docs/skills/`
+8. 수정 대상 모듈의 `Project.swift`와 실제 구현
+
 ## ✅ 개발 환경 메모
 
 - `iOS 26.0+`, `watchOS 26.0+` 타깃을 사용합니다.
@@ -198,10 +219,12 @@ make verify
 ## 📚 문서
 
 - [문서 허브](Docs/index.md)
+- [하네스 엔지니어링 구조](Docs/harness-engineering.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)
+- [실행 계획 / 기술 부채](Docs/exec-plans/tech-debt-tracker.md)
+- [구현 체크리스트 모음](Docs/skills/)
 - [프로필 정보 구조](Docs/profile-information-architecture.md)
 - [개인화 챌린지 전략](Docs/personalized-challenge-strategy.md)
 - [챌린지 상태 모델](Docs/challenge-state-model.md)
-- [기술 부채 트래커](Docs/exec-plans/tech-debt-tracker.md)
 - [Xcode Cloud Release Build](Docs/xcode-cloud-release-build.md)
