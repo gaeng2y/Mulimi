@@ -197,7 +197,11 @@ make verify
 
 ## 📚 문서
 
+- [문서 허브](Docs/index.md)
+- [아키텍처 SSOT](ARCHITECTURE.md)
+- [제품 스펙 인덱스](Docs/product-specs/index.md)
 - [프로필 정보 구조](Docs/profile-information-architecture.md)
 - [개인화 챌린지 전략](Docs/personalized-challenge-strategy.md)
 - [챌린지 상태 모델](Docs/challenge-state-model.md)
+- [기술 부채 트래커](Docs/exec-plans/tech-debt-tracker.md)
 - [Xcode Cloud Release Build](Docs/xcode-cloud-release-build.md)
