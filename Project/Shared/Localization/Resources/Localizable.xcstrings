@@ -1948,6 +1948,105 @@
         }
       }
     },
+    "healthKitPermissionAllowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한 허용하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedErrorDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한이 꺼져 있어요. 설정에서 다시 허용해 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한이 꺼져 있어요"
+          }
+        }
+      }
+    },
+    "healthKitPermissionNeededDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionNeededTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 접근 권한이 필요해요"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRefreshTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 확인하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRequestFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한을 확인하는 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionSettingsFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 앱에서 건강 > 데이터 접근 및 기기 > 물리미 경로로 들어가 권한을 다시 켤 수 있어요."
+          }
+        }
+      }
+    },
     "bodyProfileSaveManualChangesTitle" : {
       "extractionState" : "manual",
       "localizations" : {
