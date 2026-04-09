@@ -84,12 +84,14 @@ public final class PresentationAssembly: Assembly {
 
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
                     routineUseCase: routineUseCase,
+                    routineRecommendationUseCase: routineRecommendationUseCase,
                     drinkWaterUseCase: drinkWaterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase
                 )
