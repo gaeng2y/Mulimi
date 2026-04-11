@@ -3246,6 +3246,149 @@
         }
       }
     },
+    "profileRoutineRecommendationAfternoonDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 공백이 길어지는 날이 많아 중간 보충 루틴을 추천해요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationAfternoonRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 물 보충"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationAfternoonTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 보충 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationApplyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 적용하기"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 자주 마신 시간대를 루틴으로 고정해 꾸준함을 만들 수 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 마시는 시간"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 마시는 시간 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 물 마시기가 자주 늦어져서 아침 시작 루틴을 추천해요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 물 마시기"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 시작 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationSectionFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록과 현재 루틴을 바탕으로 바로 추가할 만한 시간을 골랐어요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationTimeValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
+          }
+        }
+      }
+    },
     "profileRoutineRequestPermissionTitle" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -17,6 +17,22 @@ public struct ProfileRoutineView: View {
                 guidanceCard
             }
 
+            if !viewModel.recommendationCards.isEmpty {
+                Section(
+                    content: {
+                    ForEach(viewModel.recommendationCards) { recommendation in
+                        recommendationCard(recommendation)
+                    }
+                    },
+                    header: {
+                        Text(L10n.tr("profileRoutineRecommendationSectionTitle"))
+                    },
+                    footer: {
+                        Text(L10n.tr("profileRoutineRecommendationSectionFootnote"))
+                    }
+                )
+            }
+
             permissionSection
 
             Section {
@@ -258,6 +274,45 @@ public struct ProfileRoutineView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
+    private func recommendationCard(_ recommendation: RoutineRecommendationCard) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: recommendationIconName(for: recommendation.id))
+                    .font(.title3)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 28)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(recommendation.title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+
+                    Text(recommendation.description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Label(
+                L10n.tr(
+                    "profileRoutineRecommendationTimeValueFormat",
+                    recommendation.timeText,
+                    recommendation.weekdayText
+                ),
+                systemImage: "clock"
+            )
+            .font(.subheadline.weight(.semibold))
+            .foregroundColor(.primary)
+
+            Button(recommendation.applyButtonTitle) {
+                viewModel.presentRecommendation(id: recommendation.id)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(.vertical, 4)
+    }
+
     private func guidanceSlotChip(_ slot: RoutineGuidanceSlot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(slot.timeText)
@@ -312,6 +367,18 @@ public struct ProfileRoutineView: View {
         case .upcoming:
             return L10n.tr("profileRoutineGuidanceSlotUpcomingTitle")
         }
+    }
+
+    private func recommendationIconName(for id: String) -> String {
+        if id.hasPrefix(HydrationRoutineRecommendationKind.morningStart.rawValue) {
+            return "sun.max.fill"
+        }
+
+        if id.hasPrefix(HydrationRoutineRecommendationKind.afternoonGap.rawValue) {
+            return "sun.haze.fill"
+        }
+
+        return "sparkles"
     }
 
     private func openSettings() {

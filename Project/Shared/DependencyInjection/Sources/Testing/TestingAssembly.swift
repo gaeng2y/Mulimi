@@ -33,6 +33,9 @@ public final class TestingAssembly: Assembly {
         container.register(PersonalizedChallengeUseCase.self) { _ in
             MockPersonalizedChallengeUseCaseForTesting()
         }
+        container.register(RoutineRecommendationUseCase.self) { _ in
+            MockRoutineRecommendationUseCaseForTesting()
+        }
 
         container.register(RoutineUseCase.self) { _ in
             MockRoutineUseCaseForTesting()

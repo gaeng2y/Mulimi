@@ -47,6 +47,9 @@ public final class PreviewAssembly: Assembly {
         container.register(PersonalizedChallengeUseCase.self) { _ in
             MockPersonalizedChallengeUseCase()
         }
+        container.register(RoutineRecommendationUseCase.self) { _ in
+            MockRoutineRecommendationUseCase()
+        }
 
         container.register(SignInUseCase.self) { _ in
             MockSignInUseCase()
@@ -101,12 +104,14 @@ public final class PreviewAssembly: Assembly {
 
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
                     routineUseCase: routineUseCase,
+                    routineRecommendationUseCase: routineRecommendationUseCase,
                     drinkWaterUseCase: drinkWaterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase
                 )

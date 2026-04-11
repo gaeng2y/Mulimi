@@ -56,6 +56,15 @@ struct RoutinePermissionGuidance: Equatable {
     let showsOpenSettingsAction: Bool
 }
 
+struct RoutineRecommendationCard: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let description: String
+    let timeText: String
+    let weekdayText: String
+    let applyButtonTitle: String
+}
+
 struct RoutineEditorDraft: Equatable {
     var id: UUID?
     var title: String
@@ -83,6 +92,14 @@ struct RoutineEditorDraft: Equatable {
         self.time = Self.date(hour: routine.hour, minute: routine.minute)
         self.selectedWeekdays = Set(routine.weekdays)
         self.isEnabled = routine.isEnabled
+    }
+
+    init(recommendation: HydrationRoutineRecommendation, title: String) {
+        self.id = nil
+        self.title = title
+        self.time = Self.date(hour: recommendation.hour, minute: recommendation.minute)
+        self.selectedWeekdays = Set(recommendation.weekdays)
+        self.isEnabled = true
     }
 
     var isEditing: Bool {
@@ -118,6 +135,7 @@ struct RoutineEditorDraft: Equatable {
 @Observable
 public final class ProfileRoutineViewModel {
     private let routineUseCase: RoutineUseCase
+    private let routineRecommendationUseCase: RoutineRecommendationUseCase
     private let drinkWaterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let calendar: Calendar
@@ -125,6 +143,7 @@ public final class ProfileRoutineViewModel {
 
     public private(set) var notificationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
     public private(set) var routines: [HydrationRoutine] = []
+    private var routineRecommendations: [HydrationRoutineRecommendation] = []
     public private(set) var currentWaterIntakeML = 0.0
     public private(set) var dailyWaterLimitML = 0
     public var isEditorPresented = false
@@ -135,12 +154,14 @@ public final class ProfileRoutineViewModel {
 
     public init(
         routineUseCase: RoutineUseCase,
+        routineRecommendationUseCase: RoutineRecommendationUseCase,
         drinkWaterUseCase: DrinkWaterUseCase,
         userPreferencesUseCase: UserPreferencesUseCase,
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.routineUseCase = routineUseCase
+        self.routineRecommendationUseCase = routineRecommendationUseCase
         self.drinkWaterUseCase = drinkWaterUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
         self.calendar = calendar
@@ -182,6 +203,19 @@ public final class ProfileRoutineViewModel {
 
     var displayedRoutines: [HydrationRoutine] {
         routines
+    }
+
+    var recommendationCards: [RoutineRecommendationCard] {
+        routineRecommendations.map { recommendation in
+            RoutineRecommendationCard(
+                id: recommendation.id,
+                title: recommendationTitle(for: recommendation.kind),
+                description: recommendationDescription(for: recommendation.kind),
+                timeText: recommendation.timeText,
+                weekdayText: recommendation.weekdayText,
+                applyButtonTitle: L10n.tr("profileRoutineRecommendationApplyTitle")
+            )
+        }
     }
 
     var canSaveDraft: Bool {
@@ -334,6 +368,10 @@ public final class ProfileRoutineViewModel {
     public func load() async {
         notificationStatus = await routineUseCase.notificationAuthorizationStatus()
         routines = routineUseCase.fetchRoutines()
+        routineRecommendations = await routineRecommendationUseCase.fetchRecommendations(
+            referenceDate: nowProvider(),
+            calendar: calendar
+        )
         currentWaterIntakeML = await drinkWaterUseCase.currentWaterIntakeML
         dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
     }
@@ -359,6 +397,19 @@ public final class ProfileRoutineViewModel {
     public func presentEditRoutine(_ routine: HydrationRoutine) {
         permissionPrompt = nil
         editorDraft = RoutineEditorDraft(routine: routine)
+        isEditorPresented = true
+    }
+
+    public func presentRecommendation(id: String) {
+        guard let recommendation = routineRecommendations.first(where: { $0.id == id }) else {
+            return
+        }
+
+        permissionPrompt = nil
+        editorDraft = RoutineEditorDraft(
+            recommendation: recommendation,
+            title: recommendationRoutineTitle(for: recommendation.kind)
+        )
         isEditorPresented = true
     }
 
@@ -460,6 +511,40 @@ public final class ProfileRoutineViewModel {
             errorMessage = L10n.tr("profileRoutineSaveError")
         }
     }
+
+    private func recommendationTitle(for kind: HydrationRoutineRecommendationKind) -> String {
+        switch kind {
+        case .morningStart:
+            return L10n.tr("profileRoutineRecommendationMorningTitle")
+        case .afternoonGap:
+            return L10n.tr("profileRoutineRecommendationAfternoonTitle")
+        case .frequentHydrationWindow:
+            return L10n.tr("profileRoutineRecommendationFrequentTitle")
+        }
+    }
+
+    private func recommendationDescription(for kind: HydrationRoutineRecommendationKind) -> String {
+        switch kind {
+        case .morningStart:
+            return L10n.tr("profileRoutineRecommendationMorningDescription")
+        case .afternoonGap:
+            return L10n.tr("profileRoutineRecommendationAfternoonDescription")
+        case .frequentHydrationWindow:
+            return L10n.tr("profileRoutineRecommendationFrequentDescription")
+        }
+    }
+
+    private func recommendationRoutineTitle(for kind: HydrationRoutineRecommendationKind) -> String {
+        switch kind {
+        case .morningStart:
+            return L10n.tr("profileRoutineRecommendationMorningRoutineName")
+        case .afternoonGap:
+            return L10n.tr("profileRoutineRecommendationAfternoonRoutineName")
+        case .frequentHydrationWindow:
+            return L10n.tr("profileRoutineRecommendationFrequentRoutineName")
+        }
+    }
+
     private var primaryRoutine: HydrationRoutine? {
         routines.first(where: \.isEnabled) ?? routines.first
     }
