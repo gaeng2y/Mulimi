@@ -23,6 +23,13 @@ public final class DomainAssembly: Assembly {
                 userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!
             )
         }
+        container.register(HydrationNextActionGuideUseCase.self) { resolver in
+            HydrationNextActionGuideUseCaseImpl(
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!,
+                userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!,
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!
+            )
+        }
         container.register(ChallengeUseCase.self) { resolver in
             ChallengeUseCaseImpl(
                 progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!,

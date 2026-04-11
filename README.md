@@ -98,6 +98,7 @@ Mulimi/
 │   │   └── Watch/
 │   ├── Domain/
 │   │   ├── Interfaces/
+│   │   ├── SharedInterfaces/
 │   │   ├── Sources/
 │   │   ├── WatchInterfaces/
 │   │   └── WatchSources/
@@ -135,6 +136,7 @@ Mulimi/
 - `Project/Domain`
   - `DomainLayerInterface`, `DomainLayer`
   - `WatchDomainLayerInterface`, `WatchDomainLayer`
+  - `SharedInterfaces`: 앱/워치가 같은 수분 단위와 next-action 계산을 보는 공용 소스
 - `Project/Data`
   - `DataLayer`, `WatchDataLayer`
 - `Project/Presentation`

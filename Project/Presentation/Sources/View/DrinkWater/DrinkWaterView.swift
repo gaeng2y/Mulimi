@@ -63,6 +63,10 @@ public struct DrinkWaterView: View {
                 }
                 .padding()
 
+                nextActionCard
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+
                 HStack {
                     Button {
                         Task {
@@ -109,6 +113,34 @@ public struct DrinkWaterView: View {
             await Task.yield()
             viewModel.startAnimation()
         }
+    }
+
+    private var nextActionCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.caption.weight(.semibold))
+
+                Text(viewModel.nextActionBadgeText)
+                    .font(.caption.weight(.semibold))
+            }
+            .foregroundColor(.accentColor)
+
+            Text(viewModel.nextActionHeadline)
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text(viewModel.nextActionDescription)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.accent.opacity(0.12))
+        )
     }
 }
 

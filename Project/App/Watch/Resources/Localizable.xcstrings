@@ -100,6 +100,39 @@
         }
       }
     },
+    "watchHomeNextActionGoalReached" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 유지 중이에요"
+          }
+        }
+      }
+    },
+    "watchHomeNextActionNeedsGoal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱에서 목표를 먼저 설정하세요"
+          }
+        }
+      }
+    },
+    "watchHomeNextActionRemainingGlassFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 한 잔 기준 %lld잔 남음"
+          }
+        }
+      }
+    },
     "watchHomeNoRecordsPrompt" : {
       "extractionState" : "manual",
       "localizations" : {

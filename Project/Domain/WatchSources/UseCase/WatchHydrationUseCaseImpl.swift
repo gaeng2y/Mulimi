@@ -47,11 +47,16 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         events: [WatchHydrationEvent]
     ) -> WatchHydrationSnapshot {
         let sortedEvents = events.sorted { $0.consumedAt < $1.consumedAt }
+        let todayIntakeML = sortedEvents.reduce(0) { $0 + $1.volumeML }
 
         return WatchHydrationSnapshot(
             dailyGoalML: dailyGoalML,
-            todayIntakeML: sortedEvents.reduce(0) { $0 + $1.volumeML },
-            events: sortedEvents
+            todayIntakeML: todayIntakeML,
+            events: sortedEvents,
+            nextActionGuide: HydrationNextActionGuide.make(
+                currentIntakeML: Double(todayIntakeML),
+                dailyGoalML: Double(dailyGoalML)
+            )
         )
     }
 }

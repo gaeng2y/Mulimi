@@ -154,6 +154,10 @@ public struct WatchRootView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
+
+                Text(nextActionText)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(accentColor)
             }
         }
         .frame(maxWidth: .infinity)
@@ -188,6 +192,20 @@ public struct WatchRootView: View {
 
     private func percentText(_ value: Int) -> String {
         WatchL10n.tr("watchCommonPercentFormat", Int64(value))
+    }
+
+    private var nextActionText: String {
+        switch viewModel.snapshot.nextActionGuide.state {
+        case .goalReached:
+            return WatchL10n.tr("watchHomeNextActionGoalReached")
+        case .needsGoal:
+            return WatchL10n.tr("watchHomeNextActionNeedsGoal")
+        case .readyToDrink, .approachingRoutine:
+            return WatchL10n.tr(
+                "watchHomeNextActionRemainingGlassFormat",
+                Int64(viewModel.snapshot.nextActionGuide.remainingGlassCount)
+            )
+        }
     }
 }
 

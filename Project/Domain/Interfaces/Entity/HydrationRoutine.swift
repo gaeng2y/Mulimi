@@ -44,4 +44,15 @@ public struct HydrationRoutine: Identifiable, Codable, Equatable, Sendable {
         self.weekdays = RoutineWeekday.normalized(weekdays)
         self.isEnabled = isEnabled
     }
+
+    public var nextActionSchedule: HydrationRoutineSchedule {
+        HydrationRoutineSchedule(
+            id: id.uuidString,
+            title: title,
+            hour: hour,
+            minute: minute,
+            weekdayRawValues: Set(weekdays.map(\.rawValue)),
+            isEnabled: isEnabled
+        )
+    }
 }
