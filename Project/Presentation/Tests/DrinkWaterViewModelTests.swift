@@ -19,6 +19,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -44,6 +45,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -65,6 +67,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -85,6 +88,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -105,6 +109,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -124,6 +129,7 @@ struct DrinkWaterViewModelTests {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
@@ -141,16 +147,79 @@ struct DrinkWaterViewModelTests {
     }
 
     @MainActor
+    @Test("refreshState는 다음 한 잔 가이드 문구를 갱신한다")
+    func refreshNextActionGuide() async {
+        let guideUseCase = StubHydrationNextActionGuideUseCase()
+        guideUseCase.guideValue = HydrationNextActionGuide(
+            state: .approachingRoutine,
+            currentIntakeML: 1_250,
+            dailyGoalML: 2_000,
+            remainingML: 750,
+            remainingGlassCount: 3,
+            nextRoutine: HydrationNextRoutineContext(
+                id: "routine",
+                title: "오전 루틴",
+                hour: 10,
+                minute: 0,
+                minutesUntil: 30
+            )
+        )
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: guideUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.refreshState()
+
+        #expect(guideUseCase.guideCallCount == 1)
+        let nextRoutineTimeText = guideUseCase.guideValue.nextRoutine?.timeText ?? ""
+        #expect(viewModel.nextActionBadgeText == L10n.tr("drinkWaterNextActionBadge"))
+        #expect(
+            viewModel.nextActionHeadline ==
+            L10n.tr(
+                "drinkWaterNextActionApproachingRoutineHeadlineFormat",
+                L10n.tr("drinkWaterNextActionMinutesFormat", 30)
+            )
+        )
+        #expect(
+            viewModel.nextActionDescription ==
+            L10n.tr(
+                "drinkWaterNextActionRoutineDescriptionFormat",
+                nextRoutineTimeText,
+                L10n.tr("drinkWaterNextActionMinutesFormat", 30),
+                L10n.tr("commonMilliliterFormat", 750),
+                3
+            )
+        )
+    }
+
+    @MainActor
     @Test("startAnimation은 offset을 360으로 설정한다")
     func startAnimation() {
         let viewModel = DrinkWaterViewModel(
             waterUseCase: MockDrinkWaterUseCase(),
             userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader()
         )
 
         viewModel.startAnimation()
 
         #expect(viewModel.offset == 360)
+    }
+}
+
+private final class StubHydrationNextActionGuideUseCase: HydrationNextActionGuideUseCase, @unchecked Sendable {
+    var guideValue = HydrationNextActionGuide.make(
+        currentIntakeML: 0,
+        dailyGoalML: 2_000
+    )
+    private(set) var guideCallCount = 0
+
+    func guide(referenceDate: Date, calendar: Calendar) async -> HydrationNextActionGuide {
+        guideCallCount += 1
+        return guideValue
     }
 }

@@ -24,7 +24,7 @@ let project = Project(
             product: .framework,
             bundleId: "\(bundleId).DomainLayer.Interface",
             deploymentTargets: .iOS("26.0"),
-            sources: ["Interfaces/**"]
+            sources: ["Interfaces/**", "SharedInterfaces/**"]
         ),
         .target(
             name: "DomainLayer",
@@ -47,7 +47,7 @@ let project = Project(
             product: .framework,
             bundleId: "\(bundleId).WatchDomainLayer.Interface",
             deploymentTargets: .watchOS("26.0"),
-            sources: ["WatchInterfaces/**"]
+            sources: ["WatchInterfaces/**", "SharedInterfaces/**"]
         ),
         .target(
             name: "WatchDomainLayer",

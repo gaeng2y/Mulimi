@@ -41,6 +41,9 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationProgressUseCase.self) { _ in
             MockHydrationProgressUseCase()
         }
+        container.register(HydrationNextActionGuideUseCase.self) { _ in
+            MockHydrationNextActionGuideUseCase()
+        }
         container.register(ChallengeUseCase.self) { _ in
             MockChallengeUseCase()
         }
@@ -74,6 +77,7 @@ public final class PreviewAssembly: Assembly {
             DrinkWaterViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                nextActionGuideUseCase: resolver.resolve(HydrationNextActionGuideUseCase.self)!,
                 widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
             )
         }

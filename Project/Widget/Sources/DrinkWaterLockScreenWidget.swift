@@ -1,3 +1,4 @@
+import DomainLayerInterface
 import SwiftUI
 import WidgetKit
 
@@ -98,7 +99,11 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 1_250,
         dailyLimit: 2000,
-        mainIconSymbol: "drop.fill"
+        mainIconSymbol: "drop.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 1_250,
+            dailyGoalML: 2_000
+        )
     )
 }
 
@@ -109,7 +114,11 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 1_500,
         dailyLimit: 2000,
-        mainIconSymbol: "heart.fill"
+        mainIconSymbol: "heart.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 1_500,
+            dailyGoalML: 2_000
+        )
     )
 }
 
@@ -120,6 +129,10 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 750,
         dailyLimit: 2000,
-        mainIconSymbol: "cloud.fill"
+        mainIconSymbol: "cloud.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 750,
+            dailyGoalML: 2_000
+        )
     )
 }

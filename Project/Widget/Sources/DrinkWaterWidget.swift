@@ -1,3 +1,4 @@
+import DomainLayerInterface
 import SwiftUI
 import Utils
 import WidgetKit
@@ -45,6 +46,12 @@ struct DrinkWaterWidgetEntryView: View {
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
 
+            Text(entry.nextActionSummaryText)
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundColor(accentColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+
             Spacer()
 
             ProgressView(value: entry.progressFraction)
@@ -82,18 +89,30 @@ struct DrinkWaterWidget: Widget {
         date: .now,
         currentIntakeML: 0,
         dailyLimit: 2000,
-        mainIconSymbol: "drop.fill"
+        mainIconSymbol: "drop.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 0,
+            dailyGoalML: 2_000
+        )
     )
     DrinkWaterEntry(
         date: .now,
         currentIntakeML: 1_000,
         dailyLimit: 2000,
-        mainIconSymbol: "heart.fill"
+        mainIconSymbol: "heart.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 1_000,
+            dailyGoalML: 2_000
+        )
     )
     DrinkWaterEntry(
         date: .now,
         currentIntakeML: 2_000,
         dailyLimit: 2000,
-        mainIconSymbol: "cloud.fill"
+        mainIconSymbol: "cloud.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 2_000,
+            dailyGoalML: 2_000
+        )
     )
 }

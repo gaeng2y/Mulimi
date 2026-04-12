@@ -35,12 +35,14 @@ public final class PresentationAssembly: Assembly {
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let nextActionGuideUseCase = resolver.resolve(HydrationNextActionGuideUseCase.self)!
             let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
                     waterUseCase: waterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase,
+                    nextActionGuideUseCase: nextActionGuideUseCase,
                     widgetTimelineReloader: widgetTimelineReloader
                 )
             }

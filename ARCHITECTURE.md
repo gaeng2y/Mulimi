@@ -87,6 +87,7 @@ SignIn
 - ViewModel은 프레젠테이션 상태만 관리한다.
 - ViewModel이 다른 ViewModel의 상태를 직접 변경하지 않는다.
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다.
+- 앱/워치가 함께 써야 하는 수분 단위와 next-action 계산은 `Project/Domain/SharedInterfaces/`에 둔다.
 - HealthKit 문제를 로컬 수분 원장 이중 저장으로 덮지 않는다.
 - 워치/위젯이 앱과 다른 수분 계산 규칙을 만들지 않는다.
 

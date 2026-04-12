@@ -15,6 +15,7 @@
 
 - 수분 기록 원본은 `HealthKit`
 - 표시 계산은 `HydrationServing`
+- 다음 한 잔 계산은 `HydrationNextActionGuide`
 - 목표량은 앱과 동일한 `iCloud KVS + App Group mirror` 흐름을 따른다
 - 위젯/워치만의 독자 단위 규칙을 만들지 않는다
 
@@ -24,6 +25,7 @@
 - AppIntent: `Project/Widget/Sources/AppIntent.swift`
 - watch 앱 진입: `Project/App/Watch/Sources/App/MulimiWatchApp.swift`
 - watch DI: `Project/Shared/DependencyInjection/Sources/Watch`
+- 공용 수분 계산: `Project/Domain/SharedInterfaces/`
 
 ## Validation
 
