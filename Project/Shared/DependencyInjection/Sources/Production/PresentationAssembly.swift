@@ -59,11 +59,13 @@ public final class PresentationAssembly: Assembly {
         container.register(HydrationInsightViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let routineAdherenceUseCase = resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HydrationInsightViewModel(
                     waterUseCase: waterUseCase,
-                    progressUseCase: progressUseCase
+                    progressUseCase: progressUseCase,
+                    routineAdherenceUseCase: routineAdherenceUseCase
                 )
             }
         }

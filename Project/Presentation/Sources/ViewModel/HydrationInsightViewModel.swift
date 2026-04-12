@@ -27,6 +27,24 @@ struct HydrationInsightWeekdayDistribution: Identifiable, Equatable {
     var id: Int { weekday }
 }
 
+struct RoutineAdherenceInsightMetric: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let value: String
+    let detail: String
+}
+
+struct RoutineAdherenceDisplayRow: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let timeText: String
+    let rateText: String
+    let detailText: String
+    let statusText: String
+    let progress: Double
+    let status: HydrationRoutineAdherenceStatus
+}
+
 @MainActor
 @Observable
 public final class HydrationInsightViewModel {
@@ -40,20 +58,24 @@ public final class HydrationInsightViewModel {
     private(set) var bestWeekday: HydrationInsightWeekdayDistribution?
     private(set) var leastWeekday: HydrationInsightWeekdayDistribution?
     private(set) var weekdayDistributions: [HydrationInsightWeekdayDistribution] = []
+    private(set) var routineAdherenceInsight: HydrationRoutineAdherenceInsight?
 
     private let waterUseCase: DrinkWaterUseCase
     private let progressUseCase: HydrationProgressUseCase
+    private let routineAdherenceUseCase: HydrationRoutineAdherenceUseCase
     private let calendar: Calendar
     private let currentDateProvider: @Sendable () -> Date
 
     public init(
         waterUseCase: DrinkWaterUseCase,
         progressUseCase: HydrationProgressUseCase,
+        routineAdherenceUseCase: HydrationRoutineAdherenceUseCase,
         calendar: Calendar = .autoupdatingCurrent,
         currentDateProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.waterUseCase = waterUseCase
         self.progressUseCase = progressUseCase
+        self.routineAdherenceUseCase = routineAdherenceUseCase
         self.calendar = calendar
         self.currentDateProvider = currentDateProvider
     }
@@ -93,6 +115,99 @@ public final class HydrationInsightViewModel {
         )
     }
 
+    var routineAdherenceInsightText: String {
+        guard let insight = routineAdherenceInsight else {
+            return L10n.tr("insightRoutineAdherenceInsufficientDescription")
+        }
+
+        if insight.routineSummaries.isEmpty {
+            return L10n.tr("insightRoutineAdherenceNoRoutineDescription")
+        }
+
+        if insight.activeRoutineCount == 0 {
+            return L10n.tr(
+                "insightRoutineAdherenceInactiveOnlyDescriptionFormat",
+                insight.inactiveRoutineCount
+            )
+        }
+
+        if !insight.hasDueOccurrences {
+            return L10n.tr("insightRoutineAdherenceNoDueDescription")
+        }
+
+        if insight.missedCount == 0 {
+            return L10n.tr("insightRoutineAdherenceAllKeptDescription")
+        }
+
+        guard let mostMissedTimeSlot = insight.mostMissedTimeSlot else {
+            return L10n.tr("insightRoutineAdherenceInsufficientDescription")
+        }
+
+        return L10n.tr(
+            "insightRoutineAdherenceMissPatternDescriptionFormat",
+            timeText(hour: mostMissedTimeSlot.hour, minute: mostMissedTimeSlot.minute),
+            mostMissedTimeSlot.missedCount
+        )
+    }
+
+    var routineAdherenceMetrics: [RoutineAdherenceInsightMetric] {
+        guard let insight = routineAdherenceInsight else {
+            return []
+        }
+
+        return [
+            RoutineAdherenceInsightMetric(
+                id: "rate",
+                title: L10n.tr("insightRoutineAdherenceRateTitle"),
+                value: percentText(insight.adherenceRate),
+                detail: L10n.tr(
+                    "insightRoutineAdherenceCompletedDetailFormat",
+                    insight.completedCount,
+                    insight.scheduledCount
+                )
+            ),
+            RoutineAdherenceInsightMetric(
+                id: "missed",
+                title: L10n.tr("insightRoutineAdherenceMissedTitle"),
+                value: L10n.tr("insightRoutineAdherenceCountFormat", insight.missedCount),
+                detail: L10n.tr(
+                    "insightRoutineAdherenceActiveRoutineDetailFormat",
+                    insight.activeRoutineCount
+                )
+            ),
+            RoutineAdherenceInsightMetric(
+                id: "window",
+                title: L10n.tr("insightRoutineAdherenceMatchWindowTitle"),
+                value: L10n.tr("insightRoutineAdherenceMinuteFormat", insight.matchingWindowMinutes),
+                detail: L10n.tr("insightRoutineAdherenceMatchWindowDetail")
+            )
+        ]
+    }
+
+    var routineAdherenceRows: [RoutineAdherenceDisplayRow] {
+        guard let insight = routineAdherenceInsight else {
+            return []
+        }
+
+        return insight.routineSummaries.map { summary in
+            RoutineAdherenceDisplayRow(
+                id: summary.id,
+                title: summary.title,
+                timeText: timeText(hour: summary.hour, minute: summary.minute),
+                rateText: percentText(summary.adherenceRate),
+                detailText: L10n.tr(
+                    "insightRoutineAdherenceRoutineDetailFormat",
+                    summary.completedCount,
+                    summary.scheduledCount,
+                    summary.missedCount
+                ),
+                statusText: statusText(for: summary.status),
+                progress: min(max(summary.adherenceRate, 0), 1),
+                status: summary.status
+            )
+        }
+    }
+
     var chartUpperBound: Double {
         let highestAverage = weekdayDistributions.map(\.averageIntakeML).max() ?? 0
         return max(dailyGoalML, highestAverage) * 1.2
@@ -115,14 +230,23 @@ public final class HydrationInsightViewModel {
             calendar: calendar
         )
         async let monthlyEvents = waterUseCase.hydrationEvents(in: elapsedMonthInterval)
+        async let routineAdherence = routineAdherenceUseCase.weeklyInsight(
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
 
-        let (snapshot, resolvedMonthlyEvents) = await (progressSnapshot, monthlyEvents)
+        let (snapshot, resolvedMonthlyEvents, resolvedRoutineAdherence) = await (
+            progressSnapshot,
+            monthlyEvents,
+            routineAdherence
+        )
         dailyGoalML = snapshot.dailyGoalML
         weeklyAverageML = snapshot.weeklyAverageML
         monthlyAverageML = snapshot.monthlyAverageML
         weeklyElapsedDays = snapshot.weeklyElapsedDays
         monthlyElapsedDays = snapshot.monthlyElapsedDays
-        isEmpty = snapshot.isEmpty
+        isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
+        routineAdherenceInsight = resolvedRoutineAdherence
 
         if resolvedMonthlyEvents.isEmpty {
             weekdayDistributions = []
@@ -153,6 +277,7 @@ public final class HydrationInsightViewModel {
         bestWeekday = nil
         leastWeekday = nil
         weekdayDistributions = []
+        routineAdherenceInsight = nil
     }
 
     private func elapsedInterval(from interval: DateInterval, upTo referenceDate: Date) -> DateInterval {
@@ -225,5 +350,32 @@ public final class HydrationInsightViewModel {
 
     private func volumeText(_ volumeML: Double) -> String {
         L10n.tr("commonMilliliterFormat", Int(volumeML.rounded()))
+    }
+
+    private func percentText(_ rate: Double) -> String {
+        L10n.tr("commonPercentFormat", Int((rate * 100).rounded()))
+    }
+
+    private func timeText(hour: Int, minute: Int) -> String {
+        var formatterCalendar = calendar
+        formatterCalendar.locale = calendar.locale ?? Locale.autoupdatingCurrent
+
+        let date = formatterCalendar.date(from: DateComponents(hour: hour, minute: minute)) ?? .now
+        return DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .short)
+    }
+
+    private func statusText(for status: HydrationRoutineAdherenceStatus) -> String {
+        switch status {
+        case .inactive:
+            return L10n.tr("insightRoutineAdherenceStatusInactive")
+        case .noDueOccurrences:
+            return L10n.tr("insightRoutineAdherenceStatusNoDue")
+        case .noRecords:
+            return L10n.tr("insightRoutineAdherenceStatusNoRecords")
+        case .needsAttention:
+            return L10n.tr("insightRoutineAdherenceStatusNeedsAttention")
+        case .onTrack:
+            return L10n.tr("insightRoutineAdherenceStatusOnTrack")
+        }
     }
 }

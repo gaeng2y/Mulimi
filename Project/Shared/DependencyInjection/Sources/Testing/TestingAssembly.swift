@@ -30,6 +30,9 @@ public final class TestingAssembly: Assembly {
         container.register(HydrationNextActionGuideUseCase.self) { _ in
             MockHydrationNextActionGuideUseCaseForTesting()
         }
+        container.register(HydrationRoutineAdherenceUseCase.self) { _ in
+            MockHydrationRoutineAdherenceUseCaseForTesting()
+        }
         container.register(ChallengeUseCase.self) { _ in
             MockChallengeUseCaseForTesting()
         }

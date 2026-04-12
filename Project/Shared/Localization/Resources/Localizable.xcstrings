@@ -1629,6 +1629,237 @@
         }
       }
     },
+    "insightRoutineAdherenceActiveRoutineDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 루틴 %lld개 기준"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceAllKeptDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 도래한 활성 루틴을 모두 지켰어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceCompletedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회 완료"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceInactiveOnlyDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성 루틴 %lld개는 수행률 계산에서 제외했어요. 활성 루틴이 생기면 주간 기준으로 계산합니다."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceInsufficientDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 루틴 수행률을 계산할 기록이 아직 부족합니다."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMatchWindowDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시각 주변 기록"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMatchWindowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매칭 기준"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMinuteFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "±%lld분"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMissPatternDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 루틴을 %lld번 놓쳤어요. 이 시간대부터 먼저 챙겨보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMissedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓친 루틴"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceNoDueDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주에 아직 도래한 활성 루틴이 없어 수행률을 기다리고 있어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceNoRoutineDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴을 추가하면 이번 주 수행률과 놓친 시간대를 볼 수 있어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceRateTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간 수행률"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceRoutineDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회 완료 · %lld회 놓침"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusInactive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNeedsAttention" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓침 있음"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNoDue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNoRecords" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 없음"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusOnTrack" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘 지킴"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 수행률"
+          }
+        }
+      }
+    },
     "insightStreakAchievementLabel" : {
       "extractionState" : "manual",
       "localizations" : {
