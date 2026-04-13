@@ -400,6 +400,14 @@ public final class ProfileRoutineViewModel {
         isEditorPresented = true
     }
 
+    public func presentEditRoutine(id routineID: UUID) {
+        guard let routine = routines.first(where: { $0.id == routineID }) else {
+            return
+        }
+
+        presentEditRoutine(routine)
+    }
+
     public func presentRecommendation(id: String) {
         guard let recommendation = routineRecommendations.first(where: { $0.id == id }) else {
             return

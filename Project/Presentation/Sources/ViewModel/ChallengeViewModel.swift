@@ -41,6 +41,8 @@ struct PersonalizedChallengeCardModel: Identifiable, Equatable {
     let description: String
     let reasonText: String
     let actionText: String
+    let routineActionTitle: String
+    let routineActionIntent: RoutineActionIntent
     let symbolName: String
 }
 
@@ -128,6 +130,8 @@ public final class ChallengeViewModel {
             description: personalizedDescription(for: challenge),
             reasonText: personalizedReasonText(for: challenge),
             actionText: personalizedActionText(for: challenge),
+            routineActionTitle: personalizedRoutineActionTitle(for: challenge),
+            routineActionIntent: personalizedRoutineActionIntent(for: challenge),
             symbolName: personalizedSymbolName(for: challenge.kind)
         )
     }
@@ -461,6 +465,34 @@ public final class ChallengeViewModel {
                 "challengePersonalizedConsistencyActionFormat",
                 challenge.primaryTargetValue
             )
+        }
+    }
+
+    private func personalizedRoutineActionTitle(for challenge: PersonalizedHydrationChallenge) -> String {
+        switch challenge.kind {
+        case .routineAnchor:
+            return L10n.tr("challengePersonalizedRoutineActionCTATitle")
+        case .morningKickstart:
+            return L10n.tr("challengePersonalizedMorningActionCTATitle")
+        case .dailyGoalBooster:
+            return L10n.tr("challengePersonalizedBoosterActionCTATitle")
+        case .consistencyDefender:
+            return L10n.tr("challengePersonalizedConsistencyActionCTATitle")
+        }
+    }
+
+    private func personalizedRoutineActionIntent(
+        for challenge: PersonalizedHydrationChallenge
+    ) -> RoutineActionIntent {
+        switch challenge.kind {
+        case .routineAnchor:
+            guard let routineID = challenge.anchorRoutine?.id else {
+                return .create
+            }
+
+            return .edit(routineID)
+        case .morningKickstart, .dailyGoalBooster, .consistencyDefender:
+            return .create
         }
     }
 

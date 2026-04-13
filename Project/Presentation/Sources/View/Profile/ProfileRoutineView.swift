@@ -6,9 +6,15 @@ import UIKit
 public struct ProfileRoutineView: View {
     @Environment(\.openURL) private var openURL
     @Bindable private var viewModel: ProfileRoutineViewModel
+    @State private var hasAppliedInitialAction = false
+    private let initialAction: RoutineActionIntent?
 
-    public init(viewModel: ProfileRoutineViewModel) {
+    public init(
+        viewModel: ProfileRoutineViewModel,
+        initialAction: RoutineActionIntent? = nil
+    ) {
         self.viewModel = viewModel
+        self.initialAction = initialAction
     }
 
     public var body: some View {
@@ -111,6 +117,7 @@ public struct ProfileRoutineView: View {
         }
         .task {
             await viewModel.load()
+            applyInitialActionIfNeeded()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             Task {
@@ -387,5 +394,20 @@ public struct ProfileRoutineView: View {
         }
 
         openURL(settingsURL)
+    }
+
+    private func applyInitialActionIfNeeded() {
+        guard hasAppliedInitialAction == false, let initialAction else {
+            return
+        }
+
+        hasAppliedInitialAction = true
+
+        switch initialAction {
+        case .create:
+            viewModel.presentCreateRoutine()
+        case let .edit(routineID):
+            viewModel.presentEditRoutine(id: routineID)
+        }
     }
 }

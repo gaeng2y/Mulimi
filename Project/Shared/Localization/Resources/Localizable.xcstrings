@@ -496,6 +496,17 @@
         }
       }
     },
+    "challengePersonalizedBoosterActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴으로 나눠 마시기"
+          }
+        }
+      }
+    },
     "challengePersonalizedBoosterDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -536,6 +547,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld일 달성으로 안정적인 페이스를 굳혀보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유지 루틴 추가하기"
           }
         }
       }
@@ -584,6 +606,17 @@
         }
       }
     },
+    "challengePersonalizedMorningActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 루틴 만들기"
+          }
+        }
+      }
+    },
     "challengePersonalizedMorningDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -624,6 +657,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld일은 루틴 직전에 250ml를 먼저 마셔보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 루틴 수정하기"
           }
         }
       }
