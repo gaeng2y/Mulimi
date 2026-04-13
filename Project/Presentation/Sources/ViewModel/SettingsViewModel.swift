@@ -48,7 +48,7 @@ public final class SettingsViewModel {
         userPreferencesUseCase.setMainIcon(icon)
         widgetTimelineReloader.reloadAllTimelines()
     }
-    
+
     public var dailyWaterLimit: Double {
         get { currentDailyWaterLimit }
         set {
@@ -67,7 +67,7 @@ public final class SettingsViewModel {
     func selectMainIcon(_ icon: MainIcon) {
         setMainIcon(icon)
     }
-    
+
     func isMainIconSelected(_ icon: MainIcon) -> Bool {
         currentMainIcon == icon
     }

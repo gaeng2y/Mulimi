@@ -12,18 +12,20 @@ import SwiftUI
 
 public struct DrinkWaterView: View {
     private var viewModel: DrinkWaterViewModel
-    
+
     public init(viewModel: DrinkWaterViewModel) {
         self.viewModel = viewModel
     }
-    
+
     public var body: some View {
         ZStack {
             Color.background
                 .ignoresSafeArea()
-            
+
             VStack {
                 GeometryReader { proxy in
+                    let dropSize = min(proxy.size.width, proxy.size.height) * 0.78
+
                     WaterDropView(
                         appearance: viewModel.mainIcon,
                         progress: viewModel.progress,
@@ -34,13 +36,18 @@ public struct DrinkWaterView: View {
                         value: viewModel.offset
                     )
                     .frame(
+                        width: dropSize,
+                        height: dropSize,
+                        alignment: .center
+                    )
+                    .frame(
                         width: proxy.size.width,
                         height: proxy.size.height,
                         alignment: .center
                     )
                 }
-                .frame(height: 450)
-                
+                .frame(height: 360)
+
                 VStack(spacing: 8) {
                     HStack(alignment: .firstTextBaseline) {
                         Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
@@ -48,7 +55,7 @@ public struct DrinkWaterView: View {
                         Text("\(viewModel.mililiters)")
                             .font(.callout)
                     }
-                    
+
                     HStack(alignment: .firstTextBaseline) {
                         Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
                             .font(.caption)
@@ -62,7 +69,11 @@ public struct DrinkWaterView: View {
                     }
                 }
                 .padding()
-                
+
+                nextActionCard
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+
                 HStack {
                     Button {
                         Task {
@@ -82,7 +93,7 @@ public struct DrinkWaterView: View {
                             .cornerRadius(10)
                     }
                     .disabled(viewModel.isLimitReached)
-                    
+
                     Button {
                         Task {
                             await viewModel.reset()
@@ -110,13 +121,41 @@ public struct DrinkWaterView: View {
             viewModel.startAnimation()
         }
     }
+
+    private var nextActionCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.caption.weight(.semibold))
+
+                Text(viewModel.nextActionBadgeText)
+                    .font(.caption.weight(.semibold))
+            }
+            .foregroundColor(.accentColor)
+
+            Text(viewModel.nextActionHeadline)
+                .font(.headline)
+                .foregroundColor(.primary)
+
+            Text(viewModel.nextActionDescription)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.accent.opacity(0.12))
+        )
+    }
 }
 
 fileprivate struct WaterDropView: View {
     let appearance: MainIcon
     let progress: CGFloat
     let offset: CGFloat
-    
+
     var body: some View {
         ZStack {
             Image(systemName: appearance.fillSystemImage)
@@ -126,7 +165,7 @@ fileprivate struct WaterDropView: View {
                 .foregroundColor(.white)
                 .scaleEffect(x: 1.1, y: 1.1)
                 .offset(y: -1)
-            
+
             WaterWaveView(
                 progress: progress,
                 waveHeight: 0.1,

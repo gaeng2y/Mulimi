@@ -29,7 +29,7 @@
 - `HealthKit` 기반 수분 기록 및 오늘 섭취량 집계
 - 로그인 후 `온보딩 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
 - 일일 목표량 설정 및 AI 기반 목표량 추천
-- 수분 기록 히스토리, 인사이트, 챌린지, 루틴 관리
+- 수분 기록 히스토리, 루틴 수행률 인사이트, 루틴 액션으로 연결되는 챌린지, 루틴 관리
 - 홈 화면/잠금화면 위젯과 Apple Watch 앱 지원
 
 ## 🛠️ 기술 스택
@@ -89,12 +89,16 @@ SignIn
 
 ```text
 Mulimi/
+├── AGENTS.md
+├── ARCHITECTURE.md
+├── README.md
 ├── Project/
 │   ├── App/
 │   │   ├── Sources/
 │   │   └── Watch/
 │   ├── Domain/
 │   │   ├── Interfaces/
+│   │   ├── SharedInterfaces/
 │   │   ├── Sources/
 │   │   ├── WatchInterfaces/
 │   │   └── WatchSources/
@@ -114,9 +118,14 @@ Mulimi/
 │       ├── Localization/
 │       ├── Persistence/
 │       └── Utils/
+├── Docs/
+│   ├── index.md
+│   ├── harness-engineering.md
+│   ├── product-specs/
+│   ├── exec-plans/
+│   └── skills/
 ├── Tuist/
 ├── XCConfig/
-├── Docs/
 └── ci_scripts/
 ```
 
@@ -127,6 +136,7 @@ Mulimi/
 - `Project/Domain`
   - `DomainLayerInterface`, `DomainLayer`
   - `WatchDomainLayerInterface`, `WatchDomainLayer`
+  - `SharedInterfaces`: 앱/워치가 같은 수분 단위, next-action, 루틴 수행률 계산을 보는 공용 소스
 - `Project/Data`
   - `DataLayer`, `WatchDataLayer`
 - `Project/Presentation`
@@ -147,6 +157,7 @@ make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 1. `XCConfig/Secrets.xcconfig` 생성
 2. `tuist install`
 3. `tuist generate`
+4. `git hooks` 경로 설정
 
 ### 수동 설정
 
@@ -178,6 +189,29 @@ tuist generate
 
 5. 생성된 `Mulimi.xcworkspace`를 Xcode에서 엽니다.
 
+### 개발용 명령
+
+```bash
+make hooks
+make lint
+make lint-fix
+make arch-check
+make verify
+```
+
+## 📖 문서 읽기 순서
+
+처음 저장소에 들어오거나 큰 구조 변경을 시작할 때는 아래 순서를 권장합니다.
+
+1. `AGENTS.md`
+2. `README.md`
+3. `ARCHITECTURE.md`
+4. `Docs/index.md`
+5. 작업 대상 이슈
+6. 관련 `Docs/product-specs/`
+7. 관련 `Docs/skills/`
+8. 수정 대상 모듈의 `Project.swift`와 실제 구현
+
 ## ✅ 개발 환경 메모
 
 - `iOS 26.0+`, `watchOS 26.0+` 타깃을 사용합니다.
@@ -186,6 +220,12 @@ tuist generate
 
 ## 📚 문서
 
+- [문서 허브](Docs/index.md)
+- [하네스 엔지니어링 구조](Docs/harness-engineering.md)
+- [아키텍처 SSOT](ARCHITECTURE.md)
+- [제품 스펙 인덱스](Docs/product-specs/index.md)
+- [실행 계획 / 기술 부채](Docs/exec-plans/tech-debt-tracker.md)
+- [구현 체크리스트 모음](Docs/skills/)
 - [프로필 정보 구조](Docs/profile-information-architecture.md)
 - [개인화 챌린지 전략](Docs/personalized-challenge-strategy.md)
 - [챌린지 상태 모델](Docs/challenge-state-model.md)

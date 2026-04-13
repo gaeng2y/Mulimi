@@ -77,7 +77,12 @@ struct ContentView: View {
                         Label(L10n.tr("insightNavigationTitle"), systemImage: "chart.bar.xaxis")
                     }
 
-                ChallengeView(viewModel: challengeViewModel)
+                ChallengeView(
+                    viewModel: challengeViewModel,
+                    onRoutineAction: { action in
+                        appCoordinator.push(.profileRoutineAction(action))
+                    }
+                )
                     .tag(AppTab.challenge)
                     .tabItem {
                         Label(L10n.tr("challengeTitle"), systemImage: "trophy")
@@ -123,6 +128,11 @@ struct ContentView: View {
         switch route {
         case .profileRoutine:
             ProfileRoutineView(viewModel: routineViewModel)
+        case let .profileRoutineAction(action):
+            ProfileRoutineView(
+                viewModel: routineViewModel,
+                initialAction: action
+            )
         case let .setting(menu):
             switch menu {
             case .bodyProfile:

@@ -61,6 +61,16 @@ import SwiftUI
         ],
         authorizationStatus: .authorized
     )
+    let mockRecommendationUseCase = MockRoutineRecommendationUseCase(
+        recommendations: [
+            HydrationRoutineRecommendation(
+                kind: .afternoonGap,
+                hour: 15,
+                minute: 0,
+                weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday]
+            )
+        ]
+    )
     let mockDrinkWaterUseCase = MockDrinkWaterUseCase()
     mockDrinkWaterUseCase.currentWaterIntakeMLValue = 500
     let mockUserPreferencesUseCase = MockUserPreferencesUseCase()
@@ -69,6 +79,7 @@ import SwiftUI
     ProfileRoutineView(
         viewModel: ProfileRoutineViewModel(
             routineUseCase: mockUseCase,
+            routineRecommendationUseCase: mockRecommendationUseCase,
             drinkWaterUseCase: mockDrinkWaterUseCase,
             userPreferencesUseCase: mockUserPreferencesUseCase
         )

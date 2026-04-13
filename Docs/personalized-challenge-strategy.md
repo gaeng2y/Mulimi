@@ -8,6 +8,7 @@
 - `추천 챌린지`
   - non-persistent, recommendation-oriented cards
   - show source, tier, recommendation reason, and next action
+  - route the next action to routine create/edit flow when it can become an immediate habit change
 - `진행 중 챌린지`
   - fixed achievement challenges with progress tracking
 - `획득한 챌린지`
@@ -48,4 +49,5 @@
 ## Next Expansion
 - Add more personalized candidates around time-of-day gaps, weekday gaps, and routine completion history
 - Connect personalized recommendations to badge history once `#139` is introduced
+- Expand the current routine action intent to daily-goal adjustment actions after the goal correction flow is ready
 - If recommendation quality grows, split the recommendation engine into its own policy/service layer

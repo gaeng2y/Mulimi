@@ -12,7 +12,7 @@ public struct HydrationRecord: Hashable, Identifiable, Sendable {
     public let id: UUID
     public let date: Date
     public let mililiter: Double
-    
+
     public init(id: UUID, date: Date, mililiter: Double) {
         self.id = id
         self.date = date

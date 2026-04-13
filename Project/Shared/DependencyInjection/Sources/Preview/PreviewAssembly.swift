@@ -11,7 +11,7 @@ import Swinject
 
 public final class PreviewAssembly: Assembly {
     public init() {}
-    
+
     public func assemble(container: Container) {
         // MARK: - Mock UseCases
         container.register(AppSession.self) { _ in
@@ -22,7 +22,7 @@ public final class PreviewAssembly: Assembly {
         container.register(DrinkWaterUseCase.self) { _ in
             MockDrinkWaterUseCase()
         }
-        
+
         container.register(HealthKitUseCase.self) { _ in
             MockHealthKitUseCase()
         }
@@ -41,11 +41,20 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationProgressUseCase.self) { _ in
             MockHydrationProgressUseCase()
         }
+        container.register(HydrationNextActionGuideUseCase.self) { _ in
+            MockHydrationNextActionGuideUseCase()
+        }
+        container.register(HydrationRoutineAdherenceUseCase.self) { _ in
+            MockHydrationRoutineAdherenceUseCase()
+        }
         container.register(ChallengeUseCase.self) { _ in
             MockChallengeUseCase()
         }
         container.register(PersonalizedChallengeUseCase.self) { _ in
             MockPersonalizedChallengeUseCase()
+        }
+        container.register(RoutineRecommendationUseCase.self) { _ in
+            MockRoutineRecommendationUseCase()
         }
 
         container.register(SignInUseCase.self) { _ in
@@ -62,7 +71,7 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register((any AppInfoProviding).self) { _ in
-            StaticAppInfoProvider(appVersion: "2.0.0", appBuildNumber: "22")
+            StaticAppInfoProvider(appVersion: "2.0.2", appBuildNumber: "24")
         }
         .inObjectScope(.container)
 
@@ -71,11 +80,12 @@ public final class PreviewAssembly: Assembly {
             DrinkWaterViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                nextActionGuideUseCase: resolver.resolve(HydrationNextActionGuideUseCase.self)!,
                 widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
             )
         }
         .inObjectScope(.container)
-        
+
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!
@@ -85,7 +95,8 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationInsightViewModel.self) { resolver in
             HydrationInsightViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
+                progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!,
+                routineAdherenceUseCase: resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
             )
         }
         .inObjectScope(.container)
@@ -101,19 +112,21 @@ public final class PreviewAssembly: Assembly {
 
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
                     routineUseCase: routineUseCase,
+                    routineRecommendationUseCase: routineRecommendationUseCase,
                     drinkWaterUseCase: drinkWaterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase
                 )
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - Navigation (Preview)
         container.register(AppCoordinator.self) { _ in
             AppCoordinator()
@@ -136,7 +149,6 @@ public final class PreviewAssembly: Assembly {
                 OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
             }
         }
-        .inObjectScope(.container)
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!

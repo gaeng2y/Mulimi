@@ -12,7 +12,7 @@ public extension Color {
     static var accent: Color {
         Color(.accent)
     }
-    
+
     static var background: Color {
         Color(.background)
     }

@@ -1,15 +1,16 @@
+import DomainLayerInterface
 import SwiftUI
 import WidgetKit
 
 struct DrinkWaterLockScreenWidgetEntryView: View {
     @Environment(\.widgetFamily) private var widgetFamily
-    
+
     let entry: DrinkWaterEntry
-    
+
     private var accentColor: Color {
         entry.isLimitReached ? .green : .accentColor
     }
-    
+
     var body: some View {
         switch widgetFamily {
         case .accessoryInline:
@@ -22,11 +23,11 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
             rectangularView
         }
     }
-    
+
     private var inlineView: some View {
         Label("\(entry.mililiters.formatted())ml", systemImage: entry.mainIconSymbol)
     }
-    
+
     private var circularView: some View {
         Gauge(value: entry.progressFraction) {
             EmptyView()
@@ -35,7 +36,7 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
                 Text("\(entry.mililiters)")
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .minimumScaleFactor(0.6)
-                
+
                 Text("ml")
                     .font(.system(size: 8, weight: .semibold))
                     .foregroundStyle(.secondary)
@@ -44,28 +45,28 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
         .gaugeStyle(.accessoryCircularCapacity)
         .tint(accentColor)
     }
-    
+
     private var rectangularView: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
                 Image(systemName: entry.mainIconSymbol)
                     .foregroundStyle(accentColor)
-                
+
                 Text("오늘 수분")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
-                
+
                 Spacer(minLength: 4)
-                
+
                 Text("\(entry.percentage)%")
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(accentColor)
             }
-            
+
             Text("\(entry.mililiters.formatted())ml")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
                 .minimumScaleFactor(0.7)
-            
+
             Text("\(entry.numberOfGlasses)잔 · 목표 \(entry.dailyLimitText)ml")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -75,7 +76,7 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
 
 struct DrinkWaterLockScreenWidget: Widget {
     private let kind = "MulimeeLockScreenWidget"
-    
+
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: kind,
@@ -98,7 +99,11 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 1_250,
         dailyLimit: 2000,
-        mainIconSymbol: "drop.fill"
+        mainIconSymbol: "drop.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 1_250,
+            dailyGoalML: 2_000
+        )
     )
 }
 
@@ -109,7 +114,11 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 1_500,
         dailyLimit: 2000,
-        mainIconSymbol: "heart.fill"
+        mainIconSymbol: "heart.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 1_500,
+            dailyGoalML: 2_000
+        )
     )
 }
 
@@ -120,6 +129,10 @@ struct DrinkWaterLockScreenWidget: Widget {
         date: .now,
         currentIntakeML: 750,
         dailyLimit: 2000,
-        mainIconSymbol: "cloud.fill"
+        mainIconSymbol: "cloud.fill",
+        nextActionGuide: HydrationNextActionGuide.make(
+            currentIntakeML: 750,
+            dailyGoalML: 2_000
+        )
     )
 }

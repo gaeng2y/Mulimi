@@ -1,5 +1,6 @@
 import DomainLayerInterface
 import Foundation
+import Localization
 import Testing
 
 @testable import PresentationLayer
@@ -73,7 +74,7 @@ struct HealthKitPermissionViewModelTests {
 
         #expect(healthKitUseCase.requestAuthorizationCallCount == 1)
         #expect(viewModel.isAuthorized == false)
-        #expect(viewModel.errorMessage == "건강 권한을 확인하는 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.")
+        #expect(viewModel.errorMessage == L10n.tr("healthKitPermissionRequestFailureDescription"))
     }
 
     @MainActor
@@ -88,7 +89,7 @@ struct HealthKitPermissionViewModelTests {
         await viewModel.requestAuthorization()
 
         #expect(viewModel.isAuthorized == false)
-        #expect(viewModel.errorMessage == "한 번 거부한 건강 권한은 앱에서 다시 요청할 수 없어요. 설정에서 다시 허용해 주세요.")
+        #expect(viewModel.errorMessage == L10n.tr("healthKitPermissionDeniedErrorDescription"))
     }
 
     @MainActor

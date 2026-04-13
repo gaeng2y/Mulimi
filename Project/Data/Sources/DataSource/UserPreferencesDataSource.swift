@@ -36,7 +36,7 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         self.userDefaults = userDefaults
         self.ubiquitousStore = ubiquitousStore
     }
-    
+
     // MARK: - MainIcon
     public func getMainIcon() -> MainIcon {
         let storedValue = userDefaults.mainIcon
@@ -49,7 +49,7 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         default: .drop
         }
     }
-    
+
     public func setMainIcon(_ icon: MainIcon) {
         let stringValue: String
         switch icon {
@@ -64,7 +64,7 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
         userDefaults.removeObject(forKey: .legacyMainAppearance)
         userDefaults.synchronize()
     }
-    
+
     // MARK: - Daily Water Limit
     public func getDailyWaterLimit() -> Double {
         ubiquitousStore.synchronize()

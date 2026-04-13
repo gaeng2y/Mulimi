@@ -30,23 +30,25 @@ public final class PresentationAssembly: Assembly {
             BundleAppInfoProvider()
         }
         .inObjectScope(.container)
-        
+
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let nextActionGuideUseCase = resolver.resolve(HydrationNextActionGuideUseCase.self)!
             let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
                     waterUseCase: waterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase,
+                    nextActionGuideUseCase: nextActionGuideUseCase,
                     widgetTimelineReloader: widgetTimelineReloader
                 )
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
@@ -57,11 +59,13 @@ public final class PresentationAssembly: Assembly {
         container.register(HydrationInsightViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let routineAdherenceUseCase = resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HydrationInsightViewModel(
                     waterUseCase: waterUseCase,
-                    progressUseCase: progressUseCase
+                    progressUseCase: progressUseCase,
+                    routineAdherenceUseCase: routineAdherenceUseCase
                 )
             }
         }
@@ -84,19 +88,21 @@ public final class PresentationAssembly: Assembly {
 
         container.register(ProfileRoutineViewModel.self) { resolver in
             let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
                     routineUseCase: routineUseCase,
+                    routineRecommendationUseCase: routineRecommendationUseCase,
                     drinkWaterUseCase: drinkWaterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase
                 )
             }
         }
         .inObjectScope(.container)
-        
+
         // MARK: - Authentication
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
@@ -113,7 +119,6 @@ public final class PresentationAssembly: Assembly {
                 OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
             }
         }
-        .inObjectScope(.container)
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!

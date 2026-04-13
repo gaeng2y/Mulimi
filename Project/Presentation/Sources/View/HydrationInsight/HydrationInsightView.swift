@@ -7,6 +7,7 @@
 
 import Charts
 import DesignSystem
+import DomainLayerInterface
 import Localization
 import SwiftUI
 
@@ -53,7 +54,10 @@ public struct HydrationInsightView: View {
         ScrollView {
             VStack(spacing: 18) {
                 overviewCard
-                weekdayPatternCard
+                routineAdherenceCard
+                if !viewModel.weekdayDistributions.isEmpty {
+                    weekdayPatternCard
+                }
             }
             .padding(.vertical, 20)
         }
@@ -107,6 +111,42 @@ public struct HydrationInsightView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
+    }
+
+    private var routineAdherenceCard: some View {
+        InsightCard(
+            title: L10n.tr("insightRoutineAdherenceTitle"),
+            subtitle: viewModel.routineAdherenceInsightText
+        ) {
+            VStack(alignment: .leading, spacing: 16) {
+                if !viewModel.routineAdherenceMetrics.isEmpty {
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible(), spacing: 10),
+                            GridItem(.flexible(), spacing: 10),
+                            GridItem(.flexible(), spacing: 10)
+                        ],
+                        spacing: 10
+                    ) {
+                        ForEach(viewModel.routineAdherenceMetrics) { metric in
+                            routineAdherenceMetric(metric)
+                        }
+                    }
+                }
+
+                if viewModel.routineAdherenceRows.isEmpty {
+                    Text(L10n.tr("insightRoutineAdherenceNoRoutineDescription"))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } else {
+                    VStack(spacing: 10) {
+                        ForEach(viewModel.routineAdherenceRows) { row in
+                            routineAdherenceRow(row)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private var weekdayPatternCard: some View {
@@ -178,6 +218,81 @@ public struct HydrationInsightView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+        }
+    }
+
+    private func routineAdherenceMetric(_ metric: RoutineAdherenceInsightMetric) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(metric.title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Text(metric.value)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.primary)
+
+            Text(metric.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 82, alignment: .leading)
+        .padding(12)
+        .background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private func routineAdherenceRow(_ row: RoutineAdherenceDisplayRow) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(row.title)
+                        .font(.subheadline.weight(.semibold))
+                    Text(row.timeText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Text(row.statusText)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(routineAdherenceStatusColor(row.status))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        routineAdherenceStatusColor(row.status).opacity(0.12),
+                        in: Capsule(style: .continuous)
+                    )
+            }
+
+            ProgressView(value: row.progress)
+                .tint(routineAdherenceStatusColor(row.status))
+
+            HStack {
+                Text(row.detailText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Text(row.rateText)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
+            }
+        }
+        .padding(12)
+        .background(Color(uiColor: .systemBackground).opacity(0.74))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private func routineAdherenceStatusColor(_ status: HydrationRoutineAdherenceStatus) -> Color {
+        switch status {
+        case .inactive, .noDueOccurrences:
+            return .secondary
+        case .noRecords, .needsAttention:
+            return .orange
+        case .onTrack:
+            return .accentColor
         }
     }
 

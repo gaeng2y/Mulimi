@@ -13,6 +13,39 @@ struct HydrationInsightViewModelTests {
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let waterUseCase = MockDrinkWaterUseCase()
         let progressUseCase = MockHydrationProgressUseCase()
+        let routineAdherenceUseCase = MockHydrationRoutineAdherenceUseCase()
+        routineAdherenceUseCase.insight = HydrationRoutineAdherenceInsight.make(
+            routines: [
+                HydrationRoutineSchedule(
+                    id: "morning",
+                    title: "아침 루틴",
+                    hour: 9,
+                    minute: 0,
+                    weekdayRawValues: [2, 3, 4, 5, 6],
+                    isEnabled: true
+                ),
+                HydrationRoutineSchedule(
+                    id: "inactive",
+                    title: "비활성 루틴",
+                    hour: 20,
+                    minute: 0,
+                    weekdayRawValues: [2],
+                    isEnabled: false
+                )
+            ],
+            events: [
+                HydrationRoutineAdherenceEvent(
+                    id: "monday",
+                    consumedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 9, hour: 9, minute: 20))!
+                ),
+                HydrationRoutineAdherenceEvent(
+                    id: "tuesday",
+                    consumedAt: calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 9, minute: 0))!
+                )
+            ],
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
         progressUseCase.snapshot = HydrationProgressSnapshot(
             dailyGoalML: 2000,
             weeklyAverageML: 1875,
@@ -38,6 +71,7 @@ struct HydrationInsightViewModelTests {
         let viewModel = HydrationInsightViewModel(
             waterUseCase: waterUseCase,
             progressUseCase: progressUseCase,
+            routineAdherenceUseCase: routineAdherenceUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }
         )
@@ -55,7 +89,12 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.bestWeekday?.averageIntakeML == 2250)
         #expect(viewModel.leastWeekday?.weekday == 1)
         #expect(viewModel.leastWeekday?.averageIntakeML == 0)
+        #expect(viewModel.routineAdherenceInsight?.scheduledCount == 4)
+        #expect(viewModel.routineAdherenceInsight?.completedCount == 2)
+        #expect(viewModel.routineAdherenceRows.first?.status == .needsAttention)
+        #expect(viewModel.routineAdherenceRows.last?.status == .inactive)
         #expect(progressUseCase.requestedReferenceDate == referenceDate)
+        #expect(routineAdherenceUseCase.requestedReferenceDate == referenceDate)
     }
 
     @MainActor
@@ -64,11 +103,13 @@ struct HydrationInsightViewModelTests {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let progressUseCase = MockHydrationProgressUseCase()
+        let routineAdherenceUseCase = MockHydrationRoutineAdherenceUseCase()
         progressUseCase.snapshot = .empty(dailyGoalML: 2000)
 
         let viewModel = HydrationInsightViewModel(
             waterUseCase: MockDrinkWaterUseCase(),
             progressUseCase: progressUseCase,
+            routineAdherenceUseCase: routineAdherenceUseCase,
             calendar: calendar,
             currentDateProvider: { referenceDate }
         )
@@ -80,6 +121,54 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.monthlyAverageML == 0)
         #expect(viewModel.weekdayDistributions.isEmpty)
         #expect(viewModel.dailyGoalML == 2000)
+        #expect(viewModel.routineAdherenceInsight != nil)
+    }
+
+    @MainActor
+    @Test("기록이 없어도 도래한 루틴이 있으면 루틴 수행률 카드를 노출한다")
+    func loadInsightsShowsRoutineAdherenceWithoutHydrationRecords() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 10))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineAdherenceUseCase = MockHydrationRoutineAdherenceUseCase()
+        progressUseCase.snapshot = .empty(dailyGoalML: 2000)
+        routineAdherenceUseCase.insight = HydrationRoutineAdherenceInsight.make(
+            routines: [
+                HydrationRoutineSchedule(
+                    id: "morning",
+                    title: "아침 루틴",
+                    hour: 9,
+                    minute: 0,
+                    weekdayRawValues: [2, 3, 4, 5],
+                    isEnabled: true
+                ),
+                HydrationRoutineSchedule(
+                    id: "inactive",
+                    title: "비활성 루틴",
+                    hour: 21,
+                    minute: 0,
+                    weekdayRawValues: [5],
+                    isEnabled: false
+                )
+            ],
+            events: [],
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: routineAdherenceUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(viewModel.isEmpty == false)
+        #expect(viewModel.routineAdherenceRows.map(\.status) == [.noRecords, .inactive])
+        #expect(viewModel.routineAdherenceInsight?.scheduledCount == 4)
     }
 
     private func setTotal(_ volumeML: Int, on date: Date, using useCase: MockDrinkWaterUseCase) {

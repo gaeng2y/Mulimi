@@ -496,6 +496,17 @@
         }
       }
     },
+    "challengePersonalizedBoosterActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴으로 나눠 마시기"
+          }
+        }
+      }
+    },
     "challengePersonalizedBoosterDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -536,6 +547,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld일 달성으로 안정적인 페이스를 굳혀보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedConsistencyActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유지 루틴 추가하기"
           }
         }
       }
@@ -584,6 +606,17 @@
         }
       }
     },
+    "challengePersonalizedMorningActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 루틴 만들기"
+          }
+        }
+      }
+    },
     "challengePersonalizedMorningDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -624,6 +657,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주 %lld일은 루틴 직전에 250ml를 먼저 마셔보세요."
+          }
+        }
+      }
+    },
+    "challengePersonalizedRoutineActionCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 루틴 수정하기"
           }
         }
       }
@@ -1255,6 +1299,138 @@
         }
       }
     },
+    "drinkWaterNextActionApproachingRoutineHeadlineFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴 %@ 전 한 잔 어때요?"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 한 잔"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionGoalReachedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표는 채웠어요. 지금은 무리하지 말고 기록 흐름만 유지해도 좋아요."
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionGoalReachedHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표를 달성했어요"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionHoursFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionHoursMinutesFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간 %lld분"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionMinutesFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld분"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionNeedsGoalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표가 있어야 남은 양과 다음 한 잔 기준을 계산할 수 있어요."
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionNeedsGoalHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 먼저 설정해 주세요"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionReadyHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 한 잔 마시면 목표에 가까워져요"
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionRemainingDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표까지 %@, 약 %lld잔 남았어요."
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 루틴 %@까지 %@ 남았고, 목표까지 %@, 약 %lld잔 남았어요."
+          }
+        }
+      }
+    },
     "historyFailedDateRangeError" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1493,6 +1669,237 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주와 이번 달 흐름"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceActiveRoutineDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성 루틴 %lld개 기준"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceAllKeptDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 도래한 활성 루틴을 모두 지켰어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceCompletedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회 완료"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceInactiveOnlyDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성 루틴 %lld개는 수행률 계산에서 제외했어요. 활성 루틴이 생기면 주간 기준으로 계산합니다."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceInsufficientDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 루틴 수행률을 계산할 기록이 아직 부족합니다."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMatchWindowDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시각 주변 기록"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMatchWindowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매칭 기준"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMinuteFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "±%lld분"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMissPatternDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 루틴을 %lld번 놓쳤어요. 이 시간대부터 먼저 챙겨보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceMissedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓친 루틴"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceNoDueDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주에 아직 도래한 활성 루틴이 없어 수행률을 기다리고 있어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceNoRoutineDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴을 추가하면 이번 주 수행률과 놓친 시간대를 볼 수 있어요."
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceRateTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간 수행률"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceRoutineDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld회 완료 · %lld회 놓침"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusInactive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNeedsAttention" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓침 있음"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNoDue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusNoRecords" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 없음"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceStatusOnTrack" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘 지킴"
+          }
+        }
+      }
+    },
+    "insightRoutineAdherenceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 수행률"
           }
         }
       }
@@ -1944,6 +2351,105 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "건강 앱에서 다시 가져오기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionAllowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한 허용하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedErrorDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한이 꺼져 있어요. 설정에서 다시 허용해 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionDeniedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한이 꺼져 있어요"
+          }
+        }
+      }
+    },
+    "healthKitPermissionNeededDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionNeededTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 접근 권한이 필요해요"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRefreshTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 확인하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRequestFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한을 확인하는 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionSettingsFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 앱에서 건강 > 데이터 접근 및 기기 > 물리미 경로로 들어가 권한을 다시 켤 수 있어요."
           }
         }
       }
@@ -3143,6 +3649,149 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "반복 요일"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationAfternoonDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 공백이 길어지는 날이 많아 중간 보충 루틴을 추천해요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationAfternoonRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 물 보충"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationAfternoonTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후 보충 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationApplyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 적용하기"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 자주 마신 시간대를 루틴으로 고정해 꾸준함을 만들 수 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 마시는 시간"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationFrequentTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 마시는 시간 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 물 마시기가 자주 늦어져서 아침 시작 루틴을 추천해요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningRoutineName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 물 마시기"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationMorningTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아침 시작 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationSectionFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록과 현재 루틴을 바탕으로 바로 추가할 만한 시간을 골랐어요."
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 루틴"
+          }
+        }
+      }
+    },
+    "profileRoutineRecommendationTimeValueFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
           }
         }
       }

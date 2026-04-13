@@ -6,15 +6,37 @@ import UIKit
 public struct ProfileRoutineView: View {
     @Environment(\.openURL) private var openURL
     @Bindable private var viewModel: ProfileRoutineViewModel
+    @State private var hasAppliedInitialAction = false
+    private let initialAction: RoutineActionIntent?
 
-    public init(viewModel: ProfileRoutineViewModel) {
+    public init(
+        viewModel: ProfileRoutineViewModel,
+        initialAction: RoutineActionIntent? = nil
+    ) {
         self.viewModel = viewModel
+        self.initialAction = initialAction
     }
 
     public var body: some View {
         List {
             Section(L10n.tr("profileRoutineGuidanceSectionTitle")) {
                 guidanceCard
+            }
+
+            if !viewModel.recommendationCards.isEmpty {
+                Section(
+                    content: {
+                    ForEach(viewModel.recommendationCards) { recommendation in
+                        recommendationCard(recommendation)
+                    }
+                    },
+                    header: {
+                        Text(L10n.tr("profileRoutineRecommendationSectionTitle"))
+                    },
+                    footer: {
+                        Text(L10n.tr("profileRoutineRecommendationSectionFootnote"))
+                    }
+                )
             }
 
             permissionSection
@@ -95,6 +117,7 @@ public struct ProfileRoutineView: View {
         }
         .task {
             await viewModel.load()
+            applyInitialActionIfNeeded()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             Task {
@@ -258,6 +281,45 @@ public struct ProfileRoutineView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 
+    private func recommendationCard(_ recommendation: RoutineRecommendationCard) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: recommendationIconName(for: recommendation.id))
+                    .font(.title3)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 28)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(recommendation.title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+
+                    Text(recommendation.description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Label(
+                L10n.tr(
+                    "profileRoutineRecommendationTimeValueFormat",
+                    recommendation.timeText,
+                    recommendation.weekdayText
+                ),
+                systemImage: "clock"
+            )
+            .font(.subheadline.weight(.semibold))
+            .foregroundColor(.primary)
+
+            Button(recommendation.applyButtonTitle) {
+                viewModel.presentRecommendation(id: recommendation.id)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(.vertical, 4)
+    }
+
     private func guidanceSlotChip(_ slot: RoutineGuidanceSlot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(slot.timeText)
@@ -314,11 +376,38 @@ public struct ProfileRoutineView: View {
         }
     }
 
+    private func recommendationIconName(for id: String) -> String {
+        if id.hasPrefix(HydrationRoutineRecommendationKind.morningStart.rawValue) {
+            return "sun.max.fill"
+        }
+
+        if id.hasPrefix(HydrationRoutineRecommendationKind.afternoonGap.rawValue) {
+            return "sun.haze.fill"
+        }
+
+        return "sparkles"
+    }
+
     private func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
 
         openURL(settingsURL)
+    }
+
+    private func applyInitialActionIfNeeded() {
+        guard hasAppliedInitialAction == false, let initialAction else {
+            return
+        }
+
+        hasAppliedInitialAction = true
+
+        switch initialAction {
+        case .create:
+            viewModel.presentCreateRoutine()
+        case let .edit(routineID):
+            viewModel.presentEditRoutine(id: routineID)
+        }
     }
 }

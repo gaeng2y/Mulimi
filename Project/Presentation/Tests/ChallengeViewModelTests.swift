@@ -71,6 +71,13 @@ struct ChallengeViewModelTests {
                 cycleID: "week:1710115200"
             )
         ]
+        let anchorRoutine = HydrationRoutine(
+            title: "출근 전 물",
+            hour: 8,
+            minute: 30,
+            weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+            isEnabled: true
+        )
         personalizedChallengeUseCase.challenges = [
             PersonalizedHydrationChallenge(
                 kind: .routineAnchor,
@@ -78,13 +85,7 @@ struct ChallengeViewModelTests {
                 source: .routine,
                 primaryCurrentValue: 5,
                 primaryTargetValue: 5,
-                anchorRoutine: HydrationRoutine(
-                    title: "출근 전 물",
-                    hour: 8,
-                    minute: 30,
-                    weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
-                    isEnabled: true
-                )
+                anchorRoutine: anchorRoutine
             )
         ]
 
@@ -104,6 +105,8 @@ struct ChallengeViewModelTests {
         #expect(viewModel.completedChallenges.count == 1)
         #expect(viewModel.recommendedChallenges.first?.kind == .routineAnchor)
         #expect(viewModel.recommendedChallenges.first?.sourceText == L10n.tr("challengeRecommendationSourceRoutine"))
+        #expect(viewModel.recommendedChallenges.first?.routineActionIntent == .edit(anchorRoutine.id))
+        #expect(viewModel.recommendedChallenges.first?.routineActionTitle == L10n.tr("challengePersonalizedRoutineActionCTATitle"))
         #expect(viewModel.inProgressChallenges.first?.kind == .streak7)
         #expect(viewModel.completedChallenges.first?.kind == .weeklyAchievement80)
         #expect(viewModel.completedChallenges.first?.badgeText == L10n.tr("challengeEarnedBadge"))
@@ -116,6 +119,96 @@ struct ChallengeViewModelTests {
         #expect(challengeUseCase.requestedReferenceDate == referenceDate)
         #expect(challengeUseCase.fetchBadgeHistoriesCallCount == 1)
         #expect(personalizedChallengeUseCase.requestedReferenceDate == referenceDate)
+    }
+
+    @MainActor
+    @Test("추천 챌린지는 루틴 생성 또는 수정 CTA를 계산한다")
+    func personalizedChallengeRoutineActions() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            todayIntakeML: 1500,
+            hasAchievedTodayGoal: false,
+            weeklyAverageML: 1875,
+            monthlyAverageML: 1500,
+            weeklyAchievementRate: 0.75,
+            monthlyAchievementRate: 0.5,
+            weeklyAchievedDays: 3,
+            monthlyAchievedDays: 6,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 2,
+            isEmpty: false
+        )
+        let anchorRoutine = HydrationRoutine(
+            title: "출근 전 물",
+            hour: 8,
+            minute: 30,
+            weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+            isEnabled: true
+        )
+        let challengeUseCase = MockChallengeUseCase()
+        let personalizedChallengeUseCase = MockPersonalizedChallengeUseCase()
+        personalizedChallengeUseCase.challenges = [
+            PersonalizedHydrationChallenge(
+                kind: .routineAnchor,
+                tier: .steady,
+                source: .routine,
+                primaryCurrentValue: 5,
+                primaryTargetValue: 5,
+                anchorRoutine: anchorRoutine
+            ),
+            PersonalizedHydrationChallenge(
+                kind: .morningKickstart,
+                tier: .beginner,
+                source: .recentRecords,
+                primaryCurrentValue: 2,
+                primaryTargetValue: 5
+            ),
+            PersonalizedHydrationChallenge(
+                kind: .dailyGoalBooster,
+                tier: .steady,
+                source: .recentRecords,
+                primaryCurrentValue: 1500,
+                primaryTargetValue: 1750,
+                currentAverageML: 1500,
+                recommendedTargetML: 1750,
+                dailyGoalML: 2000
+            ),
+            PersonalizedHydrationChallenge(
+                kind: .consistencyDefender,
+                tier: .stretch,
+                source: .recentRecords,
+                primaryCurrentValue: 5,
+                primaryTargetValue: 6,
+                secondaryCurrentValue: 5,
+                secondaryTargetValue: 7
+            )
+        ]
+
+        let viewModel = ChallengeViewModel(
+            challengeUseCase: challengeUseCase,
+            personalizedChallengeUseCase: personalizedChallengeUseCase,
+            progressUseCase: progressUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadChallenges()
+
+        #expect(
+            viewModel.recommendedChallenges.map(\.routineActionIntent) == [
+                .edit(anchorRoutine.id),
+                .create,
+                .create,
+                .create
+            ]
+        )
+        #expect(viewModel.recommendedChallenges[1].routineActionTitle == L10n.tr("challengePersonalizedMorningActionCTATitle"))
+        #expect(viewModel.recommendedChallenges[2].routineActionTitle == L10n.tr("challengePersonalizedBoosterActionCTATitle"))
+        #expect(viewModel.recommendedChallenges[3].routineActionTitle == L10n.tr("challengePersonalizedConsistencyActionCTATitle"))
     }
 
     @MainActor

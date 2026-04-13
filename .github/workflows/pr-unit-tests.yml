@@ -54,11 +54,23 @@ jobs:
 
       - name: Install tools and dependencies
         run: |
-          set -e
+          set -euo pipefail
           mise --version
           mise install
           tuist version
-          tuist install
+
+          cleanup_swiftpm_cache() {
+            rm -rf "$HOME/Library/Caches/org.swift.swiftpm"
+            rm -rf "$HOME/Library/org.swift.swiftpm"
+            rm -rf "$HOME/.swiftpm/cache"
+          }
+
+          if ! tuist install; then
+            echo "tuist install failed. Resetting SwiftPM cache and retrying once..."
+            cleanup_swiftpm_cache
+            tuist install
+          fi
+
           tuist generate
 
       - name: Log Xcode SDKs

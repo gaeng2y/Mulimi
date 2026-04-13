@@ -14,7 +14,7 @@ public struct RootView<Content: View>: View {
     @State private var onboardingViewModel: OnboardingViewModel
     @State private var healthKitPermissionViewModel: HealthKitPermissionViewModel
     private let content: () -> Content
-    
+
     public init(
         appSession: @autoclosure @escaping () -> AppSession,
         authenticationViewModel: @autoclosure @escaping () -> AuthenticationViewModel,
@@ -28,7 +28,7 @@ public struct RootView<Content: View>: View {
         self._healthKitPermissionViewModel = State(wrappedValue: healthKitPermissionViewModel())
         self.content = content
     }
-    
+
     public var body: some View {
         Group {
             if appSession.isAuthenticated {
@@ -42,7 +42,7 @@ public struct RootView<Content: View>: View {
             } else {
                 SignInView(viewModel: authenticationViewModel)
                     .onAppear {
-                        onboardingViewModel.refreshState()
+                        onboardingViewModel.prepareForSignedOutState()
                         healthKitPermissionViewModel.markSignedOut()
                     }
             }

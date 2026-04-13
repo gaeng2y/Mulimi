@@ -4,12 +4,12 @@ import WatchDomainLayerInterface
 public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
     private let hydrationRepository: WatchHydrationRepository
     private let dailyGoalRepository: WatchDailyGoalRepository
-    private let defaultDrinkVolumeML: Int
+    private let defaultDrinkVolumeML: Double
 
     public init(
         hydrationRepository: WatchHydrationRepository,
         dailyGoalRepository: WatchDailyGoalRepository,
-        defaultDrinkVolumeML: Int = 250
+        defaultDrinkVolumeML: Double = HydrationServing.defaultGlassML
     ) {
         self.hydrationRepository = hydrationRepository
         self.dailyGoalRepository = dailyGoalRepository
@@ -30,7 +30,7 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         }
 
         await hydrationRepository.addDrink(
-            volumeML: defaultDrinkVolumeML,
+            volumeML: Int(defaultDrinkVolumeML),
             consumedAt: referenceDate
         )
 
@@ -47,11 +47,16 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         events: [WatchHydrationEvent]
     ) -> WatchHydrationSnapshot {
         let sortedEvents = events.sorted { $0.consumedAt < $1.consumedAt }
+        let todayIntakeML = sortedEvents.reduce(0) { $0 + $1.volumeML }
 
         return WatchHydrationSnapshot(
             dailyGoalML: dailyGoalML,
-            todayIntakeML: sortedEvents.reduce(0) { $0 + $1.volumeML },
-            events: sortedEvents
+            todayIntakeML: todayIntakeML,
+            events: sortedEvents,
+            nextActionGuide: HydrationNextActionGuide.make(
+                currentIntakeML: Double(todayIntakeML),
+                dailyGoalML: Double(dailyGoalML)
+            )
         )
     }
 }

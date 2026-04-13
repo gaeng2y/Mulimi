@@ -16,7 +16,7 @@ public struct AppleSignInCredential: Sendable {
     public let authorizationCode: String?
     public let email: String?
     public let fullName: (givenName: String?, familyName: String?)?
-    
+
     public init(
         userIdentifier: String,
         identityToken: String?,
@@ -41,12 +41,12 @@ public protocol AppleSignInDataSource: Sendable {
 // MARK: - Implementation
 public final class AppleSignInDataSourceImpl: AppleSignInDataSource, @unchecked Sendable {
     public init() {}
-    
+
     @MainActor
     public func signIn(scopes: [String]) async throws -> AppleSignInCredential {
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()
-        
+
         // String → ASAuthorization.Scope 변환
         request.requestedScopes = scopes.compactMap { scope in
             switch scope {
@@ -55,11 +55,11 @@ public final class AppleSignInDataSourceImpl: AppleSignInDataSource, @unchecked 
             default: return nil
             }
         }
-        
+
         let controller = ASAuthorizationController(authorizationRequests: [request])
         let delegate = AppleSignInDelegate()
         controller.delegate = delegate
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             delegate.continuation = continuation
             controller.performRequests()
@@ -70,7 +70,7 @@ public final class AppleSignInDataSourceImpl: AppleSignInDataSource, @unchecked 
 // MARK: - Delegate
 private final class AppleSignInDelegate: NSObject, ASAuthorizationControllerDelegate {
     var continuation: CheckedContinuation<AppleSignInCredential, Error>?
-    
+
     func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
@@ -83,7 +83,7 @@ private final class AppleSignInDelegate: NSObject, ASAuthorizationControllerDele
             ))
             return
         }
-        
+
         let credential = AppleSignInCredential(
             userIdentifier: appleIDCredential.user,
             identityToken: appleIDCredential.identityToken.flatMap {
@@ -97,10 +97,10 @@ private final class AppleSignInDelegate: NSObject, ASAuthorizationControllerDele
                 ($0.givenName, $0.familyName)
             }
         )
-        
+
         continuation?.resume(returning: credential)
     }
-    
+
     func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithError error: Error

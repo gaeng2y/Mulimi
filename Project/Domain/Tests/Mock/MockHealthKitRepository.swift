@@ -36,35 +36,35 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
     // Captured parameters for verification
     private(set) var capturedStartDate: Date?
     private(set) var capturedEndDate: Date?
-    
+
     var authorisationStatus: HealthKitAuthorizationStatus {
         _authorizationStatus
     }
-    
+
     func requestAuthorization() async throws {
         requestAuthorizationCallCount += 1
-        
+
         if shouldThrowAuthorizationError {
             throw authorizationErrorToThrow
         }
-        
+
         // 성공 시 권한 상태를 변경
         _authorizationStatus = .sharingAuthorized
     }
-    
+
     func drinkWater() async throws {
         drinkWaterCallCount += 1
-        
+
         if shouldThrowDrinkWaterError {
             throw drinkWaterErrorToThrow
         }
-        
+
         // 권한이 없으면 에러 발생
         if _authorizationStatus != .sharingAuthorized {
             throw HealthKitError.permissionDenied
         }
     }
-    
+
     func reset() async throws {
         resetCallCount += 1
 
@@ -113,11 +113,11 @@ final class MockHealthKitRepository: HealthKitRepository, @unchecked Sendable {
     }
 
     // MARK: - Test Helper Methods
-    
+
     func setAuthorizationStatus(_ status: HealthKitAuthorizationStatus) {
         _authorizationStatus = status
     }
-    
+
     func resetCallCounts() {
         requestAuthorizationCallCount = 0
         drinkWaterCallCount = 0

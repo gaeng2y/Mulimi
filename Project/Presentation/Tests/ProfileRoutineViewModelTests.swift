@@ -73,6 +73,19 @@ struct ProfileRoutineViewModelTests {
         func reset() async {}
     }
 
+    private final class SpyRoutineRecommendationUseCase: RoutineRecommendationUseCase, @unchecked Sendable {
+        var recommendations: [HydrationRoutineRecommendation] = []
+        private(set) var fetchCallCount = 0
+
+        func fetchRecommendations(
+            referenceDate: Date,
+            calendar: Calendar
+        ) async -> [HydrationRoutineRecommendation] {
+            fetchCallCount += 1
+            return recommendations
+        }
+    }
+
     private final class SpyUserPreferencesUseCase: UserPreferencesUseCase, @unchecked Sendable {
         var dailyWaterLimit: Double = 2000
 
@@ -106,6 +119,7 @@ struct ProfileRoutineViewModelTests {
     @MainActor
     private func makeViewModel(
         routineUseCase: SpyRoutineUseCase = SpyRoutineUseCase(),
+        routineRecommendationUseCase: SpyRoutineRecommendationUseCase = SpyRoutineRecommendationUseCase(),
         drinkWaterUseCase: SpyDrinkWaterUseCase = SpyDrinkWaterUseCase(),
         userPreferencesUseCase: SpyUserPreferencesUseCase = SpyUserPreferencesUseCase(),
         now: Date? = nil
@@ -116,6 +130,7 @@ struct ProfileRoutineViewModelTests {
 
         return ProfileRoutineViewModel(
             routineUseCase: routineUseCase,
+            routineRecommendationUseCase: routineRecommendationUseCase,
             drinkWaterUseCase: drinkWaterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
             calendar: calendar,
@@ -170,6 +185,71 @@ struct ProfileRoutineViewModelTests {
         #expect(viewModel.summaryDescription == "\(routine.timeText) · \(routine.weekdayText)")
         #expect(viewModel.notificationStatus == .authorized)
         #expect(viewModel.displayedRoutines == [routine])
+    }
+
+    @MainActor
+    @Test("load는 추천 루틴 카드를 함께 계산한다")
+    func loadRecommendations() async {
+        let recommendationUseCase = SpyRoutineRecommendationUseCase()
+        recommendationUseCase.recommendations = [
+            HydrationRoutineRecommendation(
+                kind: .morningStart,
+                hour: 9,
+                minute: 0,
+                weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday]
+            )
+        ]
+        let viewModel = makeViewModel(routineRecommendationUseCase: recommendationUseCase)
+
+        await viewModel.load()
+
+        #expect(recommendationUseCase.fetchCallCount == 1)
+        #expect(viewModel.recommendationCards.count == 1)
+        #expect(viewModel.recommendationCards.first?.title == L10n.tr("profileRoutineRecommendationMorningTitle"))
+    }
+
+    @MainActor
+    @Test("추천 루틴을 선택하면 초안이 채워진 상태로 에디터를 연다")
+    func presentRecommendation() async {
+        let recommendationUseCase = SpyRoutineRecommendationUseCase()
+        recommendationUseCase.recommendations = [
+            HydrationRoutineRecommendation(
+                kind: .afternoonGap,
+                hour: 15,
+                minute: 0,
+                weekdays: [.monday, .wednesday, .friday]
+            )
+        ]
+        let viewModel = makeViewModel(routineRecommendationUseCase: recommendationUseCase)
+
+        await viewModel.load()
+        viewModel.presentRecommendation(id: viewModel.recommendationCards[0].id)
+
+        #expect(viewModel.isEditorPresented)
+        #expect(viewModel.editorDraft.title == L10n.tr("profileRoutineRecommendationAfternoonRoutineName"))
+        #expect(viewModel.editorDraft.selectedWeekdays == Set([.monday, .wednesday, .friday]))
+    }
+
+    @MainActor
+    @Test("루틴 ID로 수정 에디터를 열 수 있다")
+    func presentEditRoutineByID() async {
+        let routine = HydrationRoutine(
+            title: "출근 전 물",
+            hour: 8,
+            minute: 30,
+            weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+            isEnabled: true
+        )
+        let useCase = SpyRoutineUseCase()
+        useCase.routines = [routine]
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        await viewModel.load()
+        viewModel.presentEditRoutine(id: routine.id)
+
+        #expect(viewModel.isEditorPresented)
+        #expect(viewModel.editorDraft.id == routine.id)
+        #expect(viewModel.editorDraft.title == routine.title)
     }
 
     @MainActor

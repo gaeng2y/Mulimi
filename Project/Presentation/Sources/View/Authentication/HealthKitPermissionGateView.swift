@@ -6,6 +6,7 @@
 //
 
 import DomainLayerInterface
+import Localization
 import SwiftUI
 import UIKit
 
@@ -102,7 +103,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                     Button {
                         viewModel.refreshStatus()
                     } label: {
-                        Text("다시 확인하기")
+                        Text(L10n.tr("healthKitPermissionRefreshTitle"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
@@ -116,7 +117,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
             .padding(.horizontal, 24)
 
             if viewModel.authorizationStatus == .sharingDenied {
-                Text("설정 앱에서 건강 > 데이터 접근 및 기기 > 물리미 경로로 들어가 권한을 다시 켤 수 있어요.")
+                Text(L10n.tr("healthKitPermissionSettingsFootnote"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -131,33 +132,33 @@ public struct HealthKitPermissionGateView<Content: View>: View {
     private var primaryButtonTitle: String {
         switch viewModel.authorizationStatus {
         case .notDetermined:
-            return "건강 권한 허용하기"
+            return L10n.tr("healthKitPermissionAllowTitle")
         case .sharingDenied:
-            return "설정 열기"
+            return L10n.tr("bodyProfileOpenSettingsTitle")
         case .sharingAuthorized:
-            return "계속하기"
+            return L10n.tr("commonConfirmTitle")
         }
     }
 
     private var titleText: String {
         switch viewModel.authorizationStatus {
         case .notDetermined:
-            return "건강 접근 권한이 필요해요"
+            return L10n.tr("healthKitPermissionNeededTitle")
         case .sharingDenied:
-            return "건강 권한이 꺼져 있어요"
+            return L10n.tr("healthKitPermissionDeniedTitle")
         case .sharingAuthorized:
-            return "건강 접근 권한이 필요해요"
+            return L10n.tr("healthKitPermissionNeededTitle")
         }
     }
 
     private var descriptionText: String {
         switch viewModel.authorizationStatus {
         case .notDetermined:
-            return "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요합니다."
+            return L10n.tr("healthKitPermissionNeededDescription")
         case .sharingDenied:
-            return "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
+            return L10n.tr("healthKitPermissionDeniedDescription")
         case .sharingAuthorized:
-            return "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요합니다."
+            return L10n.tr("healthKitPermissionNeededDescription")
         }
     }
 

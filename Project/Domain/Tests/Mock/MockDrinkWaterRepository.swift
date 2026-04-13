@@ -12,14 +12,14 @@ import Foundation
 final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
     private var currentWaterIntakeMLValue = 0.0
     private var _events: [HydrationEvent] = []
-    
+
     // Call tracking properties
     private(set) var drinkWaterCallCount = 0
     private(set) var resetCallCount = 0
     private(set) var hydrationEventsCallCount = 0
     private(set) var hydrationEventsInIntervalCallCount = 0
     private(set) var migrateCallCount = 0
-    
+
     var currentWaterIntakeML: Double {
         get async {
             currentWaterIntakeMLValue
@@ -41,7 +41,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     func migrateLegacyDataIfNeeded() async {
         migrateCallCount += 1
     }
-    
+
     func drinkWater() async {
         drinkWaterCallCount += 1
         currentWaterIntakeMLValue += HydrationServing.defaultGlassML
@@ -53,13 +53,13 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
             )
         )
     }
-    
+
     func reset() async {
         resetCallCount += 1
         currentWaterIntakeMLValue = 0
         _events.removeAll()
     }
-    
+
     // Test helper methods
     func setCurrentWaterIntakeML(_ value: Double) {
         currentWaterIntakeMLValue = value
@@ -69,7 +69,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         _events = events
         currentWaterIntakeMLValue = events.reduce(0) { $0 + Double($1.volumeML) }
     }
-    
+
     func resetCallCounts() {
         drinkWaterCallCount = 0
         resetCallCount = 0

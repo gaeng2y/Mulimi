@@ -13,11 +13,11 @@ import SwiftUI
 public struct HydrationRecordListView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
     @State private var isPresentedAlert: Bool = false
-    
+
     public init(viewModel: HydrationRecordListViewModel) {
         self.viewModel = viewModel
     }
-    
+
     public var body: some View {
         RecordCalendarView(viewModel: viewModel)
         .background(
@@ -31,38 +31,38 @@ public struct HydrationRecordListView: View {
             viewModel.errorMessage,
             isPresented: $isPresentedAlert
         ) {
-            
+
         }
     }
-    
+
     private struct RowListView: View {
         @Bindable private var viewModel: HydrationRecordListViewModel
-        
+
         init(viewModel: HydrationRecordListViewModel) {
             self.viewModel = viewModel
         }
-        
+
         var body: some View {
             List(viewModel.records) { record in
                 HydrationRecordRow(record: record)
             }
         }
     }
-    
+
     private struct HydrationRecordRow: View {
         let record: HydrationRecord
-        
+
         private var dateString: String {
             record.date.formatted(.dateTime.year().month().day())
         }
-        
+
         var body: some View {
             HStack {
                 Text(dateString)
                     .font(.subheadline)
-                
+
                 Spacer()
-                
+
                 HStack {
                     Spacer()
                     Text(L10n.tr("commonMilliliterFormat", Int(record.mililiter.rounded())))

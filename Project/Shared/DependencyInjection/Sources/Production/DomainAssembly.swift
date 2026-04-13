@@ -23,6 +23,19 @@ public final class DomainAssembly: Assembly {
                 userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!
             )
         }
+        container.register(HydrationNextActionGuideUseCase.self) { resolver in
+            HydrationNextActionGuideUseCaseImpl(
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!,
+                userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!,
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!
+            )
+        }
+        container.register(HydrationRoutineAdherenceUseCase.self) { resolver in
+            HydrationRoutineAdherenceUseCaseImpl(
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!,
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
+            )
+        }
         container.register(ChallengeUseCase.self) { resolver in
             ChallengeUseCaseImpl(
                 progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!,
@@ -36,7 +49,13 @@ public final class DomainAssembly: Assembly {
                 drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
             )
         }
-        
+        container.register(RoutineRecommendationUseCase.self) { resolver in
+            RoutineRecommendationUseCaseImpl(
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!,
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
+            )
+        }
+
         // MARK: - HealthKit
         container.register(HealthKitUseCase.self) { resolver in
             HealthKitUseCaseImpl(
@@ -58,7 +77,7 @@ public final class DomainAssembly: Assembly {
                 recommendationRepository: resolver.resolve(HydrationGoalRecommendationRepository.self)!
             )
         }
-        
+
         // MARK: - UserPreferences
         container.register(UserPreferencesUseCase.self) { resolver in
             UserPreferencesUseCaseImpl(
