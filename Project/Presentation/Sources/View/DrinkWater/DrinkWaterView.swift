@@ -24,6 +24,8 @@ public struct DrinkWaterView: View {
 
             VStack {
                 GeometryReader { proxy in
+                    let dropSize = min(proxy.size.width, proxy.size.height) * 0.78
+
                     WaterDropView(
                         appearance: viewModel.mainIcon,
                         progress: viewModel.progress,
@@ -34,12 +36,17 @@ public struct DrinkWaterView: View {
                         value: viewModel.offset
                     )
                     .frame(
+                        width: dropSize,
+                        height: dropSize,
+                        alignment: .center
+                    )
+                    .frame(
                         width: proxy.size.width,
                         height: proxy.size.height,
                         alignment: .center
                     )
                 }
-                .frame(height: 450)
+                .frame(height: 360)
 
                 VStack(spacing: 8) {
                     HStack(alignment: .firstTextBaseline) {

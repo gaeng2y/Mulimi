@@ -29,7 +29,7 @@
 - `HealthKit` 기반 수분 기록 및 오늘 섭취량 집계
 - 로그인 후 `온보딩 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
 - 일일 목표량 설정 및 AI 기반 목표량 추천
-- 수분 기록 히스토리, 인사이트, 챌린지, 루틴 관리
+- 수분 기록 히스토리, 루틴 수행률 인사이트, 챌린지, 루틴 관리
 - 홈 화면/잠금화면 위젯과 Apple Watch 앱 지원
 
 ## 🛠️ 기술 스택
@@ -136,7 +136,7 @@ Mulimi/
 - `Project/Domain`
   - `DomainLayerInterface`, `DomainLayer`
   - `WatchDomainLayerInterface`, `WatchDomainLayer`
-  - `SharedInterfaces`: 앱/워치가 같은 수분 단위와 next-action 계산을 보는 공용 소스
+  - `SharedInterfaces`: 앱/워치가 같은 수분 단위, next-action, 루틴 수행률 계산을 보는 공용 소스
 - `Project/Data`
   - `DataLayer`, `WatchDataLayer`
 - `Project/Presentation`

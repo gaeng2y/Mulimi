@@ -26,6 +26,7 @@
 - 현재 루틴 저장소는 `UserDefaults` JSON
 - 알림 스케줄은 저장된 활성 루틴 기준으로 재구성한다
 - 추천 루틴은 최근 `HealthKit` 기록과 현재 활성 루틴을 바탕으로 계산한다
+- 루틴 수행률 인사이트는 저장된 루틴 시각과 `HealthKit` 기록 시각을 같은 Domain 매칭 규칙으로 비교한다
 
 ## Related Code
 
@@ -33,6 +34,7 @@
 - `Project/Presentation/Sources/View/Profile/RoutineEditorView.swift`
 - `Project/Presentation/Sources/ViewModel/ProfileRoutineViewModel.swift`
 - `Project/Domain/Sources/UseCase/RoutineRecommendationUseCaseImpl.swift`
+- `Project/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
 - `Project/Data/Sources/DataSource/RoutineNotificationDataSource.swift`
 
 ## Related Docs

@@ -30,6 +30,12 @@ public final class DomainAssembly: Assembly {
                 routineUseCase: resolver.resolve(RoutineUseCase.self)!
             )
         }
+        container.register(HydrationRoutineAdherenceUseCase.self) { resolver in
+            HydrationRoutineAdherenceUseCaseImpl(
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!,
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!
+            )
+        }
         container.register(ChallengeUseCase.self) { resolver in
             ChallengeUseCaseImpl(
                 progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!,
