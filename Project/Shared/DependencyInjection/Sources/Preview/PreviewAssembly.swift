@@ -71,7 +71,7 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register((any AppInfoProviding).self) { _ in
-            StaticAppInfoProvider(appVersion: "2.0.0", appBuildNumber: "22")
+            StaticAppInfoProvider(appVersion: "2.0.2", appBuildNumber: "24")
         }
         .inObjectScope(.container)
 
