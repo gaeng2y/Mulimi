@@ -4,9 +4,14 @@ import SwiftUI
 
 public struct ChallengeView: View {
     @State private var viewModel: ChallengeViewModel
+    private let onRoutineAction: (RoutineActionIntent) -> Void
 
-    public init(viewModel: ChallengeViewModel) {
+    public init(
+        viewModel: ChallengeViewModel,
+        onRoutineAction: @escaping (RoutineActionIntent) -> Void = { _ in }
+    ) {
         self._viewModel = State(wrappedValue: viewModel)
+        self.onRoutineAction = onRoutineAction
     }
 
     public var body: some View {
@@ -52,7 +57,10 @@ public struct ChallengeView: View {
 
                     VStack(spacing: 14) {
                         ForEach(viewModel.recommendedChallenges) { challenge in
-                            PersonalizedChallengeCard(challenge: challenge)
+                            PersonalizedChallengeCard(
+                                challenge: challenge,
+                                onRoutineAction: onRoutineAction
+                            )
                         }
                     }
                 }
@@ -113,6 +121,7 @@ public struct ChallengeView: View {
 
 private struct PersonalizedChallengeCard: View {
     let challenge: PersonalizedChallengeCardModel
+    let onRoutineAction: (RoutineActionIntent) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -172,6 +181,16 @@ private struct PersonalizedChallengeCard: View {
                     tintColor: accentColor
                 )
             }
+
+            Button {
+                onRoutineAction(challenge.routineActionIntent)
+            } label: {
+                Label(challenge.routineActionTitle, systemImage: "arrow.right.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(accentColor)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)

@@ -231,6 +231,28 @@ struct ProfileRoutineViewModelTests {
     }
 
     @MainActor
+    @Test("루틴 ID로 수정 에디터를 열 수 있다")
+    func presentEditRoutineByID() async {
+        let routine = HydrationRoutine(
+            title: "출근 전 물",
+            hour: 8,
+            minute: 30,
+            weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday],
+            isEnabled: true
+        )
+        let useCase = SpyRoutineUseCase()
+        useCase.routines = [routine]
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        await viewModel.load()
+        viewModel.presentEditRoutine(id: routine.id)
+
+        #expect(viewModel.isEditorPresented)
+        #expect(viewModel.editorDraft.id == routine.id)
+        #expect(viewModel.editorDraft.title == routine.title)
+    }
+
+    @MainActor
     @Test("saveDraft는 유효한 루틴을 저장하고 시트를 닫는다")
     func saveDraft() async {
         let useCase = SpyRoutineUseCase()
