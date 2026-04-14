@@ -1673,6 +1673,270 @@
         }
       }
     },
+    "insightWeeklyReportAchievedDecreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주보다 %lld일 적게 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedIncreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주보다 %lld일 더 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedStableDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주와 같은 달성일"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAfternoonSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageDecreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 대비 -%@"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageIncreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 대비 +%@"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageStableDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주와 비슷해요"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "평균 섭취량"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportDecreasedDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간보다 평균 %@ 적게 마셨어요. 비는 시간대부터 다시 채워보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportEmptyDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록이 쌓이면 평균, 목표 달성일, 자주 비는 시간대를 요약해드릴게요. 오늘 목표는 %@입니다."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportEveningSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저녁"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportGapDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 비어 있음"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportGapTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비는 시간대"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportIncreasedDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간보다 평균 %@ 더 마셨어요. 좋은 흐름입니다."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportMorningSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오전"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoComparisonDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록은 있어요. 전주 기록이 더 쌓이면 변화량도 함께 보여드릴게요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoComparisonDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 기록 부족"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoGapDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뚜렷한 빈 시간 없음"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoGapValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "균형적"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportPendingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportStableDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간과 비슷한 평균을 유지하고 있어요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportStartGuideDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 시작해보세요"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 리포트"
+          }
+        }
+      }
+    },
     "insightRoutineAdherenceActiveRoutineDetailFormat" : {
       "extractionState" : "manual",
       "localizations" : {

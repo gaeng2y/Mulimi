@@ -45,6 +45,32 @@ struct RoutineAdherenceDisplayRow: Identifiable, Equatable {
     let status: HydrationRoutineAdherenceStatus
 }
 
+enum HydrationWeeklyReportTimeSlot: CaseIterable, Equatable {
+    case morning
+    case afternoon
+    case evening
+}
+
+struct HydrationWeeklyReport: Equatable {
+    let averageML: Double
+    let achievedDays: Int
+    let elapsedDays: Int
+    let previousAverageML: Double?
+    let averageDeltaML: Double?
+    let previousAchievedDays: Int?
+    let achievedDayDelta: Int?
+    let frequentlyEmptySlot: HydrationWeeklyReportTimeSlot?
+    let frequentlyEmptySlotMissingDays: Int
+    let hasCurrentWeekRecords: Bool
+}
+
+struct HydrationWeeklyReportMetric: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let value: String
+    let detail: String
+}
+
 @MainActor
 @Observable
 public final class HydrationInsightViewModel {
@@ -59,6 +85,7 @@ public final class HydrationInsightViewModel {
     private(set) var leastWeekday: HydrationInsightWeekdayDistribution?
     private(set) var weekdayDistributions: [HydrationInsightWeekdayDistribution] = []
     private(set) var routineAdherenceInsight: HydrationRoutineAdherenceInsight?
+    private(set) var weeklyReport: HydrationWeeklyReport?
 
     private let waterUseCase: DrinkWaterUseCase
     private let progressUseCase: HydrationProgressUseCase
@@ -208,6 +235,63 @@ public final class HydrationInsightViewModel {
         }
     }
 
+    var weeklyReportInsightText: String {
+        guard let weeklyReport else {
+            return L10n.tr("insightWeeklyReportNoComparisonDescription")
+        }
+
+        guard weeklyReport.hasCurrentWeekRecords else {
+            return L10n.tr("insightWeeklyReportEmptyDescriptionFormat", dailyGoalText)
+        }
+
+        guard let averageDeltaML = weeklyReport.averageDeltaML else {
+            return L10n.tr("insightWeeklyReportNoComparisonDescription")
+        }
+
+        let roundedDelta = Int(abs(averageDeltaML).rounded())
+        if roundedDelta == 0 {
+            return L10n.tr("insightWeeklyReportStableDescription")
+        }
+
+        let deltaText = volumeText(Double(roundedDelta))
+        if averageDeltaML > 0 {
+            return L10n.tr("insightWeeklyReportIncreasedDescriptionFormat", deltaText)
+        }
+
+        return L10n.tr("insightWeeklyReportDecreasedDescriptionFormat", deltaText)
+    }
+
+    var weeklyReportMetrics: [HydrationWeeklyReportMetric] {
+        guard let weeklyReport else {
+            return []
+        }
+
+        return [
+            HydrationWeeklyReportMetric(
+                id: "average",
+                title: L10n.tr("insightWeeklyReportAverageTitle"),
+                value: volumeText(weeklyReport.averageML),
+                detail: weeklyAverageDetailText(for: weeklyReport)
+            ),
+            HydrationWeeklyReportMetric(
+                id: "achieved",
+                title: L10n.tr("insightWeeklyReportAchievedTitle"),
+                value: L10n.tr(
+                    "insightAchievementDaysFormat",
+                    weeklyReport.achievedDays,
+                    weeklyReport.elapsedDays
+                ),
+                detail: weeklyAchievedDetailText(for: weeklyReport)
+            ),
+            HydrationWeeklyReportMetric(
+                id: "emptySlot",
+                title: L10n.tr("insightWeeklyReportGapTitle"),
+                value: weeklyEmptySlotValueText(for: weeklyReport),
+                detail: weeklyEmptySlotDetailText(for: weeklyReport)
+            )
+        ]
+    }
+
     var chartUpperBound: Double {
         let highestAverage = weekdayDistributions.map(\.averageIntakeML).max() ?? 0
         return max(dailyGoalML, highestAverage) * 1.2
@@ -218,25 +302,38 @@ public final class HydrationInsightViewModel {
         defer { isLoading = false }
 
         let referenceDate = currentDateProvider()
-        guard let monthInterval = calendar.dateInterval(of: .month, for: referenceDate) else {
+        guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: referenceDate),
+              let monthInterval = calendar.dateInterval(of: .month, for: referenceDate) else {
             resetInsightState()
             return
         }
 
+        let elapsedWeekInterval = elapsedInterval(from: weekInterval, upTo: referenceDate)
+        let previousWeekInterval = previousComparisonInterval(matching: elapsedWeekInterval)
         let elapsedMonthInterval = elapsedInterval(from: monthInterval, upTo: referenceDate)
 
         async let progressSnapshot = progressUseCase.progressSnapshot(
             referenceDate: referenceDate,
             calendar: calendar
         )
+        async let currentWeekEvents = waterUseCase.hydrationEvents(in: elapsedWeekInterval)
+        async let previousWeekEvents = waterUseCase.hydrationEvents(in: previousWeekInterval)
         async let monthlyEvents = waterUseCase.hydrationEvents(in: elapsedMonthInterval)
         async let routineAdherence = routineAdherenceUseCase.weeklyInsight(
             referenceDate: referenceDate,
             calendar: calendar
         )
 
-        let (snapshot, resolvedMonthlyEvents, resolvedRoutineAdherence) = await (
+        let (
+            snapshot,
+            resolvedCurrentWeekEvents,
+            resolvedPreviousWeekEvents,
+            resolvedMonthlyEvents,
+            resolvedRoutineAdherence
+        ) = await (
             progressSnapshot,
+            currentWeekEvents,
+            previousWeekEvents,
             monthlyEvents,
             routineAdherence
         )
@@ -247,6 +344,12 @@ public final class HydrationInsightViewModel {
         monthlyElapsedDays = snapshot.monthlyElapsedDays
         isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
         routineAdherenceInsight = resolvedRoutineAdherence
+        weeklyReport = makeWeeklyReport(
+            snapshot: snapshot,
+            currentWeekEvents: resolvedCurrentWeekEvents,
+            previousWeekEvents: resolvedPreviousWeekEvents,
+            elapsedWeekInterval: elapsedWeekInterval
+        )
 
         if resolvedMonthlyEvents.isEmpty {
             weekdayDistributions = []
@@ -278,6 +381,7 @@ public final class HydrationInsightViewModel {
         leastWeekday = nil
         weekdayDistributions = []
         routineAdherenceInsight = nil
+        weeklyReport = nil
     }
 
     private func elapsedInterval(from interval: DateInterval, upTo referenceDate: Date) -> DateInterval {
@@ -293,10 +397,135 @@ public final class HydrationInsightViewModel {
         )
     }
 
+    private func previousComparisonInterval(matching elapsedWeekInterval: DateInterval) -> DateInterval {
+        let dayCount = elapsedDayCount(in: elapsedWeekInterval)
+        let start = calendar.date(
+            byAdding: .day,
+            value: -7,
+            to: elapsedWeekInterval.start
+        ) ?? elapsedWeekInterval.start
+        let end = calendar.date(
+            byAdding: .day,
+            value: dayCount,
+            to: start
+        ) ?? start
+
+        return DateInterval(start: start, end: end)
+    }
+
     private func dailyTotals(from events: [HydrationEvent]) -> [Date: Double] {
         events.reduce(into: [:]) { partialResult, event in
             let day = calendar.startOfDay(for: event.consumedAt)
             partialResult[day, default: 0] += Double(event.volumeML)
+        }
+    }
+
+    private func elapsedDayCount(in interval: DateInterval) -> Int {
+        max(calendar.dateComponents([.day], from: interval.start, to: interval.end).day ?? 0, 1)
+    }
+
+    private func achievedDayCount(in totals: [Date: Double]) -> Int {
+        guard dailyGoalML > 0 else {
+            return 0
+        }
+
+        return totals.values.filter { $0 >= dailyGoalML }.count
+    }
+
+    private func makeWeeklyReport(
+        snapshot: HydrationProgressSnapshot,
+        currentWeekEvents: [HydrationEvent],
+        previousWeekEvents: [HydrationEvent],
+        elapsedWeekInterval: DateInterval
+    ) -> HydrationWeeklyReport {
+        let previousWeekTotals = dailyTotals(from: previousWeekEvents)
+        let elapsedDays = max(snapshot.weeklyElapsedDays, elapsedDayCount(in: elapsedWeekInterval))
+        let previousAverageML: Double?
+        let averageDeltaML: Double?
+        let previousAchievedDays: Int?
+        let achievedDayDelta: Int?
+
+        if previousWeekEvents.isEmpty {
+            previousAverageML = nil
+            averageDeltaML = nil
+            previousAchievedDays = nil
+            achievedDayDelta = nil
+        } else {
+            let resolvedPreviousAverageML = previousWeekTotals.values.reduce(0, +) / Double(elapsedDays)
+            let resolvedPreviousAchievedDays = achievedDayCount(in: previousWeekTotals)
+
+            previousAverageML = resolvedPreviousAverageML
+            averageDeltaML = snapshot.weeklyAverageML - resolvedPreviousAverageML
+            previousAchievedDays = resolvedPreviousAchievedDays
+            achievedDayDelta = snapshot.weeklyAchievedDays - resolvedPreviousAchievedDays
+        }
+
+        let emptySlot = mostFrequentlyEmptyTimeSlot(
+            events: currentWeekEvents,
+            interval: elapsedWeekInterval
+        )
+
+        return HydrationWeeklyReport(
+            averageML: snapshot.weeklyAverageML,
+            achievedDays: snapshot.weeklyAchievedDays,
+            elapsedDays: elapsedDays,
+            previousAverageML: previousAverageML,
+            averageDeltaML: averageDeltaML,
+            previousAchievedDays: previousAchievedDays,
+            achievedDayDelta: achievedDayDelta,
+            frequentlyEmptySlot: emptySlot?.slot,
+            frequentlyEmptySlotMissingDays: emptySlot?.missingDays ?? 0,
+            hasCurrentWeekRecords: currentWeekEvents.isEmpty == false
+        )
+    }
+
+    private func mostFrequentlyEmptyTimeSlot(
+        events: [HydrationEvent],
+        interval: DateInterval
+    ) -> (slot: HydrationWeeklyReportTimeSlot, missingDays: Int)? {
+        guard events.isEmpty == false else {
+            return nil
+        }
+
+        let eventsByDay = Dictionary(grouping: events) { event in
+            calendar.startOfDay(for: event.consumedAt)
+        }
+        var missingCountBySlot = Dictionary(
+            uniqueKeysWithValues: HydrationWeeklyReportTimeSlot.allCases.map { ($0, 0) }
+        )
+        var currentDate = interval.start
+
+        while currentDate < interval.end {
+            let dayEvents = eventsByDay[currentDate] ?? []
+            for slot in HydrationWeeklyReportTimeSlot.allCases where !hasEvent(in: slot, events: dayEvents) {
+                missingCountBySlot[slot, default: 0] += 1
+            }
+
+            guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else {
+                break
+            }
+            currentDate = nextDate
+        }
+
+        return missingCountBySlot
+            .filter { $0.value > 0 }
+            .sorted { lhs, rhs in
+                if lhs.value != rhs.value {
+                    return lhs.value > rhs.value
+                }
+
+                return lhs.key.sortOrder < rhs.key.sortOrder
+            }
+            .first
+            .map { (slot: $0.key, missingDays: $0.value) }
+    }
+
+    private func hasEvent(
+        in slot: HydrationWeeklyReportTimeSlot,
+        events: [HydrationEvent]
+    ) -> Bool {
+        events.contains { event in
+            slot.contains(hour: calendar.component(.hour, from: event.consumedAt))
         }
     }
 
@@ -356,6 +585,76 @@ public final class HydrationInsightViewModel {
         L10n.tr("commonPercentFormat", Int((rate * 100).rounded()))
     }
 
+    private func weeklyAverageDetailText(for report: HydrationWeeklyReport) -> String {
+        guard report.hasCurrentWeekRecords else {
+            return L10n.tr("insightWeeklyReportStartGuideDetail")
+        }
+
+        guard let averageDeltaML = report.averageDeltaML else {
+            return L10n.tr("insightWeeklyReportNoComparisonDetail")
+        }
+
+        let roundedDelta = Int(abs(averageDeltaML).rounded())
+        if roundedDelta == 0 {
+            return L10n.tr("insightWeeklyReportAverageStableDetail")
+        }
+
+        let deltaText = volumeText(Double(roundedDelta))
+        if averageDeltaML > 0 {
+            return L10n.tr("insightWeeklyReportAverageIncreasedDetailFormat", deltaText)
+        }
+
+        return L10n.tr("insightWeeklyReportAverageDecreasedDetailFormat", deltaText)
+    }
+
+    private func weeklyAchievedDetailText(for report: HydrationWeeklyReport) -> String {
+        guard report.hasCurrentWeekRecords else {
+            return L10n.tr("insightWeeklyReportStartGuideDetail")
+        }
+
+        guard let achievedDayDelta = report.achievedDayDelta else {
+            return L10n.tr("insightElapsedDaysFormat", report.elapsedDays)
+        }
+
+        if achievedDayDelta == 0 {
+            return L10n.tr("insightWeeklyReportAchievedStableDetail")
+        }
+
+        if achievedDayDelta > 0 {
+            return L10n.tr("insightWeeklyReportAchievedIncreasedDetailFormat", achievedDayDelta)
+        }
+
+        return L10n.tr("insightWeeklyReportAchievedDecreasedDetailFormat", abs(achievedDayDelta))
+    }
+
+    private func weeklyEmptySlotValueText(for report: HydrationWeeklyReport) -> String {
+        guard report.hasCurrentWeekRecords else {
+            return L10n.tr("insightWeeklyReportPendingValue")
+        }
+
+        guard let slot = report.frequentlyEmptySlot else {
+            return L10n.tr("insightWeeklyReportNoGapValue")
+        }
+
+        return slotText(for: slot)
+    }
+
+    private func weeklyEmptySlotDetailText(for report: HydrationWeeklyReport) -> String {
+        guard report.hasCurrentWeekRecords else {
+            return L10n.tr("insightWeeklyReportStartGuideDetail")
+        }
+
+        guard report.frequentlyEmptySlot != nil else {
+            return L10n.tr("insightWeeklyReportNoGapDetail")
+        }
+
+        return L10n.tr(
+            "insightWeeklyReportGapDetailFormat",
+            report.frequentlyEmptySlotMissingDays,
+            report.elapsedDays
+        )
+    }
+
     private func timeText(hour: Int, minute: Int) -> String {
         var formatterCalendar = calendar
         formatterCalendar.locale = calendar.locale ?? Locale.autoupdatingCurrent
@@ -376,6 +675,41 @@ public final class HydrationInsightViewModel {
             return L10n.tr("insightRoutineAdherenceStatusNeedsAttention")
         case .onTrack:
             return L10n.tr("insightRoutineAdherenceStatusOnTrack")
+        }
+    }
+
+    private func slotText(for slot: HydrationWeeklyReportTimeSlot) -> String {
+        switch slot {
+        case .morning:
+            return L10n.tr("insightWeeklyReportMorningSlot")
+        case .afternoon:
+            return L10n.tr("insightWeeklyReportAfternoonSlot")
+        case .evening:
+            return L10n.tr("insightWeeklyReportEveningSlot")
+        }
+    }
+}
+
+private extension HydrationWeeklyReportTimeSlot {
+    var sortOrder: Int {
+        switch self {
+        case .morning:
+            return 0
+        case .afternoon:
+            return 1
+        case .evening:
+            return 2
+        }
+    }
+
+    func contains(hour: Int) -> Bool {
+        switch self {
+        case .morning:
+            return (5..<12).contains(hour)
+        case .afternoon:
+            return (12..<18).contains(hour)
+        case .evening:
+            return (18..<24).contains(hour)
         }
     }
 }
