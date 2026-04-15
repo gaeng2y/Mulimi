@@ -99,8 +99,6 @@ struct ContentView: View {
                     Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")
                 }
             }
-            .navigationTitle(navigationTitle)
-            .navigationBarTitleDisplayMode(.large)
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
@@ -153,21 +151,6 @@ struct ContentView: View {
             case .withdrawal:
                 SettingDetailView(menu: .withdrawal, viewModel: settingsViewModel)
             }
-        }
-    }
-
-    private var navigationTitle: String {
-        switch selectedTab {
-        case .drink:
-            L10n.tr("drinkTitle")
-        case .history:
-            L10n.tr("historyTitle")
-        case .insight:
-            L10n.tr("insightNavigationTitle")
-        case .challenge:
-            L10n.tr("challengeTitle")
-        case .profile:
-            L10n.tr("profileTitle")
         }
     }
 
