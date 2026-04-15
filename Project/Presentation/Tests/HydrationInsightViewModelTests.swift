@@ -93,6 +93,15 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.routineAdherenceInsight?.completedCount == 2)
         #expect(viewModel.routineAdherenceRows.first?.status == .needsAttention)
         #expect(viewModel.routineAdherenceRows.last?.status == .inactive)
+        #expect(viewModel.weeklyReport?.averageML == 1875)
+        #expect(viewModel.weeklyReport?.achievedDays == 3)
+        #expect(viewModel.weeklyReport?.elapsedDays == 4)
+        #expect(viewModel.weeklyReport?.previousAverageML == 625)
+        #expect(viewModel.weeklyReport?.averageDeltaML == 1250)
+        #expect(viewModel.weeklyReport?.achievedDayDelta == 2)
+        #expect(viewModel.weeklyReport?.frequentlyEmptySlot == .afternoon)
+        #expect(viewModel.weeklyReport?.frequentlyEmptySlotMissingDays == 4)
+        #expect(viewModel.weeklyReportMetrics.count == 3)
         #expect(progressUseCase.requestedReferenceDate == referenceDate)
         #expect(routineAdherenceUseCase.requestedReferenceDate == referenceDate)
     }
@@ -122,6 +131,9 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.weekdayDistributions.isEmpty)
         #expect(viewModel.dailyGoalML == 2000)
         #expect(viewModel.routineAdherenceInsight != nil)
+        #expect(viewModel.weeklyReport?.hasCurrentWeekRecords == false)
+        #expect(viewModel.weeklyReport?.elapsedDays == 4)
+        #expect(viewModel.weeklyReportMetrics.count == 3)
     }
 
     @MainActor
@@ -169,6 +181,7 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.isEmpty == false)
         #expect(viewModel.routineAdherenceRows.map(\.status) == [.noRecords, .inactive])
         #expect(viewModel.routineAdherenceInsight?.scheduledCount == 4)
+        #expect(viewModel.weeklyReport?.elapsedDays == 4)
     }
 
     private func setTotal(_ volumeML: Int, on date: Date, using useCase: MockDrinkWaterUseCase) {
