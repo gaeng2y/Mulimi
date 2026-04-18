@@ -52,7 +52,8 @@ public final class PresentationAssembly: Assembly {
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
 
