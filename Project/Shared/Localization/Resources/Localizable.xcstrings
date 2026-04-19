@@ -1728,6 +1728,72 @@
         }
       }
     },
+    "insightCategoryEmptyGuideDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물을 더 기록하면 이 카테고리의 카드가 채워져요."
+          }
+        }
+      }
+    },
+    "insightCategoryOverviewTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요약"
+          }
+        }
+      }
+    },
+    "insightCategoryPatternTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패턴"
+          }
+        }
+      }
+    },
+    "insightCategoryPickerAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인사이트 카테고리 선택"
+          }
+        }
+      }
+    },
+    "insightCategoryReportTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리포트"
+          }
+        }
+      }
+    },
+    "insightCategoryRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴"
+          }
+        }
+      }
+    },
     "insightDailyGoalFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1878,6 +1944,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주와 이번 달 흐름"
+          }
+        }
+      }
+    },
+    "insightPatternEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패턴을 만들 기록이 부족해요"
           }
         }
       }
