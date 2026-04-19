@@ -17,7 +17,6 @@ struct RecordCalendarView: View {
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
-    private let dailyGoal: Double = 2000
 
     init(viewModel: HydrationRecordListViewModel) {
         self.viewModel = viewModel
@@ -25,8 +24,12 @@ struct RecordCalendarView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+            LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
                 Section {
+                    summaryCard
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+
                     LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(calendarDays, id: \.self) { day in
                             CalendarDayView(
@@ -34,29 +37,33 @@ struct RecordCalendarView: View {
                                 record: recordForDay(day),
                                 isCurrentMonth: isCurrentMonth(day),
                                 isToday: isToday(day),
-                                dailyGoal: dailyGoal
+                                dailyGoal: viewModel.dailyLimit
                             )
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 12)
+
+                    recordListSection
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 24)
                 } header: {
-                    VStack(spacing: 0) {
+                    VStack(spacing: 12) {
+                        periodPicker
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
+
                         monthHeader
                             .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
 
                         weekDayHeader
                             .padding(.horizontal, 16)
+                            .padding(.bottom, 8)
                     }
                     .background(Color(uiColor: .systemGroupedBackground))
                 }
             }
         }
         .background(Color(uiColor: .systemGroupedBackground))
-        .task {
-            await viewModel.fetchHydrationRecord()
-        }
         .sheet(isPresented: Binding(
             get: { viewModel.isMonthPickerPresented },
             set: { isPresented in
@@ -69,45 +76,183 @@ struct RecordCalendarView: View {
         }
     }
 
+    private var periodPicker: some View {
+        Picker(
+            L10n.tr("historyPeriodPickerAccessibilityLabel"),
+            selection: Binding(
+                get: { viewModel.selectedPeriod },
+                set: { period in
+                    Task {
+                        await viewModel.updateSelectedPeriod(period)
+                    }
+                }
+            )
+        ) {
+            ForEach(HydrationRecordPeriod.allCases) { period in
+                Text(period.title)
+                    .tag(period)
+            }
+        }
+        .pickerStyle(.segmented)
+        .accessibilityLabel(L10n.tr("historyPeriodPickerAccessibilityLabel"))
+    }
+
     private var monthHeader: some View {
         HStack {
-            Button {
-                syncPickerSelectionWithCurrentDate()
-                viewModel.showMonthPicker()
-            } label: {
-                HStack(spacing: 8) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(viewModel.date.formatted(.dateTime.year()))
-                            .font(.caption)
+            if viewModel.selectedPeriod == .month {
+                Button {
+                    syncPickerSelectionWithCurrentDate()
+                    viewModel.showMonthPicker()
+                } label: {
+                    HStack(spacing: 8) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(viewModel.date.formatted(.dateTime.year()))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+
+                            Text(viewModel.date.formatted(.dateTime.month(.wide)))
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+
+                        Image(systemName: "chevron.down")
+                            .font(.subheadline.weight(.semibold))
                             .foregroundColor(.secondary)
-
-                        Text(viewModel.date.formatted(.dateTime.month(.wide)))
-                            .font(.title2)
-                            .fontWeight(.bold)
                     }
-
-                    Image(systemName: "chevron.down")
-                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(L10n.tr("recordCalendarMonthPickerAccessibilityLabel"))
+                .accessibilityHint(L10n.tr("recordCalendarMonthPickerAccessibilityHint"))
+            } else {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(viewModel.selectedPeriod.title)
+                        .font(.caption)
                         .foregroundColor(.secondary)
+
+                    Text(viewModel.selectedPeriodRangeText)
+                        .font(.title2)
+                        .fontWeight(.bold)
                 }
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(L10n.tr("recordCalendarMonthPickerAccessibilityLabel"))
-            .accessibilityHint(L10n.tr("recordCalendarMonthPickerAccessibilityHint"))
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text(L10n.tr("recordCalendarMonthlyGoalTitle"))
+                Text(L10n.tr("historyPeriodGoalTitle"))
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                Text(L10n.tr("commonPercentFormat", monthlyProgress))
+                Text(L10n.tr("commonPercentFormat", viewModel.periodSummary.progressPercent))
                     .font(.title3)
                     .fontWeight(.semibold)
                     .foregroundColor(.accentColor)
             }
         }
+    }
+
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(L10n.tr("historySummaryTitle"))
+                        .font(.headline)
+
+                    Text(viewModel.selectedPeriodRangeText)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(L10n.tr("commonMilliliterFormat", viewModel.periodSummary.totalML))
+                        .font(.title2.weight(.bold))
+
+                    Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.periodSummary.glassCount))
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.accentColor)
+                }
+            }
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                SummaryMetricView(
+                    title: L10n.tr("historySummaryAverageTitle"),
+                    value: L10n.tr("commonMilliliterFormat", viewModel.periodSummary.averageML),
+                    systemImage: "chart.bar"
+                )
+
+                SummaryMetricView(
+                    title: L10n.tr("historySummaryRecordCountTitle"),
+                    value: L10n.tr("historyRecordCountFormat", viewModel.periodSummary.eventCount),
+                    systemImage: "list.bullet.clipboard"
+                )
+
+                SummaryMetricView(
+                    title: L10n.tr("historySummaryAchievedDaysTitle"),
+                    value: L10n.tr(
+                        "historyAchievedDaysFormat",
+                        viewModel.periodSummary.achievedDays,
+                        viewModel.periodSummary.dayCount
+                    ),
+                    systemImage: "checkmark.seal"
+                )
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color(uiColor: .systemBackground))
+        )
+    }
+
+    private var recordListSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(L10n.tr("historyRecordListTitle"))
+                    .font(.headline)
+
+                Spacer()
+
+                Text(L10n.tr("historyRecordedDaysFormat", viewModel.periodSummary.recordedDays))
+                    .font(.caption.weight(.semibold))
+                    .foregroundColor(.secondary)
+            }
+
+            if viewModel.daySummaries.isEmpty {
+                emptyStateCard
+            } else {
+                VStack(spacing: 8) {
+                    ForEach(viewModel.daySummaries.reversed()) { summary in
+                        HydrationRecordDaySummaryRow(
+                            summary: summary,
+                            dailyGoal: viewModel.dailyLimit
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private var emptyStateCard: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "drop.fill")
+                .font(.title2)
+                .foregroundColor(.accentColor)
+
+            Text(viewModel.emptyStateTitle)
+                .font(.subheadline.weight(.semibold))
+
+            Text(viewModel.emptyStateDescription)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(uiColor: .systemBackground))
+        )
     }
 
     private var weekDayHeader: some View {
@@ -176,13 +321,6 @@ struct RecordCalendarView: View {
 
     private func isToday(_ date: Date) -> Bool {
         calendar.isDateInToday(date)
-    }
-
-    private var monthlyProgress: Int {
-        let daysInMonth = calendar.range(of: .day, in: .month, for: viewModel.date)?.count ?? 30
-        let goalPerMonth = dailyGoal * Double(daysInMonth)
-        let totalConsumed = viewModel.records.reduce(0) { $0 + $1.mililiter }
-        return min(Int((totalConsumed / goalPerMonth) * 100), 100)
     }
 
     private var selectableYears: [Int] {
@@ -254,6 +392,90 @@ struct RecordCalendarView: View {
     private func syncPickerSelectionWithCurrentDate() {
         selectedYear = calendar.component(.year, from: viewModel.date)
         selectedMonth = calendar.component(.month, from: viewModel.date)
+    }
+}
+
+private struct SummaryMetricView: View {
+    let title: String
+    let value: String
+    let systemImage: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.accentColor)
+
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+
+            Text(title)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.accentColor.opacity(0.08))
+        )
+    }
+}
+
+private struct HydrationRecordDaySummaryRow: View {
+    let summary: HydrationRecordDaySummary
+    let dailyGoal: Double
+
+    private var progressPercent: Int {
+        guard dailyGoal > 0 else {
+            return 0
+        }
+
+        return min(Int((Double(summary.totalML) / dailyGoal) * 100), 100)
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            WaterDropIndicator(
+                amount: Double(summary.totalML),
+                goal: dailyGoal,
+                isCompact: true
+            )
+            .frame(width: 34, height: 34)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(summary.date.formatted(.dateTime.month().day().weekday(.wide)))
+                    .font(.subheadline.weight(.semibold))
+
+                Text(
+                    L10n.tr(
+                        "historyDaySummaryDescriptionFormat",
+                        summary.eventCount,
+                        progressPercent
+                    )
+                )
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(L10n.tr("commonMilliliterFormat", summary.totalML))
+                    .font(.subheadline.weight(.semibold))
+
+                Text(L10n.tr("drinkWaterGlassCountFormat", summary.glassCount))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .systemBackground))
+        )
     }
 }
 
