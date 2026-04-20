@@ -265,6 +265,50 @@
         }
       }
     },
+    "challengeCategoryCompletedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        }
+      }
+    },
+    "challengeCategoryInProgressTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeCategoryPickerAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지 카테고리 선택"
+          }
+        }
+      }
+    },
+    "challengeCategoryRecommendedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천"
+          }
+        }
+      }
+    },
     "challengeCompletedBadge" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -283,6 +327,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7일 연속 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지를 달성하면 획득 기록이 이곳에 쌓입니다."
+          }
+        }
+      }
+    },
+    "challengeCompletedEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료한 챌린지가 아직 없어요"
           }
         }
       }
@@ -448,6 +514,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeInProgressEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록을 쌓으면 다시 진행할 챌린지를 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "challengeInProgressEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중인 챌린지가 없어요"
           }
         }
       }
@@ -734,6 +822,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "맞춤 추천"
+          }
+        }
+      }
+    },
+    "challengeRecommendedEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록과 루틴이 더 쌓이면 바로 실행할 만한 추천을 보여드릴게요."
+          }
+        }
+      }
+    },
+    "challengeRecommendedEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 챌린지가 아직 없어요"
           }
         }
       }

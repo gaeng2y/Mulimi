@@ -3,7 +3,9 @@ import Localization
 import SwiftUI
 
 public struct ChallengeView: View {
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @State private var viewModel: ChallengeViewModel
+    @State private var selectedCategory: ChallengeCategory = .recommended
     private let onRoutineAction: (RoutineActionIntent) -> Void
 
     public init(
@@ -27,11 +29,21 @@ public struct ChallengeView: View {
             )
             .ignoresSafeArea()
 
+            Circle()
+                .fill(Color.orange.opacity(0.14))
+                .frame(width: 190, height: 190)
+                .blur(radius: 46)
+                .offset(x: -140, y: -240)
+
+            Circle()
+                .fill(Color.mint.opacity(0.12))
+                .frame(width: 230, height: 230)
+                .blur(radius: 54)
+                .offset(x: 150, y: 220)
+
             Group {
                 if viewModel.isLoading {
                     ProgressView(L10n.tr("challengeLoadingTitle"))
-                } else if viewModel.isEmpty {
-                    emptyState
                 } else {
                     challengeContent
                 }
@@ -48,74 +60,189 @@ public struct ChallengeView: View {
 
     private var challengeContent: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                if viewModel.recommendedChallenges.isEmpty == false {
-                    ChallengeSectionHeader(
-                        title: L10n.tr("challengeRecommendedSectionTitle"),
-                        subtitle: L10n.tr("challengeRecommendedSectionDescription")
-                    )
-
-                    VStack(spacing: 14) {
-                        ForEach(viewModel.recommendedChallenges) { challenge in
-                            PersonalizedChallengeCard(
-                                challenge: challenge,
-                                onRoutineAction: onRoutineAction
-                            )
-                        }
-                    }
-                }
-
-                if viewModel.inProgressChallenges.isEmpty == false {
-                    ChallengeSectionHeader(
-                        title: L10n.tr("challengeInProgressSectionTitle"),
-                        subtitle: L10n.tr("challengeInProgressSectionDescription")
-                    )
-
-                    VStack(spacing: 14) {
-                        ForEach(viewModel.inProgressChallenges) { challenge in
-                            ChallengeCard(challenge: challenge)
-                        }
-                    }
-                }
-
-                if viewModel.completedChallenges.isEmpty == false {
-                    ChallengeSectionHeader(
-                        title: L10n.tr("challengeCompletedSectionTitle"),
-                        subtitle: L10n.tr("challengeCompletedSectionDescription")
-                    )
-
-                    VStack(spacing: 14) {
-                        ForEach(viewModel.completedChallenges) { challenge in
-                            ChallengeHistoryCard(challenge: challenge)
-                        }
-                    }
-                }
+            VStack(alignment: .leading, spacing: 18) {
+                categoryPicker
+                selectedCategoryContent
             }
             .padding(.vertical, 20)
         }
+        .scrollIndicators(.hidden)
     }
 
-    private var emptyState: some View {
-        VStack(spacing: 18) {
-            Spacer()
+    private var categoryPicker: some View {
+        LiquidGlassSegmentedControl(
+            selection: $selectedCategory,
+            segments: ChallengeCategory.allCases.map {
+                LiquidGlassSegment(
+                    value: $0,
+                    title: $0.title,
+                    systemImage: $0.systemImage
+                )
+            }
+        )
+        .accessibilityLabel(L10n.tr("challengeCategoryPickerAccessibilityLabel"))
+    }
 
-            Image(systemName: "trophy")
-                .font(.system(size: 44))
+    @ViewBuilder
+    private var selectedCategoryContent: some View {
+        switch selectedCategory {
+        case .recommended:
+            recommendedCategorySection
+        case .inProgress:
+            inProgressCategorySection
+        case .completed:
+            completedCategorySection
+        }
+    }
+
+    private var recommendedCategorySection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            ChallengeSectionHeader(
+                title: L10n.tr("challengeRecommendedSectionTitle"),
+                subtitle: L10n.tr("challengeRecommendedSectionDescription")
+            )
+
+            if viewModel.recommendedChallenges.isEmpty {
+                categoryEmptyCard(
+                    title: L10n.tr("challengeRecommendedEmptyTitle"),
+                    description: L10n.tr("challengeRecommendedEmptyDescription"),
+                    systemImage: "sparkles"
+                )
+            } else {
+                VStack(spacing: 14) {
+                    ForEach(viewModel.recommendedChallenges) { challenge in
+                        PersonalizedChallengeCard(
+                            challenge: challenge,
+                            onRoutineAction: onRoutineAction
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private var inProgressCategorySection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            ChallengeSectionHeader(
+                title: L10n.tr("challengeInProgressSectionTitle"),
+                subtitle: L10n.tr("challengeInProgressSectionDescription")
+            )
+
+            if viewModel.inProgressChallenges.isEmpty {
+                categoryEmptyCard(
+                    title: L10n.tr("challengeInProgressEmptyTitle"),
+                    description: L10n.tr("challengeInProgressEmptyDescription"),
+                    systemImage: "figure.walk"
+                )
+            } else {
+                VStack(spacing: 14) {
+                    ForEach(viewModel.inProgressChallenges) { challenge in
+                        ChallengeCard(challenge: challenge)
+                    }
+                }
+            }
+        }
+    }
+
+    private var completedCategorySection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            ChallengeSectionHeader(
+                title: L10n.tr("challengeCompletedSectionTitle"),
+                subtitle: L10n.tr("challengeCompletedSectionDescription")
+            )
+
+            if viewModel.completedChallenges.isEmpty {
+                categoryEmptyCard(
+                    title: L10n.tr("challengeCompletedEmptyTitle"),
+                    description: L10n.tr("challengeCompletedEmptyDescription"),
+                    systemImage: "checkmark.seal"
+                )
+            } else {
+                VStack(spacing: 14) {
+                    ForEach(viewModel.completedChallenges) { challenge in
+                        ChallengeHistoryCard(challenge: challenge)
+                    }
+                }
+            }
+        }
+    }
+
+    private func categoryEmptyCard(
+        title: String,
+        description: String,
+        systemImage: String
+    ) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: systemImage)
+                .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(Color.orange)
+                .frame(width: 42, height: 42)
+                .background(
+                    Circle()
+                        .fill(Color.orange.opacity(0.13))
+                )
 
-            VStack(spacing: 8) {
-                Text(L10n.tr("challengeEmptyTitle"))
-                    .font(.title3.weight(.bold))
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
 
-                Text(L10n.tr("challengeEmptyDescription"))
+                Text(description)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
-            Spacer()
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
+        .background(
+            emptyCardBackground,
+            in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Color.white.opacity(reduceTransparency ? 0.08 : 0.22), lineWidth: 1)
+        }
+    }
+
+    private var emptyCardBackground: AnyShapeStyle {
+        if reduceTransparency {
+            return AnyShapeStyle(Color(uiColor: .secondarySystemBackground))
+        }
+
+        return AnyShapeStyle(.ultraThinMaterial)
+    }
+}
+
+private enum ChallengeCategory: CaseIterable, Hashable, Identifiable {
+    case recommended
+    case inProgress
+    case completed
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .recommended:
+            return L10n.tr("challengeCategoryRecommendedTitle")
+        case .inProgress:
+            return L10n.tr("challengeCategoryInProgressTitle")
+        case .completed:
+            return L10n.tr("challengeCategoryCompletedTitle")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .recommended:
+            return "sparkles"
+        case .inProgress:
+            return "figure.walk"
+        case .completed:
+            return "checkmark.seal"
+        }
     }
 }
 
