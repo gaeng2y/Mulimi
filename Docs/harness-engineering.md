@@ -18,6 +18,8 @@ Docs/index.md      -> 문서 허브
 Docs/product-specs -> 사용자 흐름 요구사항
 Docs/skills        -> 구현 전 체크리스트
 Docs/exec-plans    -> 실행 계획과 기술 부채
+Docs/quality-gates.md -> 변경 유형별 검증 기준
+Docs/documentation-maintenance.md -> 문서 유지보수 규칙
 Docs/*.md          -> 도메인/설계 배경 문서
 ```
 
@@ -62,15 +64,26 @@ Docs/*.md          -> 도메인/설계 배경 문서
 ### `Docs/exec-plans/`
 - 긴 작업의 계획과 결정 기록
 - 진행 중 작업, 완료 기록, 기술 부채 추적
+- 새 실행 계획은 `Docs/exec-plans/template.md`를 복사해 작성
 
 ### `Docs/*.md`
 - 특정 도메인에 대한 깊은 설계 배경
 - 예: 챌린지 상태, 개인화 전략, 프로필 구조
 
+### `Docs/quality-gates.md`
+- 변경 유형별 최소 검증 기준
+- PR 본문에 어떤 검증을 적어야 하는지 판단하는 기준
+
+### `Docs/documentation-maintenance.md`
+- 문서별 SSOT와 갱신 조건
+- 새 문서를 만들지 기존 문서를 갱신할지 판단하는 기준
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
 - 구조 규칙 변경: `ARCHITECTURE.md`와 관련 `Docs/skills/` 갱신
+- 검증 기준 변경: `Docs/quality-gates.md`와 관련 `Docs/skills/` 갱신
+- 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
 - 코드와 문서가 어긋나면 코드를 먼저 확인하고 작업 끝에 문서를 맞춘다
