@@ -121,6 +121,8 @@ Mulimi/
 ├── Docs/
 │   ├── index.md
 │   ├── harness-engineering.md
+│   ├── quality-gates.md
+│   ├── documentation-maintenance.md
 │   ├── product-specs/
 │   ├── exec-plans/
 │   └── skills/
@@ -222,8 +224,11 @@ make verify
 
 - [문서 허브](Docs/index.md)
 - [하네스 엔지니어링 구조](Docs/harness-engineering.md)
+- [품질 게이트](Docs/quality-gates.md)
+- [문서 유지보수 규칙](Docs/documentation-maintenance.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)
+- [실행 계획 템플릿](Docs/exec-plans/template.md)
 - [실행 계획 / 기술 부채](Docs/exec-plans/tech-debt-tracker.md)
 - [구현 체크리스트 모음](Docs/skills/)
 - [프로필 정보 구조](Docs/profile-information-architecture.md)
