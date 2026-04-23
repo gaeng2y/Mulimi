@@ -265,6 +265,50 @@
         }
       }
     },
+    "challengeCategoryCompletedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        }
+      }
+    },
+    "challengeCategoryInProgressTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeCategoryPickerAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지 카테고리 선택"
+          }
+        }
+      }
+    },
+    "challengeCategoryRecommendedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천"
+          }
+        }
+      }
+    },
     "challengeCompletedBadge" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -283,6 +327,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7일 연속 챌린지를 달성했어요."
+          }
+        }
+      }
+    },
+    "challengeCompletedEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지를 달성하면 획득 기록이 이곳에 쌓입니다."
+          }
+        }
+      }
+    },
+    "challengeCompletedEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료한 챌린지가 아직 없어요"
           }
         }
       }
@@ -448,6 +514,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "진행 중"
+          }
+        }
+      }
+    },
+    "challengeInProgressEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록을 쌓으면 다시 진행할 챌린지를 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "challengeInProgressEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중인 챌린지가 없어요"
           }
         }
       }
@@ -734,6 +822,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "맞춤 추천"
+          }
+        }
+      }
+    },
+    "challengeRecommendedEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록과 루틴이 더 쌓이면 바로 실행할 만한 추천을 보여드릴게요."
+          }
+        }
+      }
+    },
+    "challengeRecommendedEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 챌린지가 아직 없어요"
           }
         }
       }
@@ -1431,6 +1541,72 @@
         }
       }
     },
+    "historyAchievedDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일"
+          }
+        }
+      }
+    },
+    "historyDaySummaryDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회 기록 · 목표 %lld%%"
+          }
+        }
+      }
+    },
+    "historyEmptyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 기간에 물을 마시면 여기에 일별 요약이 쌓여요."
+          }
+        }
+      }
+    },
+    "historyEmptyMonthTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 달 기록이 아직 없어요"
+          }
+        }
+      }
+    },
+    "historyEmptyTodayTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록이 아직 없어요"
+          }
+        }
+      }
+    },
+    "historyEmptyWeekTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록이 아직 없어요"
+          }
+        }
+      }
+    },
     "historyFailedDateRangeError" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1449,6 +1625,149 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "유효하지 않은 날짜 선택입니다."
+          }
+        }
+      }
+    },
+    "historyPeriodGoalTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기간 달성률"
+          }
+        }
+      }
+    },
+    "historyPeriodMonthTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월간"
+          }
+        }
+      }
+    },
+    "historyPeriodPickerAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 기간 선택"
+          }
+        }
+      }
+    },
+    "historyPeriodRangeFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ - %@"
+          }
+        }
+      }
+    },
+    "historyPeriodTodayTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘"
+          }
+        }
+      }
+    },
+    "historyPeriodWeekTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간"
+          }
+        }
+      }
+    },
+    "historyRecordCountFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld회"
+          }
+        }
+      }
+    },
+    "historyRecordListTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일별 기록"
+          }
+        }
+      }
+    },
+    "historyRecordedDaysFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일 기록"
+          }
+        }
+      }
+    },
+    "historySummaryAchievedDaysTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "달성일"
+          }
+        }
+      }
+    },
+    "historySummaryAverageTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일평균"
+          }
+        }
+      }
+    },
+    "historySummaryRecordCountTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 횟수"
+          }
+        }
+      }
+    },
+    "historySummaryTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기간 요약"
           }
         }
       }
@@ -1515,6 +1834,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "요일"
+          }
+        }
+      }
+    },
+    "insightCategoryEmptyGuideDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물을 더 기록하면 이 카테고리의 카드가 채워져요."
+          }
+        }
+      }
+    },
+    "insightCategoryOverviewTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요약"
+          }
+        }
+      }
+    },
+    "insightCategoryPatternTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패턴"
+          }
+        }
+      }
+    },
+    "insightCategoryPickerAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인사이트 카테고리 선택"
+          }
+        }
+      }
+    },
+    "insightCategoryReportTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리포트"
+          }
+        }
+      }
+    },
+    "insightCategoryRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴"
           }
         }
       }
@@ -1669,6 +2054,281 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이번 주와 이번 달 흐름"
+          }
+        }
+      }
+    },
+    "insightPatternEmptyTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패턴을 만들 기록이 부족해요"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedDecreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주보다 %lld일 적게 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedIncreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주보다 %lld일 더 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedStableDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주와 같은 달성일"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAchievedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 달성"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAfternoonSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오후"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageDecreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 대비 -%@"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageIncreasedDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 대비 +%@"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageStableDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주와 비슷해요"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportAverageTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "평균 섭취량"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportDecreasedDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간보다 평균 %@ 적게 마셨어요. 비는 시간대부터 다시 채워보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportEmptyDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록이 쌓이면 평균, 목표 달성일, 자주 비는 시간대를 요약해드릴게요. 오늘 목표는 %@입니다."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportEveningSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저녁"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportGapDetailFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 비어 있음"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportGapTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비는 시간대"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportIncreasedDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간보다 평균 %@ 더 마셨어요. 좋은 흐름입니다."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportMorningSlot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오전"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoComparisonDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록은 있어요. 전주 기록이 더 쌓이면 변화량도 함께 보여드릴게요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoComparisonDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 기록 부족"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoGapDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뚜렷한 빈 시간 없음"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportNoGapValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "균형적"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportPendingValue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportStableDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전주 같은 기간과 비슷한 평균을 유지하고 있어요."
+          }
+        }
+      }
+    },
+    "insightWeeklyReportStartGuideDetail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 시작해보세요"
+          }
+        }
+      }
+    },
+    "insightWeeklyReportTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 리포트"
           }
         }
       }

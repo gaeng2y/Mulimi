@@ -13,6 +13,7 @@ import SwiftUI
 
 public struct HydrationInsightView: View {
     @State private var viewModel: HydrationInsightViewModel
+    @State private var selectedCategory: HydrationInsightCategory = .overview
 
     public init(viewModel: HydrationInsightViewModel) {
         self._viewModel = State(wrappedValue: viewModel)
@@ -30,6 +31,18 @@ public struct HydrationInsightView: View {
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
+
+            Circle()
+                .fill(Color.accentColor.opacity(0.16))
+                .frame(width: 180, height: 180)
+                .blur(radius: 42)
+                .offset(x: -120, y: -220)
+
+            Circle()
+                .fill(Color.cyan.opacity(0.14))
+                .frame(width: 220, height: 220)
+                .blur(radius: 52)
+                .offset(x: 140, y: 180)
 
             Group {
                 if viewModel.isLoading {
@@ -52,14 +65,49 @@ public struct HydrationInsightView: View {
 
     private var insightContent: some View {
         ScrollView {
-            VStack(spacing: 18) {
-                overviewCard
-                routineAdherenceCard
-                if !viewModel.weekdayDistributions.isEmpty {
-                    weekdayPatternCard
-                }
+            VStack(spacing: 16) {
+                categoryPicker
+
+                selectedCategoryContent
             }
             .padding(.vertical, 20)
+        }
+        .scrollIndicators(.hidden)
+    }
+
+    private var categoryPicker: some View {
+        LiquidGlassSegmentedControl(
+            selection: $selectedCategory,
+            segments: HydrationInsightCategory.allCases.map { category in
+                LiquidGlassSegment(
+                    value: category,
+                    title: category.title,
+                    systemImage: category.systemImage
+                )
+            }
+        )
+        .accessibilityLabel(L10n.tr("insightCategoryPickerAccessibilityLabel"))
+    }
+
+    @ViewBuilder
+    private var selectedCategoryContent: some View {
+        switch selectedCategory {
+        case .overview:
+            overviewCard
+        case .pattern:
+            if viewModel.weekdayDistributions.isEmpty {
+                categoryEmptyCard(
+                    title: L10n.tr("insightPatternEmptyTitle"),
+                    description: viewModel.weekdayInsightText,
+                    systemImage: "chart.bar.doc.horizontal"
+                )
+            } else {
+                weekdayPatternCard
+            }
+        case .routine:
+            routineAdherenceCard
+        case .report:
+            weeklyReportCard
         }
     }
 
@@ -111,6 +159,26 @@ public struct HydrationInsightView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
+    }
+
+    private var weeklyReportCard: some View {
+        InsightCard(
+            title: L10n.tr("insightWeeklyReportTitle"),
+            subtitle: viewModel.weeklyReportInsightText
+        ) {
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 10),
+                    GridItem(.flexible(), spacing: 10),
+                    GridItem(.flexible(), spacing: 10)
+                ],
+                spacing: 10
+            ) {
+                ForEach(viewModel.weeklyReportMetrics) { metric in
+                    weeklyReportMetric(metric)
+                }
+            }
+        }
     }
 
     private var routineAdherenceCard: some View {
@@ -221,6 +289,26 @@ public struct HydrationInsightView: View {
         }
     }
 
+    private func weeklyReportMetric(_ metric: HydrationWeeklyReportMetric) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(metric.title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Text(metric.value)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(.primary)
+
+            Text(metric.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 86, alignment: .leading)
+        .padding(12)
+        .background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
     private func routineAdherenceMetric(_ metric: RoutineAdherenceInsightMetric) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(metric.title)
@@ -317,12 +405,76 @@ public struct HydrationInsightView: View {
         }
         .frame(maxWidth: .infinity)
     }
+
+    private func categoryEmptyCard(
+        title: String,
+        description: String,
+        systemImage: String
+    ) -> some View {
+        InsightCard(
+            title: title,
+            subtitle: description
+        ) {
+            HStack(spacing: 12) {
+                Image(systemName: systemImage)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 42, height: 42)
+                    .background(Color.accentColor.opacity(0.12), in: Circle())
+
+                Text(L10n.tr("insightCategoryEmptyGuideDescription"))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: 0)
+            }
+        }
+    }
+}
+
+private enum HydrationInsightCategory: CaseIterable, Identifiable {
+    case overview
+    case pattern
+    case routine
+    case report
+
+    var id: Self {
+        self
+    }
+
+    var title: String {
+        switch self {
+        case .overview:
+            L10n.tr("insightCategoryOverviewTitle")
+        case .pattern:
+            L10n.tr("insightCategoryPatternTitle")
+        case .routine:
+            L10n.tr("insightCategoryRoutineTitle")
+        case .report:
+            L10n.tr("insightCategoryReportTitle")
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .overview:
+            "chart.bar.xaxis"
+        case .pattern:
+            "calendar"
+        case .routine:
+            "bell.badge"
+        case .report:
+            "doc.text.magnifyingglass"
+        }
+    }
 }
 
 private struct InsightCard<Content: View>: View {
     let title: String
     let subtitle: String
     let content: Content
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     init(
         title: String,
@@ -349,9 +501,31 @@ private struct InsightCard<Content: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
-        .background(
+        .background(cardBackground, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemBackground).opacity(0.95))
+                .strokeBorder(cardBorder, lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.06), radius: 20, x: 0, y: 12)
+    }
+
+    private var cardBackground: AnyShapeStyle {
+        if reduceTransparency {
+            return AnyShapeStyle(Color(uiColor: .secondarySystemBackground))
+        }
+
+        return AnyShapeStyle(.ultraThinMaterial)
+    }
+
+    private var cardBorder: LinearGradient {
+        LinearGradient(
+            colors: [
+                .white.opacity(0.42),
+                .white.opacity(0.1),
+                Color.accentColor.opacity(0.1)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
         )
     }
 }

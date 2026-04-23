@@ -71,7 +71,7 @@ public final class PreviewAssembly: Assembly {
         .inObjectScope(.container)
 
         container.register((any AppInfoProviding).self) { _ in
-            StaticAppInfoProvider(appVersion: "2.0.2", appBuildNumber: "24")
+            StaticAppInfoProvider(appVersion: "2.1.0", appBuildNumber: "25")
         }
         .inObjectScope(.container)
 
@@ -88,7 +88,8 @@ public final class PreviewAssembly: Assembly {
 
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
-                useCase: resolver.resolve(DrinkWaterUseCase.self)!
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
             )
         }
 

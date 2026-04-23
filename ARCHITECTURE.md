@@ -97,6 +97,8 @@ SignIn
 - 깊은 설계 배경: `Docs/*.md`
 - 작업 계획/결정 기록: `Docs/exec-plans/`
 - 구현 전 체크리스트: `Docs/skills/`
+- 변경 유형별 검증 기준: `Docs/quality-gates.md`
+- 문서 유지보수 기준: `Docs/documentation-maintenance.md`
 
 ## When To Update This File
 

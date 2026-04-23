@@ -23,8 +23,13 @@ public struct DrinkWaterView: View {
                 .ignoresSafeArea()
 
             VStack {
+                nextActionCard
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+
                 GeometryReader { proxy in
-                    let dropSize = min(proxy.size.width, proxy.size.height) * 0.78
+                    let dropSize = min(proxy.size.width, proxy.size.height) * 0.88
 
                     WaterDropView(
                         appearance: viewModel.mainIcon,
@@ -69,10 +74,6 @@ public struct DrinkWaterView: View {
                     }
                 }
                 .padding()
-
-                nextActionCard
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
 
                 HStack {
                     Button {

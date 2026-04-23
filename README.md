@@ -29,7 +29,7 @@
 - `HealthKit` 기반 수분 기록 및 오늘 섭취량 집계
 - 로그인 후 `온보딩 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
 - 일일 목표량 설정 및 AI 기반 목표량 추천
-- 수분 기록 히스토리, 루틴 수행률 인사이트, 루틴 액션으로 연결되는 챌린지, 루틴 관리
+- 수분 기록 히스토리, 주간 리포트, 루틴 수행률 인사이트, 루틴 액션으로 연결되는 챌린지, 루틴 관리
 - 홈 화면/잠금화면 위젯과 Apple Watch 앱 지원
 
 ## 🛠️ 기술 스택
@@ -121,6 +121,8 @@ Mulimi/
 ├── Docs/
 │   ├── index.md
 │   ├── harness-engineering.md
+│   ├── quality-gates.md
+│   ├── documentation-maintenance.md
 │   ├── product-specs/
 │   ├── exec-plans/
 │   └── skills/
@@ -222,8 +224,11 @@ make verify
 
 - [문서 허브](Docs/index.md)
 - [하네스 엔지니어링 구조](Docs/harness-engineering.md)
+- [품질 게이트](Docs/quality-gates.md)
+- [문서 유지보수 규칙](Docs/documentation-maintenance.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)
+- [실행 계획 템플릿](Docs/exec-plans/template.md)
 - [실행 계획 / 기술 부채](Docs/exec-plans/tech-debt-tracker.md)
 - [구현 체크리스트 모음](Docs/skills/)
 - [프로필 정보 구조](Docs/profile-information-architecture.md)
