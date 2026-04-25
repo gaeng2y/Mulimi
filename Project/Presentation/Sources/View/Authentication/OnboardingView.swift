@@ -5,6 +5,7 @@
 //  Created by Codex on 4/3/26.
 //
 
+import Localization
 import SwiftUI
 
 public struct OnboardingView: View {
@@ -128,7 +129,7 @@ public struct OnboardingView: View {
     private var footer: some View {
         VStack(spacing: 14) {
             if viewModel.isLastPage {
-                Text("온보딩을 마치면 다음 단계에서 건강 앱 권한을 안내해요.")
+                Text(L10n.tr("onboardingHealthKitPermissionFootnote"))
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.62))
                     .multilineTextAlignment(.center)
@@ -142,7 +143,7 @@ public struct OnboardingView: View {
                             viewModel.goToPreviousPage()
                         }
                     } label: {
-                        Text("이전")
+                        Text(L10n.tr("onboardingPreviousTitle"))
                             .font(.headline.weight(.semibold))
                             .frame(maxWidth: .infinity)
                             .frame(height: 54)
@@ -157,7 +158,11 @@ public struct OnboardingView: View {
                         viewModel.goToNextPage()
                     }
                 } label: {
-                    Text(viewModel.isLastPage ? "건강 앱 연동 계속하기" : "다음")
+                    Text(
+                        viewModel.isLastPage ?
+                        L10n.tr("onboardingHealthKitContinueTitle") :
+                        L10n.tr("onboardingNextTitle")
+                    )
                         .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
@@ -187,12 +192,12 @@ public struct OnboardingView: View {
     private var pages: [OnboardingPage] {
         [
             OnboardingPage(
-                eyebrow: "빠른 기록",
-                title: "기록은\n가볍고 빠르게",
-                description: "오늘 마신 물을 한 번의 탭으로 기록하고, 현재 목표까지 얼마나 남았는지 바로 확인할 수 있어요.",
+                eyebrow: L10n.tr("onboardingQuickRecordEyebrow"),
+                title: L10n.tr("onboardingQuickRecordTitle"),
+                description: L10n.tr("onboardingQuickRecordDescription"),
                 highlights: [
-                    "첫 화면에서 바로 물 마시기 기록",
-                    "현재 섭취량과 목표 진행률을 즉시 확인"
+                    L10n.tr("onboardingQuickRecordHighlightPrimary"),
+                    L10n.tr("onboardingQuickRecordHighlightSecondary")
                 ],
                 systemImage: "drop.fill",
                 panelColors: [
@@ -201,12 +206,12 @@ public struct OnboardingView: View {
                 ]
             ),
             OnboardingPage(
-                eyebrow: "루틴 흐름",
-                title: "흐름은\n한눈에 읽기",
-                description: "기록, 인사이트, 챌린지로 하루와 일주일의 수분 루틴을 한 번에 파악할 수 있어요.",
+                eyebrow: L10n.tr("onboardingRoutineFlowEyebrow"),
+                title: L10n.tr("onboardingRoutineFlowTitle"),
+                description: L10n.tr("onboardingRoutineFlowDescription"),
                 highlights: [
-                    "월별 기록과 최근 패턴을 빠르게 탐색",
-                    "챌린지와 인사이트로 루틴 유지 상태 확인"
+                    L10n.tr("onboardingRoutineFlowHighlightPrimary"),
+                    L10n.tr("onboardingRoutineFlowHighlightSecondary")
                 ],
                 systemImage: "chart.line.uptrend.xyaxis",
                 panelColors: [
@@ -215,12 +220,12 @@ public struct OnboardingView: View {
                 ]
             ),
             OnboardingPage(
-                eyebrow: "건강 연동",
-                title: "건강 앱과\n연결해서 시작",
-                description: "물리미는 건강 앱과 연동해 수분 기록과 신체 정보를 함께 활용합니다. 온보딩 뒤에 바로 권한을 안내할게요.",
+                eyebrow: L10n.tr("onboardingHealthLinkEyebrow"),
+                title: L10n.tr("onboardingHealthLinkTitle"),
+                description: L10n.tr("onboardingHealthLinkDescription"),
                 highlights: [
-                    "건강 앱 기반으로 기록과 목표 흐름 유지",
-                    "권한 허용 후 앱의 주요 기능을 바로 사용"
+                    L10n.tr("onboardingHealthLinkHighlightPrimary"),
+                    L10n.tr("onboardingHealthLinkHighlightSecondary")
                 ],
                 systemImage: "heart.text.square.fill",
                 panelColors: [

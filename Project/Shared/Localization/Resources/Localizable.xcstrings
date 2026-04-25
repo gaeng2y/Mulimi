@@ -3015,6 +3015,17 @@
         }
       }
     },
+    "healthKitPermissionAccessSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미가 건강 앱에서 쓰는 정보"
+          }
+        }
+      }
+    },
     "healthKitPermissionAllowTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3026,13 +3037,35 @@
         }
       }
     },
+    "healthKitPermissionBodyAccessDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 키와 몸무게가 있으면 목표 수분량 추천에 활용해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionBodyAccessTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보 기반 목표 추천"
+          }
+        }
+      }
+    },
     "healthKitPermissionDeniedDescription" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
+            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 수분 기록과 신체 정보 접근을 다시 켠 뒤 돌아와 주세요."
           }
         }
       }
@@ -3065,7 +3098,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요해요."
+            "value" : "물리미는 건강 앱에 수분 섭취를 기록하고, 키와 몸무게를 읽어 목표 추천에 활용하기 위해 권한이 필요해요."
           }
         }
       }
@@ -3081,6 +3114,28 @@
         }
       }
     },
+    "healthKitPermissionOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 권한 켜기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionPrivacyFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한은 Apple 건강 앱에서 관리되며, 원하지 않으면 언제든 설정에서 끌 수 있어요."
+          }
+        }
+      }
+    },
     "healthKitPermissionRefreshTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3088,6 +3143,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다시 확인하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryOpenSettingsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 > 건강 > 데이터 접근 및 기기 > 물리미에서 권한을 다시 켤 수 있어요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한 다시 켜기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryRefreshDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 변경 후 물리미로 돌아오면 자동으로 확인하고, 필요하면 다시 확인하기를 누를 수 있어요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryRefreshTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "돌아온 뒤 상태 확인"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoverySectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한을 다시 켜는 방법"
           }
         }
       }
@@ -3109,7 +3219,238 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 앱에서 건강 > 데이터 접근 및 기기 > 물리미 경로로 들어가 권한을 다시 켤 수 있어요."
+            "value" : "설정 변경 후 물리미로 돌아오면 자동으로 권한 상태를 다시 확인해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionWaterAccessDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 마시기 버튼, 위젯, Watch 기록을 건강 앱 수분 데이터로 저장하고 오늘 섭취량을 같은 기준으로 보여줘요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionWaterAccessTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수분 기록 저장 및 집계"
+          }
+        }
+      }
+    },
+    "onboardingHealthKitContinueTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한 확인하기"
+          }
+        }
+      }
+    },
+    "onboardingHealthKitPermissionFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 단계에서 건강 앱에 저장할 수분 기록과 목표 추천에 쓸 신체 정보를 안내해요."
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미는 건강 앱에 수분 기록을 저장하고, 키와 몸무게가 있으면 목표 수분량 추천에 활용합니다."
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 연동"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수분 기록은 건강 앱을 기준으로 저장"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보가 있으면 목표 추천에 활용"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱과\n연결해서 시작"
+          }
+        }
+      }
+    },
+    "onboardingNextTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        }
+      }
+    },
+    "onboardingPreviousTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 마신 물을 한 번의 탭으로 기록하고, 현재 목표까지 얼마나 남았는지 바로 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 기록"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 화면에서 바로 물 마시기 기록"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 섭취량과 목표 진행률을 즉시 확인"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록은\n가볍고 빠르게"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록, 인사이트, 챌린지로 하루와 일주일의 수분 루틴을 한 번에 파악할 수 있어요."
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 흐름"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월별 기록과 최근 패턴을 빠르게 탐색"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지와 인사이트로 루틴 유지 상태 확인"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "흐름은\n한눈에 읽기"
           }
         }
       }
