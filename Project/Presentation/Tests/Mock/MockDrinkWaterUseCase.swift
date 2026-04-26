@@ -6,6 +6,7 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
 
     var migrateLegacyDataIfNeededCallCount: Int = 0
     var drinkWaterCallCount: Int = 0
+    var recordedVolumesML: [Int] = []
     var resetCallCount: Int = 0
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
@@ -32,8 +33,13 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     }
 
     func drinkWater() async {
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    func drinkWater(volumeML: Int) async {
         drinkWaterCallCount += 1
-        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        recordedVolumesML.append(volumeML)
+        currentWaterIntakeMLValue += Double(volumeML)
     }
 
     func reset() async {

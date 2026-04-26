@@ -11,6 +11,7 @@ import Foundation
 public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecked Sendable {
     public var currentWaterIntakeMLValue: Double = 0
     public var drinkWaterCallCount = 0
+    public var recordedVolumesML: [Int] = []
     public var resetCallCount = 0
     public var hydrateEventsCallCount = 0
     public var migrateCallCount = 0
@@ -39,13 +40,18 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     }
 
     public func drinkWater() async {
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
         drinkWaterCallCount += 1
-        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        recordedVolumesML.append(volumeML)
+        currentWaterIntakeMLValue += Double(volumeML)
         events.append(
             HydrationEvent(
                 id: UUID(),
                 consumedAt: .now,
-                volumeML: Int(HydrationServing.defaultGlassML)
+                volumeML: volumeML
             )
         )
     }
@@ -53,6 +59,7 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     public func reset() async {
         resetCallCount += 1
         currentWaterIntakeMLValue = 0
+        recordedVolumesML = []
         events.removeAll()
     }
 

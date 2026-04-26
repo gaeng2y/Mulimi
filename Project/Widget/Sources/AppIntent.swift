@@ -31,9 +31,10 @@ struct LogWaterAppIntent: AppIntent {
 
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
 
-        let nextMl = currentMl + HydrationServing.defaultGlassML
+        let defaultVolumeML = HydrationServing.defaultGlassVolumeML
+        let nextMl = currentMl + Double(defaultVolumeML)
         if nextMl <= dailyLimit {
-            await waterUseCase.drinkWater()
+            await waterUseCase.drinkWater(volumeML: defaultVolumeML)
         }
 
         WidgetCenter.shared.reloadAllTimelines()

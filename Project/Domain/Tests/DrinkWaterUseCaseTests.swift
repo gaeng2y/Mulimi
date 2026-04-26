@@ -60,6 +60,18 @@ struct DrinkWaterUseCaseTests {
         #expect(mockRepository.drinkWaterCallCount == 1)
     }
 
+    @Test("물 마시기는 지정한 ml 단위를 Repository에 전달한다")
+    func drinkWaterWithCustomVolume() async {
+        let mockRepository = MockDrinkWaterRepository()
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        await useCase.drinkWater(volumeML: HydrationServing.tumblerML)
+
+        #expect(mockRepository.drinkWaterCallCount == 1)
+        #expect(mockRepository.recordedVolumesML == [HydrationServing.tumblerML])
+        #expect(await useCase.currentWaterIntakeML == Double(HydrationServing.tumblerML))
+    }
+
     @Test("물 마시기 기능을 여러 번 호출할 때")
     func drinkWaterMultipleTimes() async {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때

@@ -9,7 +9,7 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
     public init(
         hydrationRepository: WatchHydrationRepository,
         dailyGoalRepository: WatchDailyGoalRepository,
-        defaultDrinkVolumeML: Double = HydrationServing.defaultGlassML
+        defaultDrinkVolumeML: Double = Double(HydrationServing.defaultGlassVolumeML)
     ) {
         self.hydrationRepository = hydrationRepository
         self.dailyGoalRepository = dailyGoalRepository
@@ -24,13 +24,16 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
 
     public func drinkWater(referenceDate: Date) async -> WatchHydrationSnapshot {
         let currentSnapshot = await loadSnapshot(referenceDate: referenceDate)
+        let drinkVolumeML = Int(defaultDrinkVolumeML)
 
-        guard !currentSnapshot.isGoalReached else {
+        guard !currentSnapshot.isGoalReached,
+              currentSnapshot.dailyGoalML <= 0 ||
+              currentSnapshot.todayIntakeML + drinkVolumeML <= currentSnapshot.dailyGoalML else {
             return currentSnapshot
         }
 
         await hydrationRepository.addDrink(
-            volumeML: Int(defaultDrinkVolumeML),
+            volumeML: drinkVolumeML,
             consumedAt: referenceDate
         )
 

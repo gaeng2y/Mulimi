@@ -12,6 +12,23 @@ import Foundation
 import Localization
 import Observation
 
+struct HydrationServingOptionModel: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let volumeML: Int
+
+    var volumeText: String {
+        L10n.tr("commonMilliliterFormat", volumeML)
+    }
+}
+
+enum CustomHydrationAmountValidation: Equatable {
+    case empty
+    case invalid
+    case overLimit(remainingML: Int)
+    case valid(volumeML: Int)
+}
+
 @MainActor
 @Observable
 public final class DrinkWaterViewModel {
@@ -43,6 +60,16 @@ public final class DrinkWaterViewModel {
 
     var isLimitReached: Bool {
         currentWaterIntakeML.rounded() >= dailyLimit.rounded()
+    }
+
+    var servingOptions: [HydrationServingOptionModel] {
+        HydrationServing.additionalPresets.map { preset in
+            HydrationServingOptionModel(
+                id: preset.id,
+                title: servingTitle(for: preset),
+                volumeML: preset.volumeML
+            )
+        }
     }
 
     var progress: CGFloat {
@@ -165,15 +192,74 @@ public final class DrinkWaterViewModel {
     }
 
     func drinkWater() async {
-        let nextIntake = currentWaterIntakeML + HydrationServing.defaultGlassML
+        await recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
 
-        if nextIntake.rounded() > dailyLimit.rounded() {
-            return
+    @discardableResult
+    func recordWater(volumeML: Int) async -> Bool {
+        guard isRecordable(volumeML: volumeML) else {
+            return false
         }
 
-        await waterUseCase.drinkWater()
+        await waterUseCase.drinkWater(volumeML: volumeML)
         await refreshState()
         widgetTimelineReloader.reloadAllTimelines()
+        return true
+    }
+
+    func isRecordable(volumeML: Int) -> Bool {
+        guard volumeML > 0 else {
+            return false
+        }
+
+        let nextIntake = currentWaterIntakeML + Double(volumeML)
+        return nextIntake.rounded() <= dailyLimit.rounded()
+    }
+
+    func customAmountValidation(for text: String) -> CustomHydrationAmountValidation {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmedText.isEmpty else {
+            return .empty
+        }
+
+        guard let volumeML = Int(trimmedText), volumeML > 0 else {
+            return .invalid
+        }
+
+        guard isRecordable(volumeML: volumeML) else {
+            return .overLimit(remainingML: remainingRecordableVolumeML)
+        }
+
+        return .valid(volumeML: volumeML)
+    }
+
+    func canRecordCustomAmount(_ text: String) -> Bool {
+        if case .valid = customAmountValidation(for: text) {
+            return true
+        }
+
+        return false
+    }
+
+    func customAmountErrorMessage(for text: String) -> String? {
+        switch customAmountValidation(for: text) {
+        case .empty, .valid:
+            return nil
+        case .invalid:
+            return L10n.tr("drinkWaterCustomAmountInvalidDescription")
+        case .overLimit(remainingML: let remainingML):
+            return L10n.tr("drinkWaterCustomAmountOverLimitDescriptionFormat", remainingML)
+        }
+    }
+
+    @discardableResult
+    func recordCustomAmount(_ text: String) async -> Bool {
+        guard case .valid(volumeML: let volumeML) = customAmountValidation(for: text) else {
+            return false
+        }
+
+        return await recordWater(volumeML: volumeML)
     }
 
     func reset() async {
@@ -195,6 +281,19 @@ public final class DrinkWaterViewModel {
         await updateCurrentIntake()
         updateDailyLimit()
         await updateNextActionGuide()
+    }
+
+    private var remainingRecordableVolumeML: Int {
+        max(Int(dailyLimit.rounded() - currentWaterIntakeML.rounded()), 0)
+    }
+
+    private func servingTitle(for preset: HydrationServingPreset) -> String {
+        switch preset {
+        case .bottle:
+            return L10n.tr("drinkWaterPresetBottleTitle")
+        case .tumbler:
+            return L10n.tr("drinkWaterPresetTumblerTitle")
+        }
     }
 
     private func relativeTimeText(for minutes: Int) -> String {

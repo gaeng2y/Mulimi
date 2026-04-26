@@ -70,6 +70,8 @@ struct ProfileRoutineViewModelTests {
 
         func drinkWater() async {}
 
+        func drinkWater(volumeML: Int) async {}
+
         func reset() async {}
     }
 

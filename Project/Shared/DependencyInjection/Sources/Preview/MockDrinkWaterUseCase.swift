@@ -31,12 +31,16 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
     public func migrateLegacyDataIfNeeded() async {}
 
     public func drinkWater() async {
-        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
+        currentWaterIntakeMLValue += Double(volumeML)
         events.append(
             HydrationEvent(
                 id: UUID(),
                 consumedAt: .now,
-                volumeML: Int(HydrationServing.defaultGlassML)
+                volumeML: volumeML
             )
         )
     }
