@@ -12,6 +12,7 @@ import SwiftUI
 
 public struct DrinkWaterView: View {
     private var viewModel: DrinkWaterViewModel
+    @State private var isCustomAmountPresented = false
 
     public init(viewModel: DrinkWaterViewModel) {
         self.viewModel = viewModel
@@ -75,6 +76,10 @@ public struct DrinkWaterView: View {
                 }
                 .padding()
 
+                servingPresetSection
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+
                 HStack {
                     Button {
                         Task {
@@ -121,6 +126,9 @@ public struct DrinkWaterView: View {
             await Task.yield()
             viewModel.startAnimation()
         }
+        .sheet(isPresented: $isCustomAmountPresented) {
+            CustomHydrationAmountSheet(viewModel: viewModel)
+        }
     }
 
     private var nextActionCard: some View {
@@ -149,6 +157,126 @@ public struct DrinkWaterView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color.accent.opacity(0.12))
         )
+    }
+
+    private var servingPresetSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(L10n.tr("drinkWaterPresetSectionTitle"))
+                        .font(.subheadline.weight(.semibold))
+                    Text(L10n.tr("drinkWaterPresetSectionDescription"))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Button {
+                    isCustomAmountPresented = true
+                } label: {
+                    Text(L10n.tr("drinkWaterCustomAmountTitle"))
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 7)
+                        .background(Color.accent.opacity(0.14))
+                        .foregroundColor(.accentColor)
+                        .clipShape(Capsule())
+                }
+                .disabled(viewModel.isLimitReached)
+            }
+
+            HStack(spacing: 10) {
+                ForEach(viewModel.servingOptions) { option in
+                    servingPresetButton(for: option)
+                }
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(.white.opacity(0.8))
+        )
+    }
+
+    private func servingPresetButton(for option: HydrationServingOptionModel) -> some View {
+        let isEnabled = viewModel.isRecordable(volumeML: option.volumeML)
+
+        return Button {
+            Task {
+                await viewModel.recordWater(volumeML: option.volumeML)
+            }
+        } label: {
+            VStack(spacing: 4) {
+                Text(option.title)
+                    .font(.caption.weight(.semibold))
+                Text(option.volumeText)
+                    .font(.footnote)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(isEnabled ? Color.accent.opacity(0.14) : Color.gray.opacity(0.12))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(isEnabled ? Color.accent.opacity(0.3) : Color.gray.opacity(0.25), lineWidth: 1)
+            )
+            .foregroundColor(isEnabled ? .primary : .secondary)
+        }
+        .buttonStyle(.plain)
+        .disabled(!isEnabled)
+    }
+}
+
+fileprivate struct CustomHydrationAmountSheet: View {
+    let viewModel: DrinkWaterViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var amountText = ""
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(L10n.tr("drinkWaterCustomAmountDescription"))
+                    .font(.body)
+                    .foregroundColor(.secondary)
+
+                TextField(L10n.tr("drinkWaterCustomAmountPlaceholder"), text: $amountText)
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+
+                if let errorMessage = viewModel.customAmountErrorMessage(for: amountText) {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle(L10n.tr("drinkWaterCustomAmountTitle"))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(L10n.tr("commonCancelTitle")) {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(L10n.tr("drinkWaterCustomAmountRecordTitle")) {
+                        Task {
+                            let didRecord = await viewModel.recordCustomAmount(amountText)
+                            if didRecord {
+                                dismiss()
+                            }
+                        }
+                    }
+                    .disabled(!viewModel.canRecordCustomAmount(amountText))
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 

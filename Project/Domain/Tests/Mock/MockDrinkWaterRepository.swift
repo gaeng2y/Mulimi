@@ -19,6 +19,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var hydrationEventsCallCount = 0
     private(set) var hydrationEventsInIntervalCallCount = 0
     private(set) var migrateCallCount = 0
+    private(set) var recordedVolumesML: [Int] = []
 
     var currentWaterIntakeML: Double {
         get async {
@@ -43,13 +44,18 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     }
 
     func drinkWater() async {
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    func drinkWater(volumeML: Int) async {
         drinkWaterCallCount += 1
-        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        recordedVolumesML.append(volumeML)
+        currentWaterIntakeMLValue += Double(volumeML)
         _events.append(
             HydrationEvent(
                 id: UUID(),
                 consumedAt: .now,
-                volumeML: Int(HydrationServing.defaultGlassML)
+                volumeML: volumeML
             )
         )
     }
@@ -76,5 +82,6 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         hydrationEventsCallCount = 0
         hydrationEventsInIntervalCallCount = 0
         migrateCallCount = 0
+        recordedVolumesML = []
     }
 }

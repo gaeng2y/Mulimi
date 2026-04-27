@@ -35,7 +35,11 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     }
 
     public func drinkWater() async {
-        await dataSource.drinkWater()
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
+        await dataSource.drinkWater(volumeML: volumeML)
     }
 
     public func reset() async {

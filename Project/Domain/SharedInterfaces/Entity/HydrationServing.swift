@@ -1,7 +1,32 @@
 import Foundation
 
+public enum HydrationServingPreset: String, CaseIterable, Identifiable, Sendable {
+    case bottle
+    case tumbler
+
+    public var id: String {
+        rawValue
+    }
+
+    public var volumeML: Int {
+        switch self {
+        case .bottle:
+            return HydrationServing.bottleML
+        case .tumbler:
+            return HydrationServing.tumblerML
+        }
+    }
+}
+
 public enum HydrationServing {
-    public static let defaultGlassML = 250.0
+    public static let defaultGlassVolumeML = 250
+    public static let defaultGlassML = Double(defaultGlassVolumeML)
+    public static let bottleML = 330
+    public static let tumblerML = 500
+
+    public static var additionalPresets: [HydrationServingPreset] {
+        HydrationServingPreset.allCases
+    }
 
     public static func glassCount(for intakeML: Double) -> Int {
         Int((intakeML / defaultGlassML).rounded())

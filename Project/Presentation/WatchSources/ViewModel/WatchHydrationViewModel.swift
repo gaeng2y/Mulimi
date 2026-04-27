@@ -11,6 +11,11 @@ public final class WatchHydrationViewModel {
     var snapshot: WatchHydrationSnapshot
     var isMutating = false
 
+    var canDrinkWater: Bool {
+        snapshot.dailyGoalML <= 0 ||
+        snapshot.todayIntakeML + HydrationServing.defaultGlassVolumeML <= snapshot.dailyGoalML
+    }
+
     public init(
         useCase: WatchHydrationUseCase,
         initialSnapshot: WatchHydrationSnapshot = .empty(dailyGoalML: 0),
@@ -26,7 +31,7 @@ public final class WatchHydrationViewModel {
     }
 
     func drinkWater() async {
-        guard !isMutating else {
+        guard !isMutating, canDrinkWater else {
             return
         }
 

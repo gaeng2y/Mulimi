@@ -18,6 +18,7 @@ public protocol HealthKitDataSource: Sendable {
     func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent]
     func readBodyProfile() async throws -> BodyProfile
     func setAGlassOfWater() async throws
+    func setWaterIntake(volumeML: Int) async throws
     func resetWaterInTakeInToday() async throws
 }
 
@@ -178,6 +179,14 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
     }
 
     public func setAGlassOfWater() async throws {
+        try await setWaterIntake(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func setWaterIntake(volumeML: Int) async throws {
+        guard volumeML > 0 else {
+            throw HealthKitError.healthKitInternalError
+        }
+
         guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
             throw HealthKitError.permissionDenied
         }
@@ -188,7 +197,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
 
         let waterQuantity = HKQuantity(
             unit: .literUnit(with: .milli),
-            doubleValue: HydrationServing.defaultGlassML
+            doubleValue: Double(volumeML)
         )
         let waterSample = HKQuantitySample(type: waterType, quantity: waterQuantity, start: .now, end: .now)
 

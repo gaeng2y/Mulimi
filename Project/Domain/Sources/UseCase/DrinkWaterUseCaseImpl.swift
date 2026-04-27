@@ -35,7 +35,11 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
     }
 
     public func drinkWater() async {
-        await repository.drinkWater()
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
+        await repository.drinkWater(volumeML: volumeML)
     }
 
     public func reset() async {

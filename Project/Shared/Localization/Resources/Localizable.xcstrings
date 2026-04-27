@@ -1376,6 +1376,72 @@
         }
       }
     },
+    "drinkWaterCustomAmountDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마신 양을 ml 단위로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountInvalidDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1ml 이상 숫자로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountOverLimitDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표까지 %lldml 남아 있어요. 그 이하로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 180"
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하기"
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력"
+          }
+        }
+      }
+    },
     "drinkWaterCompleteLabel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1537,6 +1603,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 루틴 %@까지 %@ 남았고, 목표까지 %@, 약 %lld잔 남았어요."
+          }
+        }
+      }
+    },
+    "drinkWaterPresetBottleTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작은 병"
+          }
+        }
+      }
+    },
+    "drinkWaterPresetSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 넘는 단위는 비활성화돼요."
+          }
+        }
+      }
+    },
+    "drinkWaterPresetSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 기록 단위"
+          }
+        }
+      }
+    },
+    "drinkWaterPresetTumblerTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텀블러"
           }
         }
       }
