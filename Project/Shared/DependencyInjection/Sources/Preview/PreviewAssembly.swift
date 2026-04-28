@@ -97,7 +97,8 @@ public final class PreviewAssembly: Assembly {
             HydrationInsightViewModel(
                 waterUseCase: resolver.resolve(DrinkWaterUseCase.self)!,
                 progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!,
-                routineAdherenceUseCase: resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
+                routineAdherenceUseCase: resolver.resolve(HydrationRoutineAdherenceUseCase.self)!,
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!
             )
         }
         .inObjectScope(.container)

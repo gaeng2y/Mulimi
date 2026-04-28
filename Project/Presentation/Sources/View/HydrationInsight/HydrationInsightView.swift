@@ -10,13 +10,20 @@ import DesignSystem
 import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 public struct HydrationInsightView: View {
+    @Environment(\.openURL) private var openURL
     @State private var viewModel: HydrationInsightViewModel
     @State private var selectedCategory: HydrationInsightCategory = .overview
+    private let onRoutineAction: (RoutineActionIntent) -> Void
 
-    public init(viewModel: HydrationInsightViewModel) {
+    public init(
+        viewModel: HydrationInsightViewModel,
+        onRoutineAction: @escaping (RoutineActionIntent) -> Void = { _ in }
+    ) {
         self._viewModel = State(wrappedValue: viewModel)
+        self.onRoutineAction = onRoutineAction
     }
 
     public var body: some View {
@@ -213,6 +220,10 @@ public struct HydrationInsightView: View {
                         }
                     }
                 }
+
+                if let recoveryCard = viewModel.routineRecoveryCard {
+                    routineRecoveryCard(recoveryCard)
+                }
             }
         }
     }
@@ -384,6 +395,77 @@ public struct HydrationInsightView: View {
         }
     }
 
+    private func routineRecoveryCard(_ card: RoutineRecoveryCardModel) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label(card.badgeText, systemImage: "arrow.counterclockwise.circle.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.orange)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(card.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+
+                Text(card.description)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    Task {
+                        await viewModel.recordRecoveryDrink()
+                    }
+                } label: {
+                    Label(card.recordActionTitle, systemImage: "drop.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(!card.canRecordNow)
+
+                Button {
+                    handleRecoveryReminderAction(card.reminderAction)
+                } label: {
+                    Text(card.reminderActionTitle)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding(14)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color.orange.opacity(0.16),
+                    Color(uiColor: .systemBackground).opacity(0.78)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(Color.orange.opacity(0.16), lineWidth: 1)
+        }
+    }
+
+    private func handleRecoveryReminderAction(_ action: RoutineRecoveryReminderAction) {
+        switch action {
+        case let .manageRoutine(actionIntent):
+            onRoutineAction(actionIntent)
+        case let .requestNotificationAuthorization(actionIntent):
+            Task {
+                if let nextAction = await viewModel.requestRecoveryNotificationAuthorization(then: actionIntent) {
+                    onRoutineAction(nextAction)
+                }
+            }
+        case .openSettings:
+            openSettings()
+        }
+    }
+
     private var emptyState: some View {
         VStack(spacing: 18) {
             Spacer()
@@ -430,6 +512,14 @@ public struct HydrationInsightView: View {
                 Spacer(minLength: 0)
             }
         }
+    }
+
+    private func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+
+        openURL(settingsURL)
     }
 }
 

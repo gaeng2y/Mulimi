@@ -71,7 +71,12 @@ struct ContentView: View {
                         Label(L10n.tr("historyTitle"), systemImage: "calendar")
                     }
 
-                HydrationInsightView(viewModel: hydrationInsightViewModel)
+                HydrationInsightView(
+                    viewModel: hydrationInsightViewModel,
+                    onRoutineAction: { action in
+                        appCoordinator.push(.profileRoutineAction(action))
+                    }
+                )
                     .tag(AppTab.insight)
                     .tabItem {
                         Label(L10n.tr("insightNavigationTitle"), systemImage: "chart.bar.xaxis")
