@@ -17,13 +17,16 @@ public struct HydrationInsightView: View {
     @State private var viewModel: HydrationInsightViewModel
     @State private var selectedCategory: HydrationInsightCategory = .overview
     private let onRoutineAction: (RoutineActionIntent) -> Void
+    private let onDailyGoalAction: () -> Void
 
     public init(
         viewModel: HydrationInsightViewModel,
-        onRoutineAction: @escaping (RoutineActionIntent) -> Void = { _ in }
+        onRoutineAction: @escaping (RoutineActionIntent) -> Void = { _ in },
+        onDailyGoalAction: @escaping () -> Void = {}
     ) {
         self._viewModel = State(wrappedValue: viewModel)
         self.onRoutineAction = onRoutineAction
+        self.onDailyGoalAction = onDailyGoalAction
     }
 
     public var body: some View {
@@ -173,16 +176,22 @@ public struct HydrationInsightView: View {
             title: L10n.tr("insightWeeklyReportTitle"),
             subtitle: viewModel.weeklyReportInsightText
         ) {
-            LazyVGrid(
-                columns: [
-                    GridItem(.flexible(), spacing: 10),
-                    GridItem(.flexible(), spacing: 10),
-                    GridItem(.flexible(), spacing: 10)
-                ],
-                spacing: 10
-            ) {
-                ForEach(viewModel.weeklyReportMetrics) { metric in
-                    weeklyReportMetric(metric)
+            VStack(alignment: .leading, spacing: 14) {
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10)
+                    ],
+                    spacing: 10
+                ) {
+                    ForEach(viewModel.weeklyReportMetrics) { metric in
+                        weeklyReportMetric(metric)
+                    }
+                }
+
+                ForEach(viewModel.weeklyCoachingCards) { card in
+                    weeklyCoachingCard(card)
                 }
             }
         }
@@ -318,6 +327,51 @@ public struct HydrationInsightView: View {
         .frame(maxWidth: .infinity, minHeight: 86, alignment: .leading)
         .padding(12)
         .background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private func weeklyCoachingCard(_ card: HydrationWeeklyCoachingCardModel) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label(card.badgeText, systemImage: "sparkles")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(card.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+
+                Text(card.description)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if let actionTitle = card.actionTitle {
+                Button {
+                    handleWeeklyCoachingAction(card.action)
+                } label: {
+                    Text(actionTitle)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .padding(14)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color.accentColor.opacity(0.14),
+                    Color(uiColor: .systemBackground).opacity(0.82)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(Color.accentColor.opacity(0.14), lineWidth: 1)
+        }
     }
 
     private func routineAdherenceMetric(_ metric: RoutineAdherenceInsightMetric) -> some View {
@@ -463,6 +517,17 @@ public struct HydrationInsightView: View {
             }
         case .openSettings:
             openSettings()
+        }
+    }
+
+    private func handleWeeklyCoachingAction(_ action: HydrationWeeklyCoachingAction) {
+        switch action {
+        case let .routine(routineAction):
+            handleRecoveryReminderAction(routineAction)
+        case .dailyGoal:
+            onDailyGoalAction()
+        case .none:
+            break
         }
     }
 
