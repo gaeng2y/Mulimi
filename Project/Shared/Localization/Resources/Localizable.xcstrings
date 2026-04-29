@@ -2674,6 +2674,127 @@
         }
       }
     },
+    "insightRoutineRecoveryCreateRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 시간대 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEditRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시간 조정"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 시간대"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld일은 이 시간대 기록이 비었어요. 지금 한 잔으로 흐름을 복구하고 새 루틴을 준비해 보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 공백 메우기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복구 액션"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을 이번 주 %lld번 놓쳤어요. 지금 한 잔을 기록하고 알림 시간을 조정해 보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 루틴 복구"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 설정 열기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryRecordNowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 한 잔 기록"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryRequestPermissionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 켜고 조정"
+          }
+        }
+      }
+    },
     "insightStreakAchievementLabel" : {
       "extractionState" : "manual",
       "localizations" : {
