@@ -215,6 +215,22 @@ struct DrinkWaterUseCaseTests {
         #expect(actual == expected)
     }
 
+    @Test("HydrationEvent 삭제는 Repository 호출 결과를 그대로 반환한다")
+    func deleteHydrationEvent() async {
+        let mockRepository = MockDrinkWaterRepository()
+        let eventID = UUID()
+        let event = HydrationEvent(id: eventID, consumedAt: .now, volumeML: 250)
+        mockRepository.setHydrationEvents([event])
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let didDelete = await useCase.deleteHydrationEvent(id: eventID)
+
+        #expect(didDelete)
+        #expect(mockRepository.deleteHydrationEventCallCount == 1)
+        #expect(mockRepository.deletedHydrationEventIDs == [eventID])
+        #expect(await useCase.currentWaterIntakeML == 0)
+    }
+
     @Test("Legacy 마이그레이션 요청은 Repository에 위임된다")
     func migrateLegacyDataIfNeeded() async {
         let mockRepository = MockDrinkWaterRepository()

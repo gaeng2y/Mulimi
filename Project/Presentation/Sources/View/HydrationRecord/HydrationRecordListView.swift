@@ -12,7 +12,6 @@ import SwiftUI
 
 public struct HydrationRecordListView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
-    @State private var isPresentedAlert: Bool = false
 
     public init(viewModel: HydrationRecordListViewModel) {
         self.viewModel = viewModel
@@ -28,10 +27,21 @@ public struct HydrationRecordListView: View {
             await viewModel.onAppear()
         }
         .alert(
-            viewModel.errorMessage,
-            isPresented: $isPresentedAlert
+            L10n.tr("historyDeleteRecordFailureTitle"),
+            isPresented: Binding(
+                get: { !viewModel.errorMessage.isEmpty },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.clearErrorMessage()
+                    }
+                }
+            )
         ) {
-
+            Button(L10n.tr("commonConfirmTitle")) {
+                viewModel.clearErrorMessage()
+            }
+        } message: {
+            Text(viewModel.errorMessage)
         }
     }
 

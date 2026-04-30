@@ -114,6 +114,12 @@ public struct DrinkWaterView: View {
                             .cornerRadius(10)
                     }
                 }
+
+                if let recentRecordUndo = viewModel.recentRecordUndo {
+                    recentUndoCard(recentRecordUndo)
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                }
             }
         }
         .task {
@@ -128,6 +134,23 @@ public struct DrinkWaterView: View {
         }
         .sheet(isPresented: $isCustomAmountPresented) {
             CustomHydrationAmountSheet(viewModel: viewModel)
+        }
+        .alert(
+            L10n.tr("drinkWaterUndoRecordFailureTitle"),
+            isPresented: Binding(
+                get: { viewModel.undoErrorMessage != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.clearUndoErrorMessage()
+                    }
+                }
+            )
+        ) {
+            Button(L10n.tr("commonConfirmTitle")) {
+                viewModel.clearUndoErrorMessage()
+            }
+        } message: {
+            Text(viewModel.undoErrorMessage ?? "")
         }
     }
 
@@ -227,6 +250,41 @@ public struct DrinkWaterView: View {
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled)
+    }
+
+    private func recentUndoCard(_ model: RecentHydrationRecordUndoModel) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "arrow.uturn.backward.circle.fill")
+                .font(.title3)
+                .foregroundColor(.accentColor)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(model.title)
+                    .font(.subheadline.weight(.semibold))
+
+                Text(model.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer()
+
+            Button {
+                Task {
+                    await viewModel.undoRecentRecord()
+                }
+            } label: {
+                Text(model.actionTitle)
+                    .font(.caption.weight(.semibold))
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color(uiColor: .systemBackground).opacity(0.86))
+        )
     }
 }
 

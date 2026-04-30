@@ -29,6 +29,13 @@ enum CustomHydrationAmountValidation: Equatable {
     case valid(volumeML: Int)
 }
 
+struct RecentHydrationRecordUndoModel: Equatable {
+    let id: UUID
+    let title: String
+    let description: String
+    let actionTitle: String
+}
+
 @MainActor
 @Observable
 public final class DrinkWaterViewModel {
@@ -37,6 +44,8 @@ public final class DrinkWaterViewModel {
     private(set) var offset: CGFloat = 0
     private(set) var mainIcon: MainIcon
     private(set) var currentDailyLimit: Double
+    private(set) var recentRecordUndo: RecentHydrationRecordUndoModel?
+    private(set) var undoErrorMessage: String?
 
     private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
@@ -203,6 +212,7 @@ public final class DrinkWaterViewModel {
 
         await waterUseCase.drinkWater(volumeML: volumeML)
         await refreshState()
+        await updateRecentRecordUndo()
         widgetTimelineReloader.reloadAllTimelines()
         return true
     }
@@ -264,8 +274,33 @@ public final class DrinkWaterViewModel {
 
     func reset() async {
         await waterUseCase.reset()
+        recentRecordUndo = nil
+        undoErrorMessage = nil
         await refreshState()
         widgetTimelineReloader.reloadAllTimelines()
+    }
+
+    @discardableResult
+    func undoRecentRecord() async -> Bool {
+        guard let recentRecordUndo else {
+            return false
+        }
+
+        let didDelete = await waterUseCase.deleteHydrationEvent(id: recentRecordUndo.id)
+        guard didDelete else {
+            undoErrorMessage = L10n.tr("drinkWaterUndoRecordFailureDescription")
+            return false
+        }
+
+        self.recentRecordUndo = nil
+        undoErrorMessage = nil
+        await refreshState()
+        widgetTimelineReloader.reloadAllTimelines()
+        return true
+    }
+
+    func clearUndoErrorMessage() {
+        undoErrorMessage = nil
     }
 
     func resetAnimation() {
@@ -285,6 +320,29 @@ public final class DrinkWaterViewModel {
 
     private var remainingRecordableVolumeML: Int {
         max(Int(dailyLimit.rounded() - currentWaterIntakeML.rounded()), 0)
+    }
+
+    private func updateRecentRecordUndo() async {
+        let referenceDate = nowProvider()
+        let latestOwnedEvent = await waterUseCase.hydrationEvents(on: referenceDate)
+            .filter(\.isOwnedByCurrentApp)
+            .max { lhs, rhs in lhs.consumedAt < rhs.consumedAt }
+
+        guard let latestOwnedEvent else {
+            recentRecordUndo = nil
+            return
+        }
+
+        recentRecordUndo = RecentHydrationRecordUndoModel(
+            id: latestOwnedEvent.id,
+            title: L10n.tr("drinkWaterUndoRecordTitle"),
+            description: L10n.tr(
+                "drinkWaterUndoRecordDescriptionFormat",
+                volumeText(latestOwnedEvent.volumeML),
+                latestOwnedEvent.consumedAt.formatted(.dateTime.hour().minute())
+            ),
+            actionTitle: L10n.tr("drinkWaterUndoRecordActionTitle")
+        )
     }
 
     private func servingTitle(for preset: HydrationServingPreset) -> String {
@@ -309,5 +367,9 @@ public final class DrinkWaterViewModel {
         }
 
         return L10n.tr("drinkWaterNextActionHoursMinutesFormat", hours, remainingMinutes)
+    }
+
+    private func volumeText(_ volumeML: Int) -> String {
+        L10n.tr("commonMilliliterFormat", volumeML)
     }
 }

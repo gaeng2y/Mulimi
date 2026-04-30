@@ -19,7 +19,9 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var hydrationEventsCallCount = 0
     private(set) var hydrationEventsInIntervalCallCount = 0
     private(set) var migrateCallCount = 0
+    private(set) var deleteHydrationEventCallCount = 0
     private(set) var recordedVolumesML: [Int] = []
+    private(set) var deletedHydrationEventIDs: [UUID] = []
 
     var currentWaterIntakeML: Double {
         get async {
@@ -66,6 +68,19 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         _events.removeAll()
     }
 
+    func deleteHydrationEvent(id: UUID) async -> Bool {
+        deleteHydrationEventCallCount += 1
+        deletedHydrationEventIDs.append(id)
+
+        guard let index = _events.firstIndex(where: { $0.id == id && $0.isOwnedByCurrentApp }) else {
+            return false
+        }
+
+        let event = _events.remove(at: index)
+        currentWaterIntakeMLValue = max(currentWaterIntakeMLValue - Double(event.volumeML), 0)
+        return true
+    }
+
     // Test helper methods
     func setCurrentWaterIntakeML(_ value: Double) {
         currentWaterIntakeMLValue = value
@@ -82,6 +97,8 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         hydrationEventsCallCount = 0
         hydrationEventsInIntervalCallCount = 0
         migrateCallCount = 0
+        deleteHydrationEventCallCount = 0
         recordedVolumesML = []
+        deletedHydrationEventIDs = []
     }
 }

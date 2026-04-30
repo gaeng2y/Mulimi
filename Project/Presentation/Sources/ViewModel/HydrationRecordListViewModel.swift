@@ -35,6 +35,7 @@ struct HydrationRecordDaySummary: Identifiable, Equatable {
     let date: Date
     let totalML: Int
     let eventCount: Int
+    let events: [HydrationEvent]
 
     var id: Date {
         date
@@ -84,17 +85,20 @@ public final class HydrationRecordListViewModel {
     private(set) var errorMessage: String = ""
     private let useCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
+    private let widgetTimelineReloader: any WidgetTimelineReloading
     private let calendar: Calendar
     private let nowProvider: @Sendable () -> Date
 
     public init(
         useCase: DrinkWaterUseCase,
         userPreferencesUseCase: UserPreferencesUseCase,
+        widgetTimelineReloader: any WidgetTimelineReloading = NoOpWidgetTimelineReloader(),
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = Date.init
     ) {
         self.useCase = useCase
         self.userPreferencesUseCase = userPreferencesUseCase
+        self.widgetTimelineReloader = widgetTimelineReloader
         self.calendar = calendar
         self.nowProvider = nowProvider
         self.dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
@@ -160,7 +164,8 @@ public final class HydrationRecordListViewModel {
                 HydrationRecordDaySummary(
                     date: dayStart,
                     totalML: total,
-                    eventCount: events.count
+                    eventCount: events.count,
+                    events: events.sorted { $0.consumedAt < $1.consumedAt }
                 )
             )
         }
@@ -191,6 +196,30 @@ public final class HydrationRecordListViewModel {
         selectedPeriod = .month
         date = newDate
         await fetchHydrationRecord()
+    }
+
+    @MainActor
+    @discardableResult
+    func deleteEvent(_ event: HydrationEvent) async -> Bool {
+        guard event.isOwnedByCurrentApp else {
+            errorMessage = L10n.tr("historyDeleteExternalRecordDescription")
+            return false
+        }
+
+        let didDelete = await useCase.deleteHydrationEvent(id: event.id)
+        guard didDelete else {
+            errorMessage = L10n.tr("historyDeleteRecordFailureDescription")
+            return false
+        }
+
+        errorMessage = ""
+        await fetchHydrationRecord()
+        widgetTimelineReloader.reloadAllTimelines()
+        return true
+    }
+
+    func clearErrorMessage() {
+        errorMessage = ""
     }
 
     var selectedPeriodRangeText: String {

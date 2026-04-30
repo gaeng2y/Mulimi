@@ -1442,6 +1442,61 @@
         }
       }
     },
+    "drinkWaterUndoRecordActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "되돌리기"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 기록을 %@에 남겼어요. 잘못 눌렀다면 바로 취소할 수 있습니다."
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기록을 삭제하지 못했어요. HealthKit 권한 상태를 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 되돌릴 수 없어요"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금 기록했어요"
+          }
+        }
+      }
+    },
     "drinkWaterCompleteLabel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1673,6 +1728,39 @@
         }
       }
     },
+    "historyDeleteExternalRecordDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 앱이나 건강 앱에서 만든 수분 기록은 물리미에서 삭제할 수 없습니다."
+          }
+        }
+      }
+    },
+    "historyDeleteRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 삭제하지 못했어요. HealthKit 권한 상태를 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "historyDeleteRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 삭제할 수 없어요"
+          }
+        }
+      }
+    },
     "historyEmptyDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1816,6 +1904,28 @@
         }
       }
     },
+    "historyRecordDeleteUnavailableTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 불가"
+          }
+        }
+      }
+    },
+    "historyRecordExternalSourceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외부 기록"
+          }
+        }
+      }
+    },
     "historyRecordListTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1823,6 +1933,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일별 기록"
+          }
+        }
+      }
+    },
+    "historyRecordOwnedSourceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미 기록"
           }
         }
       }

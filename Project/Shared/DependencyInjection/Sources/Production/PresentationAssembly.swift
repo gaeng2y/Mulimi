@@ -53,7 +53,8 @@ public final class PresentationAssembly: Assembly {
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
             )
         }
 

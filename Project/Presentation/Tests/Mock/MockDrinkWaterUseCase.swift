@@ -8,6 +8,9 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     var drinkWaterCallCount: Int = 0
     var recordedVolumesML: [Int] = []
     var resetCallCount: Int = 0
+    var deleteHydrationEventCallCount: Int = 0
+    var deletedHydrationEventIDs: [UUID] = []
+    var shouldDeleteHydrationEventSucceed = true
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
 
@@ -40,11 +43,43 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
         currentWaterIntakeMLValue += Double(volumeML)
+        let now = Date.now
+        hydrationEventsByDay[dayKey(for: now), default: []].append(
+            HydrationEvent(
+                id: UUID(),
+                consumedAt: now,
+                volumeML: volumeML
+            )
+        )
     }
 
     func reset() async {
         resetCallCount += 1
         currentWaterIntakeMLValue = 0
+        hydrationEventsByDay.removeAll()
+    }
+
+    func deleteHydrationEvent(id: UUID) async -> Bool {
+        deleteHydrationEventCallCount += 1
+        deletedHydrationEventIDs.append(id)
+
+        guard shouldDeleteHydrationEventSucceed else {
+            return false
+        }
+
+        for key in Array(hydrationEventsByDay.keys) {
+            guard let index = hydrationEventsByDay[key]?.firstIndex(where: {
+                $0.id == id && $0.isOwnedByCurrentApp
+            }) else {
+                continue
+            }
+
+            let event = hydrationEventsByDay[key]?.remove(at: index)
+            currentWaterIntakeMLValue = max(currentWaterIntakeMLValue - Double(event?.volumeML ?? 0), 0)
+            return true
+        }
+
+        return false
     }
 
     func setHydrationEvents(_ events: [HydrationEvent], on date: Date) {

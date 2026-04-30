@@ -15,6 +15,8 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     public var resetCallCount = 0
     public var hydrateEventsCallCount = 0
     public var migrateCallCount = 0
+    public var deleteHydrationEventCallCount = 0
+    public var deletedHydrationEventIDs: [UUID] = []
     public var events: [HydrationEvent] = []
 
     public init() {}
@@ -61,6 +63,19 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
         currentWaterIntakeMLValue = 0
         recordedVolumesML = []
         events.removeAll()
+    }
+
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        deleteHydrationEventCallCount += 1
+        deletedHydrationEventIDs.append(id)
+
+        guard let index = events.firstIndex(where: { $0.id == id && $0.isOwnedByCurrentApp }) else {
+            return false
+        }
+
+        let event = events.remove(at: index)
+        currentWaterIntakeMLValue = max(currentWaterIntakeMLValue - Double(event.volumeML), 0)
+        return true
     }
 
     // Testing helpers

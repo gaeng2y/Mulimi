@@ -42,6 +42,10 @@ public struct DrinkWaterUseCaseImpl: DrinkWaterUseCase {
         await repository.drinkWater(volumeML: volumeML)
     }
 
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        await repository.deleteHydrationEvent(id: id)
+    }
+
     public func reset() async {
         await repository.reset()
     }
