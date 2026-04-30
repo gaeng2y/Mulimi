@@ -2179,6 +2179,204 @@
         }
       }
     },
+    "insightWeeklyCoachingCreateRoutineActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEditRoutineActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시간 조정하기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEmptySlotDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 비어 있던 시간대예요. 다음 주에는 이 시간대에 알림을 만들어 흐름을 먼저 잡아보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEmptySlotTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 %@ 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 조정하기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalHighDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 평균이 목표보다 %@ 높아요. 현재 습관에 맞게 목표량을 재검토해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalHighTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 올려도 될 흐름이에요"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalLowDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 평균이 목표보다 %@ 낮아요. 무리한 목표라면 목표량을 조정하고, 괜찮다면 루틴을 보강해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalLowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 다시 맞춰볼까요?"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingMissedRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을 이번 주 %lld번 놓쳤어요. 다음 주에는 이 루틴 시간을 먼저 조정해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingMissedRoutineTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 %@ 루틴 지키기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뚜렷한 빈 시간대나 목표 불균형이 없어요. 다음 주에도 같은 리듬으로 기록을 이어가세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 흐름을 유지해도 좋아요"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingRoutineBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록이 아직 부족해요. 오늘 한 잔부터 남기면 다음 주 추천 액션을 만들 수 있어요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingStartTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록이 쌓이면 코칭을 보여드릴게요"
+          }
+        }
+      }
+    },
     "insightWeeklyReportAchievedDecreasedDetailFormat" : {
       "extractionState" : "manual",
       "localizations" : {

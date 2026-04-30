@@ -75,6 +75,9 @@ struct ContentView: View {
                     viewModel: hydrationInsightViewModel,
                     onRoutineAction: { action in
                         appCoordinator.push(.profileRoutineAction(action))
+                    },
+                    onDailyGoalAction: {
+                        appCoordinator.push(.setting(.dailyLimit))
                     }
                 )
                     .tag(AppTab.insight)

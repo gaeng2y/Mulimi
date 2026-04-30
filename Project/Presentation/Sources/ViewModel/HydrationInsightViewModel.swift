@@ -87,6 +87,21 @@ struct HydrationWeeklyReportMetric: Identifiable, Equatable {
     let detail: String
 }
 
+enum HydrationWeeklyCoachingAction: Equatable {
+    case routine(RoutineRecoveryReminderAction)
+    case dailyGoal
+    case none
+}
+
+struct HydrationWeeklyCoachingCardModel: Identifiable, Equatable {
+    let id: String
+    let badgeText: String
+    let title: String
+    let description: String
+    let actionTitle: String?
+    let action: HydrationWeeklyCoachingAction
+}
+
 @MainActor
 @Observable
 public final class HydrationInsightViewModel {
@@ -352,6 +367,31 @@ public final class HydrationInsightViewModel {
             reminderAction: reminderAction(for: .create),
             canRecordNow: canRecordRecoveryDrink
         )
+    }
+
+    var weeklyCoachingCards: [HydrationWeeklyCoachingCardModel] {
+        guard let weeklyReport else {
+            return []
+        }
+
+        var cards: [HydrationWeeklyCoachingCardModel] = []
+
+        if let missedRoutine = weakestMissedRoutine {
+            cards.append(missedRoutineCoachingCard(missedRoutine))
+        } else if weeklyReport.hasCurrentWeekRecords,
+                  let emptySlot = weeklyReport.frequentlyEmptySlot {
+            cards.append(emptySlotCoachingCard(slot: emptySlot, report: weeklyReport))
+        }
+
+        if let goalCard = goalCoachingCard(for: weeklyReport) {
+            cards.append(goalCard)
+        }
+
+        if cards.isEmpty {
+            cards.append(neutralCoachingCard(for: weeklyReport))
+        }
+
+        return cards
     }
 
     var chartUpperBound: Double {
@@ -743,6 +783,114 @@ public final class HydrationInsightViewModel {
             "insightWeeklyReportGapDetailFormat",
             report.frequentlyEmptySlotMissingDays,
             report.elapsedDays
+        )
+    }
+
+    private func missedRoutineCoachingCard(
+        _ missedRoutine: RoutineRecoveryMissedRoutine
+    ) -> HydrationWeeklyCoachingCardModel {
+        HydrationWeeklyCoachingCardModel(
+            id: "missedRoutine-\(missedRoutine.uuid.uuidString)",
+            badgeText: L10n.tr("insightWeeklyCoachingRoutineBadge"),
+            title: L10n.tr(
+                "insightWeeklyCoachingMissedRoutineTitleFormat",
+                missedRoutine.timeText
+            ),
+            description: L10n.tr(
+                "insightWeeklyCoachingMissedRoutineDescriptionFormat",
+                missedRoutine.title,
+                missedRoutine.missedCount
+            ),
+            actionTitle: reminderActionTitle(
+                authorizedTitle: L10n.tr("insightWeeklyCoachingEditRoutineActionTitle")
+            ),
+            action: .routine(reminderAction(for: .edit(missedRoutine.uuid)))
+        )
+    }
+
+    private func emptySlotCoachingCard(
+        slot: HydrationWeeklyReportTimeSlot,
+        report: HydrationWeeklyReport
+    ) -> HydrationWeeklyCoachingCardModel {
+        HydrationWeeklyCoachingCardModel(
+            id: "emptySlot-\(slot)",
+            badgeText: L10n.tr("insightWeeklyCoachingRoutineBadge"),
+            title: L10n.tr(
+                "insightWeeklyCoachingEmptySlotTitleFormat",
+                slotText(for: slot)
+            ),
+            description: L10n.tr(
+                "insightWeeklyCoachingEmptySlotDescriptionFormat",
+                report.frequentlyEmptySlotMissingDays,
+                report.elapsedDays
+            ),
+            actionTitle: reminderActionTitle(
+                authorizedTitle: L10n.tr("insightWeeklyCoachingCreateRoutineActionTitle")
+            ),
+            action: .routine(reminderAction(for: .create))
+        )
+    }
+
+    private func goalCoachingCard(for report: HydrationWeeklyReport) -> HydrationWeeklyCoachingCardModel? {
+        guard report.hasCurrentWeekRecords,
+              dailyGoalML > 0,
+              report.elapsedDays >= 3 else {
+            return nil
+        }
+
+        let averageRatio = report.averageML / dailyGoalML
+        let achievementRate = Double(report.achievedDays) / Double(report.elapsedDays)
+
+        if achievementRate == 0, averageRatio < 0.7 {
+            return HydrationWeeklyCoachingCardModel(
+                id: "goal-low",
+                badgeText: L10n.tr("insightWeeklyCoachingGoalBadge"),
+                title: L10n.tr("insightWeeklyCoachingGoalLowTitle"),
+                description: L10n.tr(
+                    "insightWeeklyCoachingGoalLowDescriptionFormat",
+                    volumeText(dailyGoalML - report.averageML)
+                ),
+                actionTitle: L10n.tr("insightWeeklyCoachingGoalActionTitle"),
+                action: .dailyGoal
+            )
+        }
+
+        if achievementRate >= 0.8, averageRatio > 1.15 {
+            return HydrationWeeklyCoachingCardModel(
+                id: "goal-high",
+                badgeText: L10n.tr("insightWeeklyCoachingGoalBadge"),
+                title: L10n.tr("insightWeeklyCoachingGoalHighTitle"),
+                description: L10n.tr(
+                    "insightWeeklyCoachingGoalHighDescriptionFormat",
+                    volumeText(report.averageML - dailyGoalML)
+                ),
+                actionTitle: L10n.tr("insightWeeklyCoachingGoalActionTitle"),
+                action: .dailyGoal
+            )
+        }
+
+        return nil
+    }
+
+    private func neutralCoachingCard(for report: HydrationWeeklyReport) -> HydrationWeeklyCoachingCardModel {
+        if report.hasCurrentWeekRecords {
+            return HydrationWeeklyCoachingCardModel(
+                id: "neutral",
+                badgeText: L10n.tr("insightWeeklyCoachingNeutralBadge"),
+                title: L10n.tr("insightWeeklyCoachingNeutralTitle"),
+                description: L10n.tr("insightWeeklyCoachingNeutralDescription"),
+                actionTitle: nil,
+                action: .none
+            )
+        }
+
+        return HydrationWeeklyCoachingCardModel(
+            id: "start",
+            badgeText: L10n.tr("insightWeeklyCoachingNeutralBadge"),
+            title: L10n.tr("insightWeeklyCoachingStartTitle"),
+            description: L10n.tr("insightWeeklyCoachingStartDescription"),
+            actionTitle: nil,
+            action: .none
         )
     }
 
