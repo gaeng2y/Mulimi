@@ -15,6 +15,7 @@ public final class SettingsViewModel {
     private let signInUseCase: SignInUseCase
     private let appSession: AppSession
     private let widgetTimelineReloader: any WidgetTimelineReloading
+    private let analyticsUseCase: AnalyticsUseCase
 
     // MARK: - Published State
     public private(set) var currentMainIcon: MainIcon
@@ -30,12 +31,14 @@ public final class SettingsViewModel {
         signInUseCase: SignInUseCase,
         appSession: AppSession,
         widgetTimelineReloader: any WidgetTimelineReloading,
-        appInfoProvider: any AppInfoProviding
+        appInfoProvider: any AppInfoProviding,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase()
     ) {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.appSession = appSession
         self.widgetTimelineReloader = widgetTimelineReloader
+        self.analyticsUseCase = analyticsUseCase
         self.currentMainIcon = userPreferencesUseCase.getMainIcon()
         self.currentDailyWaterLimit = userPreferencesUseCase.getDailyWaterLimit()
         self.appVersion = appInfoProvider.appVersion
@@ -52,10 +55,32 @@ public final class SettingsViewModel {
     public var dailyWaterLimit: Double {
         get { currentDailyWaterLimit }
         set {
-            currentDailyWaterLimit = newValue
-            userPreferencesUseCase.setDailyWaterLimit(newValue)
-            widgetTimelineReloader.reloadAllTimelines()
+            setDailyWaterLimit(newValue)
         }
+    }
+
+    public func setDailyWaterLimit(
+        _ limit: Double,
+        source: String = "settings"
+    ) {
+        let previousGoalML = Int(currentDailyWaterLimit.rounded())
+        let newGoalML = Int(limit.rounded())
+
+        currentDailyWaterLimit = limit
+        userPreferencesUseCase.setDailyWaterLimit(limit)
+        widgetTimelineReloader.reloadAllTimelines()
+
+        guard previousGoalML != newGoalML else {
+            return
+        }
+
+        analyticsUseCase.track(
+            .dailyGoalChanged(
+                source: source,
+                previousGoalML: previousGoalML,
+                newGoalML: newGoalML
+            )
+        )
     }
 
     public func refreshState() {

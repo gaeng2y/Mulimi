@@ -5,6 +5,7 @@
 //  Created by Kyeongmo Yang on 9/17/25.
 //
 
+import DomainLayerInterface
 import Swinject
 
 public final class DIContainer: @unchecked Sendable {
@@ -34,5 +35,26 @@ public final class DIContainer: @unchecked Sendable {
             fatalError("Service \(serviceType) is not registered")
         }
         return service
+    }
+
+    public func registerAnalyticsRepository(_ repository: AnalyticsRepository) {
+        assembler.apply(
+            assembly: AnalyticsRepositoryOverrideAssembly(repository: repository)
+        )
+    }
+}
+
+private final class AnalyticsRepositoryOverrideAssembly: Assembly {
+    private let repository: AnalyticsRepository
+
+    init(repository: AnalyticsRepository) {
+        self.repository = repository
+    }
+
+    func assemble(container: Container) {
+        container.register(AnalyticsRepository.self) { _ in
+            self.repository
+        }
+        .inObjectScope(.container)
     }
 }

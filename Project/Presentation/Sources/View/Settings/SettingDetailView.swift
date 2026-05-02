@@ -491,7 +491,10 @@ private struct HydrationGoalRecommendationCard: View {
 
             VStack(spacing: 10) {
                 Button {
-                    settingsViewModel.dailyWaterLimit = Double(recommendation.recommendedLimitML)
+                    settingsViewModel.setDailyWaterLimit(
+                        Double(recommendation.recommendedLimitML),
+                        source: "recommendation"
+                    )
                 } label: {
                     actionLabel(
                         title: L10n.tr("commonApplyTitle"),

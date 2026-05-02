@@ -227,7 +227,7 @@ public struct DrinkWaterView: View {
 
         return Button {
             Task {
-                await viewModel.recordWater(volumeML: option.volumeML)
+                await viewModel.recordPresetWater(volumeML: option.volumeML)
             }
         } label: {
             VStack(spacing: 4) {

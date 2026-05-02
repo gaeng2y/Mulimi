@@ -8,6 +8,7 @@
 - [Hydration Logging](hydration-logging.md)
 - [Routine Notifications](routine-notifications.md)
 - [Challenge and Insight](challenge-insight.md)
+- [Analytics Events](analytics-events.md)
 
 ## Rule
 

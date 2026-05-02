@@ -51,6 +51,7 @@ public final class DrinkWaterViewModel {
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let nextActionGuideUseCase: HydrationNextActionGuideUseCase
     private let widgetTimelineReloader: any WidgetTimelineReloading
+    private let analyticsUseCase: AnalyticsUseCase
     private let calendar: Calendar
     private let nowProvider: @Sendable () -> Date
     private(set) var nextActionGuide: HydrationNextActionGuide
@@ -145,6 +146,7 @@ public final class DrinkWaterViewModel {
         userPreferencesUseCase: UserPreferencesUseCase,
         nextActionGuideUseCase: HydrationNextActionGuideUseCase,
         widgetTimelineReloader: any WidgetTimelineReloading,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = { .now }
     ) {
@@ -152,6 +154,7 @@ public final class DrinkWaterViewModel {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.nextActionGuideUseCase = nextActionGuideUseCase
         self.widgetTimelineReloader = widgetTimelineReloader
+        self.analyticsUseCase = analyticsUseCase
         self.calendar = calendar
         self.nowProvider = nowProvider
         let initialWaterIntakeML = 0.0
@@ -201,11 +204,37 @@ public final class DrinkWaterViewModel {
     }
 
     func drinkWater() async {
-        await recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        await recordWater(
+            volumeML: HydrationServing.defaultGlassVolumeML,
+            servingType: "default_glass",
+            preset: nil
+        )
     }
 
     @discardableResult
     func recordWater(volumeML: Int) async -> Bool {
+        await recordWater(
+            volumeML: volumeML,
+            servingType: inferredServingType(for: volumeML),
+            preset: presetID(for: volumeML)
+        )
+    }
+
+    @discardableResult
+    func recordPresetWater(volumeML: Int) async -> Bool {
+        await recordWater(
+            volumeML: volumeML,
+            servingType: "preset",
+            preset: presetID(for: volumeML)
+        )
+    }
+
+    @discardableResult
+    private func recordWater(
+        volumeML: Int,
+        servingType: String,
+        preset: String?
+    ) async -> Bool {
         guard isRecordable(volumeML: volumeML) else {
             return false
         }
@@ -214,6 +243,11 @@ public final class DrinkWaterViewModel {
         await refreshState()
         await updateRecentRecordUndo()
         widgetTimelineReloader.reloadAllTimelines()
+        trackWaterLogged(
+            volumeML: volumeML,
+            servingType: servingType,
+            preset: preset
+        )
         return true
     }
 
@@ -269,7 +303,11 @@ public final class DrinkWaterViewModel {
             return false
         }
 
-        return await recordWater(volumeML: volumeML)
+        return await recordWater(
+            volumeML: volumeML,
+            servingType: "custom",
+            preset: nil
+        )
     }
 
     func reset() async {
@@ -352,6 +390,51 @@ public final class DrinkWaterViewModel {
         case .tumbler:
             return L10n.tr("drinkWaterPresetTumblerTitle")
         }
+    }
+
+    private func trackWaterLogged(
+        volumeML: Int,
+        servingType: String,
+        preset: String?
+    ) {
+        analyticsUseCase.track(
+            .waterLogged(
+                source: "drink_water_main",
+                servingType: servingType,
+                volumeML: volumeML,
+                dailyGoalML: Int(dailyLimit.rounded())
+            )
+        )
+
+        guard let preset else {
+            return
+        }
+
+        analyticsUseCase.track(
+            .waterPresetLogged(
+                source: "drink_water_main",
+                preset: preset,
+                volumeML: volumeML
+            )
+        )
+    }
+
+    private func inferredServingType(for volumeML: Int) -> String {
+        if volumeML == HydrationServing.defaultGlassVolumeML {
+            return "default_glass"
+        }
+
+        if presetID(for: volumeML) != nil {
+            return "preset"
+        }
+
+        return "custom"
+    }
+
+    private func presetID(for volumeML: Int) -> String? {
+        HydrationServingPreset.allCases
+            .first { $0.volumeML == volumeML }?
+            .rawValue
     }
 
     private func relativeTimeText(for minutes: Int) -> String {

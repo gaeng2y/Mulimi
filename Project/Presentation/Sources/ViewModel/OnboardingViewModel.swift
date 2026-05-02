@@ -17,9 +17,14 @@ public final class OnboardingViewModel {
     public let pageCount = 3
 
     private let userPreferencesUseCase: UserPreferencesUseCase
+    private let analyticsUseCase: AnalyticsUseCase
 
-    public init(userPreferencesUseCase: UserPreferencesUseCase) {
+    public init(
+        userPreferencesUseCase: UserPreferencesUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase()
+    ) {
         self.userPreferencesUseCase = userPreferencesUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.hasCompletedOnboarding = userPreferencesUseCase.hasCompletedOnboarding()
     }
 
@@ -47,6 +52,7 @@ public final class OnboardingViewModel {
 
     public func completeOnboarding() {
         userPreferencesUseCase.setHasCompletedOnboarding(true)
+        analyticsUseCase.track(.onboardingCompleted())
         hasCompletedOnboarding = true
         resetProgress()
     }
