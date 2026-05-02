@@ -84,19 +84,22 @@ struct DrinkWaterViewModelTests {
         let waterUseCase = MockDrinkWaterUseCase()
         let userPreferencesUseCase = MockUserPreferencesUseCase()
         userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let analyticsUseCase = MockAnalyticsUseCase()
         let viewModel = DrinkWaterViewModel(
             waterUseCase: waterUseCase,
             userPreferencesUseCase: userPreferencesUseCase,
             nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
-            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            analyticsUseCase: analyticsUseCase
         )
 
         await viewModel.loadInitialState()
-        let didRecord = await viewModel.recordWater(volumeML: HydrationServing.bottleML)
+        let didRecord = await viewModel.recordPresetWater(volumeML: HydrationServing.bottleML)
 
         #expect(didRecord)
         #expect(viewModel.currentWaterIntakeML == Double(HydrationServing.bottleML))
         #expect(waterUseCase.recordedVolumesML == [HydrationServing.bottleML])
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == ["water_logged", "water_preset_logged"])
     }
 
     @MainActor

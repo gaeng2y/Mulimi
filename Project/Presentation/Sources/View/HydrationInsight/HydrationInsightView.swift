@@ -505,7 +505,14 @@ public struct HydrationInsightView: View {
         }
     }
 
-    private func handleRecoveryReminderAction(_ action: RoutineRecoveryReminderAction) {
+    private func handleRecoveryReminderAction(
+        _ action: RoutineRecoveryReminderAction,
+        shouldTrack: Bool = true
+    ) {
+        if shouldTrack {
+            viewModel.trackRecoveryReminderAction(action)
+        }
+
         switch action {
         case let .manageRoutine(actionIntent):
             onRoutineAction(actionIntent)
@@ -521,9 +528,11 @@ public struct HydrationInsightView: View {
     }
 
     private func handleWeeklyCoachingAction(_ action: HydrationWeeklyCoachingAction) {
+        viewModel.trackWeeklyCoachingAction(action)
+
         switch action {
         case let .routine(routineAction):
-            handleRecoveryReminderAction(routineAction)
+            handleRecoveryReminderAction(routineAction, shouldTrack: false)
         case .dailyGoal:
             onDailyGoalAction()
         case .none:

@@ -124,6 +124,7 @@ public final class HydrationInsightViewModel {
     private let progressUseCase: HydrationProgressUseCase
     private let routineAdherenceUseCase: HydrationRoutineAdherenceUseCase
     private let routineUseCase: RoutineUseCase
+    private let analyticsUseCase: AnalyticsUseCase
     private let calendar: Calendar
     private let currentDateProvider: @Sendable () -> Date
 
@@ -132,6 +133,7 @@ public final class HydrationInsightViewModel {
         progressUseCase: HydrationProgressUseCase,
         routineAdherenceUseCase: HydrationRoutineAdherenceUseCase,
         routineUseCase: RoutineUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
         calendar: Calendar = .autoupdatingCurrent,
         currentDateProvider: @escaping @Sendable () -> Date = { .now }
     ) {
@@ -139,6 +141,7 @@ public final class HydrationInsightViewModel {
         self.progressUseCase = progressUseCase
         self.routineAdherenceUseCase = routineAdherenceUseCase
         self.routineUseCase = routineUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.calendar = calendar
         self.currentDateProvider = currentDateProvider
     }
@@ -499,6 +502,21 @@ public final class HydrationInsightViewModel {
         }
 
         await waterUseCase.drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_recovery",
+                context: "routine_recovery",
+                action: "record_now"
+            )
+        )
+        analyticsUseCase.track(
+            .waterLogged(
+                source: "insight_recovery",
+                servingType: "default_glass",
+                volumeML: HydrationServing.defaultGlassVolumeML,
+                dailyGoalML: Int(dailyGoalML.rounded())
+            )
+        )
         await loadInsights()
         return true
     }
@@ -513,6 +531,26 @@ public final class HydrationInsightViewModel {
             notificationStatus = await routineUseCase.notificationAuthorizationStatus()
             return nil
         }
+    }
+
+    func trackRecoveryReminderAction(_ action: RoutineRecoveryReminderAction) {
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_recovery",
+                context: "routine_recovery",
+                action: analyticsAction(for: action)
+            )
+        )
+    }
+
+    func trackWeeklyCoachingAction(_ action: HydrationWeeklyCoachingAction) {
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_weekly_coaching",
+                context: "weekly_coaching",
+                action: analyticsAction(for: action)
+            )
+        )
     }
 
     private func elapsedInterval(from interval: DateInterval, upTo referenceDate: Date) -> DateInterval {
@@ -969,6 +1007,37 @@ public final class HydrationInsightViewModel {
             return .requestNotificationAuthorization(actionIntent)
         case .denied:
             return .openSettings
+        }
+    }
+
+    private func analyticsAction(for action: RoutineRecoveryReminderAction) -> String {
+        switch action {
+        case .manageRoutine(let actionIntent):
+            return analyticsAction(for: actionIntent)
+        case .requestNotificationAuthorization:
+            return "request_notification_permission"
+        case .openSettings:
+            return "open_settings"
+        }
+    }
+
+    private func analyticsAction(for action: HydrationWeeklyCoachingAction) -> String {
+        switch action {
+        case .routine(let routineAction):
+            return analyticsAction(for: routineAction)
+        case .dailyGoal:
+            return "daily_goal"
+        case .none:
+            return "none"
+        }
+    }
+
+    private func analyticsAction(for actionIntent: RoutineActionIntent) -> String {
+        switch actionIntent {
+        case .create:
+            return "create_routine"
+        case .edit:
+            return "edit_routine"
         }
     }
 }

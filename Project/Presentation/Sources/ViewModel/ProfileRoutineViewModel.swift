@@ -138,6 +138,7 @@ public final class ProfileRoutineViewModel {
     private let routineRecommendationUseCase: RoutineRecommendationUseCase
     private let drinkWaterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
+    private let analyticsUseCase: AnalyticsUseCase
     private let calendar: Calendar
     private let nowProvider: @Sendable () -> Date
 
@@ -157,6 +158,7 @@ public final class ProfileRoutineViewModel {
         routineRecommendationUseCase: RoutineRecommendationUseCase,
         drinkWaterUseCase: DrinkWaterUseCase,
         userPreferencesUseCase: UserPreferencesUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = { .now }
     ) {
@@ -164,6 +166,7 @@ public final class ProfileRoutineViewModel {
         self.routineRecommendationUseCase = routineRecommendationUseCase
         self.drinkWaterUseCase = drinkWaterUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.calendar = calendar
         self.nowProvider = nowProvider
         self.dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
@@ -491,6 +494,13 @@ public final class ProfileRoutineViewModel {
     public func deleteRoutine(_ routine: HydrationRoutine) async {
         do {
             try await routineUseCase.deleteRoutine(id: routine.id)
+            analyticsUseCase.track(
+                .routineDeleted(
+                    source: "profile_routine",
+                    enabled: routine.isEnabled,
+                    weekdayCount: routine.weekdays.count
+                )
+            )
             await load()
         } catch {
             errorMessage = L10n.tr("profileRoutineDeleteError")
@@ -504,9 +514,23 @@ public final class ProfileRoutineViewModel {
     private func persistDraft(_ routine: HydrationRoutine) async {
         isSaving = true
         defer { isSaving = false }
+        let isUpdatingExistingRoutine = routines.contains { $0.id == routine.id }
 
         do {
             try await routineUseCase.saveRoutine(routine)
+            analyticsUseCase.track(
+                isUpdatingExistingRoutine
+                    ? .routineUpdated(
+                        source: "profile_routine",
+                        enabled: routine.isEnabled,
+                        weekdayCount: routine.weekdays.count
+                    )
+                    : .routineCreated(
+                        source: "profile_routine",
+                        enabled: routine.isEnabled,
+                        weekdayCount: routine.weekdays.count
+                    )
+            )
             await load()
             dismissEditor()
         } catch let error as RoutineError {

@@ -83,7 +83,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
 
                     if viewModel.authorizationStatus == .sharingDenied {
                         Button {
-                            viewModel.refreshStatus()
+                            viewModel.refreshStatusFromSettings()
                         } label: {
                             Text(L10n.tr("healthKitPermissionRefreshTitle"))
                                 .font(.headline)
@@ -290,6 +290,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
             return
         }
 
+        viewModel.trackSettingsTapped()
         openURL(settingsURL)
     }
 }

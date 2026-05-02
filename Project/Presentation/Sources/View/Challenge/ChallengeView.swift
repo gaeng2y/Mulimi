@@ -113,7 +113,10 @@ public struct ChallengeView: View {
                     ForEach(viewModel.recommendedChallenges) { challenge in
                         PersonalizedChallengeCard(
                             challenge: challenge,
-                            onRoutineAction: onRoutineAction
+                            onRoutineAction: { actionIntent in
+                                viewModel.trackRoutineActionTapped(for: challenge)
+                                onRoutineAction(actionIntent)
+                            }
                         )
                     }
                 }

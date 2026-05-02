@@ -58,6 +58,7 @@ public final class ChallengeViewModel {
     private let challengeUseCase: ChallengeUseCase
     private let personalizedChallengeUseCase: PersonalizedChallengeUseCase
     private let progressUseCase: HydrationProgressUseCase
+    private let analyticsUseCase: AnalyticsUseCase
     private let calendar: Calendar
     private let currentDateProvider: @Sendable () -> Date
 
@@ -65,12 +66,14 @@ public final class ChallengeViewModel {
         challengeUseCase: ChallengeUseCase,
         personalizedChallengeUseCase: PersonalizedChallengeUseCase,
         progressUseCase: HydrationProgressUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
         calendar: Calendar = .autoupdatingCurrent,
         currentDateProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.challengeUseCase = challengeUseCase
         self.personalizedChallengeUseCase = personalizedChallengeUseCase
         self.progressUseCase = progressUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.calendar = calendar
         self.currentDateProvider = currentDateProvider
     }
@@ -116,6 +119,16 @@ public final class ChallengeViewModel {
         completedChallenges = badgeHistories
             .map { makeHistoryCardModel(from: $0) }
             .sorted(by: completedSort)
+    }
+
+    func trackRoutineActionTapped(for challenge: PersonalizedChallengeCardModel) {
+        analyticsUseCase.track(
+            .challengeCTATapped(
+                source: "challenge_recommendation",
+                challengeKind: challenge.kind.rawValue,
+                action: analyticsAction(for: challenge.routineActionIntent)
+            )
+        )
     }
 
     private func makePersonalizedCardModel(
@@ -493,6 +506,15 @@ public final class ChallengeViewModel {
             return .edit(routineID)
         case .morningKickstart, .dailyGoalBooster, .consistencyDefender:
             return .create
+        }
+    }
+
+    private func analyticsAction(for actionIntent: RoutineActionIntent) -> String {
+        switch actionIntent {
+        case .create:
+            return "create_routine"
+        case .edit:
+            return "edit_routine"
         }
     }
 

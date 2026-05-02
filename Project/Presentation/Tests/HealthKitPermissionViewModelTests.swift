@@ -50,8 +50,12 @@ struct HealthKitPermissionViewModelTests {
     func requestAuthorizationSuccess() async {
         let healthKitUseCase = MockHealthKitUseCase()
         healthKitUseCase.authorizationStatusValue = .notDetermined
+        let analyticsUseCase = MockAnalyticsUseCase()
 
-        let viewModel = HealthKitPermissionViewModel(healthKitUseCase: healthKitUseCase)
+        let viewModel = HealthKitPermissionViewModel(
+            healthKitUseCase: healthKitUseCase,
+            analyticsUseCase: analyticsUseCase
+        )
 
         await viewModel.requestAuthorization()
 
@@ -59,6 +63,10 @@ struct HealthKitPermissionViewModelTests {
         #expect(viewModel.authorizationStatus == .sharingAuthorized)
         #expect(viewModel.isAuthorized == true)
         #expect(viewModel.errorMessage == nil)
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == [
+            "healthkit_permission_request_tapped",
+            "healthkit_permission_authorized"
+        ])
     }
 
     @MainActor
