@@ -45,6 +45,16 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
         )
     }
 
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        guard let index = events.firstIndex(where: { $0.id == id && $0.isOwnedByCurrentApp }) else {
+            return false
+        }
+
+        let event = events.remove(at: index)
+        currentWaterIntakeMLValue = max(currentWaterIntakeMLValue - Double(event.volumeML), 0)
+        return true
+    }
+
     public func reset() async {
         currentWaterIntakeMLValue = 0
         events.removeAll()

@@ -11,14 +11,17 @@ public struct HydrationEvent: Hashable, Identifiable, Sendable {
     public let id: UUID
     public let consumedAt: Date
     public let volumeML: Int
+    public let isOwnedByCurrentApp: Bool
 
     public init(
         id: UUID,
         consumedAt: Date,
-        volumeML: Int
+        volumeML: Int,
+        isOwnedByCurrentApp: Bool = true
     ) {
         self.id = id
         self.consumedAt = consumedAt
         self.volumeML = volumeML
+        self.isOwnedByCurrentApp = isOwnedByCurrentApp
     }
 }

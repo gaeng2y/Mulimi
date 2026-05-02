@@ -42,6 +42,10 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         await dataSource.drinkWater(volumeML: volumeML)
     }
 
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        await dataSource.deleteHydrationEvent(id: id)
+    }
+
     public func reset() async {
         await dataSource.reset()
     }

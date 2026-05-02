@@ -38,6 +38,7 @@ struct HydrationRecordListViewModelTests {
         #expect(viewModel.records.count == 2)
         #expect(viewModel.records[0].mililiter == 750)
         #expect(viewModel.records[1].mililiter == 300)
+        #expect(viewModel.daySummaries[0].events.count == 2)
         #expect(calendar.isDate(viewModel.records[0].date, inSameDayAs: monthStart))
         #expect(calendar.isDate(viewModel.records[1].date, inSameDayAs: secondDay))
     }
@@ -177,5 +178,73 @@ struct HydrationRecordListViewModelTests {
         #expect(calendar.isDate(viewModel.date, equalTo: targetDate, toGranularity: .month))
         #expect(viewModel.records.count == 1)
         #expect(viewModel.records.first?.mililiter == 250)
+    }
+
+    @MainActor
+    @Test("앱이 생성한 개별 기록 삭제는 목록과 위젯을 갱신한다")
+    func deleteOwnedHydrationEvent() async {
+        let mockUseCase = MockDrinkWaterUseCase()
+        let widgetReloader = RecordSpyWidgetTimelineReloader()
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            widgetTimelineReloader: widgetReloader
+        )
+        let calendar = Calendar.current
+        let targetDate = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: .now))!
+        let eventID = UUID()
+        mockUseCase.setHydrationEvents(
+            [
+                HydrationEvent(id: eventID, consumedAt: targetDate, volumeML: 250),
+                HydrationEvent(id: UUID(), consumedAt: targetDate.addingTimeInterval(60), volumeML: 500)
+            ],
+            on: targetDate
+        )
+
+        await viewModel.fetchHydrationRecord()
+        let didDelete = await viewModel.deleteEvent(viewModel.daySummaries[0].events[0])
+
+        #expect(didDelete)
+        #expect(mockUseCase.deleteHydrationEventCallCount == 1)
+        #expect(mockUseCase.deletedHydrationEventIDs == [eventID])
+        #expect(viewModel.daySummaries[0].totalML == 500)
+        #expect(viewModel.periodSummary.eventCount == 1)
+        #expect(widgetReloader.reloadCallCount == 1)
+    }
+
+    @MainActor
+    @Test("외부 개별 기록 삭제는 차단하고 오류를 노출한다")
+    func deleteExternalHydrationEvent() async {
+        let mockUseCase = MockDrinkWaterUseCase()
+        let widgetReloader = RecordSpyWidgetTimelineReloader()
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            widgetTimelineReloader: widgetReloader
+        )
+        let targetDate = Date.now
+        let externalEvent = HydrationEvent(
+            id: UUID(),
+            consumedAt: targetDate,
+            volumeML: 250,
+            isOwnedByCurrentApp: false
+        )
+        mockUseCase.setHydrationEvents([externalEvent], on: targetDate)
+
+        await viewModel.fetchHydrationRecord()
+        let didDelete = await viewModel.deleteEvent(externalEvent)
+
+        #expect(didDelete == false)
+        #expect(mockUseCase.deleteHydrationEventCallCount == 0)
+        #expect(viewModel.errorMessage == L10n.tr("historyDeleteExternalRecordDescription"))
+        #expect(widgetReloader.reloadCallCount == 0)
+    }
+}
+
+private final class RecordSpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
+    private(set) var reloadCallCount = 0
+
+    func reloadAllTimelines() {
+        reloadCallCount += 1
     }
 }

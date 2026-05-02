@@ -188,6 +188,75 @@ struct DrinkWaterViewModelTests {
     }
 
     @MainActor
+    @Test("기록 후 최근 기록 되돌리기 모델을 만든다")
+    func recordWaterCreatesUndoModel() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+
+        #expect(viewModel.recentRecordUndo != nil)
+        #expect(viewModel.recentRecordUndo?.title == L10n.tr("drinkWaterUndoRecordTitle"))
+    }
+
+    @MainActor
+    @Test("최근 기록 되돌리기는 HealthKit 이벤트 삭제 후 상태와 위젯을 갱신한다")
+    func undoRecentRecord() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let widgetReloader = SpyWidgetTimelineReloader()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: widgetReloader
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        let undoID = viewModel.recentRecordUndo?.id
+        let didUndo = await viewModel.undoRecentRecord()
+
+        #expect(didUndo)
+        #expect(waterUseCase.deletedHydrationEventIDs.first == undoID)
+        #expect(viewModel.currentWaterIntakeML == 0)
+        #expect(viewModel.recentRecordUndo == nil)
+        #expect(widgetReloader.reloadCallCount == 2)
+    }
+
+    @MainActor
+    @Test("최근 기록 되돌리기 실패 시 사용자용 오류를 노출한다")
+    func undoRecentRecordFailure() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.shouldDeleteHydrationEventSucceed = false
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        let didUndo = await viewModel.undoRecentRecord()
+
+        #expect(didUndo == false)
+        #expect(viewModel.undoErrorMessage == L10n.tr("drinkWaterUndoRecordFailureDescription"))
+        #expect(viewModel.recentRecordUndo != nil)
+    }
+
+    @MainActor
     @Test("reset은 카운트를 0으로 만들고 UseCase 리셋을 호출한다")
     func reset() async {
         let waterUseCase = MockDrinkWaterUseCase()
@@ -296,6 +365,14 @@ struct DrinkWaterViewModelTests {
         viewModel.startAnimation()
 
         #expect(viewModel.offset == 360)
+    }
+}
+
+private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
+    private(set) var reloadCallCount = 0
+
+    func reloadAllTimelines() {
+        reloadCallCount += 1
     }
 }
 

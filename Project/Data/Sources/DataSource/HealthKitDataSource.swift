@@ -19,6 +19,7 @@ public protocol HealthKitDataSource: Sendable {
     func readBodyProfile() async throws -> BodyProfile
     func setAGlassOfWater() async throws
     func setWaterIntake(volumeML: Int) async throws
+    func deleteWaterSample(id: UUID) async throws -> Bool
     func resetWaterInTakeInToday() async throws
 }
 
@@ -144,7 +145,9 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                         consumedAt: sample.startDate,
                         volumeML: Int(
                             sample.quantity.doubleValue(for: .literUnit(with: .milli)).rounded()
-                        )
+                        ),
+                        isOwnedByCurrentApp: sample.sourceRevision.source.bundleIdentifier
+                            .hasPrefix(Constant.appSourcePrefix)
                     )
                 }
 
@@ -202,6 +205,47 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
         let waterSample = HKQuantitySample(type: waterType, quantity: waterQuantity, start: .now, end: .now)
 
         try await healthStore.save(waterSample)
+    }
+
+    public func deleteWaterSample(id: UUID) async throws -> Bool {
+        guard HKHealthStore.isHealthDataAvailable(), authorizationStatus == .sharingAuthorized else {
+            throw HealthKitError.permissionDenied
+        }
+
+        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
+            throw HealthKitError.invalidObjectType
+        }
+
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Bool, Error>) in
+            let predicate = HKQuery.predicateForObject(with: id)
+            let query = HKSampleQuery(
+                sampleType: waterType,
+                predicate: predicate,
+                limit: 1,
+                sortDescriptors: nil
+            ) { _, samples, error in
+                if error != nil {
+                    continuation.resume(throwing: HealthKitError.healthKitInternalError)
+                    return
+                }
+
+                guard let sample = (samples as? [HKQuantitySample])?.first,
+                      sample.sourceRevision.source.bundleIdentifier.hasPrefix(Constant.appSourcePrefix) else {
+                    continuation.resume(returning: false)
+                    return
+                }
+
+                self.healthStore.delete([sample]) { didDelete, deleteError in
+                    if deleteError != nil {
+                        continuation.resume(throwing: HealthKitError.healthKitInternalError)
+                    } else {
+                        continuation.resume(returning: didDelete)
+                    }
+                }
+            }
+
+            healthStore.execute(query)
+        }
     }
 
     public func resetWaterInTakeInToday() async throws {
