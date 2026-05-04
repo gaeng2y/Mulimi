@@ -4,7 +4,7 @@ import ProjectDescription
 /// This ensures all modules use the same version and build number
 public enum AppVersion {
     /// Marketing version shown to users (e.g., "1.0.8")
-    public static let marketingVersion = "2.1.0"
+    public static let marketingVersion = "2.1.1"
 
     /// Build number for internal tracking (e.g., "11")
     public static let buildNumber = "25"
