@@ -60,4 +60,5 @@ xcodebuild test \
 
 - `Docs/skills/xcode-build-test.md`
 - `Docs/skills/lint-fix-loop.md`
+- `Docs/delivery-workflow.md`
 - `.github/pull_request_template.md`
