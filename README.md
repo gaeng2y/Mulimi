@@ -123,6 +123,7 @@ Mulimi/
 │   ├── harness-engineering.md
 │   ├── quality-gates.md
 │   ├── documentation-maintenance.md
+│   ├── delivery-workflow.md
 │   ├── product-specs/
 │   ├── exec-plans/
 │   └── skills/
@@ -210,9 +211,10 @@ make verify
 3. `ARCHITECTURE.md`
 4. `Docs/index.md`
 5. 작업 대상 이슈
-6. 관련 `Docs/product-specs/`
-7. 관련 `Docs/skills/`
-8. 수정 대상 모듈의 `Project.swift`와 실제 구현
+6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
+7. 관련 `Docs/product-specs/`
+8. 관련 `Docs/skills/`
+9. 수정 대상 모듈의 `Project.swift`와 실제 구현
 
 ## ✅ 개발 환경 메모
 
@@ -226,6 +228,7 @@ make verify
 - [하네스 엔지니어링 구조](Docs/harness-engineering.md)
 - [품질 게이트](Docs/quality-gates.md)
 - [문서 유지보수 규칙](Docs/documentation-maintenance.md)
+- [이슈/PR 전달 흐름](Docs/delivery-workflow.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)
 - [실행 계획 템플릿](Docs/exec-plans/template.md)

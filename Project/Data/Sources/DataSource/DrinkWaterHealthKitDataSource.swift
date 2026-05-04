@@ -16,6 +16,8 @@ public protocol DrinkWaterDataSource: Sendable {
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
     func drinkWater() async
+    func drinkWater(volumeML: Int) async
+    func deleteHydrationEvent(id: UUID) async -> Bool
     func reset() async
 }
 
@@ -74,10 +76,23 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
     public func migrateLegacyDataIfNeeded() async {}
 
     public func drinkWater() async {
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
         do {
-            try await healthKitDataSource.setAGlassOfWater()
+            try await healthKitDataSource.setWaterIntake(volumeML: volumeML)
         } catch {
             logger.error("Failed to save hydration sample to HealthKit: \(String(describing: error))")
+        }
+    }
+
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        do {
+            return try await healthKitDataSource.deleteWaterSample(id: id)
+        } catch {
+            logger.error("Failed to delete hydration sample from HealthKit: \(String(describing: error))")
+            return false
         }
     }
 

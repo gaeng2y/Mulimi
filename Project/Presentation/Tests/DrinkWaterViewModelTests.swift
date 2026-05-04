@@ -79,6 +79,97 @@ struct DrinkWaterViewModelTests {
     }
 
     @MainActor
+    @Test("프리셋 기록은 지정한 ml 단위를 UseCase에 전달한다")
+    func recordPresetVolume() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let analyticsUseCase = MockAnalyticsUseCase()
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            analyticsUseCase: analyticsUseCase
+        )
+
+        await viewModel.loadInitialState()
+        let didRecord = await viewModel.recordPresetWater(volumeML: HydrationServing.bottleML)
+
+        #expect(didRecord)
+        #expect(viewModel.currentWaterIntakeML == Double(HydrationServing.bottleML))
+        #expect(waterUseCase.recordedVolumesML == [HydrationServing.bottleML])
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == ["water_logged", "water_preset_logged"])
+    }
+
+    @MainActor
+    @Test("프리셋 기록은 목표 초과 시 차단된다")
+    func recordPresetVolumeOverLimit() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 900
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        let didRecord = await viewModel.recordWater(volumeML: HydrationServing.bottleML)
+
+        #expect(didRecord == false)
+        #expect(viewModel.currentWaterIntakeML == 900)
+        #expect(waterUseCase.drinkWaterCallCount == 0)
+    }
+
+    @MainActor
+    @Test("직접 입력값은 숫자와 목표 초과 여부를 검증한다")
+    func customAmountValidation() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 900
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+
+        #expect(viewModel.customAmountValidation(for: "") == .empty)
+        #expect(viewModel.customAmountValidation(for: "abc") == .invalid)
+        #expect(viewModel.customAmountValidation(for: "101") == .overLimit(remainingML: 100))
+        #expect(viewModel.customAmountValidation(for: "100") == .valid(volumeML: 100))
+        #expect(viewModel.canRecordCustomAmount("100"))
+        #expect(viewModel.canRecordCustomAmount("101") == false)
+    }
+
+    @MainActor
+    @Test("직접 입력 기록은 입력한 ml 단위를 UseCase에 전달한다")
+    func recordCustomAmount() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        let didRecord = await viewModel.recordCustomAmount("180")
+
+        #expect(didRecord)
+        #expect(viewModel.currentWaterIntakeML == 180)
+        #expect(waterUseCase.recordedVolumesML == [180])
+    }
+
+    @MainActor
     @Test("drinkWater는 기록 후 최신 UseCase 값을 다시 반영한다")
     func drinkWaterRefreshesState() async {
         let waterUseCase = MockDrinkWaterUseCase()
@@ -97,6 +188,75 @@ struct DrinkWaterViewModelTests {
 
         #expect(viewModel.drinkWaterCount == 1)
         #expect(waterUseCase.drinkWaterCallCount == 1)
+    }
+
+    @MainActor
+    @Test("기록 후 최근 기록 되돌리기 모델을 만든다")
+    func recordWaterCreatesUndoModel() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+
+        #expect(viewModel.recentRecordUndo != nil)
+        #expect(viewModel.recentRecordUndo?.title == L10n.tr("drinkWaterUndoRecordTitle"))
+    }
+
+    @MainActor
+    @Test("최근 기록 되돌리기는 HealthKit 이벤트 삭제 후 상태와 위젯을 갱신한다")
+    func undoRecentRecord() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let widgetReloader = SpyWidgetTimelineReloader()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: widgetReloader
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        let undoID = viewModel.recentRecordUndo?.id
+        let didUndo = await viewModel.undoRecentRecord()
+
+        #expect(didUndo)
+        #expect(waterUseCase.deletedHydrationEventIDs.first == undoID)
+        #expect(viewModel.currentWaterIntakeML == 0)
+        #expect(viewModel.recentRecordUndo == nil)
+        #expect(widgetReloader.reloadCallCount == 2)
+    }
+
+    @MainActor
+    @Test("최근 기록 되돌리기 실패 시 사용자용 오류를 노출한다")
+    func undoRecentRecordFailure() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.shouldDeleteHydrationEventSucceed = false
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        let didUndo = await viewModel.undoRecentRecord()
+
+        #expect(didUndo == false)
+        #expect(viewModel.undoErrorMessage == L10n.tr("drinkWaterUndoRecordFailureDescription"))
+        #expect(viewModel.recentRecordUndo != nil)
     }
 
     @MainActor
@@ -208,6 +368,14 @@ struct DrinkWaterViewModelTests {
         viewModel.startAnimation()
 
         #expect(viewModel.offset == 360)
+    }
+}
+
+private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
+    private(set) var reloadCallCount = 0
+
+    func reloadAllTimelines() {
+        reloadCallCount += 1
     }
 }
 

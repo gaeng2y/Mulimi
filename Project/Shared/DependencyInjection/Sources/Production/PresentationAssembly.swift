@@ -37,13 +37,15 @@ public final class PresentationAssembly: Assembly {
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
             let nextActionGuideUseCase = resolver.resolve(HydrationNextActionGuideUseCase.self)!
             let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
                     waterUseCase: waterUseCase,
                     userPreferencesUseCase: userPreferencesUseCase,
                     nextActionGuideUseCase: nextActionGuideUseCase,
-                    widgetTimelineReloader: widgetTimelineReloader
+                    widgetTimelineReloader: widgetTimelineReloader,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }
@@ -53,7 +55,8 @@ public final class PresentationAssembly: Assembly {
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
-                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
             )
         }
 
@@ -61,12 +64,16 @@ public final class PresentationAssembly: Assembly {
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
             let routineAdherenceUseCase = resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HydrationInsightViewModel(
                     waterUseCase: waterUseCase,
                     progressUseCase: progressUseCase,
-                    routineAdherenceUseCase: routineAdherenceUseCase
+                    routineAdherenceUseCase: routineAdherenceUseCase,
+                    routineUseCase: routineUseCase,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }
@@ -76,12 +83,14 @@ public final class PresentationAssembly: Assembly {
             let challengeUseCase = resolver.resolve(ChallengeUseCase.self)!
             let personalizedChallengeUseCase = resolver.resolve(PersonalizedChallengeUseCase.self)!
             let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ChallengeViewModel(
                     challengeUseCase: challengeUseCase,
                     personalizedChallengeUseCase: personalizedChallengeUseCase,
-                    progressUseCase: progressUseCase
+                    progressUseCase: progressUseCase,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }
@@ -92,13 +101,15 @@ public final class PresentationAssembly: Assembly {
             let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
             let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
                 ProfileRoutineViewModel(
                     routineUseCase: routineUseCase,
                     routineRecommendationUseCase: routineRecommendationUseCase,
                     drinkWaterUseCase: drinkWaterUseCase,
-                    userPreferencesUseCase: userPreferencesUseCase
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }
@@ -115,18 +126,24 @@ public final class PresentationAssembly: Assembly {
 
         container.register(OnboardingViewModel.self) { resolver in
             let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
-                OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
+                OnboardingViewModel(
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
             }
         }
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
 
             return MainActor.assumeIsolated {
                 HealthKitPermissionViewModel(
-                    healthKitUseCase: healthKitUseCase
+                    healthKitUseCase: healthKitUseCase,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }
@@ -159,7 +176,8 @@ public final class PresentationAssembly: Assembly {
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 appSession: resolver.resolve(AppSession.self)!,
                 widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!,
-                appInfoProvider: resolver.resolve((any AppInfoProviding).self)!
+                appInfoProvider: resolver.resolve((any AppInfoProviding).self)!,
+                analyticsUseCase: resolver.resolve(AnalyticsUseCase.self)!
             )
         }
     }

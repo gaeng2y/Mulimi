@@ -15,5 +15,7 @@ public protocol DrinkWaterRepository: Sendable {
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
     func drinkWater() async
+    func drinkWater(volumeML: Int) async
+    func deleteHydrationEvent(id: UUID) async -> Bool
     func reset() async
 }

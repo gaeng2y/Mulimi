@@ -225,7 +225,12 @@ struct RecordCalendarView: View {
                     ForEach(viewModel.daySummaries.reversed()) { summary in
                         HydrationRecordDaySummaryRow(
                             summary: summary,
-                            dailyGoal: viewModel.dailyLimit
+                            dailyGoal: viewModel.dailyLimit,
+                            onDeleteEvent: { event in
+                                Task {
+                                    await viewModel.deleteEvent(event)
+                                }
+                            }
                         )
                     }
                 }
@@ -427,6 +432,7 @@ private struct SummaryMetricView: View {
 private struct HydrationRecordDaySummaryRow: View {
     let summary: HydrationRecordDaySummary
     let dailyGoal: Double
+    let onDeleteEvent: (HydrationEvent) -> Void
 
     private var progressPercent: Int {
         guard dailyGoal > 0 else {
@@ -437,38 +443,53 @@ private struct HydrationRecordDaySummaryRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            WaterDropIndicator(
-                amount: Double(summary.totalML),
-                goal: dailyGoal,
-                isCompact: true
-            )
-            .frame(width: 34, height: 34)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(summary.date.formatted(.dateTime.month().day().weekday(.wide)))
-                    .font(.subheadline.weight(.semibold))
-
-                Text(
-                    L10n.tr(
-                        "historyDaySummaryDescriptionFormat",
-                        summary.eventCount,
-                        progressPercent
-                    )
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                WaterDropIndicator(
+                    amount: Double(summary.totalML),
+                    goal: dailyGoal,
+                    isCompact: true
                 )
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .frame(width: 34, height: 34)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(summary.date.formatted(.dateTime.month().day().weekday(.wide)))
+                        .font(.subheadline.weight(.semibold))
+
+                    Text(
+                        L10n.tr(
+                            "historyDaySummaryDescriptionFormat",
+                            summary.eventCount,
+                            progressPercent
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(L10n.tr("commonMilliliterFormat", summary.totalML))
+                        .font(.subheadline.weight(.semibold))
+
+                    Text(L10n.tr("drinkWaterGlassCountFormat", summary.glassCount))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             }
 
-            Spacer()
+            Divider()
 
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(L10n.tr("commonMilliliterFormat", summary.totalML))
-                    .font(.subheadline.weight(.semibold))
-
-                Text(L10n.tr("drinkWaterGlassCountFormat", summary.glassCount))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+            VStack(spacing: 8) {
+                ForEach(summary.events.reversed()) { event in
+                    HydrationRecordEventRow(
+                        event: event,
+                        onDelete: {
+                            onDeleteEvent(event)
+                        }
+                    )
+                }
             }
         }
         .padding(12)
@@ -476,6 +497,60 @@ private struct HydrationRecordDaySummaryRow: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .systemBackground))
         )
+    }
+}
+
+private struct HydrationRecordEventRow: View {
+    let event: HydrationEvent
+    let onDelete: () -> Void
+
+    private var timeText: String {
+        event.consumedAt.formatted(.dateTime.hour().minute())
+    }
+
+    private var sourceText: String {
+        event.isOwnedByCurrentApp ?
+            L10n.tr("historyRecordOwnedSourceTitle") :
+            L10n.tr("historyRecordExternalSourceTitle")
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: event.isOwnedByCurrentApp ? "drop.fill" : "heart.text.square")
+                .font(.caption.weight(.semibold))
+                .foregroundColor(event.isOwnedByCurrentApp ? .accentColor : .secondary)
+                .frame(width: 24, height: 24)
+                .background(
+                    Circle()
+                        .fill(Color.accentColor.opacity(event.isOwnedByCurrentApp ? 0.12 : 0.06))
+                )
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(timeText)
+                    .font(.caption.weight(.semibold))
+
+                Text(sourceText)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            Text(L10n.tr("commonMilliliterFormat", event.volumeML))
+                .font(.caption.weight(.semibold))
+
+            if event.isOwnedByCurrentApp {
+                Button(role: .destructive, action: onDelete) {
+                    Text(L10n.tr("commonDeleteTitle"))
+                        .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+            } else {
+                Text(L10n.tr("historyRecordDeleteUnavailableTitle"))
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(.secondary)
+            }
+        }
     }
 }
 

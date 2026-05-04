@@ -48,6 +48,10 @@ let project = Project(
                     path: .relativeToRoot("Project/Shared/DependencyInjection")
                 ),
                 .project(
+                    target: "DomainLayerInterface",
+                    path: .relativeToRoot("Project/Domain")
+                ),
+                .project(
                     target: "Localization",
                     path: .relativeToRoot("Project/Shared/Localization")
                 ),

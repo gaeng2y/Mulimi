@@ -20,6 +20,7 @@ Docs/skills        -> 구현 전 체크리스트
 Docs/exec-plans    -> 실행 계획과 기술 부채
 Docs/quality-gates.md -> 변경 유형별 검증 기준
 Docs/documentation-maintenance.md -> 문서 유지보수 규칙
+Docs/delivery-workflow.md -> 이슈, 브랜치, PR 전달 흐름
 Docs/*.md          -> 도메인/설계 배경 문서
 ```
 
@@ -30,9 +31,10 @@ Docs/*.md          -> 도메인/설계 배경 문서
 3. `ARCHITECTURE.md`
 4. `Docs/index.md`
 5. 작업 대상 이슈
-6. 관련 `Docs/product-specs/`
-7. 관련 `Docs/skills/`
-8. 실제 코드와 `Project.swift`
+6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
+7. 관련 `Docs/product-specs/`
+8. 관련 `Docs/skills/`
+9. 실제 코드와 `Project.swift`
 
 ## Document Roles
 
@@ -78,11 +80,17 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 문서별 SSOT와 갱신 조건
 - 새 문서를 만들지 기존 문서를 갱신할지 판단하는 기준
 
+### `Docs/delivery-workflow.md`
+- 이슈를 브랜치, 커밋, PR로 전달하는 기준
+- 기능 PR과 릴리스 PR의 base/head 분리 규칙
+- PR 템플릿 작성과 검증 결과 보고 기준
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
 - 구조 규칙 변경: `ARCHITECTURE.md`와 관련 `Docs/skills/` 갱신
 - 검증 기준 변경: `Docs/quality-gates.md`와 관련 `Docs/skills/` 갱신
+- 이슈/PR 운영 기준 변경: `Docs/delivery-workflow.md`와 필요한 템플릿 갱신
 - 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록

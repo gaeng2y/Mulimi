@@ -6,12 +6,16 @@
 //
 
 import DependencyInjection
+import FirebaseCore
 import PresentationLayer
 import SwiftUI
 
 @main
 struct DrinkWaterApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    init() {
+        FirebaseApp.configure()
+        DIContainer.shared.registerAnalyticsRepository(FirebaseAnalyticsRepository())
+    }
 
     var body: some Scene {
         WindowGroup {

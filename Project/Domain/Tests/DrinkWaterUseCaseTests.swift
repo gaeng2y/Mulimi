@@ -60,6 +60,18 @@ struct DrinkWaterUseCaseTests {
         #expect(mockRepository.drinkWaterCallCount == 1)
     }
 
+    @Test("물 마시기는 지정한 ml 단위를 Repository에 전달한다")
+    func drinkWaterWithCustomVolume() async {
+        let mockRepository = MockDrinkWaterRepository()
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        await useCase.drinkWater(volumeML: HydrationServing.tumblerML)
+
+        #expect(mockRepository.drinkWaterCallCount == 1)
+        #expect(mockRepository.recordedVolumesML == [HydrationServing.tumblerML])
+        #expect(await useCase.currentWaterIntakeML == Double(HydrationServing.tumblerML))
+    }
+
     @Test("물 마시기 기능을 여러 번 호출할 때")
     func drinkWaterMultipleTimes() async {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
@@ -201,6 +213,22 @@ struct DrinkWaterUseCaseTests {
 
         #expect(mockRepository.hydrationEventsInIntervalCallCount == 1)
         #expect(actual == expected)
+    }
+
+    @Test("HydrationEvent 삭제는 Repository 호출 결과를 그대로 반환한다")
+    func deleteHydrationEvent() async {
+        let mockRepository = MockDrinkWaterRepository()
+        let eventID = UUID()
+        let event = HydrationEvent(id: eventID, consumedAt: .now, volumeML: 250)
+        mockRepository.setHydrationEvents([event])
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let didDelete = await useCase.deleteHydrationEvent(id: eventID)
+
+        #expect(didDelete)
+        #expect(mockRepository.deleteHydrationEventCallCount == 1)
+        #expect(mockRepository.deletedHydrationEventIDs == [eventID])
+        #expect(await useCase.currentWaterIntakeML == 0)
     }
 
     @Test("Legacy 마이그레이션 요청은 Repository에 위임된다")

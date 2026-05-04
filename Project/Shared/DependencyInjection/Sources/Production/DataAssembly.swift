@@ -37,6 +37,11 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        // MARK: - Analytics
+        container.register(AnalyticsRepository.self) { _ in
+            NoOpAnalyticsRepository()
+        }
+
         // MARK: - UserPreferences
         container.register(UserPreferencesDataSource.self) { resolver in
             UserPreferencesDataSourceImpl(userDefaults: .appGroup)

@@ -115,8 +115,8 @@ public struct WatchRootView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(viewModel.snapshot.isGoalReached ? .gray : accentColor)
-                .disabled(viewModel.isMutating || viewModel.snapshot.isGoalReached)
+                .tint(viewModel.canDrinkWater ? accentColor : .gray)
+                .disabled(viewModel.isMutating || !viewModel.canDrinkWater)
 
                 Button(role: .destructive) {
                     Task {

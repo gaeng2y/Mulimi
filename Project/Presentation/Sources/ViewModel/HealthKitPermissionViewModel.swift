@@ -19,9 +19,17 @@ public final class HealthKitPermissionViewModel {
     public var errorMessage: String?
 
     private let healthKitUseCase: HealthKitUseCase
+    private let analyticsUseCase: AnalyticsUseCase
+    private var didTrackGateViewed = false
+    private var didTrackAuthorized = false
+    private var didTrackDenied = false
 
-    public init(healthKitUseCase: HealthKitUseCase) {
+    public init(
+        healthKitUseCase: HealthKitUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase()
+    ) {
         self.healthKitUseCase = healthKitUseCase
+        self.analyticsUseCase = analyticsUseCase
         let status = healthKitUseCase.authorisationStatus
         self.authorizationStatus = status
         self.isAuthorized = status == .sharingAuthorized
@@ -29,6 +37,15 @@ public final class HealthKitPermissionViewModel {
 
     public func prepareIfNeeded() async {
         refreshStatus()
+
+        if !isAuthorized && !didTrackGateViewed {
+            analyticsUseCase.track(
+                .healthKitPermissionGateViewed(status: authorizationStatus)
+            )
+            didTrackGateViewed = true
+        }
+
+        trackPermissionOutcomeIfNeeded(source: "healthkit_permission_gate")
 
         guard !isAuthorized else {
             errorMessage = nil
@@ -48,6 +65,9 @@ public final class HealthKitPermissionViewModel {
     public func requestAuthorization() async {
         isLoading = true
         errorMessage = nil
+        analyticsUseCase.track(
+            .healthKitPermissionRequestTapped(status: authorizationStatus)
+        )
 
         do {
             try await healthKitUseCase.requestAuthorization()
@@ -65,7 +85,22 @@ public final class HealthKitPermissionViewModel {
             errorMessage = defaultErrorMessage
         }
 
+        trackPermissionOutcomeIfNeeded(source: "healthkit_permission_gate")
         isLoading = false
+    }
+
+    public func trackSettingsTapped() {
+        analyticsUseCase.track(
+            .healthKitPermissionSettingsTapped(status: authorizationStatus)
+        )
+    }
+
+    public func refreshStatusFromSettings() {
+        analyticsUseCase.track(
+            .healthKitPermissionRefreshTapped(status: authorizationStatus)
+        )
+        refreshStatus()
+        trackPermissionOutcomeIfNeeded(source: "healthkit_permission_gate")
     }
 
     public func markSignedOut() {
@@ -79,5 +114,34 @@ public final class HealthKitPermissionViewModel {
 
     private var defaultErrorMessage: String {
         L10n.tr("healthKitPermissionRequestFailureDescription")
+    }
+
+    private func trackPermissionOutcomeIfNeeded(source: String) {
+        switch authorizationStatus {
+        case .sharingAuthorized:
+            guard !didTrackAuthorized else {
+                return
+            }
+            analyticsUseCase.track(
+                .healthKitPermissionAuthorized(
+                    source: source,
+                    status: authorizationStatus
+                )
+            )
+            didTrackAuthorized = true
+        case .sharingDenied:
+            guard !didTrackDenied else {
+                return
+            }
+            analyticsUseCase.track(
+                .healthKitPermissionDenied(
+                    source: source,
+                    status: authorizationStatus
+                )
+            )
+            didTrackDenied = true
+        case .notDetermined:
+            return
+        }
     }
 }

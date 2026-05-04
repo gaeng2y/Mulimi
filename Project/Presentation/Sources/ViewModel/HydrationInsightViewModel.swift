@@ -45,6 +45,22 @@ struct RoutineAdherenceDisplayRow: Identifiable, Equatable {
     let status: HydrationRoutineAdherenceStatus
 }
 
+enum RoutineRecoveryReminderAction: Equatable {
+    case manageRoutine(RoutineActionIntent)
+    case requestNotificationAuthorization(RoutineActionIntent)
+    case openSettings
+}
+
+struct RoutineRecoveryCardModel: Equatable {
+    let badgeText: String
+    let title: String
+    let description: String
+    let recordActionTitle: String
+    let reminderActionTitle: String
+    let reminderAction: RoutineRecoveryReminderAction
+    let canRecordNow: Bool
+}
+
 enum HydrationWeeklyReportTimeSlot: CaseIterable, Equatable {
     case morning
     case afternoon
@@ -71,12 +87,28 @@ struct HydrationWeeklyReportMetric: Identifiable, Equatable {
     let detail: String
 }
 
+enum HydrationWeeklyCoachingAction: Equatable {
+    case routine(RoutineRecoveryReminderAction)
+    case dailyGoal
+    case none
+}
+
+struct HydrationWeeklyCoachingCardModel: Identifiable, Equatable {
+    let id: String
+    let badgeText: String
+    let title: String
+    let description: String
+    let actionTitle: String?
+    let action: HydrationWeeklyCoachingAction
+}
+
 @MainActor
 @Observable
 public final class HydrationInsightViewModel {
     public private(set) var isLoading: Bool = false
     public private(set) var isEmpty: Bool = false
     public private(set) var dailyGoalML: Double = 0
+    public private(set) var todayIntakeML: Double = 0
     public private(set) var weeklyAverageML: Double = 0
     public private(set) var monthlyAverageML: Double = 0
     public private(set) var weeklyElapsedDays: Int = 0
@@ -86,10 +118,13 @@ public final class HydrationInsightViewModel {
     private(set) var weekdayDistributions: [HydrationInsightWeekdayDistribution] = []
     private(set) var routineAdherenceInsight: HydrationRoutineAdherenceInsight?
     private(set) var weeklyReport: HydrationWeeklyReport?
+    private(set) var notificationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
 
     private let waterUseCase: DrinkWaterUseCase
     private let progressUseCase: HydrationProgressUseCase
     private let routineAdherenceUseCase: HydrationRoutineAdherenceUseCase
+    private let routineUseCase: RoutineUseCase
+    private let analyticsUseCase: AnalyticsUseCase
     private let calendar: Calendar
     private let currentDateProvider: @Sendable () -> Date
 
@@ -97,12 +132,16 @@ public final class HydrationInsightViewModel {
         waterUseCase: DrinkWaterUseCase,
         progressUseCase: HydrationProgressUseCase,
         routineAdherenceUseCase: HydrationRoutineAdherenceUseCase,
+        routineUseCase: RoutineUseCase,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
         calendar: Calendar = .autoupdatingCurrent,
         currentDateProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.waterUseCase = waterUseCase
         self.progressUseCase = progressUseCase
         self.routineAdherenceUseCase = routineAdherenceUseCase
+        self.routineUseCase = routineUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.calendar = calendar
         self.currentDateProvider = currentDateProvider
     }
@@ -292,6 +331,72 @@ public final class HydrationInsightViewModel {
         ]
     }
 
+    var routineRecoveryCard: RoutineRecoveryCardModel? {
+        if let missedRoutine = weakestMissedRoutine {
+            return RoutineRecoveryCardModel(
+                badgeText: L10n.tr("insightRoutineRecoveryMissedRoutineBadge"),
+                title: L10n.tr("insightRoutineRecoveryMissedRoutineTitleFormat", missedRoutine.timeText),
+                description: L10n.tr(
+                    "insightRoutineRecoveryMissedRoutineDescriptionFormat",
+                    missedRoutine.title,
+                    missedRoutine.missedCount
+                ),
+                recordActionTitle: L10n.tr("insightRoutineRecoveryRecordNowTitle"),
+                reminderActionTitle: reminderActionTitle(
+                    authorizedTitle: L10n.tr("insightRoutineRecoveryEditRoutineTitle")
+                ),
+                reminderAction: reminderAction(for: .edit(missedRoutine.uuid)),
+                canRecordNow: canRecordRecoveryDrink
+            )
+        }
+
+        guard let weeklyReport,
+              weeklyReport.hasCurrentWeekRecords,
+              let emptySlot = weeklyReport.frequentlyEmptySlot else {
+            return nil
+        }
+
+        return RoutineRecoveryCardModel(
+            badgeText: L10n.tr("insightRoutineRecoveryEmptySlotBadge"),
+            title: L10n.tr("insightRoutineRecoveryEmptySlotTitleFormat", slotText(for: emptySlot)),
+            description: L10n.tr(
+                "insightRoutineRecoveryEmptySlotDescriptionFormat",
+                weeklyReport.frequentlyEmptySlotMissingDays
+            ),
+            recordActionTitle: L10n.tr("insightRoutineRecoveryRecordNowTitle"),
+            reminderActionTitle: reminderActionTitle(
+                authorizedTitle: L10n.tr("insightRoutineRecoveryCreateRoutineTitle")
+            ),
+            reminderAction: reminderAction(for: .create),
+            canRecordNow: canRecordRecoveryDrink
+        )
+    }
+
+    var weeklyCoachingCards: [HydrationWeeklyCoachingCardModel] {
+        guard let weeklyReport else {
+            return []
+        }
+
+        var cards: [HydrationWeeklyCoachingCardModel] = []
+
+        if let missedRoutine = weakestMissedRoutine {
+            cards.append(missedRoutineCoachingCard(missedRoutine))
+        } else if weeklyReport.hasCurrentWeekRecords,
+                  let emptySlot = weeklyReport.frequentlyEmptySlot {
+            cards.append(emptySlotCoachingCard(slot: emptySlot, report: weeklyReport))
+        }
+
+        if let goalCard = goalCoachingCard(for: weeklyReport) {
+            cards.append(goalCard)
+        }
+
+        if cards.isEmpty {
+            cards.append(neutralCoachingCard(for: weeklyReport))
+        }
+
+        return cards
+    }
+
     var chartUpperBound: Double {
         let highestAverage = weekdayDistributions.map(\.averageIntakeML).max() ?? 0
         return max(dailyGoalML, highestAverage) * 1.2
@@ -323,27 +428,32 @@ public final class HydrationInsightViewModel {
             referenceDate: referenceDate,
             calendar: calendar
         )
+        async let currentNotificationStatus = routineUseCase.notificationAuthorizationStatus()
 
         let (
             snapshot,
             resolvedCurrentWeekEvents,
             resolvedPreviousWeekEvents,
             resolvedMonthlyEvents,
-            resolvedRoutineAdherence
+            resolvedRoutineAdherence,
+            resolvedNotificationStatus
         ) = await (
             progressSnapshot,
             currentWeekEvents,
             previousWeekEvents,
             monthlyEvents,
-            routineAdherence
+            routineAdherence,
+            currentNotificationStatus
         )
         dailyGoalML = snapshot.dailyGoalML
+        todayIntakeML = snapshot.todayIntakeML
         weeklyAverageML = snapshot.weeklyAverageML
         monthlyAverageML = snapshot.monthlyAverageML
         weeklyElapsedDays = snapshot.weeklyElapsedDays
         monthlyElapsedDays = snapshot.monthlyElapsedDays
         isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
         routineAdherenceInsight = resolvedRoutineAdherence
+        notificationStatus = resolvedNotificationStatus
         weeklyReport = makeWeeklyReport(
             snapshot: snapshot,
             currentWeekEvents: resolvedCurrentWeekEvents,
@@ -373,6 +483,7 @@ public final class HydrationInsightViewModel {
     private func resetInsightState() {
         isEmpty = true
         dailyGoalML = 0
+        todayIntakeML = 0
         weeklyAverageML = 0
         monthlyAverageML = 0
         weeklyElapsedDays = 0
@@ -382,6 +493,64 @@ public final class HydrationInsightViewModel {
         weekdayDistributions = []
         routineAdherenceInsight = nil
         weeklyReport = nil
+    }
+
+    @discardableResult
+    func recordRecoveryDrink() async -> Bool {
+        guard canRecordRecoveryDrink else {
+            return false
+        }
+
+        await waterUseCase.drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_recovery",
+                context: "routine_recovery",
+                action: "record_now"
+            )
+        )
+        analyticsUseCase.track(
+            .waterLogged(
+                source: "insight_recovery",
+                servingType: "default_glass",
+                volumeML: HydrationServing.defaultGlassVolumeML,
+                dailyGoalML: Int(dailyGoalML.rounded())
+            )
+        )
+        await loadInsights()
+        return true
+    }
+
+    func requestRecoveryNotificationAuthorization(
+        then actionIntent: RoutineActionIntent
+    ) async -> RoutineActionIntent? {
+        do {
+            notificationStatus = try await routineUseCase.requestNotificationAuthorization()
+            return notificationStatus == .authorized ? actionIntent : nil
+        } catch {
+            notificationStatus = await routineUseCase.notificationAuthorizationStatus()
+            return nil
+        }
+    }
+
+    func trackRecoveryReminderAction(_ action: RoutineRecoveryReminderAction) {
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_recovery",
+                context: "routine_recovery",
+                action: analyticsAction(for: action)
+            )
+        )
+    }
+
+    func trackWeeklyCoachingAction(_ action: HydrationWeeklyCoachingAction) {
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_weekly_coaching",
+                context: "weekly_coaching",
+                action: analyticsAction(for: action)
+            )
+        )
     }
 
     private func elapsedInterval(from interval: DateInterval, upTo referenceDate: Date) -> DateInterval {
@@ -655,6 +824,114 @@ public final class HydrationInsightViewModel {
         )
     }
 
+    private func missedRoutineCoachingCard(
+        _ missedRoutine: RoutineRecoveryMissedRoutine
+    ) -> HydrationWeeklyCoachingCardModel {
+        HydrationWeeklyCoachingCardModel(
+            id: "missedRoutine-\(missedRoutine.uuid.uuidString)",
+            badgeText: L10n.tr("insightWeeklyCoachingRoutineBadge"),
+            title: L10n.tr(
+                "insightWeeklyCoachingMissedRoutineTitleFormat",
+                missedRoutine.timeText
+            ),
+            description: L10n.tr(
+                "insightWeeklyCoachingMissedRoutineDescriptionFormat",
+                missedRoutine.title,
+                missedRoutine.missedCount
+            ),
+            actionTitle: reminderActionTitle(
+                authorizedTitle: L10n.tr("insightWeeklyCoachingEditRoutineActionTitle")
+            ),
+            action: .routine(reminderAction(for: .edit(missedRoutine.uuid)))
+        )
+    }
+
+    private func emptySlotCoachingCard(
+        slot: HydrationWeeklyReportTimeSlot,
+        report: HydrationWeeklyReport
+    ) -> HydrationWeeklyCoachingCardModel {
+        HydrationWeeklyCoachingCardModel(
+            id: "emptySlot-\(slot)",
+            badgeText: L10n.tr("insightWeeklyCoachingRoutineBadge"),
+            title: L10n.tr(
+                "insightWeeklyCoachingEmptySlotTitleFormat",
+                slotText(for: slot)
+            ),
+            description: L10n.tr(
+                "insightWeeklyCoachingEmptySlotDescriptionFormat",
+                report.frequentlyEmptySlotMissingDays,
+                report.elapsedDays
+            ),
+            actionTitle: reminderActionTitle(
+                authorizedTitle: L10n.tr("insightWeeklyCoachingCreateRoutineActionTitle")
+            ),
+            action: .routine(reminderAction(for: .create))
+        )
+    }
+
+    private func goalCoachingCard(for report: HydrationWeeklyReport) -> HydrationWeeklyCoachingCardModel? {
+        guard report.hasCurrentWeekRecords,
+              dailyGoalML > 0,
+              report.elapsedDays >= 3 else {
+            return nil
+        }
+
+        let averageRatio = report.averageML / dailyGoalML
+        let achievementRate = Double(report.achievedDays) / Double(report.elapsedDays)
+
+        if achievementRate == 0, averageRatio < 0.7 {
+            return HydrationWeeklyCoachingCardModel(
+                id: "goal-low",
+                badgeText: L10n.tr("insightWeeklyCoachingGoalBadge"),
+                title: L10n.tr("insightWeeklyCoachingGoalLowTitle"),
+                description: L10n.tr(
+                    "insightWeeklyCoachingGoalLowDescriptionFormat",
+                    volumeText(dailyGoalML - report.averageML)
+                ),
+                actionTitle: L10n.tr("insightWeeklyCoachingGoalActionTitle"),
+                action: .dailyGoal
+            )
+        }
+
+        if achievementRate >= 0.8, averageRatio > 1.15 {
+            return HydrationWeeklyCoachingCardModel(
+                id: "goal-high",
+                badgeText: L10n.tr("insightWeeklyCoachingGoalBadge"),
+                title: L10n.tr("insightWeeklyCoachingGoalHighTitle"),
+                description: L10n.tr(
+                    "insightWeeklyCoachingGoalHighDescriptionFormat",
+                    volumeText(report.averageML - dailyGoalML)
+                ),
+                actionTitle: L10n.tr("insightWeeklyCoachingGoalActionTitle"),
+                action: .dailyGoal
+            )
+        }
+
+        return nil
+    }
+
+    private func neutralCoachingCard(for report: HydrationWeeklyReport) -> HydrationWeeklyCoachingCardModel {
+        if report.hasCurrentWeekRecords {
+            return HydrationWeeklyCoachingCardModel(
+                id: "neutral",
+                badgeText: L10n.tr("insightWeeklyCoachingNeutralBadge"),
+                title: L10n.tr("insightWeeklyCoachingNeutralTitle"),
+                description: L10n.tr("insightWeeklyCoachingNeutralDescription"),
+                actionTitle: nil,
+                action: .none
+            )
+        }
+
+        return HydrationWeeklyCoachingCardModel(
+            id: "start",
+            badgeText: L10n.tr("insightWeeklyCoachingNeutralBadge"),
+            title: L10n.tr("insightWeeklyCoachingStartTitle"),
+            description: L10n.tr("insightWeeklyCoachingStartDescription"),
+            actionTitle: nil,
+            action: .none
+        )
+    }
+
     private func timeText(hour: Int, minute: Int) -> String {
         var formatterCalendar = calendar
         formatterCalendar.locale = calendar.locale ?? Locale.autoupdatingCurrent
@@ -688,6 +965,88 @@ public final class HydrationInsightViewModel {
             return L10n.tr("insightWeeklyReportEveningSlot")
         }
     }
+
+    private var canRecordRecoveryDrink: Bool {
+        guard dailyGoalML > 0 else {
+            return true
+        }
+
+        return todayIntakeML + Double(HydrationServing.defaultGlassVolumeML) <= dailyGoalML
+    }
+
+    private var weakestMissedRoutine: RoutineRecoveryMissedRoutine? {
+        guard let routineSummary = routineAdherenceInsight?.weakestRoutine,
+              let uuid = UUID(uuidString: routineSummary.id) else {
+            return nil
+        }
+
+        return RoutineRecoveryMissedRoutine(
+            uuid: uuid,
+            title: routineSummary.title,
+            timeText: timeText(hour: routineSummary.hour, minute: routineSummary.minute),
+            missedCount: routineSummary.missedCount
+        )
+    }
+
+    private func reminderActionTitle(authorizedTitle: String) -> String {
+        switch notificationStatus {
+        case .authorized:
+            return authorizedTitle
+        case .notDetermined:
+            return L10n.tr("insightRoutineRecoveryRequestPermissionTitle")
+        case .denied:
+            return L10n.tr("insightRoutineRecoveryOpenSettingsTitle")
+        }
+    }
+
+    private func reminderAction(for actionIntent: RoutineActionIntent) -> RoutineRecoveryReminderAction {
+        switch notificationStatus {
+        case .authorized:
+            return .manageRoutine(actionIntent)
+        case .notDetermined:
+            return .requestNotificationAuthorization(actionIntent)
+        case .denied:
+            return .openSettings
+        }
+    }
+
+    private func analyticsAction(for action: RoutineRecoveryReminderAction) -> String {
+        switch action {
+        case .manageRoutine(let actionIntent):
+            return analyticsAction(for: actionIntent)
+        case .requestNotificationAuthorization:
+            return "request_notification_permission"
+        case .openSettings:
+            return "open_settings"
+        }
+    }
+
+    private func analyticsAction(for action: HydrationWeeklyCoachingAction) -> String {
+        switch action {
+        case .routine(let routineAction):
+            return analyticsAction(for: routineAction)
+        case .dailyGoal:
+            return "daily_goal"
+        case .none:
+            return "none"
+        }
+    }
+
+    private func analyticsAction(for actionIntent: RoutineActionIntent) -> String {
+        switch actionIntent {
+        case .create:
+            return "create_routine"
+        case .edit:
+            return "edit_routine"
+        }
+    }
+}
+
+private struct RoutineRecoveryMissedRoutine: Equatable {
+    let uuid: UUID
+    let title: String
+    let timeText: String
+    let missedCount: Int
 }
 
 private extension HydrationWeeklyReportTimeSlot {

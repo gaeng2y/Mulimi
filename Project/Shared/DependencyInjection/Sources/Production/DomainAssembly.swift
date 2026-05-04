@@ -11,6 +11,13 @@ import Swinject
 
 public final class DomainAssembly: Assembly {
     public func assemble(container: Container) {
+        // MARK: - Analytics
+        container.register(AnalyticsUseCase.self) { resolver in
+            AnalyticsUseCaseImpl(
+                repository: resolver.resolve(AnalyticsRepository.self)!
+            )
+        }
+
         // MARK: - DrinkWater
         container.register(DrinkWaterUseCase.self) { resolver in
             DrinkWaterUseCaseImpl(

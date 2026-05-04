@@ -70,6 +70,12 @@ struct ProfileRoutineViewModelTests {
 
         func drinkWater() async {}
 
+        func drinkWater(volumeML: Int) async {}
+
+        func deleteHydrationEvent(id: UUID) async -> Bool {
+            false
+        }
+
         func reset() async {}
     }
 

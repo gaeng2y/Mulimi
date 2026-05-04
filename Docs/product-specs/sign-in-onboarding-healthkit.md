@@ -34,6 +34,18 @@ SignIn
 - 루트 흐름 전환은 `ContentView` 기준
 - 권한 상태를 ViewModel끼리 직접 주고받지 않는다
 
+## Measurement Plan
+
+권한 전환 퍼널은 `AnalyticsUseCase` 추상화를 통해 측정한다. 이벤트 이름과 공통 파라미터는 [Analytics Events](analytics-events.md)를 기준으로 한다.
+
+- `onboarding_completed`: 온보딩 마지막 CTA를 눌러 권한 게이트로 진입
+- `healthkit_permission_gate_viewed`: HealthKit 권한 게이트 노출
+- `healthkit_permission_request_tapped`: HealthKit 권한 요청 CTA 탭
+- `healthkit_permission_authorized`: 권한 허용 후 메인 진입 가능 상태
+- `healthkit_permission_denied`: 권한 거부 또는 설정 복구 필요 상태
+- `healthkit_permission_settings_tapped`: 설정 이동 CTA 탭
+- `healthkit_permission_refresh_tapped`: 설정 복귀 후 상태 재확인 CTA 탭
+
 ## Related Code
 
 - `Project/App/Sources/ContentView.swift`

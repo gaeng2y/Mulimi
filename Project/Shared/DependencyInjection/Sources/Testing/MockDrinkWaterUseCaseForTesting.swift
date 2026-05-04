@@ -11,9 +11,12 @@ import Foundation
 public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecked Sendable {
     public var currentWaterIntakeMLValue: Double = 0
     public var drinkWaterCallCount = 0
+    public var recordedVolumesML: [Int] = []
     public var resetCallCount = 0
     public var hydrateEventsCallCount = 0
     public var migrateCallCount = 0
+    public var deleteHydrationEventCallCount = 0
+    public var deletedHydrationEventIDs: [UUID] = []
     public var events: [HydrationEvent] = []
 
     public init() {}
@@ -39,13 +42,18 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     }
 
     public func drinkWater() async {
+        await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+    }
+
+    public func drinkWater(volumeML: Int) async {
         drinkWaterCallCount += 1
-        currentWaterIntakeMLValue += HydrationServing.defaultGlassML
+        recordedVolumesML.append(volumeML)
+        currentWaterIntakeMLValue += Double(volumeML)
         events.append(
             HydrationEvent(
                 id: UUID(),
                 consumedAt: .now,
-                volumeML: Int(HydrationServing.defaultGlassML)
+                volumeML: volumeML
             )
         )
     }
@@ -53,7 +61,21 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     public func reset() async {
         resetCallCount += 1
         currentWaterIntakeMLValue = 0
+        recordedVolumesML = []
         events.removeAll()
+    }
+
+    public func deleteHydrationEvent(id: UUID) async -> Bool {
+        deleteHydrationEventCallCount += 1
+        deletedHydrationEventIDs.append(id)
+
+        guard let index = events.firstIndex(where: { $0.id == id && $0.isOwnedByCurrentApp }) else {
+            return false
+        }
+
+        let event = events.remove(at: index)
+        currentWaterIntakeMLValue = max(currentWaterIntakeMLValue - Double(event.volumeML), 0)
+        return true
     }
 
     // Testing helpers

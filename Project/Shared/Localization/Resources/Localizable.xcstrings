@@ -1376,6 +1376,127 @@
         }
       }
     },
+    "drinkWaterCustomAmountDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마신 양을 ml 단위로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountInvalidDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1ml 이상 숫자로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountOverLimitDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 목표까지 %lldml 남아 있어요. 그 이하로 입력해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 180"
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하기"
+          }
+        }
+      }
+    },
+    "drinkWaterCustomAmountTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "되돌리기"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 기록을 %@에 남겼어요. 잘못 눌렀다면 바로 취소할 수 있습니다."
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기록을 삭제하지 못했어요. HealthKit 권한 상태를 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 되돌릴 수 없어요"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금 기록했어요"
+          }
+        }
+      }
+    },
     "drinkWaterCompleteLabel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1541,6 +1662,50 @@
         }
       }
     },
+    "drinkWaterPresetBottleTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작은 병"
+          }
+        }
+      }
+    },
+    "drinkWaterPresetSectionDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 넘는 단위는 비활성화돼요."
+          }
+        }
+      }
+    },
+    "drinkWaterPresetSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 기록 단위"
+          }
+        }
+      }
+    },
+    "drinkWaterPresetTumblerTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텀블러"
+          }
+        }
+      }
+    },
     "historyAchievedDaysFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1559,6 +1724,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld회 기록 · 목표 %lld%%"
+          }
+        }
+      }
+    },
+    "historyDeleteExternalRecordDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 앱이나 건강 앱에서 만든 수분 기록은 물리미에서 삭제할 수 없습니다."
+          }
+        }
+      }
+    },
+    "historyDeleteRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 삭제하지 못했어요. HealthKit 권한 상태를 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "historyDeleteRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 삭제할 수 없어요"
           }
         }
       }
@@ -1706,6 +1904,28 @@
         }
       }
     },
+    "historyRecordDeleteUnavailableTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 불가"
+          }
+        }
+      }
+    },
+    "historyRecordExternalSourceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외부 기록"
+          }
+        }
+      }
+    },
     "historyRecordListTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1713,6 +1933,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일별 기록"
+          }
+        }
+      }
+    },
+    "historyRecordOwnedSourceTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미 기록"
           }
         }
       }
@@ -2065,6 +2296,204 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "패턴을 만들 기록이 부족해요"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingCreateRoutineActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEditRoutineActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시간 조정하기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEmptySlotDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld일 비어 있던 시간대예요. 다음 주에는 이 시간대에 알림을 만들어 흐름을 먼저 잡아보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingEmptySlotTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 %@ 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalActionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 조정하기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalHighDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 평균이 목표보다 %@ 높아요. 현재 습관에 맞게 목표량을 재검토해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalHighTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 올려도 될 흐름이에요"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalLowDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 평균이 목표보다 %@ 낮아요. 무리한 목표라면 목표량을 조정하고, 괜찮다면 루틴을 보강해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingGoalLowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표를 다시 맞춰볼까요?"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingMissedRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을 이번 주 %lld번 놓쳤어요. 다음 주에는 이 루틴 시간을 먼저 조정해 보세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingMissedRoutineTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 %@ 루틴 지키기"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 주 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뚜렷한 빈 시간대나 목표 불균형이 없어요. 다음 주에도 같은 리듬으로 기록을 이어가세요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingNeutralTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 흐름을 유지해도 좋아요"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingRoutineBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 코칭"
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingStartDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 기록이 아직 부족해요. 오늘 한 잔부터 남기면 다음 주 추천 액션을 만들 수 있어요."
+          }
+        }
+      }
+    },
+    "insightWeeklyCoachingStartTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록이 쌓이면 코칭을 보여드릴게요"
           }
         }
       }
@@ -2564,6 +2993,127 @@
         }
       }
     },
+    "insightRoutineRecoveryCreateRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 시간대 루틴 만들기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEditRoutineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 시간 조정"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 시간대"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주 %lld일은 이 시간대 기록이 비었어요. 지금 한 잔으로 흐름을 복구하고 새 루틴을 준비해 보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryEmptySlotTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 공백 메우기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복구 액션"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을 이번 주 %lld번 놓쳤어요. 지금 한 잔을 기록하고 알림 시간을 조정해 보세요."
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryMissedRoutineTitleFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 루틴 복구"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 설정 열기"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryRecordNowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 한 잔 기록"
+          }
+        }
+      }
+    },
+    "insightRoutineRecoveryRequestPermissionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 켜고 조정"
+          }
+        }
+      }
+    },
     "insightStreakAchievementLabel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3015,6 +3565,17 @@
         }
       }
     },
+    "healthKitPermissionAccessSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미가 건강 앱에서 쓰는 정보"
+          }
+        }
+      }
+    },
     "healthKitPermissionAllowTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3026,13 +3587,35 @@
         }
       }
     },
+    "healthKitPermissionBodyAccessDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 키와 몸무게가 있으면 목표 수분량 추천에 활용해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionBodyAccessTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보 기반 목표 추천"
+          }
+        }
+      }
+    },
     "healthKitPermissionDeniedDescription" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 건강 권한을 허용한 뒤 다시 돌아와 주세요."
+            "value" : "한 번 거부한 권한은 앱에서 다시 요청할 수 없어요. 설정에서 수분 기록과 신체 정보 접근을 다시 켠 뒤 돌아와 주세요."
           }
         }
       }
@@ -3065,7 +3648,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "물리미는 물 섭취 기록과 신체 정보를 불러오기 위해 건강 앱 권한이 필요해요."
+            "value" : "물리미는 건강 앱에 수분 섭취를 기록하고, 키와 몸무게를 읽어 목표 추천에 활용하기 위해 권한이 필요해요."
           }
         }
       }
@@ -3081,6 +3664,28 @@
         }
       }
     },
+    "healthKitPermissionOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 권한 켜기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionPrivacyFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한은 Apple 건강 앱에서 관리되며, 원하지 않으면 언제든 설정에서 끌 수 있어요."
+          }
+        }
+      }
+    },
     "healthKitPermissionRefreshTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3088,6 +3693,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다시 확인하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryOpenSettingsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 > 건강 > 데이터 접근 및 기기 > 물리미에서 권한을 다시 켤 수 있어요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryOpenSettingsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한 다시 켜기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryRefreshDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 변경 후 물리미로 돌아오면 자동으로 확인하고, 필요하면 다시 확인하기를 누를 수 있어요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoveryRefreshTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "돌아온 뒤 상태 확인"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRecoverySectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한을 다시 켜는 방법"
           }
         }
       }
@@ -3109,7 +3769,238 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 앱에서 건강 > 데이터 접근 및 기기 > 물리미 경로로 들어가 권한을 다시 켤 수 있어요."
+            "value" : "설정 변경 후 물리미로 돌아오면 자동으로 권한 상태를 다시 확인해요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionWaterAccessDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 마시기 버튼, 위젯, Watch 기록을 건강 앱 수분 데이터로 저장하고 오늘 섭취량을 같은 기준으로 보여줘요."
+          }
+        }
+      }
+    },
+    "healthKitPermissionWaterAccessTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수분 기록 저장 및 집계"
+          }
+        }
+      }
+    },
+    "onboardingHealthKitContinueTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한 확인하기"
+          }
+        }
+      }
+    },
+    "onboardingHealthKitPermissionFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 단계에서 건강 앱에 저장할 수분 기록과 목표 추천에 쓸 신체 정보를 안내해요."
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미는 건강 앱에 수분 기록을 저장하고, 키와 몸무게가 있으면 목표 수분량 추천에 활용합니다."
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 연동"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수분 기록은 건강 앱을 기준으로 저장"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보가 있으면 목표 추천에 활용"
+          }
+        }
+      }
+    },
+    "onboardingHealthLinkTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱과\n연결해서 시작"
+          }
+        }
+      }
+    },
+    "onboardingNextTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        }
+      }
+    },
+    "onboardingPreviousTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 마신 물을 한 번의 탭으로 기록하고, 현재 목표까지 얼마나 남았는지 바로 확인할 수 있어요."
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 기록"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 화면에서 바로 물 마시기 기록"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 섭취량과 목표 진행률을 즉시 확인"
+          }
+        }
+      }
+    },
+    "onboardingQuickRecordTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록은\n가볍고 빠르게"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록, 인사이트, 챌린지로 하루와 일주일의 수분 루틴을 한 번에 파악할 수 있어요."
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowEyebrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 흐름"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowHighlightPrimary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월별 기록과 최근 패턴을 빠르게 탐색"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowHighlightSecondary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "챌린지와 인사이트로 루틴 유지 상태 확인"
+          }
+        }
+      }
+    },
+    "onboardingRoutineFlowTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "흐름은\n한눈에 읽기"
           }
         }
       }
