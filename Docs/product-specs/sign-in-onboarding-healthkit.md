@@ -36,7 +36,7 @@ SignIn
 
 ## Measurement Plan
 
-권한 전환 퍼널은 `AnalyticsUseCase` 추상화를 통해 측정한다. 이벤트 이름과 공통 파라미터는 [Analytics Events](analytics-events.md)를 기준으로 한다.
+권한 전환 퍼널은 `AnalyticsUseCase` 추상화를 통해 측정한다. 이벤트 이름과 공통 파라미터는 [Analytics Events](analytics-events.md)를 기준으로 하고, Firebase dashboard와 QA 운영 기준은 [Analytics Operations](analytics-operations.md)를 따른다.
 
 - `onboarding_completed`: 온보딩 마지막 CTA를 눌러 권한 게이트로 진입
 - `healthkit_permission_gate_viewed`: HealthKit 권한 게이트 노출
