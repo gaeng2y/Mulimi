@@ -8,7 +8,7 @@
 
 - ViewModel은 Firebase SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- Firebase SDK 직접 의존은 Data 구현과 앱 초기화 계층으로 제한한다.
+- Firebase SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
 - 이벤트 이름은 `snake_case`를 사용하고 40자 이하로 유지한다.
 - 파라미터 이름도 `snake_case`를 사용하고 값은 문자열, 정수, 실수, 불리언만 보낸다.
 - 개인정보, 건강 원본 값 전체, 자유 입력 텍스트는 이벤트 파라미터로 보내지 않는다.
@@ -86,6 +86,7 @@
 ## Validation
 
 - 이벤트 추가 또는 이름 변경 시 이 문서를 먼저 갱신한다.
+- Firebase 퍼널, 대시보드, DebugView QA 기준은 [Analytics Operations](analytics-operations.md)를 따른다.
 - 코드 변경 후 `make lint`와 `make arch-check`를 통과시킨다.
 - ViewModel 단위 테스트에서는 Firebase 대신 Analytics mock으로 이벤트 호출을 확인한다.
 
@@ -97,3 +98,7 @@
 - `Project/App/Sources/Analytics/FirebaseAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
+
+## Related Docs
+
+- `Docs/product-specs/analytics-operations.md`
