@@ -44,4 +44,5 @@
 ## Related Docs
 
 - `ARCHITECTURE.md`
+- `Docs/reliability-recovery.md`
 - `Docs/skills/widget-watch-integration.md`
