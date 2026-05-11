@@ -56,5 +56,6 @@
 ## Related Docs
 
 - `ARCHITECTURE.md`
+- `Docs/reliability-recovery.md`
 - `Docs/skills/healthkit-flow.md`
 - `Docs/skills/widget-watch-integration.md`

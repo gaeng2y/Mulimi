@@ -36,3 +36,7 @@ xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -destination 'gene
 ```
 
 범위가 watch면 watch 빌드도 추가한다.
+
+## Related Docs
+
+- `Docs/reliability-recovery.md`
