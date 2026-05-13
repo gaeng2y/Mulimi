@@ -70,7 +70,10 @@ let project = Project(
             bundleId: "\(bundleId).WidgetExtension",
             deploymentTargets: .iOS("26.0"),
             infoPlist: .file(path: .relativeToRoot("Project/Widget/Resources/Info.plist")),
-            sources: .paths([.relativeToRoot("Project/Widget/Sources/**")]),
+            sources: .paths([
+                .relativeToRoot("Project/Widget/Sources/**"),
+                .relativeToCurrentFile("Sources/AppIntents/LogWaterAppIntent.swift")
+            ]),
             resources: .resources([.glob(pattern: .relativeToRoot("Project/Widget/Resources/Assets.xcassets"))]),
             entitlements: .file(
                 path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")

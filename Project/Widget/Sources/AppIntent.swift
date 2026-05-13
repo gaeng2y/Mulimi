@@ -6,9 +6,6 @@
 //
 
 import AppIntents
-import DependencyInjection
-import DomainLayerInterface
-import WidgetKit
 
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = "물 마시기"
@@ -16,28 +13,5 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent {
 
     public func perform() async throws -> some IntentResult {
         .result()
-    }
-}
-
-struct LogWaterAppIntent: AppIntent {
-    static let title: LocalizedStringResource = "물 마시기"
-    static let description = IntentDescription("기본 물 섭취량을 기록합니다.")
-    static let openAppWhenRun = false
-
-    public func perform() async throws -> some IntentResult {
-        let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
-        let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-        let currentMl = await waterUseCase.currentWaterIntakeML
-
-        let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
-
-        let defaultVolumeML = HydrationServing.defaultGlassVolumeML
-        let nextMl = currentMl + Double(defaultVolumeML)
-        if nextMl <= dailyLimit {
-            await waterUseCase.drinkWater(volumeML: defaultVolumeML)
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
-        return .result()
     }
 }
