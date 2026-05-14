@@ -30,9 +30,20 @@
 | 앱 직접 입력 | 사용자가 입력한 ml | `recordCustomAmount(_:)` | 유효성 검사 후 1회 기록한다. 사용자 기본값으로 저장하지 않는다. |
 | Widget/AppIntent | `HydrationServing.defaultGlassVolumeML` = 250ml | `LogWaterAppIntent.perform()` | 목표 초과 시 HealthKit에 쓰지 않고 timeline reload를 요청한다. |
 | Watch | `HydrationServing.defaultGlassVolumeML` = 250ml | `WatchHydrationUseCaseImpl.defaultDrinkVolumeML` | Watch 전용 단위 규칙을 만들지 않는다. |
-| Siri/Shortcuts | `HydrationServing.defaultGlassVolumeML` = 250ml | 현재 `LogWaterAppIntent` 기준 | #67에서 App Shortcuts 노출과 결과 메시지를 별도 추적한다. |
+| Siri/Shortcuts | `HydrationServing.defaultGlassVolumeML` = 250ml | `LogWaterAppIntent`, `LogWaterAppShortcuts` | App Shortcut phrase로 노출하고, 성공/목표 초과/권한 필요 결과 메시지를 반환한다. |
 
 기본 기록량 개인화가 필요하면 #203 범위를 기능 이슈로 복원하고, App Group에서 앱/Widget/AppIntent/Watch가 함께 읽을 수 있는 사용자 설정으로 설계한다.
+
+## Siri And Shortcuts Policy
+
+- Shortcuts, Siri, Spotlight에는 `LogWaterAppShortcuts`로 기본 물 기록 App Shortcut을 노출한다.
+- Shortcut phrase는 앱 이름 토큰을 포함해 물 기록 의도가 드러나야 한다.
+- 실행 결과는 아래처럼 안내한다.
+  - 성공: 기본 1잔이 HealthKit에 기록됐음을 알린다.
+  - 목표 초과: 오늘 목표를 넘어서 기록하지 않았음을 알린다.
+  - HealthKit 권한 필요: 앱을 foreground로 전환해 권한 흐름을 확인하게 한다.
+- 기록 성공 시 Widget timeline을 갱신한다.
+- Shortcuts에서 선택 가능한 수분량 파라미터는 아직 제공하지 않는다. 기본 기록량 개인화 또는 선택형 수분량은 #203 범위에서 확장한다.
 
 ## User Expectations
 
