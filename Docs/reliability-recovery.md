@@ -57,7 +57,7 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 
 - HealthKit 권한 게이트는 거부 상태에서 설정 이동과 상태 새로고침을 제공한다.
 - 메인 수분 기록, 기록 삭제, 목표/아이콘 변경 후 Widget timeline reload를 호출한다.
-- AppIntent와 Watch는 기본 1잔 기록 전에 목표 초과를 차단한다.
+- AppIntent는 선택된 기록량, Watch는 기본 1잔 기준으로 목표 초과를 차단한다.
 - Watch 목표량은 KVS를 먼저 보고 App Group mirror를 보정한다.
 - 루틴 알림은 권한 상태에 따라 권한 요청, 설정 이동, 알림 없이 저장으로 분기한다.
 
