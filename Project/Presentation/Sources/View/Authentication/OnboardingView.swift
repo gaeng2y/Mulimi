@@ -9,6 +9,8 @@ import Localization
 import SwiftUI
 
 public struct OnboardingView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Bindable private var viewModel: OnboardingViewModel
 
     public init(viewModel: OnboardingViewModel) {
@@ -48,6 +50,13 @@ public struct OnboardingView: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.white.opacity(0.9))
                 }
+                .accessibilityLabel(
+                    L10n.tr(
+                        "onboardingPageProgressAccessibilityLabelFormat",
+                        viewModel.currentPage + 1,
+                        viewModel.pageCount
+                    )
+                )
 
             Spacer()
         }
@@ -136,45 +145,80 @@ public struct OnboardingView: View {
                     .padding(.horizontal, 24)
             }
 
-            HStack(spacing: 12) {
-                if viewModel.canGoBack {
-                    Button {
-                        withAnimation(.spring(response: 0.32, dampingFraction: 0.88)) {
-                            viewModel.goToPreviousPage()
-                        }
-                    } label: {
-                        Text(L10n.tr("onboardingPreviousTitle"))
-                            .font(.headline.weight(.semibold))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 54)
-                            .foregroundStyle(.white)
-                            .background(.white.opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    }
-                }
-
-                Button {
-                    withAnimation(.spring(response: 0.32, dampingFraction: 0.9)) {
-                        viewModel.goToNextPage()
-                    }
-                } label: {
-                    Text(
-                        viewModel.isLastPage ?
-                        L10n.tr("onboardingHealthKitContinueTitle") :
-                        L10n.tr("onboardingNextTitle")
-                    )
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 54)
-                        .foregroundStyle(.black)
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 24)
+            footerActions
+                .padding(.horizontal, 24)
+                .padding(.bottom, 24)
         }
         .padding(.top, 16)
+    }
+
+    @ViewBuilder
+    private var footerActions: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 12) {
+                if viewModel.canGoBack {
+                    previousButton
+                }
+                nextButton
+            }
+        } else {
+            HStack(spacing: 12) {
+                if viewModel.canGoBack {
+                    previousButton
+                }
+                nextButton
+            }
+        }
+    }
+
+    private var previousButton: some View {
+        Button {
+            performPageTransition(response: 0.32, dampingFraction: 0.88) {
+                viewModel.goToPreviousPage()
+            }
+        } label: {
+            Text(L10n.tr("onboardingPreviousTitle"))
+                .font(.headline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 54)
+                .foregroundStyle(.white)
+                .background(.white.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+    }
+
+    private var nextButton: some View {
+        Button {
+            performPageTransition(response: 0.32, dampingFraction: 0.9) {
+                viewModel.goToNextPage()
+            }
+        } label: {
+            Text(
+                viewModel.isLastPage ?
+                L10n.tr("onboardingHealthKitContinueTitle") :
+                L10n.tr("onboardingNextTitle")
+            )
+                .font(.headline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 54)
+                .foregroundStyle(.black)
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
+    }
+
+    private func performPageTransition(
+        response: Double,
+        dampingFraction: Double,
+        action: () -> Void
+    ) {
+        if reduceMotion {
+            action()
+        } else {
+            withAnimation(.spring(response: response, dampingFraction: dampingFraction)) {
+                action()
+            }
+        }
     }
 
     private var backgroundGradient: some View {
