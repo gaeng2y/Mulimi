@@ -16,7 +16,8 @@ struct LogWaterAppShortcuts: AppShortcutsProvider {
                 "\(.applicationName)에서 물 기록",
                 "\(.applicationName)로 물 마시기",
                 "\(.applicationName) 물 마셔",
-                "\(.applicationName) 수분 기록"
+                "\(.applicationName) 수분 기록",
+                "\(.applicationName)에서 수분량 선택"
             ],
             shortTitle: "물 기록",
             systemImageName: "drop.fill"
