@@ -21,6 +21,7 @@ Docs/exec-plans    -> 실행 계획과 기술 부채
 Docs/quality-gates.md -> 변경 유형별 검증 기준
 Docs/documentation-maintenance.md -> 문서 유지보수 규칙
 Docs/delivery-workflow.md -> 이슈, 브랜치, PR 전달 흐름
+Docs/security-privacy.md -> 보안/개인정보 운영 기준
 Docs/*.md          -> 도메인/설계 배경 문서
 ```
 
@@ -85,12 +86,17 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 기능 PR과 릴리스 PR의 base/head 분리 규칙
 - PR 템플릿 작성과 검증 결과 보고 기준
 
+### `Docs/security-privacy.md`
+- 민감 데이터 저장소, 권한, 외부 SDK, App Store privacy label 영향 검토 기준
+- 광고/IAP/서버 연동 전 확인할 개인정보 체크리스트
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
 - 구조 규칙 변경: `ARCHITECTURE.md`와 관련 `Docs/skills/` 갱신
 - 검증 기준 변경: `Docs/quality-gates.md`와 관련 `Docs/skills/` 갱신
 - 이슈/PR 운영 기준 변경: `Docs/delivery-workflow.md`와 필요한 템플릿 갱신
+- 보안/개인정보 경계 변경: `Docs/security-privacy.md` 갱신
 - 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
@@ -98,9 +104,10 @@ Docs/*.md          -> 도메인/설계 배경 문서
 
 ## What Is Intentionally Missing
 
-- `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md` 같은 대형 운영 문서는 아직 만들지 않았다.
+- `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md` 같은 루트 대형 운영 문서는 아직 만들지 않았다.
 - 이유는 현재 Mulimi 규모에서 유지비가 더 크기 때문이다.
-- 보안, 신뢰성, 디자인 운영 규칙이 실제로 복잡해질 때 별도 SSOT로 분리한다.
+- 보안/개인정보 운영 기준은 `Docs/security-privacy.md`로 분리한다.
+- 신뢰성, 디자인 운영 규칙이 실제로 복잡해질 때 별도 SSOT로 분리한다.
 
 ## Maintenance Principle
 

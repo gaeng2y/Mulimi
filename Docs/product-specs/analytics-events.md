@@ -12,6 +12,7 @@
 - 이벤트 이름은 `snake_case`를 사용하고 40자 이하로 유지한다.
 - 파라미터 이름도 `snake_case`를 사용하고 값은 문자열, 정수, 실수, 불리언만 보낸다.
 - 개인정보, 건강 원본 값 전체, 자유 입력 텍스트는 이벤트 파라미터로 보내지 않는다.
+- 금지 파라미터와 외부 SDK/privacy label 영향 검토는 `Docs/security-privacy.md`를 따른다.
 - 같은 CTA가 여러 화면에 있으면 `source` 또는 `context` 파라미터로 구분한다.
 
 ## Common Parameters
@@ -112,3 +113,4 @@
 ## Related Docs
 
 - `Docs/product-specs/analytics-operations.md`
+- `Docs/security-privacy.md`
