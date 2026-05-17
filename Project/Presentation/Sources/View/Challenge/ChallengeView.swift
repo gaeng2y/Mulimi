@@ -321,6 +321,7 @@ private struct PersonalizedChallengeCard: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(accentColor)
+            .accessibilityHint(L10n.tr("challengeRoutineActionAccessibilityHint"))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)

@@ -80,6 +80,8 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                         primaryButtonLabel
                     }
                     .disabled(viewModel.isLoading)
+                    .accessibilityLabel(primaryButtonTitle)
+                    .accessibilityHint(primaryButtonHint)
 
                     if viewModel.authorizationStatus == .sharingDenied {
                         Button {
@@ -89,11 +91,12 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
-                                .frame(height: 52)
+                                .frame(minHeight: 52)
                                 .foregroundColor(.primary)
                                 .background(Color.secondary.opacity(0.12))
                                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
+                        .accessibilityHint(L10n.tr("healthKitPermissionRefreshAccessibilityHint"))
                     }
                 }
                 .padding(.horizontal, 24)
@@ -115,6 +118,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
             Image(systemName: headerSystemImage)
                 .font(.system(size: 72))
                 .foregroundStyle(headerColor)
+                .accessibilityHidden(true)
 
             Text(titleText)
                 .font(.largeTitle)
@@ -194,7 +198,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 52)
+        .frame(minHeight: 52)
         .foregroundColor(.white)
         .background(Color.black)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -211,6 +215,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                 .font(.headline)
                 .foregroundStyle(tint)
                 .frame(width: 24)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -223,6 +228,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 
     private var primaryButtonTitle: String {
@@ -233,6 +239,17 @@ public struct HealthKitPermissionGateView<Content: View>: View {
             return L10n.tr("healthKitPermissionOpenSettingsTitle")
         case .sharingAuthorized:
             return L10n.tr("commonConfirmTitle")
+        }
+    }
+
+    private var primaryButtonHint: String {
+        switch viewModel.authorizationStatus {
+        case .notDetermined:
+            return L10n.tr("healthKitPermissionAllowAccessibilityHint")
+        case .sharingDenied:
+            return L10n.tr("healthKitPermissionOpenSettingsAccessibilityHint")
+        case .sharingAuthorized:
+            return ""
         }
     }
 

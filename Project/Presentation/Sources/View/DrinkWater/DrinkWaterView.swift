@@ -11,6 +11,8 @@ import Localization
 import SwiftUI
 
 public struct DrinkWaterView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private var viewModel: DrinkWaterViewModel
     @State private var isCustomAmountPresented = false
 
@@ -37,10 +39,7 @@ public struct DrinkWaterView: View {
                         progress: viewModel.progress,
                         offset: viewModel.offset
                     )
-                    .animation(
-                        .linear(duration: 2.0).repeatForever(autoreverses: false),
-                        value: viewModel.offset
-                    )
+                    .animation(waterDropAnimation, value: viewModel.offset)
                     .frame(
                         width: dropSize,
                         height: dropSize,
@@ -75,45 +74,14 @@ public struct DrinkWaterView: View {
                     }
                 }
                 .padding()
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(progressAccessibilityLabel)
 
                 servingPresetSection
                     .padding(.horizontal)
                     .padding(.bottom, 8)
 
-                HStack {
-                    Button {
-                        Task {
-                            await viewModel.drinkWater()
-                        }
-                    } label: {
-                        Text(
-                            viewModel.isLimitReached ?
-                            L10n.tr("drinkWaterButtonReachedTitle") :
-                            L10n.tr("drinkWaterButtonTitle")
-                        )
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .padding()
-                            .background(viewModel.isLimitReached ? Color.gray : Color.accent)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    .disabled(viewModel.isLimitReached)
-
-                    Button {
-                        Task {
-                            await viewModel.reset()
-                        }
-                    } label: {
-                        Text(L10n.tr("commonResetTitle"))
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .padding()
-                            .background(.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(10)
-                    }
-                }
+                actionButtons
 
                 if let recentRecordUndo = viewModel.recentRecordUndo {
                     recentUndoCard(recentRecordUndo)
@@ -128,6 +96,10 @@ public struct DrinkWaterView: View {
         }
         .task {
             // Start the repeating wave after the initial frame is committed.
+            guard !reduceMotion else {
+                viewModel.resetAnimation()
+                return
+            }
             viewModel.resetAnimation()
             await Task.yield()
             viewModel.startAnimation()
@@ -152,6 +124,23 @@ public struct DrinkWaterView: View {
         } message: {
             Text(viewModel.undoErrorMessage ?? "")
         }
+    }
+
+    private var waterDropAnimation: Animation? {
+        guard !reduceMotion else {
+            return nil
+        }
+
+        return .linear(duration: 2.0).repeatForever(autoreverses: false)
+    }
+
+    private var progressAccessibilityLabel: String {
+        L10n.tr(
+            "drinkWaterProgressAccessibilityLabelFormat",
+            viewModel.mililiters,
+            L10n.tr("commonMilliliterFormat", Int(viewModel.dailyLimit.rounded())),
+            Int((viewModel.progress * 100).rounded())
+        )
     }
 
     private var nextActionCard: some View {
@@ -207,6 +196,8 @@ public struct DrinkWaterView: View {
                         .clipShape(Capsule())
                 }
                 .disabled(viewModel.isLimitReached)
+                .accessibilityLabel(L10n.tr("drinkWaterCustomAmountTitle"))
+                .accessibilityHint(L10n.tr("drinkWaterCustomAmountAccessibilityHint"))
             }
 
             HStack(spacing: 10) {
@@ -220,6 +211,69 @@ public struct DrinkWaterView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(.white.opacity(0.8))
         )
+    }
+
+    @ViewBuilder
+    private var actionButtons: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 10) {
+                defaultDrinkButton
+                resetButton
+            }
+            .padding(.horizontal)
+        } else {
+            HStack {
+                defaultDrinkButton
+                resetButton
+            }
+        }
+    }
+
+    private var defaultDrinkButton: some View {
+        Button {
+            Task {
+                await viewModel.drinkWater()
+            }
+        } label: {
+            Text(
+                viewModel.isLimitReached ?
+                L10n.tr("drinkWaterButtonReachedTitle") :
+                L10n.tr("drinkWaterButtonTitle")
+            )
+                .font(.headline)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(viewModel.isLimitReached ? Color.gray : Color.accent)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
+        .disabled(viewModel.isLimitReached)
+        .accessibilityLabel(
+            L10n.tr(
+                "drinkWaterDefaultRecordAccessibilityLabelFormat",
+                L10n.tr("commonMilliliterFormat", HydrationServing.defaultGlassVolumeML)
+            )
+        )
+        .accessibilityHint(L10n.tr("drinkWaterDefaultRecordAccessibilityHint"))
+    }
+
+    private var resetButton: some View {
+        Button {
+            Task {
+                await viewModel.reset()
+            }
+        } label: {
+            Text(L10n.tr("commonResetTitle"))
+                .font(.headline)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.white)
+                .foregroundColor(.black)
+                .cornerRadius(10)
+        }
+        .accessibilityHint(L10n.tr("drinkWaterResetAccessibilityHint"))
     }
 
     private func servingPresetButton(for option: HydrationServingOptionModel) -> some View {
@@ -250,6 +304,14 @@ public struct DrinkWaterView: View {
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled)
+        .accessibilityLabel(
+            L10n.tr(
+                "drinkWaterPresetRecordAccessibilityLabelFormat",
+                option.title,
+                option.volumeText
+            )
+        )
+        .accessibilityHint(L10n.tr("drinkWaterPresetRecordAccessibilityHint"))
     }
 
     private func recentUndoCard(_ model: RecentHydrationRecordUndoModel) -> some View {
@@ -279,6 +341,8 @@ public struct DrinkWaterView: View {
                     .font(.caption.weight(.semibold))
             }
             .buttonStyle(.bordered)
+            .accessibilityLabel(model.actionTitle)
+            .accessibilityHint(L10n.tr("drinkWaterUndoRecordAccessibilityHint"))
         }
         .padding(14)
         .background(
@@ -303,6 +367,8 @@ fileprivate struct CustomHydrationAmountSheet: View {
                 TextField(L10n.tr("drinkWaterCustomAmountPlaceholder"), text: $amountText)
                     .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityLabel(L10n.tr("drinkWaterCustomAmountTitle"))
+                    .accessibilityHint(L10n.tr("drinkWaterCustomAmountAccessibilityHint"))
 
                 if let errorMessage = viewModel.customAmountErrorMessage(for: amountText) {
                     Text(errorMessage)
@@ -366,5 +432,6 @@ fileprivate struct WaterDropView: View {
                     .aspectRatio(contentMode: .fit)
             }
         }
+        .accessibilityHidden(true)
     }
 }

@@ -11,6 +11,7 @@ import Localization
 import SwiftUI
 
 struct RecordCalendarView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Bindable private var viewModel: HydrationRecordListViewModel
     @State private var selectedYear = Calendar.current.component(.year, from: .now)
     @State private var selectedMonth = Calendar.current.component(.month, from: .now)
@@ -174,7 +175,7 @@ struct RecordCalendarView: View {
                 }
             }
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+            LazyVGrid(columns: summaryMetricColumns, spacing: 8) {
                 SummaryMetricView(
                     title: L10n.tr("historySummaryAverageTitle"),
                     value: L10n.tr("commonMilliliterFormat", viewModel.periodSummary.averageML),
@@ -203,6 +204,11 @@ struct RecordCalendarView: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(Color(uiColor: .systemBackground))
         )
+    }
+
+    private var summaryMetricColumns: [GridItem] {
+        let count = dynamicTypeSize.isAccessibilitySize ? 1 : 3
+        return Array(repeating: GridItem(.flexible(), spacing: 8), count: count)
     }
 
     private var recordListSection: some View {
@@ -413,8 +419,6 @@ private struct SummaryMetricView: View {
 
             Text(value)
                 .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
 
             Text(title)
                 .font(.caption2)
@@ -426,6 +430,8 @@ private struct SummaryMetricView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(Color.accentColor.opacity(0.08))
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(L10n.tr("historySummaryMetricAccessibilityLabelFormat", title, value))
     }
 }
 
@@ -514,12 +520,17 @@ private struct HydrationRecordEventRow: View {
             L10n.tr("historyRecordExternalSourceTitle")
     }
 
+    private var volumeText: String {
+        L10n.tr("commonMilliliterFormat", event.volumeML)
+    }
+
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: event.isOwnedByCurrentApp ? "drop.fill" : "heart.text.square")
                 .font(.caption.weight(.semibold))
                 .foregroundColor(event.isOwnedByCurrentApp ? .accentColor : .secondary)
                 .frame(width: 24, height: 24)
+                .accessibilityHidden(true)
                 .background(
                     Circle()
                         .fill(Color.accentColor.opacity(event.isOwnedByCurrentApp ? 0.12 : 0.06))
@@ -533,10 +544,11 @@ private struct HydrationRecordEventRow: View {
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
+            .accessibilityElement(children: .combine)
 
             Spacer()
 
-            Text(L10n.tr("commonMilliliterFormat", event.volumeML))
+            Text(volumeText)
                 .font(.caption.weight(.semibold))
 
             if event.isOwnedByCurrentApp {
@@ -545,10 +557,25 @@ private struct HydrationRecordEventRow: View {
                         .font(.caption.weight(.semibold))
                 }
                 .buttonStyle(.bordered)
+                .accessibilityLabel(
+                    L10n.tr(
+                        "historyRecordDeleteAccessibilityLabelFormat",
+                        timeText,
+                        volumeText
+                    )
+                )
+                .accessibilityHint(L10n.tr("historyRecordDeleteAccessibilityHint"))
             } else {
                 Text(L10n.tr("historyRecordDeleteUnavailableTitle"))
                     .font(.caption2.weight(.semibold))
                     .foregroundColor(.secondary)
+                    .accessibilityLabel(
+                        L10n.tr(
+                            "historyRecordDeleteUnavailableAccessibilityLabelFormat",
+                            timeText,
+                            volumeText
+                        )
+                    )
             }
         }
     }
@@ -566,7 +593,7 @@ private struct CalendarDayView: View {
     }
 
     private var progressPercentage: Double {
-        guard let record = record else { return 0 }
+        guard let record = record, dailyGoal > 0 else { return 0 }
         return min(record.mililiter / dailyGoal, 1.0)
     }
 
@@ -590,6 +617,21 @@ private struct CalendarDayView: View {
             return Color.accentColor
         }
         return Color.clear
+    }
+
+    private var accessibilityLabel: String {
+        let dateText = day.formatted(.dateTime.year().month().day().weekday(.wide))
+
+        guard let record else {
+            return L10n.tr("recordCalendarDayEmptyAccessibilityLabelFormat", dateText)
+        }
+
+        return L10n.tr(
+            "recordCalendarDayAccessibilityLabelFormat",
+            dateText,
+            L10n.tr("commonMilliliterFormat", Int(record.mililiter.rounded())),
+            Int((progressPercentage * 100).rounded())
+        )
     }
 
     var body: some View {
@@ -635,6 +677,8 @@ private struct CalendarDayView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(borderColor, lineWidth: isToday ? 2 : 1)
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 
