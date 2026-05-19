@@ -12,6 +12,7 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 | 문서 허브 | `Docs/index.md` | 새 문서가 생기거나 읽기 경로가 바뀔 때 |
 | 하네스 구조 | `Docs/harness-engineering.md` | 문서/검증/실행계획 운영 구조가 바뀔 때 |
 | 이슈/PR 전달 흐름 | `Docs/delivery-workflow.md` | 브랜치 전략, PR 템플릿 작성, 이슈 종료 기준이 바뀔 때 |
+| 보안/개인정보 운영 | `Docs/security-privacy.md` | 권한, 민감 데이터 저장소, 외부 SDK, 광고/IAP, App Store privacy label 영향이 바뀔 때 |
 | 제품 요구 | `Docs/product-specs/` | 사용자 흐름, 화면 상태, 정책 문구가 바뀔 때 |
 | 구현 체크리스트 | `Docs/skills/` | 특정 기술 영역의 작업 절차가 바뀔 때 |
 | 검증 기준 | `Docs/quality-gates.md` | 변경 유형별 필수 검증 기준이 바뀔 때 |
