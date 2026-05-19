@@ -46,6 +46,12 @@ SignIn
 - `healthkit_permission_settings_tapped`: 설정 이동 CTA 탭
 - `healthkit_permission_refresh_tapped`: 설정 복귀 후 상태 재확인 CTA 탭
 
+## Experiment Plan
+
+온보딩/권한 게이트 카피나 CTA를 바꾸기 전에는 [Onboarding and HealthKit Conversion Experiments](onboarding-healthkit-conversion-experiments.md)를 기준으로 baseline, 성공 지표, 중단 기준을 먼저 정한다.
+
+초기 MVP는 HealthKit 권한 게이트 신뢰 카피와 권한 거부 후 설정 복구 안내를 우선 실험한다. 온보딩 전체 리디자인이나 권한 요청 시점 변경은 baseline 분석 후 별도 이슈로 분리한다.
+
 ## Related Code
 
 - `Project/App/Sources/ContentView.swift`
@@ -56,5 +62,6 @@ SignIn
 ## Related Docs
 
 - `ARCHITECTURE.md`
+- `Docs/product-specs/onboarding-healthkit-conversion-experiments.md`
 - `Docs/skills/healthkit-flow.md`
 - `Docs/skills/navigation-coordinator.md`
