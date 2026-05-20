@@ -68,15 +68,21 @@ struct ProfileRoutineViewModelTests {
 
         func migrateLegacyDataIfNeeded() async {}
 
-        func drinkWater() async {}
+        func drinkWater() async -> HydrationWriteResult {
+            .success
+        }
 
-        func drinkWater(volumeML: Int) async {}
+        func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+            .success
+        }
 
         func deleteHydrationEvent(id: UUID) async -> Bool {
             false
         }
 
-        func reset() async {}
+        func reset() async -> HydrationWriteResult {
+            .success
+        }
     }
 
     private final class SpyRoutineRecommendationUseCase: RoutineRecommendationUseCase, @unchecked Sendable {

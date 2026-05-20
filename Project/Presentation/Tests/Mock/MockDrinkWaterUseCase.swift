@@ -10,6 +10,8 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     var resetCallCount: Int = 0
     var deleteHydrationEventCallCount: Int = 0
     var deletedHydrationEventIDs: [UUID] = []
+    var drinkWaterResult: HydrationWriteResult = .success
+    var resetResult: HydrationWriteResult = .success
     var shouldDeleteHydrationEventSucceed = true
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
@@ -35,13 +37,19 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
         migrateLegacyDataIfNeededCallCount += 1
     }
 
-    func drinkWater() async {
+    @discardableResult
+    func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    func drinkWater(volumeML: Int) async {
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        guard drinkWaterResult.isSuccess else {
+            return drinkWaterResult
+        }
+
         currentWaterIntakeMLValue += Double(volumeML)
         let now = Date.now
         hydrationEventsByDay[dayKey(for: now), default: []].append(
@@ -51,12 +59,19 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
                 volumeML: volumeML
             )
         )
+        return drinkWaterResult
     }
 
-    func reset() async {
+    @discardableResult
+    func reset() async -> HydrationWriteResult {
         resetCallCount += 1
+        guard resetResult.isSuccess else {
+            return resetResult
+        }
+
         currentWaterIntakeMLValue = 0
         hydrationEventsByDay.removeAll()
+        return resetResult
     }
 
     func deleteHydrationEvent(id: UUID) async -> Bool {

@@ -11,6 +11,8 @@ import Foundation
 public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     public var currentWaterIntakeMLValue: Double = 750
     public var events: [HydrationEvent] = []
+    public var drinkWaterResult: HydrationWriteResult = .success
+    public var resetResult: HydrationWriteResult = .success
 
     public init() {}
 
@@ -30,11 +32,17 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
 
     public func migrateLegacyDataIfNeeded() async {}
 
-    public func drinkWater() async {
+    @discardableResult
+    public func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    public func drinkWater(volumeML: Int) async {
+    @discardableResult
+    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+        guard drinkWaterResult.isSuccess else {
+            return drinkWaterResult
+        }
+
         currentWaterIntakeMLValue += Double(volumeML)
         events.append(
             HydrationEvent(
@@ -43,6 +51,7 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
                 volumeML: volumeML
             )
         )
+        return drinkWaterResult
     }
 
     public func deleteHydrationEvent(id: UUID) async -> Bool {
@@ -55,8 +64,14 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
         return true
     }
 
-    public func reset() async {
+    @discardableResult
+    public func reset() async -> HydrationWriteResult {
+        guard resetResult.isSuccess else {
+            return resetResult
+        }
+
         currentWaterIntakeMLValue = 0
         events.removeAll()
+        return resetResult
     }
 }

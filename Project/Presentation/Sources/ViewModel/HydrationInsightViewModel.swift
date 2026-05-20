@@ -501,7 +501,20 @@ public final class HydrationInsightViewModel {
             return false
         }
 
-        await waterUseCase.drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        let writeResult = await waterUseCase.drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        guard writeResult.isSuccess else {
+            analyticsUseCase.track(
+                .waterLogFailed(
+                    source: "insight_recovery",
+                    servingType: "default_glass",
+                    failureReason: analyticsFailureReason(for: writeResult),
+                    volumeML: HydrationServing.defaultGlassVolumeML,
+                    dailyGoalML: Int(dailyGoalML.rounded())
+                )
+            )
+            return false
+        }
+
         analyticsUseCase.track(
             .insightCTATapped(
                 source: "insight_recovery",
@@ -1038,6 +1051,15 @@ public final class HydrationInsightViewModel {
             return "create_routine"
         case .edit:
             return "edit_routine"
+        }
+    }
+
+    private func analyticsFailureReason(for writeResult: HydrationWriteResult) -> String {
+        switch writeResult.failureReason ?? .systemError {
+        case .permissionDenied:
+            return "healthkit_permission_required"
+        case .invalidObjectType, .systemError:
+            return "healthkit_write_failed"
         }
     }
 }

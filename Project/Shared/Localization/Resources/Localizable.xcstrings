@@ -1585,6 +1585,72 @@
         }
       }
     },
+    "drinkWaterRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HealthKit에 수분 기록을 저장하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하지 못했어요"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordPermissionFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 꺼져 있어 수분 기록을 저장하지 못했어요. 설정에서 권한을 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterResetFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 수분 기록을 초기화하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterResetFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기화하지 못했어요"
+          }
+        }
+      }
+    },
+    "drinkWaterResetPermissionFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 꺼져 있어 오늘 수분 기록을 초기화하지 못했어요. 설정에서 권한을 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
     "drinkWaterUndoRecordTitle" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -16,11 +16,13 @@ public struct WatchHydrationRepositoryImpl: WatchHydrationRepository {
         await localDataSource.hydrationEvents(on: date)
     }
 
-    public func addDrink(volumeML: Int, consumedAt: Date) async {
+    @discardableResult
+    public func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult {
         await localDataSource.addDrink(volumeML: volumeML, consumedAt: consumedAt)
     }
 
-    public func resetEvents(on date: Date) async {
+    @discardableResult
+    public func resetEvents(on date: Date) async -> HydrationWriteResult {
         await localDataSource.resetEvents(on: date)
     }
 }
