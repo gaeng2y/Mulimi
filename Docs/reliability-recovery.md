@@ -56,8 +56,10 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 ## Current Implementation Notes
 
 - HealthKit 권한 게이트는 거부 상태에서 설정 이동과 상태 새로고침을 제공한다.
-- 메인 수분 기록, 기록 삭제, 목표/아이콘 변경 후 Widget timeline reload를 호출한다.
+- 메인 수분 기록은 HealthKit 쓰기 성공 후에만 undo, analytics 성공 이벤트, Widget timeline reload를 실행한다.
+- 기록 삭제, 목표/아이콘 변경 후 Widget timeline reload를 호출한다.
 - AppIntent는 선택된 기록량, Watch는 기본 1잔 기준으로 목표 초과를 차단한다.
+- AppIntent와 Watch는 HealthKit 저장 실패를 조용한 성공으로 처리하지 않고 실패 안내를 반환한다.
 - Watch 목표량은 KVS를 먼저 보고 App Group mirror를 보정한다.
 - 루틴 알림은 권한 상태에 따라 권한 요청, 설정 이동, 알림 없이 저장으로 분기한다.
 
@@ -67,7 +69,6 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 
 | Area | Follow-up | Gap | Required outcome |
 | --- | --- | --- | --- |
-| HealthKit write result | [#219](https://github.com/gaeng2y/Mulimi/issues/219) | 수분 기록 저장 실패가 앱/AppIntent/Watch UI까지 성공/실패로 명확히 전달되지 않는다. | 실패 시 성공 analytics, undo, timeline reload를 성공 처리하지 않고 사용자에게 재시도 또는 설정 이동을 안내한다. |
 | Routine schedule atomicity | [#220](https://github.com/gaeng2y/Mulimi/issues/220) | 루틴 저장 후 AlarmKit 스케줄 실패가 나면 활성 루틴 표시와 실제 알림 상태가 어긋날 수 있다. | 스케줄 실패 시 활성 루틴을 예약 완료처럼 보여주지 않고, 다시 시도 또는 알림 없이 저장으로 복구한다. |
 
 ## QA Scenarios
@@ -75,6 +76,8 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 - HealthKit 권한을 거부한 뒤 앱을 재진입하면 권한 게이트가 유지되고 설정 이동 CTA가 보인다.
 - HealthKit 권한을 설정에서 다시 허용한 뒤 앱으로 돌아오면 상태 새로고침 후 메인 화면에 진입한다.
 - 목표까지 남은 양보다 큰 커스텀 용량을 입력하면 HealthKit 쓰기 전에 차단된다.
+- HealthKit 저장 실패가 발생하면 앱은 실패 안내를 보여주고 성공 analytics, undo, Widget timeline reload를 실행하지 않는다.
+- AppIntent/Watch의 HealthKit 저장 실패는 성공 메시지나 성공 상태 갱신으로 표시되지 않는다.
 - 앱에서 수분 기록 또는 삭제 후 Widget이 늦게 갱신돼도 앱 화면의 오늘 합계가 HealthKit 기준으로 유지된다.
 - Watch에서 기본 1잔을 기록한 뒤 앱이 HealthKit을 다시 읽으면 같은 오늘 합계로 수렴한다.
 - 알림 권한이 `notDetermined`이면 활성 루틴 저장 전에 권한 요청 prompt가 나온다.

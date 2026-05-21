@@ -9,10 +9,12 @@ import DesignSystem
 import DomainLayerInterface
 import Localization
 import SwiftUI
+import UIKit
 
 public struct DrinkWaterView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.openURL) private var openURL
     private var viewModel: DrinkWaterViewModel
     @State private var isCustomAmountPresented = false
 
@@ -106,6 +108,30 @@ public struct DrinkWaterView: View {
         }
         .sheet(isPresented: $isCustomAmountPresented) {
             CustomHydrationAmountSheet(viewModel: viewModel)
+        }
+        .alert(
+            viewModel.recordFailureAlert?.title ?? "",
+            isPresented: Binding(
+                get: { viewModel.recordFailureAlert != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.clearRecordFailureAlert()
+                    }
+                }
+            )
+        ) {
+            if viewModel.recordFailureAlert?.showsOpenSettingsAction == true {
+                Button(L10n.tr("healthKitPermissionOpenSettingsTitle")) {
+                    openSettings()
+                    viewModel.clearRecordFailureAlert()
+                }
+            }
+
+            Button(L10n.tr("commonConfirmTitle"), role: .cancel) {
+                viewModel.clearRecordFailureAlert()
+            }
+        } message: {
+            Text(viewModel.recordFailureAlert?.message ?? "")
         }
         .alert(
             L10n.tr("drinkWaterUndoRecordFailureTitle"),
@@ -349,6 +375,14 @@ public struct DrinkWaterView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(uiColor: .systemBackground).opacity(0.86))
         )
+    }
+
+    private func openSettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+
+        openURL(settingsURL)
     }
 }
 

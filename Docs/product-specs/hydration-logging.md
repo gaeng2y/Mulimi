@@ -44,9 +44,10 @@
   - 성공: 선택한 수분량이 HealthKit에 기록됐음을 알린다.
   - 목표 초과: 오늘 목표를 넘어서 기록하지 않았음을 알린다.
   - HealthKit 권한 필요: 앱을 foreground로 전환해 권한 흐름을 확인하게 한다.
-- 기록 성공 시 Widget timeline을 갱신한다.
-- 기록 성공 시 analytics `water_logged.source`는 `app_intent`로 기록한다.
-- 권한 부족, 직접 입력 오류, 목표 초과로 기록이 차단되면 analytics `water_log_failed.source`는 `app_intent`로 기록한다.
+- HealthKit 저장 실패: 기록되지 않았음을 알리고, 권한 철회가 원인이면 앱을 foreground로 전환해 권한 흐름을 확인하게 한다.
+- 기록 성공 시에만 Widget timeline을 갱신한다.
+- 기록 성공 시에만 analytics `water_logged.source`는 `app_intent`로 기록한다.
+- 권한 부족, 직접 입력 오류, 목표 초과, HealthKit 저장 실패는 analytics `water_log_failed.source`로 기록한다.
 - Shortcuts 수분량 선택은 기본 기록량 사용자 설정을 바꾸지 않는다. 기본 기록량 개인화는 #203 범위에서 확장한다.
 
 ## AppIntent QA Scenarios
@@ -57,6 +58,7 @@
 - 선택한 수분량이 오늘 목표를 초과하면 HealthKit에 쓰지 않고 목표 초과 메시지를 반환한다.
 - HealthKit 권한이 없으면 앱 foreground 전환으로 권한 흐름을 확인하게 한다.
 - 기록 차단 결과는 `water_log_failed.failure_reason`으로 구분된다.
+- HealthKit 저장 실패 결과는 성공 dialog, Widget timeline 갱신, `water_logged` analytics로 처리하지 않는다.
 - 기록 성공 후 Widget timeline이 갱신된다.
 
 ## User Expectations

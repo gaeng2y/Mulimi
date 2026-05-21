@@ -135,7 +135,25 @@ struct LogWaterAppIntent: AppIntent {
             return .result(dialog: overLimitDialog(currentMl: currentMl, dailyLimit: dailyLimit, volumeML: volumeML))
         }
 
-        await waterUseCase.drinkWater(volumeML: volumeML)
+        let writeResult = await waterUseCase.drinkWater(volumeML: volumeML)
+        guard writeResult.isSuccess else {
+            trackWaterLogFailed(
+                failureReason: writeResult.analyticsFailureReason,
+                volumeML: volumeML,
+                dailyLimit: dailyLimit
+            )
+
+            if writeResult.failureReason == .permissionDenied {
+                try await continueInForeground(
+                    IntentDialog("건강 앱 권한이 필요해요. 물리미에서 HealthKit 권한을 허용해 주세요."),
+                    alwaysConfirm: false
+                )
+                return .result(dialog: "건강 앱 권한을 확인해 주세요.")
+            }
+
+            return .result(dialog: "물 기록을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.")
+        }
+
         WidgetCenter.shared.reloadAllTimelines()
         trackWaterLogged(volumeML: volumeML, dailyLimit: dailyLimit)
 
@@ -212,5 +230,16 @@ struct LogWaterAppIntent: AppIntent {
                 dailyGoalML: dailyLimit.map { Int($0.rounded()) }
             )
         )
+    }
+}
+
+private extension HydrationWriteResult {
+    var analyticsFailureReason: String {
+        switch failureReason ?? .systemError {
+        case .permissionDenied:
+            return "healthkit_permission_required"
+        case .invalidObjectType, .systemError:
+            return "healthkit_write_failed"
+        }
     }
 }

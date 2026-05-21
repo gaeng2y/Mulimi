@@ -38,7 +38,7 @@
 | `healthkit_permission_settings_tapped` | `status` | 설정 이동 CTA 탭 |
 | `healthkit_permission_refresh_tapped` | `status` | 설정 복귀 후 상태 재확인 CTA 탭 |
 | `water_logged` | `source`, `serving_type`, `volume_ml`, `daily_goal_ml` | 물 기록 성공 |
-| `water_log_failed` | `source`, `serving_type`, `failure_reason` | 물 기록 전 권한/입력/목표 초과로 차단 |
+| `water_log_failed` | `source`, `serving_type`, `failure_reason` | 물 기록 권한/입력/목표 초과 차단 또는 HealthKit 저장 실패 |
 | `water_preset_logged` | `source`, `preset`, `volume_ml` | 330ml/500ml 프리셋 기록 성공 |
 | `routine_created` | `source`, `enabled`, `weekday_count` | 루틴 생성 저장 성공 |
 | `routine_updated` | `source`, `enabled`, `weekday_count` | 루틴 수정 저장 성공 |
@@ -76,6 +76,7 @@
 ### `failure_reason`
 
 - `healthkit_permission_required`
+- `healthkit_write_failed`
 - `custom_amount_missing`
 - `custom_amount_out_of_range`
 - `daily_goal_exceeded`

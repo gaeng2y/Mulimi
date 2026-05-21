@@ -34,11 +34,13 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         await dataSource.migrateLegacyDataIfNeeded()
     }
 
-    public func drinkWater() async {
+    @discardableResult
+    public func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    public func drinkWater(volumeML: Int) async {
+    @discardableResult
+    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         await dataSource.drinkWater(volumeML: volumeML)
     }
 
@@ -46,7 +48,8 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         await dataSource.deleteHydrationEvent(id: id)
     }
 
-    public func reset() async {
+    @discardableResult
+    public func reset() async -> HydrationWriteResult {
         await dataSource.reset()
     }
 }
