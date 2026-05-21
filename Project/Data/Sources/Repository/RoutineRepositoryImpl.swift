@@ -34,19 +34,24 @@ public struct RoutineRepositoryImpl: RoutineRepository {
             }
         }
 
-        var routines = storageDataSource.fetchRoutines()
-        routines = upsert(routine, in: routines)
-        storageDataSource.saveRoutines(routines.sorted(by: sortRoutines(lhs:rhs:)))
-        try await notificationDataSource.scheduleNotifications(for: routines.filter(\.isEnabled))
+        let currentRoutines = storageDataSource.fetchRoutines()
+            .sorted(by: sortRoutines(lhs:rhs:))
+        let updatedRoutines = upsert(routine, in: currentRoutines)
+            .sorted(by: sortRoutines(lhs:rhs:))
+
+        try await scheduleNotifications(for: updatedRoutines, rollbackTo: currentRoutines)
+        storageDataSource.saveRoutines(updatedRoutines)
     }
 
     public func deleteRoutine(id: UUID) async throws {
-        let routines = storageDataSource.fetchRoutines()
+        let currentRoutines = storageDataSource.fetchRoutines()
+            .sorted(by: sortRoutines(lhs:rhs:))
+        let updatedRoutines = currentRoutines
             .filter { $0.id != id }
             .sorted(by: sortRoutines(lhs:rhs:))
 
-        storageDataSource.saveRoutines(routines)
-        try await notificationDataSource.scheduleNotifications(for: routines.filter(\.isEnabled))
+        try await scheduleNotifications(for: updatedRoutines, rollbackTo: currentRoutines)
+        storageDataSource.saveRoutines(updatedRoutines)
     }
 
     private func upsert(_ routine: HydrationRoutine, in routines: [HydrationRoutine]) -> [HydrationRoutine] {
@@ -71,5 +76,21 @@ public struct RoutineRepositoryImpl: RoutineRepository {
         }
 
         return lhs.title < rhs.title
+    }
+
+    private func scheduleNotifications(
+        for routines: [HydrationRoutine],
+        rollbackTo previousRoutines: [HydrationRoutine]
+    ) async throws {
+        do {
+            try await notificationDataSource.scheduleNotifications(for: enabledRoutines(from: routines))
+        } catch {
+            try? await notificationDataSource.scheduleNotifications(for: enabledRoutines(from: previousRoutines))
+            throw RoutineError.scheduleFailed
+        }
+    }
+
+    private func enabledRoutines(from routines: [HydrationRoutine]) -> [HydrationRoutine] {
+        routines.filter(\.isEnabled)
     }
 }
