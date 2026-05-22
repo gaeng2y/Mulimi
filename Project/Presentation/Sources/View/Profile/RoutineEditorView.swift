@@ -129,6 +129,22 @@ struct RoutineEditorView: View {
                 Button(L10n.tr("commonCancelTitle"), role: .cancel) {
                     viewModel.dismissPermissionPrompt()
                 }
+            case .scheduleFailure:
+                Button(L10n.tr("profileRoutineRetrySaveTitle")) {
+                    Task {
+                        await viewModel.saveDraft()
+                    }
+                }
+
+                Button(L10n.tr("profileRoutineSaveWithoutNotificationsTitle")) {
+                    Task {
+                        await viewModel.saveDraftWithoutNotifications()
+                    }
+                }
+
+                Button(L10n.tr("commonCancelTitle"), role: .cancel) {
+                    viewModel.dismissPermissionPrompt()
+                }
             case .none:
                 Button(L10n.tr("commonConfirmTitle"), role: .cancel) {
                     viewModel.dismissPermissionPrompt()

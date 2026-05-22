@@ -7,6 +7,7 @@
 
 import DomainLayerInterface
 import Foundation
+import HealthKit
 import OSLog
 
 public protocol DrinkWaterDataSource: Sendable {
@@ -15,10 +16,13 @@ public protocol DrinkWaterDataSource: Sendable {
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
-    func drinkWater() async
-    func drinkWater(volumeML: Int) async
+    @discardableResult
+    func drinkWater() async -> HydrationWriteResult
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult
     func deleteHydrationEvent(id: UUID) async -> Bool
-    func reset() async
+    @discardableResult
+    func reset() async -> HydrationWriteResult
 }
 
 public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
@@ -75,15 +79,19 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
 
     public func migrateLegacyDataIfNeeded() async {}
 
-    public func drinkWater() async {
+    @discardableResult
+    public func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    public func drinkWater(volumeML: Int) async {
+    @discardableResult
+    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         do {
             try await healthKitDataSource.setWaterIntake(volumeML: volumeML)
+            return .success
         } catch {
             logger.error("Failed to save hydration sample to HealthKit: \(String(describing: error))")
+            return .failure(Self.writeFailureReason(for: error))
         }
     }
 
@@ -96,12 +104,41 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
         }
     }
 
-    public func reset() async {
+    @discardableResult
+    public func reset() async -> HydrationWriteResult {
         do {
             try await healthKitDataSource.resetWaterInTakeInToday()
+            return .success
         } catch {
             logger.error("Failed to reset owned hydration samples: \(String(describing: error))")
+            return .failure(Self.writeFailureReason(for: error))
         }
+    }
+
+    private static func writeFailureReason(for error: Error) -> HydrationWriteFailureReason {
+        if let healthKitError = error as? HealthKitError {
+            switch healthKitError {
+            case .permissionDenied:
+                return .permissionDenied
+            case .invalidObjectType:
+                return .invalidObjectType
+            case .healthKitInternalError, .incompleteExecuteQuery:
+                return .systemError
+            }
+        }
+
+        if let healthKitError = error as? HKError {
+            switch healthKitError.code {
+            case .errorAuthorizationDenied, .errorAuthorizationNotDetermined:
+                return .permissionDenied
+            case .errorInvalidArgument:
+                return .invalidObjectType
+            default:
+                return .systemError
+            }
+        }
+
+        return .systemError
     }
 
     private func dayInterval(for date: Date) -> DateInterval {

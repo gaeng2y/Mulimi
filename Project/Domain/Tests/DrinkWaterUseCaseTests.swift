@@ -72,6 +72,20 @@ struct DrinkWaterUseCaseTests {
         #expect(await useCase.currentWaterIntakeML == Double(HydrationServing.tumblerML))
     }
 
+    @Test("물 마시기 실패 결과는 Repository에서 UseCase로 전달된다")
+    func drinkWaterFailureResult() async {
+        let mockRepository = MockDrinkWaterRepository()
+        mockRepository.drinkWaterResult = .failure(.permissionDenied)
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let result = await useCase.drinkWater(volumeML: HydrationServing.tumblerML)
+
+        #expect(result == .failure(.permissionDenied))
+        #expect(mockRepository.drinkWaterCallCount == 1)
+        #expect(mockRepository.recordedVolumesML == [HydrationServing.tumblerML])
+        #expect(await useCase.currentWaterIntakeML == 0)
+    }
+
     @Test("물 마시기 기능을 여러 번 호출할 때")
     func drinkWaterMultipleTimes() async {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
@@ -105,6 +119,20 @@ struct DrinkWaterUseCaseTests {
         #expect(mockRepository.resetCallCount == 1)
         // Then: 현재 물 섭취량이 0이 된다
         #expect(await useCase.currentWaterIntakeML == 0)
+    }
+
+    @Test("리셋 실패 결과는 Repository에서 UseCase로 전달된다")
+    func resetFailureResult() async {
+        let mockRepository = MockDrinkWaterRepository()
+        mockRepository.setCurrentWaterIntakeML(1_250)
+        mockRepository.resetResult = .failure(.systemError)
+        let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
+
+        let result = await useCase.reset()
+
+        #expect(result == .failure(.systemError))
+        #expect(mockRepository.resetCallCount == 1)
+        #expect(await useCase.currentWaterIntakeML == 1_250)
     }
 
     @Test("리셋 후 다시 물 마시기 테스트")

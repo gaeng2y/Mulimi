@@ -125,6 +125,42 @@ struct DrinkWaterViewModelTests {
     }
 
     @MainActor
+    @Test("HealthKit 기록 실패 시 성공 후처리를 실행하지 않고 복구 안내를 노출한다")
+    func recordWaterFailureDoesNotRunSuccessEffects() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.drinkWaterResult = .failure(.permissionDenied)
+        let widgetReloader = SpyWidgetTimelineReloader()
+        let analyticsUseCase = MockAnalyticsUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: widgetReloader,
+            analyticsUseCase: analyticsUseCase
+        )
+
+        await viewModel.loadInitialState()
+        let didRecord = await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+
+        #expect(didRecord == false)
+        #expect(viewModel.currentWaterIntakeML == 0)
+        #expect(viewModel.recentRecordUndo == nil)
+        #expect(viewModel.recordFailureAlert?.showsOpenSettingsAction == true)
+        #expect(
+            viewModel.recordFailureAlert?.message ==
+            L10n.tr("drinkWaterRecordPermissionFailureDescription")
+        )
+        #expect(widgetReloader.reloadCallCount == 0)
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == ["water_log_failed"])
+        #expect(
+            analyticsUseCase.trackedEvents.first?.parameters["failure_reason"] ==
+            AnalyticsParameterValue.string("healthkit_permission_required")
+        )
+    }
+
+    @MainActor
     @Test("직접 입력값은 숫자와 목표 초과 여부를 검증한다")
     func customAmountValidation() async {
         let waterUseCase = MockDrinkWaterUseCase()
@@ -278,6 +314,31 @@ struct DrinkWaterViewModelTests {
 
         #expect(viewModel.drinkWaterCount == 0)
         #expect(waterUseCase.resetCallCount == 1)
+    }
+
+    @MainActor
+    @Test("reset 실패 시 기존 상태를 유지하고 위젯을 갱신하지 않는다")
+    func resetFailureDoesNotRunSuccessEffects() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 750
+        waterUseCase.resetResult = .failure(.systemError)
+        let widgetReloader = SpyWidgetTimelineReloader()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: widgetReloader
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.reset()
+
+        #expect(viewModel.currentWaterIntakeML == 750)
+        #expect(waterUseCase.resetCallCount == 1)
+        #expect(viewModel.recordFailureAlert?.title == L10n.tr("drinkWaterResetFailureTitle"))
+        #expect(widgetReloader.reloadCallCount == 0)
     }
 
     @MainActor

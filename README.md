@@ -123,6 +123,7 @@ Mulimi/
 │   ├── harness-engineering.md
 │   ├── quality-gates.md
 │   ├── documentation-maintenance.md
+│   ├── security-privacy.md
 │   ├── delivery-workflow.md
 │   ├── product-specs/
 │   ├── exec-plans/
@@ -228,6 +229,7 @@ make verify
 - [하네스 엔지니어링 구조](Docs/harness-engineering.md)
 - [품질 게이트](Docs/quality-gates.md)
 - [문서 유지보수 규칙](Docs/documentation-maintenance.md)
+- [보안/개인정보 운영 기준](Docs/security-privacy.md)
 - [이슈/PR 전달 흐름](Docs/delivery-workflow.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)

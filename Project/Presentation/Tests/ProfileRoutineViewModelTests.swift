@@ -11,6 +11,7 @@ struct ProfileRoutineViewModelTests {
         var routines: [HydrationRoutine] = []
         var authorizationStatus: RoutineNotificationAuthorizationStatus = .notDetermined
         var requestAuthorizationResult: Result<RoutineNotificationAuthorizationStatus, Error> = .success(.authorized)
+        var saveRoutineError: Error?
         private(set) var savedRoutine: HydrationRoutine?
         private(set) var deletedRoutineID: UUID?
         private(set) var requestAuthorizationCallCount = 0
@@ -35,6 +36,10 @@ struct ProfileRoutineViewModelTests {
         }
 
         func saveRoutine(_ routine: HydrationRoutine) async throws {
+            if let saveRoutineError {
+                throw saveRoutineError
+            }
+
             savedRoutine = routine
             if let index = routines.firstIndex(where: { $0.id == routine.id }) {
                 routines[index] = routine
@@ -68,15 +73,21 @@ struct ProfileRoutineViewModelTests {
 
         func migrateLegacyDataIfNeeded() async {}
 
-        func drinkWater() async {}
+        func drinkWater() async -> HydrationWriteResult {
+            .success
+        }
 
-        func drinkWater(volumeML: Int) async {}
+        func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+            .success
+        }
 
         func deleteHydrationEvent(id: UUID) async -> Bool {
             false
         }
 
-        func reset() async {}
+        func reset() async -> HydrationWriteResult {
+            .success
+        }
     }
 
     private final class SpyRoutineRecommendationUseCase: RoutineRecommendationUseCase, @unchecked Sendable {
@@ -343,6 +354,47 @@ struct ProfileRoutineViewModelTests {
         viewModel.editorDraft.title = "오후 루틴"
         viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
         await viewModel.saveDraft()
+        await viewModel.saveDraftWithoutNotifications()
+
+        #expect(useCase.savedRoutine?.isEnabled == false)
+        #expect(viewModel.permissionPrompt == nil)
+        #expect(viewModel.isEditorPresented == false)
+    }
+
+    @MainActor
+    @Test("스케줄 실패 시 루틴을 저장하지 않고 재시도 안내를 유지한다")
+    func saveDraftScheduleFailureKeepsEditorOpen() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .authorized
+        useCase.saveRoutineError = RoutineError.scheduleFailed
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+
+        await viewModel.saveDraft()
+
+        #expect(useCase.savedRoutine == nil)
+        #expect(viewModel.displayedRoutines.isEmpty)
+        #expect(viewModel.permissionPrompt == .scheduleFailure)
+        #expect(viewModel.isEditorPresented)
+    }
+
+    @MainActor
+    @Test("스케줄 실패 후 알림 없이 저장하면 비활성 루틴으로 저장한다")
+    func saveDraftWithoutNotificationsAfterScheduleFailure() async {
+        let useCase = SpyRoutineUseCase()
+        useCase.authorizationStatus = .authorized
+        useCase.saveRoutineError = RoutineError.scheduleFailed
+        let viewModel = makeViewModel(routineUseCase: useCase)
+
+        viewModel.presentCreateRoutine()
+        viewModel.editorDraft.title = "오후 루틴"
+        viewModel.editorDraft.selectedWeekdays = [.monday, .wednesday]
+        await viewModel.saveDraft()
+
+        useCase.saveRoutineError = nil
         await viewModel.saveDraftWithoutNotifications()
 
         #expect(useCase.savedRoutine?.isEnabled == false)

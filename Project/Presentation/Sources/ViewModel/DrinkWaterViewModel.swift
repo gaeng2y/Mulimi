@@ -36,6 +36,12 @@ struct RecentHydrationRecordUndoModel: Equatable {
     let actionTitle: String
 }
 
+struct HydrationRecordFailureAlertModel: Equatable {
+    let title: String
+    let message: String
+    let showsOpenSettingsAction: Bool
+}
+
 @MainActor
 @Observable
 public final class DrinkWaterViewModel {
@@ -46,6 +52,7 @@ public final class DrinkWaterViewModel {
     private(set) var currentDailyLimit: Double
     private(set) var recentRecordUndo: RecentHydrationRecordUndoModel?
     private(set) var undoErrorMessage: String?
+    private(set) var recordFailureAlert: HydrationRecordFailureAlertModel?
 
     private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
@@ -239,7 +246,21 @@ public final class DrinkWaterViewModel {
             return false
         }
 
-        await waterUseCase.drinkWater(volumeML: volumeML)
+        let writeResult = await waterUseCase.drinkWater(volumeML: volumeML)
+        guard writeResult.isSuccess else {
+            recordFailureAlert = makeRecordFailureAlert(
+                reason: writeResult.failureReason ?? .systemError
+            )
+            trackWaterLogFailed(
+                volumeML: volumeML,
+                servingType: servingType,
+                failureReason: writeResult.analyticsFailureReason,
+                dailyGoalML: Int(dailyLimit.rounded())
+            )
+            return false
+        }
+
+        recordFailureAlert = nil
         await refreshState()
         await updateRecentRecordUndo()
         widgetTimelineReloader.reloadAllTimelines()
@@ -311,7 +332,15 @@ public final class DrinkWaterViewModel {
     }
 
     func reset() async {
-        await waterUseCase.reset()
+        let writeResult = await waterUseCase.reset()
+        guard writeResult.isSuccess else {
+            recordFailureAlert = makeResetFailureAlert(
+                reason: writeResult.failureReason ?? .systemError
+            )
+            return
+        }
+
+        recordFailureAlert = nil
         recentRecordUndo = nil
         undoErrorMessage = nil
         await refreshState()
@@ -339,6 +368,10 @@ public final class DrinkWaterViewModel {
 
     func clearUndoErrorMessage() {
         undoErrorMessage = nil
+    }
+
+    func clearRecordFailureAlert() {
+        recordFailureAlert = nil
     }
 
     func resetAnimation() {
@@ -419,6 +452,65 @@ public final class DrinkWaterViewModel {
         )
     }
 
+    private func trackWaterLogFailed(
+        volumeML: Int,
+        servingType: String,
+        failureReason: String,
+        dailyGoalML: Int
+    ) {
+        analyticsUseCase.track(
+            .waterLogFailed(
+                source: "drink_water_main",
+                servingType: servingType,
+                failureReason: failureReason,
+                volumeML: volumeML,
+                dailyGoalML: dailyGoalML
+            )
+        )
+    }
+
+    private func makeRecordFailureAlert(
+        reason: HydrationWriteFailureReason
+    ) -> HydrationRecordFailureAlertModel {
+        HydrationRecordFailureAlertModel(
+            title: L10n.tr("drinkWaterRecordFailureTitle"),
+            message: recordFailureMessage(for: reason),
+            showsOpenSettingsAction: reason == .permissionDenied
+        )
+    }
+
+    private func makeResetFailureAlert(
+        reason: HydrationWriteFailureReason
+    ) -> HydrationRecordFailureAlertModel {
+        HydrationRecordFailureAlertModel(
+            title: L10n.tr("drinkWaterResetFailureTitle"),
+            message: resetFailureMessage(for: reason),
+            showsOpenSettingsAction: reason == .permissionDenied
+        )
+    }
+
+    private func recordFailureMessage(
+        for reason: HydrationWriteFailureReason
+    ) -> String {
+        switch reason {
+        case .permissionDenied:
+            return L10n.tr("drinkWaterRecordPermissionFailureDescription")
+        case .invalidObjectType, .systemError:
+            return L10n.tr("drinkWaterRecordFailureDescription")
+        }
+    }
+
+    private func resetFailureMessage(
+        for reason: HydrationWriteFailureReason
+    ) -> String {
+        switch reason {
+        case .permissionDenied:
+            return L10n.tr("drinkWaterResetPermissionFailureDescription")
+        case .invalidObjectType, .systemError:
+            return L10n.tr("drinkWaterResetFailureDescription")
+        }
+    }
+
     private func inferredServingType(for volumeML: Int) -> String {
         if volumeML == HydrationServing.defaultGlassVolumeML {
             return "default_glass"
@@ -454,5 +546,16 @@ public final class DrinkWaterViewModel {
 
     private func volumeText(_ volumeML: Int) -> String {
         L10n.tr("commonMilliliterFormat", volumeML)
+    }
+}
+
+private extension HydrationWriteResult {
+    var analyticsFailureReason: String {
+        switch failureReason ?? .systemError {
+        case .permissionDenied:
+            return "healthkit_permission_required"
+        case .invalidObjectType, .systemError:
+            return "healthkit_write_failed"
+        }
     }
 }

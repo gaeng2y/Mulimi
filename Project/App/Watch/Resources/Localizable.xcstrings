@@ -45,6 +45,72 @@
         }
       }
     },
+    "watchCommonConfirmButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
+          }
+        }
+      }
+    },
+    "watchHydrationMutationFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "처리하지 못했어요"
+          }
+        }
+      }
+    },
+    "watchHydrationRecordFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 수분 기록을 저장하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationRecordPermissionFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 없어 수분 기록을 저장하지 못했어요. iPhone에서 물리미 권한을 확인해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationResetFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록을 초기화하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationResetPermissionFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 없어 오늘 기록을 초기화하지 못했어요. iPhone에서 물리미 권한을 확인해 주세요."
+          }
+        }
+      }
+    },
     "watchHomeDrinkCompleteButton" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -13,6 +13,7 @@ import SwiftUI
 import UIKit
 
 public struct HydrationInsightView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.openURL) private var openURL
     @State private var viewModel: HydrationInsightViewModel
     @State private var selectedCategory: HydrationInsightCategory = .overview
@@ -354,6 +355,7 @@ public struct HydrationInsightView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityHint(L10n.tr("insightCardActionAccessibilityHint"))
             }
         }
         .padding(14)
@@ -466,26 +468,7 @@ public struct HydrationInsightView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            HStack(spacing: 10) {
-                Button {
-                    Task {
-                        await viewModel.recordRecoveryDrink()
-                    }
-                } label: {
-                    Label(card.recordActionTitle, systemImage: "drop.fill")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(!card.canRecordNow)
-
-                Button {
-                    handleRecoveryReminderAction(card.reminderAction)
-                } label: {
-                    Text(card.reminderActionTitle)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-            }
+            recoveryActionButtons(card)
         }
         .padding(14)
         .background(
@@ -503,6 +486,46 @@ public struct HydrationInsightView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .strokeBorder(Color.orange.opacity(0.16), lineWidth: 1)
         }
+    }
+
+    @ViewBuilder
+    private func recoveryActionButtons(_ card: RoutineRecoveryCardModel) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 10) {
+                recoveryRecordButton(card)
+                recoveryReminderButton(card)
+            }
+        } else {
+            HStack(spacing: 10) {
+                recoveryRecordButton(card)
+                recoveryReminderButton(card)
+            }
+        }
+    }
+
+    private func recoveryRecordButton(_ card: RoutineRecoveryCardModel) -> some View {
+        Button {
+            Task {
+                await viewModel.recordRecoveryDrink()
+            }
+        } label: {
+            Label(card.recordActionTitle, systemImage: "drop.fill")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(!card.canRecordNow)
+        .accessibilityHint(L10n.tr("insightRecoveryRecordAccessibilityHint"))
+    }
+
+    private func recoveryReminderButton(_ card: RoutineRecoveryCardModel) -> some View {
+        Button {
+            handleRecoveryReminderAction(card.reminderAction)
+        } label: {
+            Text(card.reminderActionTitle)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .accessibilityHint(L10n.tr("insightRecoveryReminderAccessibilityHint"))
     }
 
     private func handleRecoveryReminderAction(

@@ -349,6 +349,50 @@ struct HydrationInsightViewModelTests {
     }
 
     @MainActor
+    @Test("복구 기록 실패 시 성공 analytics를 남기지 않는다")
+    func recordRecoveryDrinkFailureDoesNotTrackSuccess() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 10))!
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.drinkWaterResult = .failure(.systemError)
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineAdherenceUseCase = MockHydrationRoutineAdherenceUseCase()
+        let routineUseCase = SpyRoutineUseCase()
+        let analyticsUseCase = MockAnalyticsUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            todayIntakeML: 500,
+            weeklyAverageML: 500,
+            monthlyAverageML: 500,
+            weeklyAchievementRate: 0,
+            monthlyAchievementRate: 0,
+            weeklyAchievedDays: 0,
+            monthlyAchievedDays: 0,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 0,
+            isEmpty: false
+        )
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: waterUseCase,
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: routineAdherenceUseCase,
+            routineUseCase: routineUseCase,
+            analyticsUseCase: analyticsUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+        let didRecord = await viewModel.recordRecoveryDrink()
+
+        #expect(didRecord == false)
+        #expect(waterUseCase.recordedVolumesML == [HydrationServing.defaultGlassVolumeML])
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == ["water_log_failed"])
+    }
+
+    @MainActor
     @Test("주간 코칭은 놓친 기존 루틴을 수정 CTA로 연결한다")
     func weeklyCoachingMissedRoutineAction() async {
         let calendar = makeCalendar()

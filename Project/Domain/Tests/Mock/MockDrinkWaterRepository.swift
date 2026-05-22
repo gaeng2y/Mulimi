@@ -22,6 +22,8 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     private(set) var deleteHydrationEventCallCount = 0
     private(set) var recordedVolumesML: [Int] = []
     private(set) var deletedHydrationEventIDs: [UUID] = []
+    var drinkWaterResult: HydrationWriteResult = .success
+    var resetResult: HydrationWriteResult = .success
 
     var currentWaterIntakeML: Double {
         get async {
@@ -45,13 +47,19 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         migrateCallCount += 1
     }
 
-    func drinkWater() async {
+    @discardableResult
+    func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    func drinkWater(volumeML: Int) async {
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        guard drinkWaterResult.isSuccess else {
+            return drinkWaterResult
+        }
+
         currentWaterIntakeMLValue += Double(volumeML)
         _events.append(
             HydrationEvent(
@@ -60,12 +68,19 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
                 volumeML: volumeML
             )
         )
+        return drinkWaterResult
     }
 
-    func reset() async {
+    @discardableResult
+    func reset() async -> HydrationWriteResult {
         resetCallCount += 1
+        guard resetResult.isSuccess else {
+            return resetResult
+        }
+
         currentWaterIntakeMLValue = 0
         _events.removeAll()
+        return resetResult
     }
 
     func deleteHydrationEvent(id: UUID) async -> Bool {
@@ -100,5 +115,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         deleteHydrationEventCallCount = 0
         recordedVolumesML = []
         deletedHydrationEventIDs = []
+        drinkWaterResult = .success
+        resetResult = .success
     }
 }

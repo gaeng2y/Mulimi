@@ -31,7 +31,9 @@ struct LiquidGlassSegmentedControl<Value: Hashable>: View {
     @Binding private var selection: Value
     private let segments: [LiquidGlassSegment<Value>]
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Namespace private var activeSegmentNamespace
 
     init(
@@ -61,8 +63,12 @@ struct LiquidGlassSegmentedControl<Value: Hashable>: View {
         let isSelected = selection == segment.value
 
         return Button {
-            withAnimation(.easeOut(duration: 0.25)) {
+            if reduceMotion {
                 selection = segment.value
+            } else {
+                withAnimation(.easeOut(duration: 0.25)) {
+                    selection = segment.value
+                }
             }
         } label: {
             HStack(spacing: 5) {
@@ -73,10 +79,10 @@ struct LiquidGlassSegmentedControl<Value: Hashable>: View {
 
                 Text(segment.title)
                     .font(.caption.weight(.semibold))
-                    .lineLimit(1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
                     .minimumScaleFactor(0.78)
             }
-            .frame(maxWidth: .infinity, minHeight: 44)
+            .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? 52 : 44)
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
             .contentShape(Capsule(style: .continuous))
             .background {

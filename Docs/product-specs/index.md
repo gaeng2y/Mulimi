@@ -5,10 +5,12 @@
 ## Specs
 
 - [SignIn, Onboarding, HealthKit Gate](sign-in-onboarding-healthkit.md)
+- [Onboarding and HealthKit Conversion Experiments](onboarding-healthkit-conversion-experiments.md)
 - [Hydration Logging](hydration-logging.md)
 - [Routine Notifications](routine-notifications.md)
 - [Challenge and Insight](challenge-insight.md)
 - [Analytics Events](analytics-events.md)
+- [Analytics Operations](analytics-operations.md)
 
 ## Rule
 

@@ -27,6 +27,7 @@ private enum AnalyticsParameterName {
     static let volumeML = "volume_ml"
     static let dailyGoalML = "daily_goal_ml"
     static let servingType = "serving_type"
+    static let failureReason = "failure_reason"
     static let preset = "preset"
     static let enabled = "enabled"
     static let weekdayCount = "weekday_count"
@@ -145,6 +146,33 @@ public extension ProductAnalyticsEvent {
                 AnalyticsParameterName.preset: .string(preset),
                 AnalyticsParameterName.volumeML: .int(volumeML)
             ]
+        )
+    }
+
+    static func waterLogFailed(
+        source: String,
+        servingType: String,
+        failureReason: String,
+        volumeML: Int? = nil,
+        dailyGoalML: Int? = nil
+    ) -> ProductAnalyticsEvent {
+        var parameters: [String: AnalyticsParameterValue] = [
+            AnalyticsParameterName.source: .string(source),
+            AnalyticsParameterName.servingType: .string(servingType),
+            AnalyticsParameterName.failureReason: .string(failureReason)
+        ]
+
+        if let volumeML {
+            parameters[AnalyticsParameterName.volumeML] = .int(volumeML)
+        }
+
+        if let dailyGoalML {
+            parameters[AnalyticsParameterName.dailyGoalML] = .int(dailyGoalML)
+        }
+
+        return ProductAnalyticsEvent(
+            name: "water_log_failed",
+            parameters: parameters
         )
     }
 

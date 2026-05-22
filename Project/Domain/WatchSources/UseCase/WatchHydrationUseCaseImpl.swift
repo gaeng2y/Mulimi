@@ -22,27 +22,51 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         return makeSnapshot(dailyGoalML: dailyGoalML, events: events)
     }
 
-    public func drinkWater(referenceDate: Date) async -> WatchHydrationSnapshot {
+    public func drinkWater(referenceDate: Date) async -> WatchHydrationMutationResult {
         let currentSnapshot = await loadSnapshot(referenceDate: referenceDate)
         let drinkVolumeML = Int(defaultDrinkVolumeML)
 
         guard !currentSnapshot.isGoalReached,
               currentSnapshot.dailyGoalML <= 0 ||
               currentSnapshot.todayIntakeML + drinkVolumeML <= currentSnapshot.dailyGoalML else {
-            return currentSnapshot
+            return WatchHydrationMutationResult(
+                snapshot: currentSnapshot,
+                writeResult: .success
+            )
         }
 
-        await hydrationRepository.addDrink(
+        let writeResult = await hydrationRepository.addDrink(
             volumeML: drinkVolumeML,
             consumedAt: referenceDate
         )
 
-        return await loadSnapshot(referenceDate: referenceDate)
+        let snapshot: WatchHydrationSnapshot
+        if writeResult.isSuccess {
+            snapshot = await loadSnapshot(referenceDate: referenceDate)
+        } else {
+            snapshot = currentSnapshot
+        }
+
+        return WatchHydrationMutationResult(
+            snapshot: snapshot,
+            writeResult: writeResult
+        )
     }
 
-    public func reset(referenceDate: Date) async -> WatchHydrationSnapshot {
-        await hydrationRepository.resetEvents(on: referenceDate)
-        return await loadSnapshot(referenceDate: referenceDate)
+    public func reset(referenceDate: Date) async -> WatchHydrationMutationResult {
+        let currentSnapshot = await loadSnapshot(referenceDate: referenceDate)
+        let writeResult = await hydrationRepository.resetEvents(on: referenceDate)
+        let snapshot: WatchHydrationSnapshot
+        if writeResult.isSuccess {
+            snapshot = await loadSnapshot(referenceDate: referenceDate)
+        } else {
+            snapshot = currentSnapshot
+        }
+
+        return WatchHydrationMutationResult(
+            snapshot: snapshot,
+            writeResult: writeResult
+        )
     }
 
     private func makeSnapshot(

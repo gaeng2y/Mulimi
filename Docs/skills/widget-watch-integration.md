@@ -18,14 +18,17 @@
 - 다음 한 잔 계산은 `HydrationNextActionGuide`
 - 목표량은 앱과 동일한 `iCloud KVS + App Group mirror` 흐름을 따른다
 - 위젯/워치만의 독자 단위 규칙을 만들지 않는다
+- 기본 기록량 사용자 설정은 아직 없다. Widget button/Watch 기본 기록은 `HydrationServing.defaultGlassVolumeML`을 사용하고, Siri/Shortcuts AppIntent는 선택된 단위를 1회 기록한다
+- 기본 기록량 개인화를 구현할 때는 앱, Widget/AppIntent, Watch가 같은 App Group 기반 설정을 읽도록 설계한다
 
 ## Where to look
 
 - 위젯 공유 로직: `Project/Widget/Sources/DrinkWaterWidgetShared.swift`
-- AppIntent: `Project/Widget/Sources/AppIntent.swift`
+- AppIntent: `Project/App/Sources/AppIntents/`
 - watch 앱 진입: `Project/App/Watch/Sources/App/MulimiWatchApp.swift`
 - watch DI: `Project/Shared/DependencyInjection/Sources/Watch`
 - 공용 수분 계산: `Project/Domain/SharedInterfaces/`
+- 앱 기본 기록: `Project/Presentation/Sources/ViewModel/DrinkWaterViewModel.swift`
 
 ## Validation
 
@@ -36,3 +39,7 @@ xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -destination 'gene
 ```
 
 범위가 watch면 watch 빌드도 추가한다.
+
+## Related Docs
+
+- `Docs/reliability-recovery.md`

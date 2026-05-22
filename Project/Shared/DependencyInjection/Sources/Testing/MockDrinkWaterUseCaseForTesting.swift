@@ -18,6 +18,8 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
     public var deleteHydrationEventCallCount = 0
     public var deletedHydrationEventIDs: [UUID] = []
     public var events: [HydrationEvent] = []
+    public var drinkWaterResult: HydrationWriteResult = .success
+    public var resetResult: HydrationWriteResult = .success
 
     public init() {}
 
@@ -41,13 +43,19 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
         migrateCallCount += 1
     }
 
-    public func drinkWater() async {
+    @discardableResult
+    public func drinkWater() async -> HydrationWriteResult {
         await drinkWater(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    public func drinkWater(volumeML: Int) async {
+    @discardableResult
+    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        guard drinkWaterResult.isSuccess else {
+            return drinkWaterResult
+        }
+
         currentWaterIntakeMLValue += Double(volumeML)
         events.append(
             HydrationEvent(
@@ -56,13 +64,20 @@ public final class MockDrinkWaterUseCaseForTesting: DrinkWaterUseCase, @unchecke
                 volumeML: volumeML
             )
         )
+        return drinkWaterResult
     }
 
-    public func reset() async {
+    @discardableResult
+    public func reset() async -> HydrationWriteResult {
         resetCallCount += 1
+        guard resetResult.isSuccess else {
+            return resetResult
+        }
+
         currentWaterIntakeMLValue = 0
         recordedVolumesML = []
         events.removeAll()
+        return resetResult
     }
 
     public func deleteHydrationEvent(id: UUID) async -> Bool {

@@ -58,6 +58,23 @@ public struct WatchRootView: View {
                 await viewModel.load()
             }
         }
+        .alert(
+            WatchL10n.tr("watchHydrationMutationFailureTitle"),
+            isPresented: Binding(
+                get: { viewModel.mutationErrorMessage != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.clearMutationError()
+                    }
+                }
+            )
+        ) {
+            Button(WatchL10n.tr("watchCommonConfirmButton")) {
+                viewModel.clearMutationError()
+            }
+        } message: {
+            Text(viewModel.mutationErrorMessage ?? "")
+        }
     }
 
     private var heroCard: some View {

@@ -745,54 +745,58 @@ private struct WithdrawalSettingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
-            VStack(spacing: 16) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(.red)
+        ScrollView {
+            VStack(spacing: 24) {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.red)
+                        .accessibilityHidden(true)
 
-                Text(L10n.tr("settingWithdrawalTitle"))
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    Text(L10n.tr("settingWithdrawalTitle"))
+                        .font(.title2)
+                        .fontWeight(.bold)
 
-                Text(L10n.tr("withdrawalDescription"))
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                    Text(L10n.tr("withdrawalDescription"))
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal)
+                }
+                .padding(.top, 40)
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Label(L10n.tr("withdrawalDeleteRecordsItem"), systemImage: "drop.fill")
+                    Label(L10n.tr("withdrawalDeletePreferencesItem"), systemImage: "gearshape.fill")
+                    Label(L10n.tr("withdrawalDeleteAccountItem"), systemImage: "person.fill")
+                }
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(uiColor: .systemGray6))
+                )
+                .padding(.horizontal)
+                .accessibilityElement(children: .combine)
+
+                Button {
+                    viewModel.requestWithdrawal()
+                } label: {
+                    Text(L10n.tr("withdrawalActionTitle"))
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.red)
+                        .cornerRadius(12)
+                }
+                .accessibilityHint(L10n.tr("withdrawalActionAccessibilityHint"))
+                .padding(.horizontal)
+                .padding(.bottom)
             }
-            .padding(.top, 40)
-
-            VStack(alignment: .leading, spacing: 12) {
-                Label(L10n.tr("withdrawalDeleteRecordsItem"), systemImage: "drop.fill")
-                Label(L10n.tr("withdrawalDeletePreferencesItem"), systemImage: "gearshape.fill")
-                Label(L10n.tr("withdrawalDeleteAccountItem"), systemImage: "person.fill")
-            }
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(uiColor: .systemGray6))
-            )
-            .padding(.horizontal)
-
-            Spacer()
-
-            Button {
-                viewModel.requestWithdrawal()
-            } label: {
-                Text(L10n.tr("withdrawalActionTitle"))
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal)
-            .padding(.bottom)
         }
         .navigationTitle(L10n.tr("settingWithdrawalTitle"))
         .navigationBarTitleDisplayMode(.inline)

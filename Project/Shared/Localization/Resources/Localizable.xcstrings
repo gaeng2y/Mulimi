@@ -298,6 +298,17 @@
         }
       }
     },
+    "challengeRoutineActionAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 챌린지에 필요한 루틴 화면으로 이동합니다."
+          }
+        }
+      }
+    },
     "challengeCategoryRecommendedTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1354,6 +1365,17 @@
         }
       }
     },
+    "drinkWaterCustomAmountAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마신 양을 ml 단위로 직접 입력합니다."
+          }
+        }
+      }
+    },
     "drinkWaterButtonReachedTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1365,6 +1387,72 @@
         }
       }
     },
+    "drinkWaterDefaultRecordAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 1잔을 HealthKit 수분 기록에 추가합니다."
+          }
+        }
+      }
+    },
+    "drinkWaterDefaultRecordAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 1잔, %@ 기록"
+          }
+        }
+      }
+    },
+    "drinkWaterPresetRecordAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 용량을 HealthKit 수분 기록에 추가합니다."
+          }
+        }
+      }
+    },
+    "drinkWaterPresetRecordAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@ 기록"
+          }
+        }
+      }
+    },
+    "drinkWaterProgressAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 섭취량 %@, 목표 %@, 진행률 %lld%%"
+          }
+        }
+      }
+    },
+    "drinkWaterResetAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 수분 기록을 초기화합니다."
+          }
+        }
+      }
+    },
     "drinkWaterButtonTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1372,6 +1460,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "마시기"
+          }
+        }
+      }
+    },
+    "drinkWaterUndoRecordAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금 추가한 물리미 기록을 삭제합니다."
           }
         }
       }
@@ -1482,6 +1581,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기록을 되돌릴 수 없어요"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HealthKit에 수분 기록을 저장하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록하지 못했어요"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordPermissionFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 꺼져 있어 수분 기록을 저장하지 못했어요. 설정에서 권한을 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterResetFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 수분 기록을 초기화하지 못했어요. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "drinkWaterResetFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기화하지 못했어요"
+          }
+        }
+      }
+    },
+    "drinkWaterResetPermissionFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 꺼져 있어 오늘 수분 기록을 초기화하지 못했어요. 설정에서 권한을 확인한 뒤 다시 시도해 주세요."
           }
         }
       }
@@ -1904,6 +2069,39 @@
         }
       }
     },
+    "historyRecordDeleteAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미가 만든 HealthKit 기록만 삭제할 수 있습니다."
+          }
+        }
+      }
+    },
+    "historyRecordDeleteAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@ 기록 삭제"
+          }
+        }
+      }
+    },
+    "historyRecordDeleteUnavailableAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@ 외부 기록은 삭제할 수 없음"
+          }
+        }
+      }
+    },
     "historyRecordDeleteUnavailableTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1988,6 +2186,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기록 횟수"
+          }
+        }
+      }
+    },
+    "historySummaryMetricAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@"
           }
         }
       }
@@ -2109,6 +2318,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "인사이트 카테고리 선택"
+          }
+        }
+      }
+    },
+    "insightCardActionAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 인사이트에 맞는 다음 행동으로 이동합니다."
+          }
+        }
+      }
+    },
+    "insightRecoveryRecordAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 복구를 위해 지금 한 잔을 HealthKit에 기록합니다."
+          }
+        }
+      }
+    },
+    "insightRecoveryReminderAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 알림 권한 또는 시간을 조정합니다."
           }
         }
       }
@@ -3323,6 +3565,28 @@
         }
       }
     },
+    "recordCalendarDayAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@ 기록, 목표 대비 %lld%%"
+          }
+        }
+      }
+    },
+    "recordCalendarDayEmptyAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, 기록 없음"
+          }
+        }
+      }
+    },
     "recordCalendarMonthPickerTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3587,6 +3851,17 @@
         }
       }
     },
+    "healthKitPermissionAllowAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한 요청 화면을 엽니다."
+          }
+        }
+      }
+    },
     "healthKitPermissionBodyAccessDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3675,6 +3950,17 @@
         }
       }
     },
+    "healthKitPermissionOpenSettingsAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 앱에서 물리미의 건강 권한을 변경합니다."
+          }
+        }
+      }
+    },
     "healthKitPermissionPrivacyFootnote" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3693,6 +3979,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다시 확인하기"
+          }
+        }
+      }
+    },
+    "healthKitPermissionRefreshAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 권한 상태를 다시 확인합니다."
           }
         }
       }
@@ -3814,6 +4111,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 단계에서 건강 앱에 저장할 수분 기록과 목표 추천에 쓸 신체 정보를 안내해요."
+          }
+        }
+      }
+    },
+    "onboardingPageProgressAccessibilityLabelFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온보딩 %lld/%lld단계"
           }
         }
       }
@@ -5358,6 +5666,17 @@
         }
       }
     },
+    "profileRoutineRetrySaveTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 시도"
+          }
+        }
+      }
+    },
     "profileRoutineSaveError" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5376,6 +5695,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림 없이 저장"
+          }
+        }
+      }
+    },
+    "profileRoutineScheduleFailureAlertMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장된 루틴은 변경하지 않았습니다. 다시 시도하거나 알림 없이 비활성 루틴으로 저장할 수 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineScheduleFailureAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 알림을 예약하지 못했어요"
           }
         }
       }
@@ -5618,6 +5959,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "회원 탈퇴하기"
+          }
+        }
+      }
+    },
+    "withdrawalActionAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 삭제 확인 대화상자를 엽니다."
           }
         }
       }
