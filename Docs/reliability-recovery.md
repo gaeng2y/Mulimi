@@ -51,7 +51,7 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 | Watch/App Group 목표 불일치 | 앱/Watch가 서로 다른 목표를 보이면 다음 refresh에서 KVS와 App Group mirror를 다시 동기화한다. | KVS 양수 값이 우선이고, 없으면 local mirror 양수 값을 KVS로 올린다. | 앱 재진입, Watch 재진입 | 목표량은 `iCloud KVS + App Group UserDefaults mirror` 정책을 따른다. |
 | 알림 권한 미결정 | 루틴 저장 전 권한 요청 필요성을 설명한다. | 활성 루틴 저장 시 권한 상태를 먼저 확인한다. | 권한 요청 | 루틴 저장소는 UserDefaults JSON이고, 알림 스케줄은 활성 루틴에서 재구성한다. |
 | 알림 권한 거부 | 루틴을 만들 수는 있지만 활성 알림은 동작하지 않음을 설명하고 설정 이동을 제공한다. | 권한 거부 상태에서 활성 루틴 저장을 시도하면 설정 이동 prompt로 분기한다. | 설정 이동, 알림 없이 저장 | 활성 알림 상태와 루틴 표시가 어긋나지 않아야 한다. |
-| 알림 스케줄 실패 | 저장 또는 변경이 완료되지 않았음을 안내한다. | 스케줄 실패가 발생하면 활성 루틴을 예약 완료처럼 보여주지 않는다. | 다시 시도, 알림 없이 저장 | 저장된 루틴과 AlarmKit 스케줄 상태가 일치해야 한다. |
+| 알림 스케줄 실패 | 저장 또는 변경이 완료되지 않았음을 안내한다. | 저장소 커밋 전에 후보 스케줄을 먼저 재구성하고, 실패하면 이전 활성 루틴 스케줄 복구를 시도한 뒤 저장을 중단한다. | 다시 시도, 알림 없이 저장 | 저장된 루틴과 AlarmKit 스케줄 상태가 일치해야 한다. |
 
 ## Current Implementation Notes
 
@@ -62,14 +62,11 @@ Mulimi의 HealthKit, 알림, Widget, Watch 실패 상황을 같은 기준으로 
 - AppIntent와 Watch는 HealthKit 저장 실패를 조용한 성공으로 처리하지 않고 실패 안내를 반환한다.
 - Watch 목표량은 KVS를 먼저 보고 App Group mirror를 보정한다.
 - 루틴 알림은 권한 상태에 따라 권한 요청, 설정 이동, 알림 없이 저장으로 분기한다.
+- 루틴 저장/수정/삭제는 AlarmKit 스케줄 성공 후 UserDefaults 루틴 저장소를 커밋하고, 스케줄 실패 시 이전 스케줄 복구를 시도한다.
 
 ## Follow-Up Issues
 
-아래 항목은 문서 기준과 현재 구현 사이의 즉시 보강 후보다.
-
-| Area | Follow-up | Gap | Required outcome |
-| --- | --- | --- | --- |
-| Routine schedule atomicity | [#220](https://github.com/gaeng2y/Mulimi/issues/220) | 루틴 저장 후 AlarmKit 스케줄 실패가 나면 활성 루틴 표시와 실제 알림 상태가 어긋날 수 있다. | 스케줄 실패 시 활성 루틴을 예약 완료처럼 보여주지 않고, 다시 시도 또는 알림 없이 저장으로 복구한다. |
+현재 문서 기준과 구현 사이에 추적 중인 즉시 보강 후속은 없다.
 
 ## QA Scenarios
 

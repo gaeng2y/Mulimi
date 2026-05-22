@@ -5666,6 +5666,17 @@
         }
       }
     },
+    "profileRoutineRetrySaveTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 시도"
+          }
+        }
+      }
+    },
     "profileRoutineSaveError" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5684,6 +5695,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림 없이 저장"
+          }
+        }
+      }
+    },
+    "profileRoutineScheduleFailureAlertMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장된 루틴은 변경하지 않았습니다. 다시 시도하거나 알림 없이 비활성 루틴으로 저장할 수 있어요."
+          }
+        }
+      }
+    },
+    "profileRoutineScheduleFailureAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "루틴 알림을 예약하지 못했어요"
           }
         }
       }

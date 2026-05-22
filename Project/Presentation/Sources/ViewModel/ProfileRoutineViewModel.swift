@@ -46,6 +46,7 @@ struct RoutineGuidanceSummary: Equatable {
 enum RoutinePermissionPrompt: String, Identifiable, Equatable {
     case requestAuthorization
     case openSettings
+    case scheduleFailure
 
     var id: String { rawValue }
 }
@@ -262,6 +263,8 @@ public final class ProfileRoutineViewModel {
             return L10n.tr("profileRoutinePermissionRequestAlertTitle")
         case .openSettings:
             return L10n.tr("profileRoutinePermissionDeniedAlertTitle")
+        case .scheduleFailure:
+            return L10n.tr("profileRoutineScheduleFailureAlertTitle")
         case .none:
             return ""
         }
@@ -273,6 +276,8 @@ public final class ProfileRoutineViewModel {
             return L10n.tr("profileRoutinePermissionRequestAlertMessage")
         case .openSettings:
             return L10n.tr("profileRoutinePermissionDeniedAlertMessage")
+        case .scheduleFailure:
+            return L10n.tr("profileRoutineScheduleFailureAlertMessage")
         case .none:
             return ""
         }
@@ -538,6 +543,8 @@ public final class ProfileRoutineViewModel {
             case .permissionDenied:
                 notificationStatus = await routineUseCase.notificationAuthorizationStatus()
                 permissionPrompt = .openSettings
+            case .scheduleFailed:
+                permissionPrompt = .scheduleFailure
             }
         } catch {
             errorMessage = L10n.tr("profileRoutineSaveError")
