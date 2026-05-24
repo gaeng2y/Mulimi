@@ -8,6 +8,7 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 | --- | --- | --- |
 | 저장소 소개와 시작 방법 | `README.md` | 실행 방법, 주요 기능, 대표 문서 링크가 바뀔 때 |
 | 작업 규칙과 금지 규칙 | `AGENTS.md` | 에이전트/개발자 공통 작업 규칙이 바뀔 때 |
+| 에이전트별 진입 파일 | `CLAUDE.md`, `GEMINI.md` | `AGENTS.md` symlink로 유지한다. 도구 전용 예외가 필요해도 공통 규칙을 복제하지 않는다 |
 | 구조 규칙 | `ARCHITECTURE.md` | 레이어 책임, Source of Truth, 전역 흐름이 바뀔 때 |
 | 문서 허브 | `Docs/index.md` | 새 문서가 생기거나 읽기 경로가 바뀔 때 |
 | 하네스 구조 | `Docs/harness-engineering.md` | 문서/검증/실행계획 운영 구조가 바뀔 때 |
@@ -42,6 +43,7 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 - 새 문서가 `Docs/index.md`에 연결되어 있는가?
 - README에 노출할 만큼 대표 문서인가?
 - 구조 규칙 변경이면 `ARCHITECTURE.md` 또는 `AGENTS.md`도 갱신했는가?
+- 에이전트 공통 규칙을 도구별 파일에 복제하지 않았는가?
 - 긴 작업이면 `Docs/exec-plans/active/` 또는 `completed/`에 기록했는가?
 - 과거 문서가 현재 구조를 오도하지 않는가?
 
@@ -63,6 +65,7 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 ## Anti-Patterns
 
 - 같은 규칙을 README, AGENTS, ARCHITECTURE에 모두 길게 복제하지 않는다.
+- `CLAUDE.md`, `GEMINI.md`에 `AGENTS.md` 원문을 복제하지 않는다.
 - 제품 요구를 실행 계획 문서에만 남기지 않는다.
 - 임시 예외를 문서로 합리화하지 않는다.
 - 검증하지 않은 명령을 통과한 것처럼 기록하지 않는다.
