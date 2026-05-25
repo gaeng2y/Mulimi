@@ -49,6 +49,17 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 - Draft PR은 리뷰 전 정리나 CI 확인이 남아 있을 때 사용한다.
 - Ready for review 전환은 남은 검증과 문서 갱신이 끝난 뒤에 한다.
 
+## AI Review Automation
+
+`.github/workflows/ai-pr-review.yml`은 Git Flow 흐름에 맞는 PR이 생성되거나 Draft에서 Ready for review로 전환될 때만 AI 리뷰를 남긴다.
+
+- `feature/*`, `bugfix/*`, `release/*` -> `develop`
+- `develop`, `release/*`, `hotfix/*` -> `main`
+- 일반 push나 PR 동기화(`synchronize`)에는 재실행하지 않는다.
+- 외부 모델 호출에는 `OPENAI_API_KEY` Actions secret이 필요하다.
+- 모델은 repository variable `OPENAI_REVIEW_MODEL`로 바꿀 수 있고, 기본값은 workflow에 둔다.
+- fork PR에는 secrets가 기본 전달되지 않으므로 리뷰가 건너뛸 수 있다.
+
 ## Validation Reporting
 
 검증 기준은 `Docs/quality-gates.md`가 SSOT다.
