@@ -13,10 +13,10 @@ import UIKit
 
 public struct DrinkWaterView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.openURL) private var openURL
     private var viewModel: DrinkWaterViewModel
     @State private var isCustomAmountPresented = false
+    @State private var isResetConfirmationPresented = false
 
     public init(viewModel: DrinkWaterViewModel) {
         self.viewModel = viewModel
@@ -83,13 +83,18 @@ public struct DrinkWaterView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 8)
 
-                actionButtons
+                defaultDrinkButton
+                    .padding(.horizontal)
 
                 if let recentRecordUndo = viewModel.recentRecordUndo {
                     recentUndoCard(recentRecordUndo)
                         .padding(.horizontal)
                         .padding(.top, 8)
                 }
+
+                resetButton
+                    .padding(.horizontal)
+                    .padding(.top, 4)
             }
         }
         .task {
@@ -108,6 +113,23 @@ public struct DrinkWaterView: View {
         }
         .sheet(isPresented: $isCustomAmountPresented) {
             CustomHydrationAmountSheet(viewModel: viewModel)
+        }
+        .alert(
+            L10n.tr("drinkWaterResetConfirmationTitle"),
+            isPresented: $isResetConfirmationPresented
+        ) {
+            Button(
+                L10n.tr("drinkWaterResetConfirmationActionTitle"),
+                role: .destructive
+            ) {
+                Task {
+                    await viewModel.reset()
+                }
+            }
+
+            Button(L10n.tr("commonCancelTitle"), role: .cancel) {}
+        } message: {
+            Text(L10n.tr("drinkWaterResetConfirmationMessage"))
         }
         .alert(
             viewModel.recordFailureAlert?.title ?? "",
@@ -239,22 +261,6 @@ public struct DrinkWaterView: View {
         )
     }
 
-    @ViewBuilder
-    private var actionButtons: some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(spacing: 10) {
-                defaultDrinkButton
-                resetButton
-            }
-            .padding(.horizontal)
-        } else {
-            HStack {
-                defaultDrinkButton
-                resetButton
-            }
-        }
-    }
-
     private var defaultDrinkButton: some View {
         Button {
             Task {
@@ -285,20 +291,43 @@ public struct DrinkWaterView: View {
     }
 
     private var resetButton: some View {
-        Button {
-            Task {
-                await viewModel.reset()
-            }
+        Button(role: .destructive) {
+            isResetConfirmationPresented = true
         } label: {
-            Text(L10n.tr("commonResetTitle"))
-                .font(.headline)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(.white)
-                .foregroundColor(.black)
-                .cornerRadius(10)
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "trash")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundColor(.red)
+                    .frame(width: 18, height: 18)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(L10n.tr("drinkWaterResetTodayRecordsTitle"))
+                        .font(.footnote.weight(.semibold))
+                        .foregroundColor(.red)
+
+                    Text(L10n.tr("drinkWaterResetTodayRecordsDescription"))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.red.opacity(0.07))
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(Color.red.opacity(0.18), lineWidth: 1)
+            }
         }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(L10n.tr("drinkWaterResetTodayRecordsTitle"))
         .accessibilityHint(L10n.tr("drinkWaterResetAccessibilityHint"))
     }
 
