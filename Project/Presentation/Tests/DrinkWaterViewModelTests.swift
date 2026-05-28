@@ -317,6 +317,35 @@ struct DrinkWaterViewModelTests {
     }
 
     @MainActor
+    @Test("reset 성공 시 최근 기록 되돌리기 상태와 오류를 정리한다")
+    func resetClearsUndoState() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.shouldDeleteHydrationEventSucceed = false
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.recordWater(volumeML: HydrationServing.defaultGlassVolumeML)
+        _ = await viewModel.undoRecentRecord()
+
+        #expect(viewModel.recentRecordUndo != nil)
+        #expect(viewModel.undoErrorMessage != nil)
+
+        await viewModel.reset()
+
+        #expect(viewModel.currentWaterIntakeML == 0)
+        #expect(viewModel.recentRecordUndo == nil)
+        #expect(viewModel.undoErrorMessage == nil)
+        #expect(waterUseCase.resetCallCount == 1)
+    }
+
+    @MainActor
     @Test("reset 실패 시 기존 상태를 유지하고 위젯을 갱신하지 않는다")
     func resetFailureDoesNotRunSuccessEffects() async {
         let waterUseCase = MockDrinkWaterUseCase()
