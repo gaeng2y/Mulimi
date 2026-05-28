@@ -22,20 +22,28 @@ public struct OnboardingView: View {
             backgroundGradient
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                header
+            GeometryReader { proxy in
+                VStack(spacing: 0) {
+                    header
 
-                TabView(selection: $viewModel.currentPage) {
-                    ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
-                        pageView(page)
+                    TabView(selection: $viewModel.currentPage) {
+                        ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
+                            ScrollView(showsIndicators: false) {
+                                pageView(page, in: proxy.size)
+                                    .padding(.horizontal, 24)
+                                    .padding(.top, 20)
+                                    .padding(.bottom, 18)
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                            }
+                            .scrollBounceBehavior(.basedOnSize)
                             .tag(index)
-                            .padding(.horizontal, 24)
-                            .padding(.top, 20)
+                        }
                     }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .frame(maxHeight: .infinity)
 
-                footer
+                    footer
+                }
             }
         }
     }
@@ -64,8 +72,10 @@ public struct OnboardingView: View {
         .padding(.top, 20)
     }
 
-    private func pageView(_ page: OnboardingPage) -> some View {
-        VStack(alignment: .leading, spacing: 24) {
+    private func pageView(_ page: OnboardingPage, in size: CGSize) -> some View {
+        let isCompact = isCompactLayout(for: size)
+
+        return VStack(alignment: .leading, spacing: isCompact ? 18 : 24) {
             RoundedRectangle(cornerRadius: 36, style: .continuous)
                 .fill(
                     LinearGradient(
@@ -90,23 +100,29 @@ public struct OnboardingView: View {
                 .overlay {
                     VStack(alignment: .leading, spacing: 20) {
                         Image(systemName: page.systemImage)
-                            .font(.system(size: 60, weight: .semibold))
+                            .font(.system(size: isCompact ? 46 : 60, weight: .semibold))
                             .foregroundStyle(.white)
 
-                        Spacer()
+                        Spacer(minLength: isCompact ? 12 : 24)
 
                         Text(page.eyebrow)
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.white.opacity(0.78))
 
                         Text(page.title)
-                            .font(.system(size: 31, weight: .bold, design: .rounded))
+                            .font(
+                                .system(
+                                    isCompact ? .title2 : .largeTitle,
+                                    design: .rounded,
+                                    weight: .bold
+                                )
+                            )
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(28)
+                    .padding(isCompact ? 22 : 28)
                 }
-                .frame(maxHeight: 360)
+                .frame(height: panelHeight(for: size))
 
             VStack(alignment: .leading, spacing: 18) {
                 Text(page.description)
@@ -130,9 +146,23 @@ public struct OnboardingView: View {
                     }
                 }
             }
-
-            Spacer(minLength: 0)
         }
+    }
+
+    private func isCompactLayout(for size: CGSize) -> Bool {
+        dynamicTypeSize.isAccessibilitySize || size.height < 720 || size.width < 360
+    }
+
+    private func panelHeight(for size: CGSize) -> CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return min(max(size.height * 0.42, 300), 400)
+        }
+
+        if size.height < 720 || size.width < 360 {
+            return min(max(size.height * 0.34, 220), 300)
+        }
+
+        return min(max(size.height * 0.40, 300), 360)
     }
 
     private var footer: some View {
