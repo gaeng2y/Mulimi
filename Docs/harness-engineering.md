@@ -12,6 +12,8 @@ Mulimi에서 말하는 하네스 엔지니어링은 AI 에이전트와 개발자
 
 ```text
 AGENTS.md          -> 작업 규칙과 읽기 순서
+CLAUDE.md          -> AGENTS.md symlink 진입 포인터
+GEMINI.md          -> AGENTS.md symlink 진입 포인터
 README.md          -> 제품 개요와 개발 시작점
 ARCHITECTURE.md    -> 구조 SSOT
 Docs/index.md      -> 문서 허브
@@ -42,6 +44,11 @@ Docs/*.md          -> 도메인/설계 배경 문서
 ### `AGENTS.md`
 - 작업 순서, 금지 규칙, 기본 검증 절차
 - 에이전트/자동화 작업의 운영 기준
+
+### `CLAUDE.md`, `GEMINI.md`
+- 도구별 진입점
+- 공통 규칙을 복제하지 않고 `AGENTS.md`를 가리키는 symlink
+- 도구 전용 예외가 필요해지면 먼저 `AGENTS.md`의 공통 규칙으로 흡수 가능한지 검토
 
 ### `README.md`
 - 저장소 소개
@@ -97,6 +104,7 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 검증 기준 변경: `Docs/quality-gates.md`와 관련 `Docs/skills/` 갱신
 - 이슈/PR 운영 기준 변경: `Docs/delivery-workflow.md`와 필요한 템플릿 갱신
 - 보안/개인정보 경계 변경: `Docs/security-privacy.md` 갱신
+- 에이전트 공통 규칙 변경: `AGENTS.md` 갱신, 도구별 파일은 포인터 상태 유지
 - 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
