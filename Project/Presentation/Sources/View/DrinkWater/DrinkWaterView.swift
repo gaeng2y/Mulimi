@@ -31,6 +31,9 @@ public struct DrinkWaterView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 28) {
                         waterDropArea(in: proxy.size)
+
+                        progressSummary
+                            .padding(.horizontal, 24)
                             .accessibilityElement(children: .ignore)
                             .accessibilityLabel(progressAccessibilityLabel)
 
@@ -47,16 +50,6 @@ public struct DrinkWaterView: View {
         .task {
             // Refresh data when view appears to catch any Widget changes.
             await viewModel.loadInitialState()
-        }
-        .task {
-            // Start the repeating wave after the initial frame is committed.
-            guard !reduceMotion else {
-                viewModel.resetAnimation()
-                return
-            }
-            viewModel.resetAnimation()
-            await Task.yield()
-            viewModel.startAnimation()
         }
         .alert(
             L10n.tr("drinkWaterResetConfirmationTitle"),
@@ -101,14 +94,6 @@ public struct DrinkWaterView: View {
         }
     }
 
-    private var waterDropAnimation: Animation? {
-        guard !reduceMotion else {
-            return nil
-        }
-
-        return .linear(duration: 2.0).repeatForever(autoreverses: false)
-    }
-
     private var progressAccessibilityLabel: String {
         L10n.tr(
             "drinkWaterProgressAccessibilityLabelFormat",
@@ -118,6 +103,10 @@ public struct DrinkWaterView: View {
         )
     }
 
+    private var usesExpandedVerticalLayout: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
+
     private func waterDropArea(in size: CGSize) -> some View {
         GeometryReader { proxy in
             let dropSize = min(proxy.size.width, proxy.size.height) * 0.88
@@ -125,9 +114,8 @@ public struct DrinkWaterView: View {
             WaterDropView(
                 appearance: viewModel.mainIcon,
                 progress: viewModel.progress,
-                offset: viewModel.offset
+                reduceMotion: reduceMotion
             )
-            .animation(waterDropAnimation, value: viewModel.offset)
             .frame(
                 width: dropSize,
                 height: dropSize,
@@ -144,20 +132,77 @@ public struct DrinkWaterView: View {
 
     private func waterDropAreaHeight(for size: CGSize) -> CGFloat {
         if dynamicTypeSize.isAccessibilitySize {
-            return min(max(size.height * 0.38, 220), 320)
+            return min(max(size.height * 0.30, 190), 270)
         }
 
         if size.height < 700 || size.width < 360 {
-            return min(max(size.height * 0.44, 260), 340)
+            return min(max(size.height * 0.36, 220), 300)
         }
 
-        return min(max(size.height * 0.52, 320), 460)
+        return min(max(size.height * 0.42, 300), 400)
     }
 
+    private var progressSummary: some View {
+        VStack(spacing: 8) {
+            if usesExpandedVerticalLayout {
+                VStack(spacing: 4) {
+                    Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
+                        .font(.title)
+                    Text("\(viewModel.mililiters)")
+                        .font(.callout)
+                }
+            } else {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
+                        .font(.title)
+                    Text("\(viewModel.mililiters)")
+                        .font(.callout)
+                }
+            }
+
+            if usesExpandedVerticalLayout {
+                VStack(spacing: 4) {
+                    goalText
+                    completionText
+                }
+            } else {
+                HStack(alignment: .firstTextBaseline) {
+                    goalText
+                    completionText
+                }
+            }
+        }
+    }
+
+    private var goalText: some View {
+        Text(L10n.tr("drinkWaterGoalFormat", Int(viewModel.dailyLimit.rounded())))
+            .font(.caption)
+            .foregroundColor(.secondary)
+    }
+
+    @ViewBuilder
+    private var completionText: some View {
+        if viewModel.isLimitReached {
+            Text(L10n.tr("drinkWaterCompleteLabel"))
+                .font(.caption)
+                .foregroundColor(.green)
+                .fontWeight(.semibold)
+        }
+    }
+
+    @ViewBuilder
     private var actionButtons: some View {
-        VStack(spacing: 12) {
-            defaultDrinkButton
-            resetButton
+        if usesExpandedVerticalLayout {
+            VStack(spacing: 12) {
+                defaultDrinkButton
+                resetButton
+            }
+        } else {
+            HStack(spacing: 12) {
+                defaultDrinkButton
+                resetButton
+                    .frame(width: 112)
+            }
         }
     }
 
@@ -174,8 +219,10 @@ public struct DrinkWaterView: View {
             )
                 .font(.headline)
                 .fontWeight(.bold)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
                 .frame(maxWidth: .infinity)
-                .padding()
+                .frame(minHeight: 50)
                 .background(viewModel.isLimitReached ? Color.gray : Color.accent)
                 .foregroundColor(.white)
                 .cornerRadius(10)
@@ -194,10 +241,15 @@ public struct DrinkWaterView: View {
         Button(role: .destructive) {
             isResetConfirmationPresented = true
         } label: {
-            Text(L10n.tr("commonResetTitle"))
-                .font(.subheadline.weight(.semibold))
+            Label(
+                L10n.tr("commonResetTitle"),
+                systemImage: "trash"
+            )
+                .font(.footnote.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+                .frame(minHeight: 50)
                 .foregroundColor(.red)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -226,31 +278,146 @@ public struct DrinkWaterView: View {
 fileprivate struct WaterDropView: View {
     let appearance: MainIcon
     let progress: CGFloat
-    let offset: CGFloat
+    let reduceMotion: Bool
 
     var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: reduceMotion)) { context in
+            GeometryReader { proxy in
+                let size = CGSize(
+                    width: max(proxy.size.width, 1),
+                    height: max(proxy.size.height, 1)
+                )
+                let time = reduceMotion ?
+                0 :
+                context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 10_000)
+
+                ZStack {
+                    dropBackground
+                    waterSurface(time: time, size: size)
+                    dropHighlights
+                }
+                .frame(
+                    width: proxy.size.width,
+                    height: proxy.size.height,
+                    alignment: .center
+                )
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
+    private var dropBackground: some View {
+        Image(systemName: appearance.fillSystemImage)
+            .resizable()
+            .renderingMode(.template)
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(.white)
+            .scaleEffect(x: 1.1, y: 1.1)
+            .offset(y: -1)
+    }
+
+    private var dropHighlights: some View {
         ZStack {
-            Image(systemName: appearance.fillSystemImage)
-                .resizable()
-                .renderingMode(.template)
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(.white)
-                .scaleEffect(x: 1.1, y: 1.1)
-                .offset(y: -1)
+            dropSymbol
+                .foregroundColor(.white.opacity(0.16))
+                .scaleEffect(1.015)
+
+            LinearGradient(
+                colors: [
+                    Color.white.opacity(0.45),
+                    Color.white.opacity(0.03),
+                    Color.clear
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .mask {
+                dropSymbol
+            }
+            .blendMode(.screen)
+            .opacity(0.55)
+        }
+    }
+
+    private var dropSymbol: some View {
+        Image(systemName: appearance.fillSystemImage)
+            .resizable()
+            .renderingMode(.template)
+            .aspectRatio(contentMode: .fit)
+    }
+
+    private var dropMask: some View {
+        Image(systemName: appearance.fillSystemImage)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+    }
+
+    private func waterSurface(time: TimeInterval, size: CGSize) -> some View {
+        let library = ShaderLibrary.bundle(Bundle(for: PresentationLayerShaderBundleToken.self))
+        let shaderTime = Float(time)
+        let shaderProgress = Float(progress)
+        let wavePhase = CGFloat(time * 58)
+
+        return ZStack {
+            WaterWaveView(
+                progress: progress,
+                waveHeight: 0.055,
+                offset: wavePhase
+            )
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Color.cyan.opacity(0.9),
+                        Color.teal
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .distortionEffect(
+                library.mulimiWaterDistortion(
+                    .float(shaderTime),
+                    .float(shaderProgress),
+                    .float2(size)
+                ),
+                maxSampleOffset: CGSize(width: 12, height: 8)
+            )
+            .colorEffect(
+                library.mulimiWaterLighting(
+                    .float(shaderTime),
+                    .float(shaderProgress),
+                    .float2(size)
+                )
+            )
+            .mask {
+                Image(systemName: appearance.fillSystemImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
 
             WaterWaveView(
                 progress: progress,
-                waveHeight: 0.1,
-                offset: offset
+                waveHeight: 0.025,
+                offset: -wavePhase * 0.62 + 140
             )
-            .fill(.teal)
-            .waterDropGlareEffect()
+            .fill(Color.white.opacity(0.28))
+            .distortionEffect(
+                library.mulimiWaterDistortion(
+                    .float(shaderTime + 3.7),
+                    .float(shaderProgress),
+                    .float2(size)
+                ),
+                maxSampleOffset: CGSize(width: 8, height: 5)
+            )
             .mask {
                 Image(systemName: appearance.fillSystemImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }
         }
-        .accessibilityHidden(true)
+        .compositingGroup()
+        .waterDropGlareEffect()
     }
 }
+
+private final class PresentationLayerShaderBundleToken {}

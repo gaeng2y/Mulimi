@@ -61,7 +61,12 @@ let project = Project(
                 ),
                 .external(name: "FirebaseAnalytics"),
                 .external(name: "FirebaseCrashlytics")
-            ]
+            ],
+            settings: .settings(
+                base: [
+                    "OTHER_LDFLAGS": .string("$(inherited) -ObjC")
+                ]
+            )
         ),
         .target(
             name: "WidgetExtension",
