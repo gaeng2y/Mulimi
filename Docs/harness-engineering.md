@@ -25,6 +25,10 @@ Docs/documentation-maintenance.md -> 문서 유지보수 규칙
 Docs/delivery-workflow.md -> 이슈, 브랜치, PR 전달 흐름
 Docs/security-privacy.md -> 보안/개인정보 운영 기준
 Docs/*.md          -> 도메인/설계 배경 문서
+.github/workflows/lint.yml -> PR lint와 architecture check
+.github/workflows/pr-unit-tests.yml -> PR 단위 Unit Test
+.github/workflows/ai-pr-review.yml -> Git Flow PR AI 리뷰
+ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 ```
 
 ## Reading Path
@@ -96,6 +100,21 @@ Docs/*.md          -> 도메인/설계 배경 문서
 ### `Docs/security-privacy.md`
 - 민감 데이터 저장소, 권한, 외부 SDK, App Store privacy label 영향 검토 기준
 - 광고/IAP/서버 연동 전 확인할 개인정보 체크리스트
+
+## Automation Harness
+
+하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.
+
+| Surface | File | Responsibility |
+| --- | --- | --- |
+| Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
+| Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
+| GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
+| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 `DomainLayer`, `DataLayer`, `PresentationLayer` 테스트를 실행한다. |
+| GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
+| Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
+
+PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
 
 ## Update Rules
 
