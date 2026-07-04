@@ -64,8 +64,10 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 
 검증 기준은 `Docs/quality-gates.md`가 SSOT다.
 
-- 실행한 명령과 결과만 `Test Results`에 적는다.
+- 직접 실행한 명령과 결과만 PR 템플릿의 `실행한 로컬 검증`에 적는다.
 - 실행하지 않은 검증은 이유를 적는다.
+- GitHub Actions와 Xcode Cloud 결과는 `자동화 결과`에 로컬 검증과 분리해서 적는다.
+- Xcode, simulator/device, Tuist 같은 재현 정보는 `검증 환경`에 적는다.
 - 시뮬레이터 문제로 재실행했다면 실패한 조건과 성공한 조건을 모두 남긴다.
 - 문서 전용 변경이라도 `git diff --check`는 확인한다.
 - 코드 변경이면 최소한 `make lint`와 `make arch-check`를 먼저 본다.

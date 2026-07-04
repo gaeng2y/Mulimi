@@ -32,10 +32,12 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 
 PR이나 작업 완료 메시지에는 아래를 구분해 적는다.
 
-- 실행한 검증
+- 실행한 로컬 검증
 - 실행하지 않은 검증과 이유
+- 자동화 결과: GitHub Actions, Xcode Cloud
+- 검증 환경: Xcode, simulator/device, Tuist
 - 기존 경고와 새 경고의 구분
-- 구조 변경 시 갱신한 문서
+- 구조, 제품, 하네스 변경 시 갱신한 문서
 
 ## Failure Handling
 
