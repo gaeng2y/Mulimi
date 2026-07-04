@@ -97,6 +97,17 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 민감 데이터 저장소, 권한, 외부 SDK, App Store privacy label 영향 검토 기준
 - 광고/IAP/서버 연동 전 확인할 개인정보 체크리스트
 
+## Toolchain Policy
+
+현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
+
+- Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
+- GitHub Actions는 `macos-15` runner와 `latest-stable` Xcode를 사용한다.
+- CI 시뮬레이터 destination은 hosted runner에서 안정적으로 찾을 수 있는 이름 기반 값을 사용한다.
+- 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.
+
+최신 도구 drift로 CI나 로컬 검증이 반복 실패하면, 실패 로그와 영향 범위를 남기고 `.mise.toml`, GitHub Actions Xcode 버전, 문서의 기준 버전을 같은 PR에서 pin한다.
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
