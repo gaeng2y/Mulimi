@@ -100,6 +100,8 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
   - `tuist generate`
 - 도메인 검증:
   - `xcodebuild test -workspace Mulimi.xcworkspace -scheme DomainLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
+- 데이터 검증:
+  - `xcodebuild test -workspace Mulimi.xcworkspace -scheme DataLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
 - 프레젠테이션 검증:
   - `xcodebuild test -workspace Mulimi.xcworkspace -scheme PresentationLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
 - 앱 빌드:
