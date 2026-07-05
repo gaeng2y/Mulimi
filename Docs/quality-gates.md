@@ -13,6 +13,18 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 
 문서만 바뀐 경우에도 `git diff --check`는 확인한다. 실행하지 않은 검증은 PR 본문에 통과했다고 적지 않는다.
 
+`make verify`는 `make lint`와 `make arch-check`를 묶은 lightweight gate다. Unit test와 앱 빌드가 필요한 변경에서는 아래 matrix에 맞는 `xcodebuild test` 또는 `xcodebuild build`를 별도로 실행한다.
+
+## Validation Levels
+
+| Level | Scope | Commands |
+| --- | --- | --- |
+| Lightweight local | 공백, SwiftLint, architecture guardrail | `git diff --check`, `make lint`, `make arch-check` 또는 `make verify` |
+| Unit local | 변경 레이어별 Swift unit test | `DomainLayer`, `DataLayer`, `PresentationLayer` `xcodebuild test` |
+| Build local | 앱/위젯/워치 통합 빌드 | `xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi ...` |
+| PR CI | PR 단위 자동 검증 | `.github/workflows/lint.yml`, `.github/workflows/pr-unit-tests.yml` |
+| Release CI | 릴리스 archive 검증 | Xcode Cloud `Release-Build` |
+
 ## Validation Matrix
 
 | 변경 유형 | 최소 검증 | 추가 검증 |
