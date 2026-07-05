@@ -445,20 +445,6 @@ struct DrinkWaterViewModelTests {
         )
     }
 
-    @MainActor
-    @Test("startAnimation은 offset을 360으로 설정한다")
-    func startAnimation() {
-        let viewModel = DrinkWaterViewModel(
-            waterUseCase: MockDrinkWaterUseCase(),
-            userPreferencesUseCase: MockUserPreferencesUseCase(),
-            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
-            widgetTimelineReloader: NoOpWidgetTimelineReloader()
-        )
-
-        viewModel.startAnimation()
-
-        #expect(viewModel.offset == 360)
-    }
 }
 
 private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {

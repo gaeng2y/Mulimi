@@ -148,14 +148,14 @@ public struct DrinkWaterView: View {
                 VStack(spacing: 4) {
                     Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
                         .font(.title)
-                    Text("\(viewModel.mililiters)")
+                    Text(viewModel.mililiters)
                         .font(.callout)
                 }
             } else {
                 HStack(alignment: .firstTextBaseline) {
                     Text(L10n.tr("drinkWaterGlassCountFormat", viewModel.drinkWaterCount))
                         .font(.title)
-                    Text("\(viewModel.mililiters)")
+                    Text(viewModel.mililiters)
                         .font(.callout)
                 }
             }
@@ -343,12 +343,6 @@ fileprivate struct WaterDropView: View {
         Image(systemName: appearance.fillSystemImage)
             .resizable()
             .renderingMode(.template)
-            .aspectRatio(contentMode: .fit)
-    }
-
-    private var dropMask: some View {
-        Image(systemName: appearance.fillSystemImage)
-            .resizable()
             .aspectRatio(contentMode: .fit)
     }
 

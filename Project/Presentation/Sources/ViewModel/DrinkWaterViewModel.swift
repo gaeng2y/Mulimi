@@ -47,7 +47,6 @@ struct HydrationRecordFailureAlertModel: Equatable {
 public final class DrinkWaterViewModel {
     // MARK: - Published State
     private(set) var currentWaterIntakeML: Double
-    private(set) var offset: CGFloat = 0
     private(set) var mainIcon: MainIcon
     private(set) var currentDailyLimit: Double
     private(set) var recentRecordUndo: RecentHydrationRecordUndoModel?
@@ -372,14 +371,6 @@ public final class DrinkWaterViewModel {
 
     func clearRecordFailureAlert() {
         recordFailureAlert = nil
-    }
-
-    func resetAnimation() {
-        offset = 0
-    }
-
-    func startAnimation() {
-        offset = 360
     }
 
     public func refreshState() async {
