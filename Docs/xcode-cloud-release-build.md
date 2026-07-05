@@ -1,7 +1,7 @@
 # Xcode Cloud: Release Build Only Setup
 
 이 문서는 `#15` 이슈 범위를 "Release Build"로 한정해서 설정하는 절차입니다.
-`PR-UnitTests` 워크플로는 만들지 않습니다.
+Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR lint와 유닛 테스트 게이트는 GitHub Actions의 `.github/workflows/lint.yml`, `.github/workflows/pr-unit-tests.yml`가 담당합니다.
 
 ## 1) 저장소 준비
 - 커스텀 스크립트 경로를 Xcode Cloud 표준인 `ci_scripts/`로 사용
@@ -41,4 +41,5 @@ Xcode > Report navigator > Cloud 또는 App Store Connect > Xcode Cloud에서 �
 
 ## 5) 현재 범위
 - 포함: Release Archive 자동화
-- 제외: PR 생성 시 유닛 테스트 게이팅
+- 제외: Xcode Cloud 기반 PR 유닛 테스트 게이팅
+- GitHub Actions 담당: PR lint, architecture check, `DomainLayer`/`DataLayer`/`PresentationLayer` 유닛 테스트
