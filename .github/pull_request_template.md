@@ -48,20 +48,34 @@
 
 ## ✅ Testing
 <!-- 테스트 방법과 결과를 작성해주세요 -->
-### Test Plan
-- [ ] 앱 빌드 성공
-- [ ] Debug 모드 정상 작동
-- [ ] Release 모드 정상 작동
-- [ ] 기존 기능 영향 없음
-- [ ] Widget Extension 정상 작동 (해당시)
+### 실행한 로컬 검증
+<!-- 직접 실행한 명령과 결과만 적어주세요. 실행하지 않은 항목은 체크하지 않습니다. -->
+- [ ] `git diff --check`
+- [ ] `make lint`
+- [ ] `make arch-check`
+- [ ] `tuist generate`
+- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme DomainLayer ...`
+- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme DataLayer ...`
+- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme PresentationLayer ...`
+- [ ] `xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi ...`
 
-### Test Environment
-- iOS Version:
-- Device:
-- Xcode Version:
+### 실행하지 않은 검증과 이유
+<!-- 예: Watch 변경 없음, 문서 전용 변경, 로컬 환경에 해당 시뮬레이터 없음 -->
+-
 
-### Test Results
-<!-- 테스트 결과를 간단히 작성해주세요 -->
+### 자동화 결과
+<!-- GitHub Actions와 Xcode Cloud 결과를 로컬 검증과 분리해 적어주세요. -->
+- GitHub Actions:
+- Xcode Cloud:
+
+### 검증 환경
+- Xcode:
+- iOS / Simulator / Device:
+- Tuist:
+
+### 기존 경고와 새 경고
+- Existing:
+- New:
 
 
 ## 🚨 Breaking Changes
@@ -75,12 +89,16 @@
 ## 📌 Additional Notes
 <!-- 리뷰어가 알아야 할 추가 정보나 특별히 확인해야 할 부분을 작성해주세요 -->
 
+## 📝 Documentation
+<!-- 문서 갱신이 필요한 변경이면 실제로 갱신한 문서를 적어주세요. 필요 없으면 이유를 적어주세요. -->
+-
+
 
 ## 👀 Review Checklist
 <!-- 리뷰어를 위한 체크리스트 -->
 - [ ] 코드가 프로젝트의 코딩 컨벤션을 따르고 있나요?
 - [ ] 새로운 의존성이 필요한가요?
-- [ ] 문서 업데이트가 필요한가요?
+- [ ] 문서 업데이트가 필요한 변경이면 관련 문서를 갱신했나요?
 - [ ] 데이터베이스 마이그레이션이 필요한가요?
 - [ ] 환경 설정 변경이 필요한가요?
 
