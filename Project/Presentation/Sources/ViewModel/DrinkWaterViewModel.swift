@@ -52,6 +52,8 @@ public final class DrinkWaterViewModel {
     private(set) var recentRecordUndo: RecentHydrationRecordUndoModel?
     private(set) var undoErrorMessage: String?
     private(set) var recordFailureAlert: HydrationRecordFailureAlertModel?
+    private(set) var recordSuccessFeedbackMessage: String?
+    private(set) var isRecording = false
 
     private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
@@ -209,7 +211,8 @@ public final class DrinkWaterViewModel {
         await refreshState()
     }
 
-    func drinkWater() async {
+    @discardableResult
+    func drinkWater() async -> Bool {
         await recordWater(
             volumeML: HydrationServing.defaultGlassVolumeML,
             servingType: "default_glass",
@@ -241,8 +244,19 @@ public final class DrinkWaterViewModel {
         servingType: String,
         preset: String?
     ) async -> Bool {
+        guard !isRecording else {
+            return false
+        }
+
+        recordSuccessFeedbackMessage = nil
+
         guard isRecordable(volumeML: volumeML) else {
             return false
+        }
+
+        isRecording = true
+        defer {
+            isRecording = false
         }
 
         let writeResult = await waterUseCase.drinkWater(volumeML: volumeML)
@@ -262,6 +276,7 @@ public final class DrinkWaterViewModel {
         recordFailureAlert = nil
         await refreshState()
         await updateRecentRecordUndo()
+        recordSuccessFeedbackMessage = L10n.tr("drinkWaterRecordSuccessFeedbackTitle")
         widgetTimelineReloader.reloadAllTimelines()
         trackWaterLogged(
             volumeML: volumeML,
@@ -342,6 +357,7 @@ public final class DrinkWaterViewModel {
         recordFailureAlert = nil
         recentRecordUndo = nil
         undoErrorMessage = nil
+        recordSuccessFeedbackMessage = nil
         await refreshState()
         widgetTimelineReloader.reloadAllTimelines()
     }
@@ -360,6 +376,7 @@ public final class DrinkWaterViewModel {
 
         self.recentRecordUndo = nil
         undoErrorMessage = nil
+        recordSuccessFeedbackMessage = nil
         await refreshState()
         widgetTimelineReloader.reloadAllTimelines()
         return true
@@ -371,6 +388,10 @@ public final class DrinkWaterViewModel {
 
     func clearRecordFailureAlert() {
         recordFailureAlert = nil
+    }
+
+    func clearRecordSuccessFeedback() {
+        recordSuccessFeedbackMessage = nil
     }
 
     public func refreshState() async {

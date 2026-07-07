@@ -51,6 +51,14 @@ public struct DrinkWaterView: View {
             // Refresh data when view appears to catch any Widget changes.
             await viewModel.loadInitialState()
         }
+        .task(id: viewModel.recordSuccessFeedbackMessage) {
+            guard viewModel.recordSuccessFeedbackMessage != nil else {
+                return
+            }
+
+            try? await Task.sleep(nanoseconds: 1_400_000_000)
+            viewModel.clearRecordSuccessFeedback()
+        }
         .alert(
             L10n.tr("drinkWaterResetConfirmationTitle"),
             isPresented: $isResetConfirmationPresented
@@ -212,29 +220,68 @@ public struct DrinkWaterView: View {
                 await viewModel.drinkWater()
             }
         } label: {
-            Text(
-                viewModel.isLimitReached ?
-                L10n.tr("drinkWaterButtonReachedTitle") :
-                L10n.tr("drinkWaterButtonTitle")
-            )
+            defaultDrinkButtonContent
                 .font(.headline)
                 .fontWeight(.bold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
                 .frame(maxWidth: .infinity)
                 .frame(minHeight: 50)
-                .background(viewModel.isLimitReached ? Color.gray : Color.accent)
+                .background(defaultDrinkButtonBackground)
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
-        .disabled(viewModel.isLimitReached)
-        .accessibilityLabel(
-            L10n.tr(
-                "drinkWaterDefaultRecordAccessibilityLabelFormat",
-                L10n.tr("commonMilliliterFormat", HydrationServing.defaultGlassVolumeML)
-            )
-        )
+        .disabled(viewModel.isLimitReached || viewModel.isRecording)
+        .accessibilityLabel(defaultDrinkButtonAccessibilityLabel)
         .accessibilityHint(L10n.tr("drinkWaterDefaultRecordAccessibilityHint"))
+    }
+
+    @ViewBuilder
+    private var defaultDrinkButtonContent: some View {
+        if viewModel.isRecording {
+            HStack(spacing: 8) {
+                ProgressView()
+                    .controlSize(.small)
+                    .tint(.white)
+                    .accessibilityHidden(true)
+                Text(L10n.tr("drinkWaterRecordingTitle"))
+            }
+        } else if let feedbackMessage = viewModel.recordSuccessFeedbackMessage {
+            Label(feedbackMessage, systemImage: "checkmark.circle.fill")
+        } else {
+            Text(
+                viewModel.isLimitReached ?
+                L10n.tr("drinkWaterButtonReachedTitle") :
+                L10n.tr("drinkWaterButtonTitle")
+            )
+        }
+    }
+
+    private var defaultDrinkButtonBackground: Color {
+        if viewModel.recordSuccessFeedbackMessage != nil {
+            return .green
+        }
+
+        if viewModel.isLimitReached {
+            return .gray
+        }
+
+        return .accent
+    }
+
+    private var defaultDrinkButtonAccessibilityLabel: String {
+        if viewModel.isRecording {
+            return L10n.tr("drinkWaterRecordingAccessibilityLabel")
+        }
+
+        if viewModel.recordSuccessFeedbackMessage != nil {
+            return L10n.tr("drinkWaterRecordSuccessAccessibilityLabel")
+        }
+
+        return L10n.tr(
+            "drinkWaterDefaultRecordAccessibilityLabelFormat",
+            L10n.tr("commonMilliliterFormat", HydrationServing.defaultGlassVolumeML)
+        )
     }
 
     private var resetButton: some View {

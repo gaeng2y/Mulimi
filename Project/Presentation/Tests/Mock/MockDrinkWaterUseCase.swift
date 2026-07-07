@@ -13,8 +13,19 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     var drinkWaterResult: HydrationWriteResult = .success
     var resetResult: HydrationWriteResult = .success
     var shouldDeleteHydrationEventSucceed = true
+    var shouldSuspendNextDrinkWater = false
 
     private var hydrationEventsByDay: [String: [HydrationEvent]] = [:]
+    private var drinkWaterContinuation: CheckedContinuation<Void, Never>?
+
+    var hasPendingDrinkWater: Bool {
+        drinkWaterContinuation != nil
+    }
+
+    func resumeDrinkWater() {
+        drinkWaterContinuation?.resume()
+        drinkWaterContinuation = nil
+    }
 
     var currentWaterIntakeML: Double {
         get async {
@@ -46,6 +57,13 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     func drinkWater(volumeML: Int) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        if shouldSuspendNextDrinkWater {
+            shouldSuspendNextDrinkWater = false
+            await withCheckedContinuation { continuation in
+                drinkWaterContinuation = continuation
+            }
+        }
+
         guard drinkWaterResult.isSuccess else {
             return drinkWaterResult
         }
