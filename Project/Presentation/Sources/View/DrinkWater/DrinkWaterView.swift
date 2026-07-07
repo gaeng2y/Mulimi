@@ -37,6 +37,10 @@ public struct DrinkWaterView: View {
                             .accessibilityElement(children: .ignore)
                             .accessibilityLabel(progressAccessibilityLabel)
 
+                        nextActionSummary
+                            .padding(.horizontal, 24)
+                            .accessibilityElement(children: .combine)
+
                         actionButtons
                             .padding(.horizontal, 24)
                             .padding(.bottom, 24)
@@ -187,6 +191,37 @@ public struct DrinkWaterView: View {
                 .font(.caption)
                 .foregroundColor(.green)
                 .fontWeight(.semibold)
+        }
+    }
+
+    private var nextActionSummary: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(
+                viewModel.nextActionBadgeText,
+                systemImage: "drop.circle.fill"
+            )
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(Color.accent)
+
+            Text(viewModel.nextActionHeadline)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(viewModel.nextActionDescription)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color(uiColor: .systemBackground).opacity(0.72))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color.accent.opacity(0.16), lineWidth: 1)
         }
     }
 
