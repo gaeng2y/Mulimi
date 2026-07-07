@@ -1519,6 +1519,50 @@
         }
       }
     },
+    "drinkWaterRecordSuccessAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 1잔 기록 완료"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordSuccessFeedbackTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 완료"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordingAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 1잔 기록 중"
+          }
+        }
+      }
+    },
+    "drinkWaterRecordingTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 중"
+          }
+        }
+      }
+    },
     "drinkWaterUndoRecordAccessibilityHint" : {
       "extractionState" : "manual",
       "localizations" : {
