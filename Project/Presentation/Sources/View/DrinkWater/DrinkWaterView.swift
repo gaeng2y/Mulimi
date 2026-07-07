@@ -41,6 +41,9 @@ public struct DrinkWaterView: View {
                             .padding(.horizontal, 24)
                             .accessibilityElement(children: .combine)
 
+                        recentRecordUndoBanner
+                            .padding(.horizontal, 24)
+
                         actionButtons
                             .padding(.horizontal, 24)
                             .padding(.bottom, 24)
@@ -95,6 +98,23 @@ public struct DrinkWaterView: View {
             }
         } message: {
             Text(viewModel.recordFailureAlert?.message ?? "")
+        }
+        .alert(
+            L10n.tr("drinkWaterUndoRecordFailureTitle"),
+            isPresented: Binding(
+                get: { viewModel.undoErrorMessage != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.clearUndoErrorMessage()
+                    }
+                }
+            )
+        ) {
+            Button(L10n.tr("commonConfirmTitle"), role: .cancel) {
+                viewModel.clearUndoErrorMessage()
+            }
+        } message: {
+            Text(viewModel.undoErrorMessage ?? "")
         }
     }
 
@@ -223,6 +243,78 @@ public struct DrinkWaterView: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .stroke(Color.accent.opacity(0.16), lineWidth: 1)
         }
+    }
+
+    @ViewBuilder
+    private var recentRecordUndoBanner: some View {
+        if let recentRecordUndo = viewModel.recentRecordUndo {
+            Group {
+                if usesExpandedVerticalLayout {
+                    VStack(alignment: .leading, spacing: 12) {
+                        recentRecordUndoCopy(recentRecordUndo)
+                        recentRecordUndoButton(recentRecordUndo)
+                    }
+                } else {
+                    HStack(alignment: .center, spacing: 12) {
+                        recentRecordUndoCopy(recentRecordUndo)
+                        recentRecordUndoButton(recentRecordUndo)
+                    }
+                }
+            }
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color(uiColor: .systemBackground).opacity(0.72))
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.accent.opacity(0.16), lineWidth: 1)
+            }
+        }
+    }
+
+    private func recentRecordUndoCopy(
+        _ recentRecordUndo: RecentHydrationRecordUndoModel
+    ) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "arrow.uturn.backward.circle.fill")
+                .font(.title3)
+                .foregroundStyle(Color.accent)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(recentRecordUndo.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+
+                Text(recentRecordUndo.description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func recentRecordUndoButton(
+        _ recentRecordUndo: RecentHydrationRecordUndoModel
+    ) -> some View {
+        Button {
+            Task {
+                await viewModel.undoRecentRecord()
+            }
+        } label: {
+            Label(
+                recentRecordUndo.actionTitle,
+                systemImage: "arrow.uturn.backward"
+            )
+            .font(.footnote.weight(.semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.82)
+        }
+        .buttonStyle(.bordered)
+        .tint(.accent)
+        .accessibilityHint(L10n.tr("drinkWaterUndoRecordAccessibilityHint"))
     }
 
     @ViewBuilder
