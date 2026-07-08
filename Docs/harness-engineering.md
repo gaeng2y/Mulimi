@@ -25,6 +25,10 @@ Docs/documentation-maintenance.md -> 문서 유지보수 규칙
 Docs/delivery-workflow.md -> 이슈, 브랜치, PR 전달 흐름
 Docs/security-privacy.md -> 보안/개인정보 운영 기준
 Docs/*.md          -> 도메인/설계 배경 문서
+.github/workflows/lint.yml -> PR lint와 architecture check
+.github/workflows/pr-unit-tests.yml -> PR 단위 Unit Test
+.github/workflows/ai-pr-review.yml -> Git Flow PR AI 리뷰
+ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 ```
 
 ## Reading Path
@@ -97,6 +101,21 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 민감 데이터 저장소, 권한, 외부 SDK, App Store privacy label 영향 검토 기준
 - 광고/IAP/서버 연동 전 확인할 개인정보 체크리스트
 
+## Automation Harness
+
+하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.
+
+| Surface | File | Responsibility |
+| --- | --- | --- |
+| Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
+| Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
+| GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
+| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 `DomainLayer`, `DataLayer`, `PresentationLayer` 테스트를 실행한다. |
+| GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
+| Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
+
+PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
@@ -109,6 +128,17 @@ Docs/*.md          -> 도메인/설계 배경 문서
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
 - 코드와 문서가 어긋나면 코드를 먼저 확인하고 작업 끝에 문서를 맞춘다
+
+## Toolchain Policy
+
+현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
+
+- Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
+- GitHub Actions는 `macos-15` runner와 `latest-stable` Xcode를 사용한다.
+- CI 시뮬레이터 destination은 hosted runner에서 안정적으로 찾을 수 있는 이름 기반 값을 사용한다.
+- 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.
+
+최신 도구 drift로 CI나 로컬 검증이 반복 실패하면, 실패 로그와 영향 범위를 남기고 `.mise.toml`, GitHub Actions Xcode 버전, 문서의 기준 버전을 같은 PR에서 pin한다.
 
 ## What Is Intentionally Missing
 

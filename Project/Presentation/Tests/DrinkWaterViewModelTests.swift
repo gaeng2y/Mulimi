@@ -54,6 +54,69 @@ struct DrinkWaterViewModelTests {
 
         #expect(viewModel.drinkWaterCount == 1)
         #expect(waterUseCase.drinkWaterCallCount == 1)
+        #expect(viewModel.recordSuccessFeedbackMessage == L10n.tr("drinkWaterRecordSuccessFeedbackTitle"))
+        #expect(viewModel.isRecording == false)
+    }
+
+    @MainActor
+    @Test("성공 피드백은 명시적으로 정리할 수 있다")
+    func clearRecordSuccessFeedback() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 0
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.drinkWater()
+        viewModel.clearRecordSuccessFeedback()
+
+        #expect(viewModel.recordSuccessFeedbackMessage == nil)
+    }
+
+    @MainActor
+    @Test("기록 중에는 중복 기록을 차단한다")
+    func drinkWaterBlocksDuplicateWhileRecording() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.shouldSuspendNextDrinkWater = true
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1000
+
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+        let firstRecordTask = Task {
+            await viewModel.drinkWater()
+        }
+
+        while waterUseCase.hasPendingDrinkWater == false {
+            await Task.yield()
+        }
+
+        #expect(viewModel.isRecording)
+
+        let didRecordSecondGlass = await viewModel.drinkWater()
+
+        #expect(didRecordSecondGlass == false)
+        #expect(waterUseCase.drinkWaterCallCount == 1)
+
+        waterUseCase.resumeDrinkWater()
+        let didRecordFirstGlass = await firstRecordTask.value
+
+        #expect(didRecordFirstGlass)
+        #expect(viewModel.isRecording == false)
+        #expect(waterUseCase.drinkWaterCallCount == 1)
     }
 
     @MainActor
@@ -147,6 +210,8 @@ struct DrinkWaterViewModelTests {
         #expect(didRecord == false)
         #expect(viewModel.currentWaterIntakeML == 0)
         #expect(viewModel.recentRecordUndo == nil)
+        #expect(viewModel.recordSuccessFeedbackMessage == nil)
+        #expect(viewModel.isRecording == false)
         #expect(viewModel.recordFailureAlert?.showsOpenSettingsAction == true)
         #expect(
             viewModel.recordFailureAlert?.message ==
@@ -342,6 +407,7 @@ struct DrinkWaterViewModelTests {
         #expect(viewModel.currentWaterIntakeML == 0)
         #expect(viewModel.recentRecordUndo == nil)
         #expect(viewModel.undoErrorMessage == nil)
+        #expect(viewModel.recordSuccessFeedbackMessage == nil)
         #expect(waterUseCase.resetCallCount == 1)
     }
 
@@ -445,20 +511,6 @@ struct DrinkWaterViewModelTests {
         )
     }
 
-    @MainActor
-    @Test("startAnimation은 offset을 360으로 설정한다")
-    func startAnimation() {
-        let viewModel = DrinkWaterViewModel(
-            waterUseCase: MockDrinkWaterUseCase(),
-            userPreferencesUseCase: MockUserPreferencesUseCase(),
-            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
-            widgetTimelineReloader: NoOpWidgetTimelineReloader()
-        )
-
-        viewModel.startAnimation()
-
-        #expect(viewModel.offset == 360)
-    }
 }
 
 private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
