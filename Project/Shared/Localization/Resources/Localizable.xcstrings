@@ -1442,17 +1442,6 @@
         }
       }
     },
-    "drinkWaterResetAccessibilityHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "확인 후 오늘 물리미가 추가한 수분 기록만 삭제합니다."
-          }
-        }
-      }
-    },
     "drinkWaterResetConfirmationActionTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1559,17 +1548,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기록 중"
-          }
-        }
-      }
-    },
-    "drinkWaterUndoRecordAccessibilityHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "방금 추가한 물리미 기록을 삭제합니다."
           }
         }
       }
@@ -1790,6 +1768,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목표: %lldml"
+          }
+        }
+      }
+    },
+    "drinkWaterMoreActionsAccessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "되돌리기, 초기화 같은 기록 관리 메뉴를 엽니다."
+          }
+        }
+      }
+    },
+    "drinkWaterMoreActionsAccessibilityLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 보기"
           }
         }
       }

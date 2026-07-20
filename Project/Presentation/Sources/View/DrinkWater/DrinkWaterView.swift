@@ -30,6 +30,13 @@ public struct DrinkWaterView: View {
             GeometryReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 28) {
+                        nextActionSummary
+                            .padding(.top, 8)
+                            .padding(.horizontal, 24)
+                            .accessibilityElement(children: .combine)
+
+                        Spacer(minLength: 0)
+
                         waterDropArea(in: proxy.size)
 
                         progressSummary
@@ -37,19 +44,14 @@ public struct DrinkWaterView: View {
                             .accessibilityElement(children: .ignore)
                             .accessibilityLabel(progressAccessibilityLabel)
 
-                        nextActionSummary
-                            .padding(.horizontal, 24)
-                            .accessibilityElement(children: .combine)
-
-                        recentRecordUndoBanner
-                            .padding(.horizontal, 24)
+                        Spacer(minLength: 0)
 
                         actionButtons
                             .padding(.horizontal, 24)
                             .padding(.bottom, 24)
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: proxy.size.height, alignment: .center)
+                    .frame(minHeight: proxy.size.height, alignment: .top)
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
@@ -253,91 +255,10 @@ public struct DrinkWaterView: View {
         }
     }
 
-    @ViewBuilder
-    private var recentRecordUndoBanner: some View {
-        if let recentRecordUndo = viewModel.recentRecordUndo {
-            Group {
-                if usesExpandedVerticalLayout {
-                    VStack(alignment: .leading, spacing: 12) {
-                        recentRecordUndoCopy(recentRecordUndo)
-                        recentRecordUndoButton(recentRecordUndo)
-                    }
-                } else {
-                    HStack(alignment: .center, spacing: 12) {
-                        recentRecordUndoCopy(recentRecordUndo)
-                        recentRecordUndoButton(recentRecordUndo)
-                    }
-                }
-            }
-            .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(uiColor: .systemBackground).opacity(0.72))
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color.accent.opacity(0.16), lineWidth: 1)
-            }
-        }
-    }
-
-    private func recentRecordUndoCopy(
-        _ recentRecordUndo: RecentHydrationRecordUndoModel
-    ) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "arrow.uturn.backward.circle.fill")
-                .font(.title3)
-                .foregroundStyle(Color.accent)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(recentRecordUndo.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-
-                Text(recentRecordUndo.description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func recentRecordUndoButton(
-        _ recentRecordUndo: RecentHydrationRecordUndoModel
-    ) -> some View {
-        Button {
-            Task {
-                await viewModel.undoRecentRecord()
-            }
-        } label: {
-            Label(
-                recentRecordUndo.actionTitle,
-                systemImage: "arrow.uturn.backward"
-            )
-            .font(.footnote.weight(.semibold))
-            .lineLimit(1)
-            .minimumScaleFactor(0.82)
-        }
-        .buttonStyle(.bordered)
-        .tint(.accent)
-        .accessibilityHint(L10n.tr("drinkWaterUndoRecordAccessibilityHint"))
-    }
-
-    @ViewBuilder
     private var actionButtons: some View {
-        if usesExpandedVerticalLayout {
-            VStack(spacing: 12) {
-                defaultDrinkButton
-                resetButton
-            }
-        } else {
-            HStack(spacing: 12) {
-                defaultDrinkButton
-                resetButton
-                    .frame(width: 112)
-            }
+        HStack(alignment: .center, spacing: 12) {
+            defaultDrinkButton
+            overflowMenu
         }
     }
 
@@ -411,33 +332,44 @@ public struct DrinkWaterView: View {
         )
     }
 
-    private var resetButton: some View {
-        Button(role: .destructive) {
-            isResetConfirmationPresented = true
+    private var overflowMenu: some View {
+        Menu {
+            if let recentRecordUndo = viewModel.recentRecordUndo {
+                Section(recentRecordUndo.description) {
+                    Button {
+                        Task {
+                            await viewModel.undoRecentRecord()
+                        }
+                    } label: {
+                        Label(
+                            recentRecordUndo.actionTitle,
+                            systemImage: "arrow.uturn.backward"
+                        )
+                    }
+                }
+            }
+
+            Button(role: .destructive) {
+                isResetConfirmationPresented = true
+            } label: {
+                Label(
+                    L10n.tr("commonResetTitle"),
+                    systemImage: "trash"
+                )
+            }
         } label: {
-            Label(
-                L10n.tr("commonResetTitle"),
-                systemImage: "trash"
-            )
-                .font(.footnote.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.85)
-                .frame(maxWidth: .infinity)
+            Image(systemName: "ellipsis")
+                .font(.headline)
+                .frame(width: 56)
                 .frame(minHeight: 50)
-                .foregroundColor(.red)
+                .foregroundColor(.primary)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color.red.opacity(0.07))
+                        .fill(Color.secondary.opacity(0.12))
                 )
-                .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(Color.red.opacity(0.18), lineWidth: 1)
-                }
         }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(L10n.tr("commonResetTitle"))
-        .accessibilityHint(L10n.tr("drinkWaterResetAccessibilityHint"))
+        .accessibilityLabel(L10n.tr("drinkWaterMoreActionsAccessibilityLabel"))
+        .accessibilityHint(L10n.tr("drinkWaterMoreActionsAccessibilityHint"))
     }
 
     private func openSettings() {
