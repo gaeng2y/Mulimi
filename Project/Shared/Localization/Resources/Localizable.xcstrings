@@ -1816,6 +1816,28 @@
         }
       }
     },
+    "drinkWaterNextActionFirstRecordDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 버튼 한 번이면 %@ 한 잔이 건강 앱에 저장돼요."
+          }
+        }
+      }
+    },
+    "drinkWaterNextActionFirstRecordHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 첫 잔을 기록해 보세요"
+          }
+        }
+      }
+    },
     "drinkWaterNextActionGoalReachedDescription" : {
       "extractionState" : "manual",
       "localizations" : {

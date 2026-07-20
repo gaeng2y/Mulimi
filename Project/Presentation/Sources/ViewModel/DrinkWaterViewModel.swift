@@ -102,10 +102,16 @@ public final class DrinkWaterViewModel {
         L10n.tr("drinkWaterNextActionBadge")
     }
 
+    var isFirstRecordGuideActive: Bool {
+        nextActionGuide.state == .readyToDrink && nextActionGuide.currentIntakeML == 0
+    }
+
     var nextActionHeadline: String {
         switch nextActionGuide.state {
         case .readyToDrink:
-            return L10n.tr("drinkWaterNextActionReadyHeadline")
+            return isFirstRecordGuideActive
+                ? L10n.tr("drinkWaterNextActionFirstRecordHeadline")
+                : L10n.tr("drinkWaterNextActionReadyHeadline")
         case .approachingRoutine:
             guard let nextRoutine = nextActionGuide.nextRoutine else {
                 return L10n.tr("drinkWaterNextActionReadyHeadline")
@@ -129,6 +135,14 @@ public final class DrinkWaterViewModel {
         case .needsGoal:
             return L10n.tr("drinkWaterNextActionNeedsGoalDescription")
         case .readyToDrink, .approachingRoutine:
+            if isFirstRecordGuideActive {
+                return L10n.tr(
+                    "drinkWaterNextActionFirstRecordDescriptionFormat",
+                    L10n.tr("drinkWaterButtonTitle"),
+                    L10n.tr("commonMilliliterFormat", HydrationServing.defaultGlassVolumeML)
+                )
+            }
+
             let remainingText = L10n.tr("commonMilliliterFormat", nextActionGuide.remainingML)
 
             if let nextRoutine = nextActionGuide.nextRoutine {
