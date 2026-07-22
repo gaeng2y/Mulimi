@@ -13,6 +13,9 @@
 - 다음 한 잔 안내는 화면 상단, `WaterDrop`과 오늘 섭취 요약은 화면 중앙, 기본 기록 CTA는 하단에 둔다. `WaterDrop`은 고정 시각 anchor로, 되돌리기나 기록 성공 피드백 상태 변화로 밀리지 않는다
 - 되돌리기(최근 앱 생성 기록 1건)와 초기화는 기본 기록 CTA 옆 더보기 메뉴에서 Label 형태로 제공한다. 되돌리기는 최근 기록이 있을 때만 메뉴에 나타나고, 초기화는 destructive action으로 구분한다
 - 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 primary CTA 상태 변화로 제공한다
+- 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 최근 앱 생성 기록 1건 되돌리기, 오늘 물리미 기록 초기화만 노출한다
+- 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 제공한다
+- 오늘 기록이 0이고 다음 한 잔 안내가 기본 상태(`readyToDrink`)면, 같은 안내 카드의 문구를 첫 기록 유도로 바꿔 기본 1잔 기록 CTA와 건강 앱 저장을 안내한다. 별도 배너나 레이아웃 요소를 추가하지 않으며, 루틴 임박/목표 미설정 안내가 우선한다. 온보딩 전환 실험 H4 기준(`Docs/product-specs/onboarding-healthkit-conversion-experiments.md`)과 정렬된다
 - 기록 단위 사용자 기본값 설정은 아직 구현하지 않았다. 기본 액션, 위젯, Watch는 기본 1잔을 유지하고, Siri/Shortcuts는 실행 시 선택한 단위를 1회 기록한다
 - 기록 후 오늘 목표를 초과하는 단위는 앱과 AppIntent에서 기록하지 않는다
 - 메인 화면의 오늘 기록 초기화는 확인 후 물리미가 오늘 만든 HealthKit 샘플만 삭제한다
@@ -102,6 +105,7 @@
 
 - `ARCHITECTURE.md`
 - `Docs/reliability-recovery.md`
+- `Docs/product-specs/onboarding-healthkit-conversion-experiments.md`
 - `Docs/skills/healthkit-flow.md`
 - `Docs/skills/widget-watch-integration.md`
 
