@@ -19,15 +19,18 @@ public struct HydrationInsightView: View {
     @State private var selectedCategory: HydrationInsightCategory = .overview
     private let onRoutineAction: (RoutineActionIntent) -> Void
     private let onDailyGoalAction: () -> Void
+    private let onRecordAction: () -> Void
 
     public init(
         viewModel: HydrationInsightViewModel,
         onRoutineAction: @escaping (RoutineActionIntent) -> Void = { _ in },
-        onDailyGoalAction: @escaping () -> Void = {}
+        onDailyGoalAction: @escaping () -> Void = {},
+        onRecordAction: @escaping () -> Void = {}
     ) {
         self._viewModel = State(wrappedValue: viewModel)
         self.onRoutineAction = onRoutineAction
         self.onDailyGoalAction = onDailyGoalAction
+        self.onRecordAction = onRecordAction
     }
 
     public var body: some View {
@@ -580,9 +583,59 @@ public struct HydrationInsightView: View {
                     .multilineTextAlignment(.center)
             }
 
+            emptyStateCTAButtons
+
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private var emptyStateCTAButtons: some View {
+        VStack(spacing: 10) {
+            ForEach(viewModel.emptyStateCTAs) { cta in
+                emptyStateCTAButton(cta)
+            }
+        }
+        .frame(maxWidth: 320)
+        .padding(.top, 6)
+    }
+
+    @ViewBuilder
+    private func emptyStateCTAButton(_ cta: HydrationInsightEmptyCTAModel) -> some View {
+        let label = Label(cta.title, systemImage: cta.systemImage)
+            .frame(maxWidth: .infinity)
+
+        if cta.isPrimary {
+            Button {
+                handleEmptyStateAction(cta.action)
+            } label: {
+                label
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityHint(L10n.tr("insightCardActionAccessibilityHint"))
+        } else {
+            Button {
+                handleEmptyStateAction(cta.action)
+            } label: {
+                label
+            }
+            .buttonStyle(.bordered)
+            .accessibilityHint(L10n.tr("insightCardActionAccessibilityHint"))
+        }
+    }
+
+    private func handleEmptyStateAction(_ action: HydrationInsightEmptyAction) {
+        viewModel.trackEmptyStateAction(action)
+
+        switch action {
+        case .record:
+            onRecordAction()
+        case let .routine(routineAction):
+            handleRecoveryReminderAction(routineAction, shouldTrack: false)
+        case .dailyGoal:
+            onDailyGoalAction()
+        }
     }
 
     private func categoryEmptyCard(

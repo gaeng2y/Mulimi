@@ -78,6 +78,9 @@ struct ContentView: View {
                     },
                     onDailyGoalAction: {
                         appCoordinator.push(.setting(.dailyLimit))
+                    },
+                    onRecordAction: {
+                        selectedTab = .drink
                     }
                 )
                     .tag(AppTab.insight)

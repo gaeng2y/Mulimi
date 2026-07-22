@@ -2531,6 +2531,39 @@
         }
       }
     },
+    "insightEmptyGoalCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 수분량 설정하기"
+          }
+        }
+      }
+    },
+    "insightEmptyRecordCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 기록하러 가기"
+          }
+        }
+      }
+    },
+    "insightEmptyRoutineCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 마시기 루틴 만들기"
+          }
+        }
+      }
+    },
     "insightEmptyTitle" : {
       "extractionState" : "manual",
       "localizations" : {
