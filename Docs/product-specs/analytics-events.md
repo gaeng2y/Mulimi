@@ -43,7 +43,7 @@
 | `routine_created` | `source`, `enabled`, `weekday_count` | 루틴 생성 저장 성공 |
 | `routine_updated` | `source`, `enabled`, `weekday_count` | 루틴 수정 저장 성공 |
 | `routine_deleted` | `source`, `enabled`, `weekday_count` | 루틴 삭제 성공 |
-| `insight_cta_tapped` | `source`, `context`, `action` | 인사이트 루틴 복구/주간 코칭 CTA 탭 |
+| `insight_cta_tapped` | `source`, `context`, `action` | 인사이트 루틴 복구/주간 코칭/empty state CTA 탭 |
 | `challenge_cta_tapped` | `source`, `challenge_kind`, `action` | 추천 챌린지 CTA 탭 |
 | `daily_goal_changed` | `source`, `previous_goal_ml`, `new_goal_ml` | 목표 수분량 변경 |
 
@@ -57,6 +57,7 @@
 - `app_intent`
 - `insight_recovery`
 - `insight_weekly_coaching`
+- `insight_empty`
 - `challenge_recommendation`
 - `profile_routine`
 - `settings`
@@ -84,6 +85,7 @@
 ### `action`
 
 - `record_now`
+- `go_record`
 - `create_routine`
 - `edit_routine`
 - `request_notification_permission`
