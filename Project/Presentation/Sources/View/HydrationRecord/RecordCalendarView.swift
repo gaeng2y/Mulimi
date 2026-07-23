@@ -18,9 +18,14 @@ struct RecordCalendarView: View {
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
+    private let onRecordAction: () -> Void
 
-    init(viewModel: HydrationRecordListViewModel) {
+    init(
+        viewModel: HydrationRecordListViewModel,
+        onRecordAction: @escaping () -> Void = {}
+    ) {
         self.viewModel = viewModel
+        self.onRecordAction = onRecordAction
     }
 
     var body: some View {
@@ -31,22 +36,7 @@ struct RecordCalendarView: View {
                         .padding(.horizontal, 16)
                         .padding(.top, 12)
 
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(calendarDays, id: \.self) { day in
-                            CalendarDayView(
-                                day: day,
-                                record: recordForDay(day),
-                                isCurrentMonth: isCurrentMonth(day),
-                                isToday: isToday(day),
-                                dailyGoal: viewModel.dailyLimit
-                            )
-                        }
-                    }
-                    .padding(.horizontal, 16)
-
-                    recordListSection
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 24)
+                    periodContent
                 } header: {
                     VStack(spacing: 12) {
                         periodPicker
@@ -56,10 +46,12 @@ struct RecordCalendarView: View {
                         monthHeader
                             .padding(.horizontal, 16)
 
-                        weekDayHeader
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 8)
+                        if viewModel.selectedPeriod == .month {
+                            weekDayHeader
+                                .padding(.horizontal, 16)
+                        }
                     }
+                    .padding(.bottom, 8)
                     .background(Color(uiColor: .systemGroupedBackground))
                 }
             }
@@ -75,6 +67,173 @@ struct RecordCalendarView: View {
         )) {
             yearMonthPickerSheet
         }
+    }
+
+    @ViewBuilder
+    private var periodContent: some View {
+        switch viewModel.selectedPeriod {
+        case .today:
+            todayTimelineSection
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
+        case .week:
+            weekStripSection
+                .padding(.horizontal, 16)
+
+            recordListSection
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
+        case .month:
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(calendarDays, id: \.self) { day in
+                    CalendarDayView(
+                        day: day,
+                        record: recordForDay(day),
+                        isCurrentMonth: isCurrentMonth(day),
+                        isToday: isToday(day),
+                        dailyGoal: viewModel.dailyLimit
+                    )
+                }
+            }
+            .padding(.horizontal, 16)
+
+            recordListSection
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
+        }
+    }
+
+    private var todayTimelineSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(L10n.tr("historyTodayTimelineTitle"))
+                    .font(.headline)
+
+                Spacer()
+
+                Text(
+                    L10n.tr(
+                        "historyRecordCountFormat",
+                        viewModel.todaySummary?.eventCount ?? 0
+                    )
+                )
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.secondary)
+            }
+
+            if let summary = viewModel.todaySummary {
+                VStack(spacing: 0) {
+                    ForEach(Array(summary.events.enumerated()), id: \.element.id) { index, event in
+                        VStack(spacing: 0) {
+                            HydrationRecordEventRow(
+                                event: event,
+                                onDelete: {
+                                    Task {
+                                        await viewModel.deleteEvent(event)
+                                    }
+                                }
+                            )
+
+                            if index < summary.events.count - 1 {
+                                Divider()
+                                    .padding(.vertical, 8)
+                            }
+                        }
+                    }
+                }
+                .padding(12)
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Color(uiColor: .systemBackground))
+                )
+            } else {
+                emptyStateCard
+            }
+        }
+    }
+
+    private var weekStripSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(L10n.tr("historyWeekStripTitle"))
+                    .font(.headline)
+
+                Spacer()
+
+                Text(
+                    L10n.tr(
+                        "historyAchievedDaysFormat",
+                        viewModel.periodSummary.achievedDays,
+                        viewModel.periodSummary.dayCount
+                    )
+                )
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.secondary)
+            }
+
+            HStack(spacing: 6) {
+                ForEach(viewModel.weekDayItems) { item in
+                    weekDayCell(item)
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Color(uiColor: .systemBackground))
+        )
+    }
+
+    private func weekDayCell(_ item: HydrationRecordWeekDayItem) -> some View {
+        VStack(spacing: 6) {
+            Text(item.weekdayText)
+                .font(.caption2.weight(.semibold))
+                .foregroundColor(item.isToday ? .accentColor : .secondary)
+
+            Text(item.dayText)
+                .font(.caption.weight(item.isToday ? .bold : .medium))
+                .foregroundColor(item.isToday ? .accentColor : .primary)
+
+            WaterDropIndicator(
+                amount: Double(item.totalML),
+                goal: viewModel.dailyLimit,
+                isCompact: true
+            )
+            .frame(width: 28, height: 28)
+
+            Text(item.hasRecord ? "\(item.totalML)" : "-")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(item.isToday ? Color.accentColor.opacity(0.08) : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(item.isToday ? Color.accentColor : Color.clear, lineWidth: 1.5)
+        )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(weekDayCellAccessibilityLabel(item))
+    }
+
+    private func weekDayCellAccessibilityLabel(_ item: HydrationRecordWeekDayItem) -> String {
+        let dateText = item.date.formatted(.dateTime.month().day().weekday(.wide))
+        guard item.hasRecord else {
+            return L10n.tr("recordCalendarDayEmptyAccessibilityLabelFormat", dateText)
+        }
+
+        let progressPercent = viewModel.dailyLimit > 0 ?
+            min(Int((Double(item.totalML) / viewModel.dailyLimit * 100).rounded()), 100) :
+            0
+        return L10n.tr(
+            "recordCalendarDayAccessibilityLabelFormat",
+            dateText,
+            L10n.tr("commonMilliliterFormat", item.totalML),
+            progressPercent
+        )
     }
 
     private var periodPicker: some View {
@@ -257,6 +416,15 @@ struct RecordCalendarView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
+
+            if viewModel.showsEmptyStateRecordCTA {
+                Button(action: onRecordAction) {
+                    Label(L10n.tr("historyEmptyRecordCTATitle"), systemImage: "drop.fill")
+                        .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 4)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(20)

@@ -12,13 +12,21 @@ import SwiftUI
 
 public struct HydrationRecordListView: View {
     @Bindable private var viewModel: HydrationRecordListViewModel
+    private let onRecordAction: () -> Void
 
-    public init(viewModel: HydrationRecordListViewModel) {
+    public init(
+        viewModel: HydrationRecordListViewModel,
+        onRecordAction: @escaping () -> Void = {}
+    ) {
         self.viewModel = viewModel
+        self.onRecordAction = onRecordAction
     }
 
     public var body: some View {
-        RecordCalendarView(viewModel: viewModel)
+        RecordCalendarView(
+            viewModel: viewModel,
+            onRecordAction: onRecordAction
+        )
         .background(
             Color.background
                 .ignoresSafeArea()

@@ -65,7 +65,12 @@ struct ContentView: View {
                         Label(L10n.tr("drinkTitle"), systemImage: "waterbottle")
                     }
 
-                HydrationRecordListView(viewModel: hydrationRecordListViewModel)
+                HydrationRecordListView(
+                    viewModel: hydrationRecordListViewModel,
+                    onRecordAction: {
+                        selectedTab = .drink
+                    }
+                )
                     .tag(AppTab.history)
                     .tabItem {
                         Label(L10n.tr("historyTitle"), systemImage: "calendar")

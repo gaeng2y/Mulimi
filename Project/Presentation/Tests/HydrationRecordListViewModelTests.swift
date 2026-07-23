@@ -239,6 +239,141 @@ struct HydrationRecordListViewModelTests {
         #expect(viewModel.errorMessage == L10n.tr("historyDeleteExternalRecordDescription"))
         #expect(widgetReloader.reloadCallCount == 0)
     }
+
+    @MainActor
+    @Test("주간 기간에서 weekDayItems는 월요일부터 7일의 기록과 달성 여부를 만든다")
+    func weekDayItemsMapsWeek() async {
+        let mockUseCase = MockDrinkWaterUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 500
+        let calendar = Calendar.current
+        let fixedNow = calendar.date(from: DateComponents(year: 2026, month: 4, day: 15))!
+        let monday = calendar.date(from: DateComponents(year: 2026, month: 4, day: 13))!
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            calendar: calendar,
+            nowProvider: { fixedNow }
+        )
+
+        mockUseCase.setHydrationEvents(
+            [HydrationEvent(id: UUID(), consumedAt: monday, volumeML: 250)],
+            on: monday
+        )
+        mockUseCase.setHydrationEvents(
+            [HydrationEvent(id: UUID(), consumedAt: fixedNow, volumeML: 600)],
+            on: fixedNow
+        )
+
+        await viewModel.updateSelectedPeriod(.week)
+
+        let items = viewModel.weekDayItems
+        #expect(items.count == 7)
+        #expect(calendar.isDate(items[0].date, inSameDayAs: monday))
+        #expect(items[0].totalML == 250)
+        #expect(items[0].isAchieved == false)
+        #expect(items[0].isToday == false)
+        #expect(items[2].totalML == 600)
+        #expect(items[2].isAchieved == true)
+        #expect(items[2].isToday == true)
+        #expect(items[3].hasRecord == false)
+    }
+
+    @MainActor
+    @Test("주간이 아닌 기간에서는 weekDayItems를 만들지 않는다")
+    func weekDayItemsEmptyOutsideWeekPeriod() async {
+        let viewModel = HydrationRecordListViewModel(
+            useCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase()
+        )
+
+        await viewModel.fetchHydrationRecord()
+
+        #expect(viewModel.selectedPeriod == .month)
+        #expect(viewModel.weekDayItems.isEmpty)
+    }
+
+    @MainActor
+    @Test("오늘 기간에서 todaySummary는 당일 이벤트 흐름을 노출한다")
+    func todaySummaryExposesTodayEvents() async {
+        let mockUseCase = MockDrinkWaterUseCase()
+        let calendar = Calendar.current
+        let fixedNow = calendar.date(from: DateComponents(year: 2026, month: 4, day: 15, hour: 9))!
+        let viewModel = HydrationRecordListViewModel(
+            useCase: mockUseCase,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            calendar: calendar,
+            nowProvider: { fixedNow }
+        )
+
+        mockUseCase.setHydrationEvents(
+            [
+                HydrationEvent(id: UUID(), consumedAt: fixedNow, volumeML: 250),
+                HydrationEvent(id: UUID(), consumedAt: fixedNow.addingTimeInterval(60), volumeML: 300)
+            ],
+            on: fixedNow
+        )
+
+        await viewModel.updateSelectedPeriod(.today)
+
+        #expect(viewModel.todaySummary?.eventCount == 2)
+        #expect(viewModel.todaySummary?.totalML == 550)
+        #expect(viewModel.todaySummary?.events.first?.volumeML == 250)
+
+        await viewModel.updateDisplayedMonth(year: 2026, month: 4)
+
+        #expect(viewModel.todaySummary == nil)
+    }
+
+    @MainActor
+    @Test("empty state 기록 CTA는 현재 기간에서만 노출한다")
+    func emptyStateRecordCTAVisibility() async {
+        let calendar = Calendar.current
+        let fixedNow = calendar.date(from: DateComponents(year: 2026, month: 4, day: 15))!
+        let viewModel = HydrationRecordListViewModel(
+            useCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            calendar: calendar,
+            nowProvider: { fixedNow }
+        )
+
+        await viewModel.updateSelectedPeriod(.today)
+
+        #expect(viewModel.showsEmptyStateRecordCTA == true)
+
+        await viewModel.updateSelectedPeriod(.week)
+
+        #expect(viewModel.showsEmptyStateRecordCTA == true)
+
+        await viewModel.updateDisplayedMonth(year: 2026, month: 4)
+
+        #expect(viewModel.showsEmptyStateRecordCTA == true)
+
+        await viewModel.updateDisplayedMonth(year: 2026, month: 3)
+
+        #expect(viewModel.showsEmptyStateRecordCTA == false)
+    }
+
+    @MainActor
+    @Test("empty state 문구는 기간별로 다르다")
+    func emptyStateDescriptionPerPeriod() async {
+        let viewModel = HydrationRecordListViewModel(
+            useCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase()
+        )
+
+        await viewModel.updateSelectedPeriod(.today)
+
+        #expect(viewModel.emptyStateDescription == L10n.tr("historyEmptyTodayDescription"))
+
+        await viewModel.updateSelectedPeriod(.week)
+
+        #expect(viewModel.emptyStateDescription == L10n.tr("historyEmptyWeekDescription"))
+
+        await viewModel.updateSelectedPeriod(.month)
+
+        #expect(viewModel.emptyStateDescription == L10n.tr("historyEmptyMonthDescription"))
+    }
 }
 
 private final class RecordSpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
