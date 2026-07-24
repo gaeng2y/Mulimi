@@ -28,6 +28,12 @@ public struct ProfileView: View {
                 }
             }
 
+            Section(L10n.tr("profileGoalRecommendationSectionTitle")) {
+                NavigationLink(value: goalRecommendationRoute) {
+                    goalRecommendationCard
+                }
+            }
+
             Section {
                 NavigationLink(value: AppRoute.setting(.bodyProfile)) {
                     settingsRow(
@@ -89,7 +95,37 @@ public struct ProfileView: View {
         .task {
             await routineViewModel.load()
             await bodyProfileViewModel.load()
+            await recommendationViewModel.load()
         }
+    }
+
+    private var goalRecommendationRoute: AppRoute {
+        switch recommendationViewModel.entryDestination {
+        case .dailyLimitSetting:
+            .setting(.dailyLimit)
+        case .bodyProfileSetting:
+            .setting(.bodyProfile)
+        }
+    }
+
+    private var goalRecommendationCard: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "sparkles")
+                .font(.title3)
+                .foregroundColor(.accentColor)
+                .frame(width: 28)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(L10n.tr("profileGoalRecommendationEntryTitle"))
+                    .font(.headline)
+
+                Text(recommendationViewModel.entryDescription)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     private var routineCard: some View {

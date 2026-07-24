@@ -174,7 +174,8 @@ public final class PreviewAssembly: Assembly {
         container.register(HydrationGoalRecommendationViewModel.self) { resolver in
             MainActor.assumeIsolated {
                 HydrationGoalRecommendationViewModel(
-                    useCase: resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+                    useCase: resolver.resolve(HydrationGoalRecommendationUseCase.self)!,
+                    progressUseCase: resolver.resolve(HydrationProgressUseCase.self)!
                 )
             }
         }

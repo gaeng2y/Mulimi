@@ -179,6 +179,7 @@ struct ContentView: View {
         case .profile:
             settingsViewModel.refreshState()
             await bodyProfileViewModel.refresh()
+            await recommendationViewModel.load()
         }
     }
 }

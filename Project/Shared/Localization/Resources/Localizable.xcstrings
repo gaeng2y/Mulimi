@@ -4742,6 +4742,94 @@
         }
       }
     },
+    "profileGoalRecommendationEntryAboveGoalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 목표를 넘겨 마시고 있어요. 목표를 올릴지 AI로 점검해 보세요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryBelowGoalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 섭취가 목표보다 적어요. 목표가 현실적인지 AI로 점검해 보세요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryBodyProfileDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱에 키와 몸무게가 있으면 맞춤 목표를 추천받을 수 있어요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryConnectHealthDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱을 연결하면 맞춤 목표를 추천받을 수 있어요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryDefaultDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신체 정보와 최근 기록으로 맞춤 목표를 추천받아 보세요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 목표 추천"
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationEntryUnavailableDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기기에서는 AI 추천을 사용할 수 없어요. 목표는 직접 조정할 수 있어요."
+          }
+        }
+      }
+    },
+    "profileGoalRecommendationSectionTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 추천"
+          }
+        }
+      }
+    },
     "profileQuickSettingsSectionFooter" : {
       "extractionState" : "manual",
       "localizations" : {
