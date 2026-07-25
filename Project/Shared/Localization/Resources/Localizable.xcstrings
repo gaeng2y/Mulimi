@@ -2047,13 +2047,13 @@
         }
       }
     },
-    "historyEmptyDescription" : {
+    "historyEmptyMonthDescription" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "선택한 기간에 물을 마시면 여기에 일별 요약이 쌓여요."
+            "value" : "이 달에 기록이 쌓이면 달력에서 한 달 흐름을 볼 수 있어요."
           }
         }
       }
@@ -2069,6 +2069,28 @@
         }
       }
     },
+    "historyEmptyRecordCTATitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물 기록하러 가기"
+          }
+        }
+      }
+    },
+    "historyEmptyTodayDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 한 잔을 기록하면 오늘 타임라인이 채워져요."
+          }
+        }
+      }
+    },
     "historyEmptyTodayTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2076,6 +2098,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오늘 기록이 아직 없어요"
+          }
+        }
+      }
+    },
+    "historyEmptyWeekDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주에 물을 마시면 요일별 비교가 채워져요."
           }
         }
       }
@@ -2340,6 +2373,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기록"
+          }
+        }
+      }
+    },
+    "historyTodayTimelineTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록 흐름"
+          }
+        }
+      }
+    },
+    "historyWeekStripTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요일별 달성 비교"
           }
         }
       }
