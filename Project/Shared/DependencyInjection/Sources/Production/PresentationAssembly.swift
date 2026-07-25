@@ -162,9 +162,13 @@ public final class PresentationAssembly: Assembly {
 
         container.register(HydrationGoalRecommendationViewModel.self) { resolver in
             let useCase = resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
-                HydrationGoalRecommendationViewModel(useCase: useCase)
+                HydrationGoalRecommendationViewModel(
+                    useCase: useCase,
+                    progressUseCase: progressUseCase
+                )
             }
         }
         .inObjectScope(.container)
