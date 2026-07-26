@@ -5,6 +5,7 @@
 ## Specs
 
 - [SignIn, Onboarding, HealthKit Gate](sign-in-onboarding-healthkit.md)
+- [Hydration Reminder Priming and Daily Nudges](hydration-reminder-priming.md)
 - [Onboarding and HealthKit Conversion Experiments](onboarding-healthkit-conversion-experiments.md)
 - [Hydration Logging](hydration-logging.md)
 - [Routine Notifications](routine-notifications.md)

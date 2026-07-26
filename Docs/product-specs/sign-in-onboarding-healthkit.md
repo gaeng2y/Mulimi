@@ -9,9 +9,12 @@
 ```text
 SignIn
   -> Onboarding
+  -> HydrationReminderPermissionGate
   -> HealthKitPermissionGate
   -> ContentView
 ```
+
+수분 리마인더 알림 권한 프라이밍의 상세 규칙은 [Hydration Reminder Priming and Daily Nudges](hydration-reminder-priming.md)를 따른다.
 
 ## Product Rules
 
@@ -26,6 +29,7 @@ SignIn
 
 - `signedOut`: 로그인 화면
 - `signedIn + onboarding incomplete`: 온보딩
+- `signedIn + onboarding complete + 알림 프라이밍 미노출`: 수분 리마인더 알림 권한 프라이밍(1회, 스킵 가능)
 - `signedIn + onboarding complete + HealthKit unauthorized`: 권한 게이트
 - `signedIn + onboarding complete + HealthKit authorized`: 메인 진입
 
@@ -58,6 +62,7 @@ SignIn
 - `Project/App/Sources/ContentView.swift`
 - `Project/Presentation/Sources/View/RootView.swift`
 - `Project/Presentation/Sources/View/Authentication/OnboardingView.swift`
+- `Project/Presentation/Sources/View/Authentication/HydrationReminderPermissionGateView.swift`
 - `Project/Presentation/Sources/View/Authentication/HealthKitPermissionGateView.swift`
 
 ## Related Docs

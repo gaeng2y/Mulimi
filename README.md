@@ -65,6 +65,7 @@
 ```text
 SignIn
   -> Onboarding
+  -> HydrationReminderPermissionGate
   -> HealthKitPermissionGate
   -> ContentView
 ```

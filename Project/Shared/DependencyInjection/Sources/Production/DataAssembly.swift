@@ -79,6 +79,22 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        // MARK: - HydrationReminder
+        container.register(HydrationReminderNotificationDataSource.self) { _ in
+            HydrationReminderNotificationDataSourceImpl()
+        }
+
+        container.register(HydrationReminderStorageDataSource.self) { _ in
+            HydrationReminderStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(HydrationReminderRepository.self) { resolver in
+            HydrationReminderRepositoryImpl(
+                notificationDataSource: resolver.resolve(HydrationReminderNotificationDataSource.self)!,
+                storageDataSource: resolver.resolve(HydrationReminderStorageDataSource.self)!
+            )
+        }
+
         // MARK: - Challenge
         container.register(ChallengeStorageDataSource.self) { _ in
             ChallengeStorageDataSourceImpl(userDefaults: .appGroup)
