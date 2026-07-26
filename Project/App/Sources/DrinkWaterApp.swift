@@ -23,6 +23,9 @@ struct DrinkWaterApp: App {
                 appSession: DIContainer.shared.resolve(AppSession.self),
                 authenticationViewModel: DIContainer.shared.resolve(AuthenticationViewModel.self),
                 onboardingViewModel: DIContainer.shared.resolve(OnboardingViewModel.self),
+                hydrationReminderPermissionViewModel: DIContainer.shared.resolve(
+                    HydrationReminderPermissionViewModel.self
+                ),
                 healthKitPermissionViewModel: DIContainer.shared.resolve(HealthKitPermissionViewModel.self)
             ) {
                 ContentView()

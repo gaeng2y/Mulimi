@@ -168,7 +168,7 @@ public struct OnboardingView: View {
     private var footer: some View {
         VStack(spacing: 14) {
             if viewModel.isLastPage {
-                Text(L10n.tr("onboardingHealthKitPermissionFootnote"))
+                Text(L10n.tr("onboardingPermissionFlowFootnote"))
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.62))
                     .multilineTextAlignment(.center)
@@ -225,7 +225,7 @@ public struct OnboardingView: View {
         } label: {
             Text(
                 viewModel.isLastPage ?
-                L10n.tr("onboardingHealthKitContinueTitle") :
+                L10n.tr("onboardingPermissionContinueTitle") :
                 L10n.tr("onboardingNextTitle")
             )
                 .font(.headline.weight(.semibold))

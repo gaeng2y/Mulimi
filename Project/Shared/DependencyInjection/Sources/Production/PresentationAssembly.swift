@@ -136,6 +136,19 @@ public final class PresentationAssembly: Assembly {
             }
         }
 
+        container.register(HydrationReminderPermissionViewModel.self) { resolver in
+            let hydrationReminderUseCase = resolver.resolve(HydrationReminderUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationReminderPermissionViewModel(
+                    hydrationReminderUseCase: hydrationReminderUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
             let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!

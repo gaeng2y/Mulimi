@@ -47,6 +47,65 @@ public extension ProductAnalyticsEvent {
         )
     }
 
+    static func hydrationReminderPrimingViewed(
+        status: HydrationReminderAuthorizationStatus
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "hydration_reminder_priming_viewed",
+            parameters: [
+                AnalyticsParameterName.status: .string(status.analyticsValue)
+            ]
+        )
+    }
+
+    static func hydrationReminderPermissionRequestTapped(
+        status: HydrationReminderAuthorizationStatus
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "hydration_reminder_request_tapped",
+            parameters: [
+                AnalyticsParameterName.status: .string(status.analyticsValue)
+            ]
+        )
+    }
+
+    static func hydrationReminderPermissionAuthorized(
+        source: String,
+        status: HydrationReminderAuthorizationStatus
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "hydration_reminder_permission_authorized",
+            parameters: [
+                AnalyticsParameterName.source: .string(source),
+                AnalyticsParameterName.status: .string(status.analyticsValue)
+            ]
+        )
+    }
+
+    static func hydrationReminderPermissionDenied(
+        source: String,
+        status: HydrationReminderAuthorizationStatus
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "hydration_reminder_permission_denied",
+            parameters: [
+                AnalyticsParameterName.source: .string(source),
+                AnalyticsParameterName.status: .string(status.analyticsValue)
+            ]
+        )
+    }
+
+    static func hydrationReminderPrimingSkipped(
+        status: HydrationReminderAuthorizationStatus
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "hydration_reminder_priming_skipped",
+            parameters: [
+                AnalyticsParameterName.status: .string(status.analyticsValue)
+            ]
+        )
+    }
+
     static func healthKitPermissionGateViewed(
         status: HealthKitAuthorizationStatus
     ) -> ProductAnalyticsEvent {
@@ -285,6 +344,19 @@ private extension HealthKitAuthorizationStatus {
         case .sharingDenied:
             return "denied"
         case .sharingAuthorized:
+            return "authorized"
+        }
+    }
+}
+
+private extension HydrationReminderAuthorizationStatus {
+    var analyticsValue: String {
+        switch self {
+        case .notDetermined:
+            return "not_determined"
+        case .denied:
+            return "denied"
+        case .authorized:
             return "authorized"
         }
     }

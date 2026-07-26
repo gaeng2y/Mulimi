@@ -65,6 +65,10 @@ public final class PreviewAssembly: Assembly {
             MockRoutineUseCase()
         }
 
+        container.register(HydrationReminderUseCase.self) { _ in
+            MockHydrationReminderUseCase()
+        }
+
         container.register((any WidgetTimelineReloading).self) { _ in
             NoOpWidgetTimelineReloader()
         }
@@ -152,6 +156,17 @@ public final class PreviewAssembly: Assembly {
                 OnboardingViewModel(userPreferencesUseCase: userPreferencesUseCase)
             }
         }
+
+        container.register(HydrationReminderPermissionViewModel.self) { resolver in
+            let hydrationReminderUseCase = resolver.resolve(HydrationReminderUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationReminderPermissionViewModel(
+                    hydrationReminderUseCase: hydrationReminderUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!

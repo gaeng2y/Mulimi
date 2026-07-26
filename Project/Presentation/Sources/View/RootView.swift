@@ -12,6 +12,7 @@ public struct RootView<Content: View>: View {
     @State private var appSession: AppSession
     @State private var authenticationViewModel: AuthenticationViewModel
     @State private var onboardingViewModel: OnboardingViewModel
+    @State private var hydrationReminderPermissionViewModel: HydrationReminderPermissionViewModel
     @State private var healthKitPermissionViewModel: HealthKitPermissionViewModel
     private let content: () -> Content
 
@@ -19,12 +20,16 @@ public struct RootView<Content: View>: View {
         appSession: @autoclosure @escaping () -> AppSession,
         authenticationViewModel: @autoclosure @escaping () -> AuthenticationViewModel,
         onboardingViewModel: @autoclosure @escaping () -> OnboardingViewModel,
+        hydrationReminderPermissionViewModel: @autoclosure @escaping () -> HydrationReminderPermissionViewModel,
         healthKitPermissionViewModel: @autoclosure @escaping () -> HealthKitPermissionViewModel,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self._appSession = State(wrappedValue: appSession())
         self._authenticationViewModel = State(wrappedValue: authenticationViewModel())
         self._onboardingViewModel = State(wrappedValue: onboardingViewModel())
+        self._hydrationReminderPermissionViewModel = State(
+            wrappedValue: hydrationReminderPermissionViewModel()
+        )
         self._healthKitPermissionViewModel = State(wrappedValue: healthKitPermissionViewModel())
         self.content = content
     }
@@ -33,8 +38,10 @@ public struct RootView<Content: View>: View {
         Group {
             if appSession.isAuthenticated {
                 if onboardingViewModel.hasCompletedOnboarding {
-                    HealthKitPermissionGateView(viewModel: healthKitPermissionViewModel) {
-                        content()
+                    HydrationReminderPermissionGateView(viewModel: hydrationReminderPermissionViewModel) {
+                        HealthKitPermissionGateView(viewModel: healthKitPermissionViewModel) {
+                            content()
+                        }
                     }
                 } else {
                     OnboardingView(viewModel: onboardingViewModel)
@@ -43,6 +50,7 @@ public struct RootView<Content: View>: View {
                 SignInView(viewModel: authenticationViewModel)
                     .onAppear {
                         onboardingViewModel.prepareForSignedOutState()
+                        hydrationReminderPermissionViewModel.markSignedOut()
                         healthKitPermissionViewModel.markSignedOut()
                     }
             }

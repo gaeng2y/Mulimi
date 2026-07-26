@@ -30,7 +30,12 @@
 
 | Event | Required Parameters | Trigger |
 | --- | --- | --- |
-| `onboarding_completed` | `source` | 온보딩 마지막 CTA로 HealthKit 권한 게이트 진입 |
+| `onboarding_completed` | `source` | 온보딩 마지막 CTA로 권한 안내 흐름 진입 |
+| `hydration_reminder_priming_viewed` | `status` | 수분 리마인더 알림 권한 프라이밍 화면 노출 |
+| `hydration_reminder_request_tapped` | `status` | 알림 허용 CTA 탭 |
+| `hydration_reminder_permission_authorized` | `source`, `status` | 알림 권한 허용 확인 |
+| `hydration_reminder_permission_denied` | `source`, `status` | 알림 권한 거부 확인 |
+| `hydration_reminder_priming_skipped` | `status` | 프라이밍에서 나중에 할게요 탭 |
 | `healthkit_permission_gate_viewed` | `status` | HealthKit 권한 게이트 노출 |
 | `healthkit_permission_request_tapped` | `status` | 권한 요청 CTA 탭 |
 | `healthkit_permission_authorized` | `source`, `status` | 권한 허용 확인 |
@@ -52,6 +57,7 @@
 ### `source`
 
 - `onboarding`
+- `hydration_reminder_priming`
 - `healthkit_permission_gate`
 - `drink_water_main`
 - `app_intent`
@@ -96,6 +102,7 @@
 
 - HealthKit: `not_determined`, `denied`, `authorized`
 - Routine notification: `not_determined`, `denied`, `authorized`
+- Hydration reminder notification: `not_determined`, `denied`, `authorized`
 
 ## Validation
 
