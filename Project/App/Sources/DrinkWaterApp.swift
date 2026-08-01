@@ -30,6 +30,8 @@ struct DrinkWaterApp: App {
             config.errorTrackingConfig.autoCapture = true
             config.captureScreenViews = false
             config.captureElementInteractions = false
+            config.capturePushNotificationSubscriptions = false
+            config.capturePushNotificationOpened = false
             PostHogSDK.shared.setup(config)
             repositories.append(PostHogAnalyticsRepository())
         }
