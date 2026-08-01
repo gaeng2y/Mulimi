@@ -11,7 +11,12 @@ import Foundation
 public protocol AuthenticationRepository: Sendable {
     var isAuthenticated: Bool { get }
 
+    func currentUserCredential() -> UserCredential?
     func signInWithApple() async throws -> UserCredential
     func signOut()
     func deleteAccount() async throws
+}
+
+public extension AuthenticationRepository {
+    func currentUserCredential() -> UserCredential? { nil }
 }

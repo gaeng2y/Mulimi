@@ -11,7 +11,8 @@ import Foundation
 public protocol SignInUseCase: Sendable {
     var isAuthenticated: Bool { get }
 
-    func signInWithApple() async throws
+    func currentUserCredential() -> UserCredential?
+    func signInWithApple() async throws -> UserCredential
     func signOut()
     func deleteAccount() async throws
 }

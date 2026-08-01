@@ -9,6 +9,10 @@ struct FirebaseAnalyticsRepository: AnalyticsRepository {
             parameters: event.parameters.mapValues(\.firebaseValue)
         )
     }
+
+    func reset() {
+        Analytics.setUserID(nil)
+    }
 }
 
 private extension AnalyticsParameterValue {

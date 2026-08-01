@@ -16,6 +16,7 @@ public final class AuthenticationViewModel {
     public var errorMessage: String?
 
     private let signInUseCase: SignInUseCase
+    private let analyticsUseCase: AnalyticsUseCase
     private let appSession: AppSession
 
     public var isAuthenticated: Bool {
@@ -24,15 +25,21 @@ public final class AuthenticationViewModel {
 
     public init(
         signInUseCase: SignInUseCase,
-        appSession: AppSession
+        appSession: AppSession,
+        analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase()
     ) {
         self.signInUseCase = signInUseCase
+        self.analyticsUseCase = analyticsUseCase
         self.appSession = appSession
         checkAuthenticationStatus()
     }
 
     public func checkAuthenticationStatus() {
         appSession.isAuthenticated = signInUseCase.isAuthenticated
+        if appSession.isAuthenticated,
+           let credential = signInUseCase.currentUserCredential() {
+            analyticsUseCase.identify(userIdentifier: credential.userIdentifier)
+        }
     }
 
     @MainActor
@@ -41,7 +48,8 @@ public final class AuthenticationViewModel {
         errorMessage = nil
 
         do {
-            try await signInUseCase.signInWithApple()
+            let credential = try await signInUseCase.signInWithApple()
+            analyticsUseCase.identify(userIdentifier: credential.userIdentifier)
             appSession.isAuthenticated = true
         } catch {
             errorMessage = error.localizedDescription
@@ -52,6 +60,7 @@ public final class AuthenticationViewModel {
 
     public func signOut() {
         signInUseCase.signOut()
+        analyticsUseCase.reset()
         appSession.isAuthenticated = false
     }
 }

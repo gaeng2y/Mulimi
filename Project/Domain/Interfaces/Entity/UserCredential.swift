@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UserCredential: Sendable {
+public struct UserCredential: Equatable, Sendable {
     public let userIdentifier: String
     public let email: String?
     public let name: String?

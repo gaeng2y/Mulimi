@@ -30,6 +30,21 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
         keyChainDataSource.validateToken()
     }
 
+    public func currentUserCredential() -> UserCredential? {
+        let userIdentifier = keyChainDataSource.load(property: .userIdentifier)
+        guard userIdentifier.isEmpty == false else {
+            return nil
+        }
+
+        let email = keyChainDataSource.load(property: .email)
+        let name = keyChainDataSource.load(property: .nickname)
+        return UserCredential(
+            userIdentifier: userIdentifier,
+            email: email.isEmpty ? nil : email,
+            name: name.isEmpty ? nil : name
+        )
+    }
+
     // MARK: - Sign In with Apple
     public func signInWithApple() async throws -> UserCredential {
         // 1. Apple 로그인 수행

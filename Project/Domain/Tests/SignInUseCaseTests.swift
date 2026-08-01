@@ -36,14 +36,24 @@ struct SignInUseCaseTests {
         #expect(useCase.isAuthenticated == true)
     }
 
+    @Test("복원 세션 자격 증명은 Repository 값을 그대로 반영한다")
+    func currentUserCredentialReflectsRepository() {
+        let mockRepository = MockAuthenticationRepository()
+        mockRepository.isAuthenticatedValue = true
+        let useCase = SignInUseCaseImpl(repository: mockRepository)
+
+        #expect(useCase.currentUserCredential() == mockRepository.signInCredentialToReturn)
+    }
+
     @Test("Apple 로그인 성공 시 Repository 메소드를 위임 호출한다")
     func signInWithAppleSuccess() async throws {
         let mockRepository = MockAuthenticationRepository()
         let useCase = SignInUseCaseImpl(repository: mockRepository)
 
-        try await useCase.signInWithApple()
+        let credential = try await useCase.signInWithApple()
 
         #expect(mockRepository.signInWithAppleCallCount == 1)
+        #expect(credential == mockRepository.signInCredentialToReturn)
         #expect(useCase.isAuthenticated == true)
     }
 

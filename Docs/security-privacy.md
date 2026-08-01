@@ -4,7 +4,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 
 ## Goals
 
-- HealthKit, Apple Sign In, Firebase, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
+- HealthKit, Apple Sign In, Firebase, PostHog, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
 - 이벤트 파라미터와 로컬 저장소에 넣으면 안 되는 데이터를 명확히 한다.
 - AdMob, IAP, 서버 연동을 추가하기 전에 개인정보 영향 검토를 먼저 수행한다.
 
@@ -28,6 +28,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 | Challenge badge history | `hydrationChallengeBadgeHistories` JSON | App Group UserDefaults | 로컬 표시용 완료 이력이다. 서버 동기화 대상이 아니다. |
 | Apple account credential | Apple user identifier, optional email/name | Keychain | 로그인 상태 판단용이다. identity token, authorization code는 현재 저장하지 않는다. |
 | Firebase Analytics | allowlist 이벤트와 파라미터 | Firebase/Google Analytics | 제품 행동 측정만 허용한다. 개인정보, 건강 원본 값, 자유 입력 텍스트는 금지한다. |
+| PostHog Analytics | allowlist 이벤트와 Apple user identifier 기반 distinct ID | PostHog US Cloud | Firebase와 같은 이벤트 계약만 전송한다. 이메일/이름은 person property로 보내지 않는다. |
 | Crashlytics | SDK dependency only | Firebase Crashlytics | 커스텀 key/log를 추가할 때 HealthKit 값, 계정 식별자, 이메일, 루틴 제목을 넣지 않는다. |
 
 ## HealthKit
@@ -70,9 +71,9 @@ HealthKit 변경 전 체크:
 - Apple Sign In token revocation이 필요한 서버 구조인지
 - 삭제 요청 후 보관해야 하는 결제/영수증/분쟁 대응 데이터가 있는지
 
-## Firebase Analytics And Crashlytics
+## Firebase, PostHog Analytics And Crashlytics
 
-Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. Firebase SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다.
+Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. Firebase/PostHog SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다. PostHog `identify`는 안정적인 Apple user identifier만 사용하고 이메일과 이름은 전송하지 않는다. 로그아웃과 회원 탈퇴 성공 시 `reset`한다.
 
 허용:
 
@@ -82,7 +83,7 @@ Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준
 
 금지:
 
-- Apple user identifier, email, name, identity token, authorization code, Keychain 값
+- Apple user identifier를 이벤트 파라미터나 person property로 전송하는 것(PostHog distinct ID는 예외), email, name, identity token, authorization code, Keychain 값
 - HealthKit 샘플 UUID, 전체 수분 기록 원장, 신체 정보 원본 값, 세부 시계열
 - 루틴 제목, 자유 입력 텍스트, 알림 본문, 사용자 메모
 - 정확한 위치, 연락처, 사진, 캘린더, 파일 경로

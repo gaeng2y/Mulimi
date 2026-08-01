@@ -127,19 +127,22 @@ struct SettingsViewModelTests {
     func confirmWithdrawalSuccess() async {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.isAuthenticatedValue = true
+        let analyticsUseCase = MockAnalyticsUseCase()
         let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
-            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15"),
+            analyticsUseCase: analyticsUseCase
         )
         viewModel.requestWithdrawal()
 
         await viewModel.confirmWithdrawal()
 
         #expect(signInUseCase.deleteAccountCallCount == 1)
+        #expect(analyticsUseCase.resetCallCount == 1)
         #expect(viewModel.isWithdrawing == false)
         #expect(viewModel.showWithdrawalConfirmation == false)
         #expect(viewModel.withdrawalError == nil)

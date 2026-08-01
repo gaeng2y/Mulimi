@@ -9,6 +9,14 @@ struct PostHogAnalyticsRepository: AnalyticsRepository {
             properties: event.parameters.mapValues(\.postHogValue)
         )
     }
+
+    func identify(userIdentifier: String) {
+        PostHogSDK.shared.identify(userIdentifier)
+    }
+
+    func reset() {
+        PostHogSDK.shared.reset()
+    }
 }
 
 private extension AnalyticsParameterValue {

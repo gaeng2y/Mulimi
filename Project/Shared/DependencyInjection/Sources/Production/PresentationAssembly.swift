@@ -119,7 +119,8 @@ public final class PresentationAssembly: Assembly {
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
-                appSession: resolver.resolve(AppSession.self)!
+                appSession: resolver.resolve(AppSession.self)!,
+                analyticsUseCase: resolver.resolve(AnalyticsUseCase.self)!
             )
         }
         .inObjectScope(.container)

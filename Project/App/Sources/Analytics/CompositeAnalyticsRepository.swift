@@ -12,4 +12,16 @@ struct CompositeAnalyticsRepository: AnalyticsRepository {
             repository.track(event)
         }
     }
+
+    func identify(userIdentifier: String) {
+        for repository in repositories {
+            repository.identify(userIdentifier: userIdentifier)
+        }
+    }
+
+    func reset() {
+        for repository in repositories {
+            repository.reset()
+        }
+    }
 }

@@ -109,6 +109,7 @@ public final class SettingsViewModel {
 
         do {
             try await signInUseCase.deleteAccount()
+            analyticsUseCase.reset()
             showWithdrawalConfirmation = false
 
             appSession.isAuthenticated = false

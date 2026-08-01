@@ -26,6 +26,19 @@ Xcode > Report navigator > Cloud 또는 App Store Connect > Xcode Cloud에서 �
 6. Destination:
    - iOS
 
+### Environment Variables
+
+Xcode Cloud 워크플로에 아래 값을 설정한다. 실제 값은 저장소나 `Secrets.xcconfig.template`에 커밋하지 않는다.
+
+| Name | Secret | Purpose |
+| --- | --- | --- |
+| `POSTHOG_PROJECT_TOKEN` | Yes | Release 앱의 PostHog 프로젝트 토큰 |
+| `POSTHOG_CLI_API_KEY` | Yes | dSYM 업로드용 personal API key (`error tracking write`, `organization read`) |
+| `POSTHOG_CLI_PROJECT_ID` | No | dSYM을 연결할 PostHog project ID |
+| `POSTHOG_CLI_HOST` | No | 기본 US는 생략 가능, EU/self-hosted만 설정 |
+
+`ci_post_clone.sh`는 필수 값이 없으면 archive 준비를 실패시키고, 토큰을 `Secrets.xcconfig`에 주입하며 PostHog CLI를 설치한다. Release archive의 마지막 build phase가 생성된 dSYM을 업로드한다.
+
 참고: 태그 기반으로 두면 의도된 릴리즈 시점에만 아카이브가 실행됩니다.
 
 ## 3) (선택) 배포 연동
@@ -41,5 +54,6 @@ Xcode > Report navigator > Cloud 또는 App Store Connect > Xcode Cloud에서 �
 
 ## 5) 현재 범위
 - 포함: Release Archive 자동화
+- 포함: Release dSYM 생성 및 PostHog symbol set 업로드
 - 제외: Xcode Cloud 기반 PR 유닛 테스트 게이팅
 - GitHub Actions 담당: PR lint, architecture check, `DomainLayer`/`DataLayer`/`PresentationLayer` 유닛 테스트
