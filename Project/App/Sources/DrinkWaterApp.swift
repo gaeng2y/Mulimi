@@ -6,7 +6,9 @@
 //
 
 import DependencyInjection
+import DomainLayerInterface
 import FirebaseCore
+import PostHog
 import PresentationLayer
 import SwiftUI
 
@@ -14,7 +16,21 @@ import SwiftUI
 struct DrinkWaterApp: App {
     init() {
         FirebaseApp.configure()
-        DIContainer.shared.registerAnalyticsRepository(FirebaseAnalyticsRepository())
+        DIContainer.shared.registerAnalyticsRepository(Self.makeAnalyticsRepository())
+    }
+
+    private static func makeAnalyticsRepository() -> AnalyticsRepository {
+        var repositories: [any AnalyticsRepository] = [FirebaseAnalyticsRepository()]
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "PostHogAPIKey") as? String,
+           apiKey.isEmpty == false {
+            let config = PostHogConfig(apiKey: apiKey, host: "https://us.i.posthog.com")
+            config.captureApplicationLifecycleEvents = true
+            config.captureScreenViews = false
+            config.captureElementInteractions = false
+            PostHogSDK.shared.setup(config)
+            repositories.append(PostHogAnalyticsRepository())
+        }
+        return CompositeAnalyticsRepository(repositories: repositories)
     }
 
     var body: some Scene {

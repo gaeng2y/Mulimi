@@ -22,6 +22,8 @@
 	<string>LaunchScreen</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>PostHogAPIKey</key>
+	<string>$(POSTHOG_API_KEY)</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>물 섭취 기록과 신체 정보를 보여주기 위해 건강 앱 접근 권한이 필요합니다.</string>
 	<key>NSHealthUpdateUsageDescription</key>

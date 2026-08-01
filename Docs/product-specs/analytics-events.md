@@ -6,9 +6,12 @@
 
 ## Architecture Rules
 
-- ViewModel은 Firebase SDK를 직접 알지 않는다.
+- ViewModel은 Firebase/PostHog SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- Firebase SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- 분석 SDK(Firebase, PostHog) 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- 이벤트는 `CompositeAnalyticsRepository`를 통해 Firebase와 PostHog에 동일하게 전송한다(dual-write). 한쪽에만 보내는 이벤트를 만들지 않는다.
+- PostHog는 `POSTHOG_API_KEY`(`XCConfig/Secrets.xcconfig`)가 설정된 빌드에서만 초기화한다. 키가 없으면 Firebase 단독으로 동작한다.
+- PostHog autocapture(`captureScreenViews`, `captureElementInteractions`)와 Session Replay는 사용하지 않는다. 라이프사이클 이벤트(`Application Opened` 등)만 SDK 기본 수집을 허용한다.
 - 이벤트 이름은 `snake_case`를 사용하고 40자 이하로 유지한다.
 - 파라미터 이름도 `snake_case`를 사용하고 값은 문자열, 정수, 실수, 불리언만 보낸다.
 - 개인정보, 건강 원본 값 전체, 자유 입력 텍스트는 이벤트 파라미터로 보내지 않는다.
@@ -117,6 +120,8 @@
 - `Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift`
 - `Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
 - `Project/App/Sources/Analytics/FirebaseAnalyticsRepository.swift`
+- `Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift`
+- `Project/App/Sources/Analytics/CompositeAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
 
