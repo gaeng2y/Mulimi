@@ -61,6 +61,20 @@ struct RoutineRecoveryCardModel: Equatable {
     let canRecordNow: Bool
 }
 
+enum HydrationInsightEmptyAction: Equatable {
+    case record
+    case routine(RoutineRecoveryReminderAction)
+    case dailyGoal
+}
+
+struct HydrationInsightEmptyCTAModel: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let systemImage: String
+    let action: HydrationInsightEmptyAction
+    let isPrimary: Bool
+}
+
 enum HydrationWeeklyReportTimeSlot: CaseIterable, Equatable {
     case morning
     case afternoon
@@ -397,6 +411,45 @@ public final class HydrationInsightViewModel {
         return cards
     }
 
+    var emptyStateCTAs: [HydrationInsightEmptyCTAModel] {
+        guard isEmpty else {
+            return []
+        }
+
+        var ctas: [HydrationInsightEmptyCTAModel] = [
+            HydrationInsightEmptyCTAModel(
+                id: "record",
+                title: L10n.tr("insightEmptyRecordCTATitle"),
+                systemImage: "drop.fill",
+                action: .record,
+                isPrimary: true
+            ),
+            HydrationInsightEmptyCTAModel(
+                id: "routine",
+                title: reminderActionTitle(
+                    authorizedTitle: L10n.tr("insightEmptyRoutineCTATitle")
+                ),
+                systemImage: "bell.badge",
+                action: .routine(reminderAction(for: .create)),
+                isPrimary: false
+            )
+        ]
+
+        if dailyGoalML <= 0 {
+            ctas.append(
+                HydrationInsightEmptyCTAModel(
+                    id: "dailyGoal",
+                    title: L10n.tr("insightEmptyGoalCTATitle"),
+                    systemImage: "target",
+                    action: .dailyGoal,
+                    isPrimary: false
+                )
+            )
+        }
+
+        return ctas
+    }
+
     var chartUpperBound: Double {
         let highestAverage = weekdayDistributions.map(\.averageIntakeML).max() ?? 0
         return max(dailyGoalML, highestAverage) * 1.2
@@ -561,6 +614,16 @@ public final class HydrationInsightViewModel {
             .insightCTATapped(
                 source: "insight_weekly_coaching",
                 context: "weekly_coaching",
+                action: analyticsAction(for: action)
+            )
+        )
+    }
+
+    func trackEmptyStateAction(_ action: HydrationInsightEmptyAction) {
+        analyticsUseCase.track(
+            .insightCTATapped(
+                source: "insight_empty",
+                context: "empty_state",
                 action: analyticsAction(for: action)
             )
         )
@@ -1042,6 +1105,17 @@ public final class HydrationInsightViewModel {
             return "daily_goal"
         case .none:
             return "none"
+        }
+    }
+
+    private func analyticsAction(for action: HydrationInsightEmptyAction) -> String {
+        switch action {
+        case .record:
+            return "go_record"
+        case .routine(let routineAction):
+            return analyticsAction(for: routineAction)
+        case .dailyGoal:
+            return "daily_goal"
         }
     }
 

@@ -10,11 +10,21 @@ import DomainLayerInterface
 
 public final class MockSignInUseCase: SignInUseCase, @unchecked Sendable {
     public var isAuthenticated: Bool = true
+    private let credential = UserCredential(
+        userIdentifier: "preview-user-id",
+        email: nil,
+        name: nil
+    )
 
     public init() {}
 
-    public func signInWithApple() async throws {
+    public func currentUserCredential() -> UserCredential? {
+        isAuthenticated ? credential : nil
+    }
+
+    public func signInWithApple() async throws -> UserCredential {
         isAuthenticated = true
+        return credential
     }
 
     public func signOut() {

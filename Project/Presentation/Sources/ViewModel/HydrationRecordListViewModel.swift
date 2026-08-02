@@ -72,6 +72,23 @@ struct HydrationRecordPeriodSummary: Equatable {
     )
 }
 
+struct HydrationRecordWeekDayItem: Identifiable, Equatable {
+    let date: Date
+    let weekdayText: String
+    let dayText: String
+    let totalML: Int
+    let isAchieved: Bool
+    let isToday: Bool
+
+    var id: Date {
+        date
+    }
+
+    var hasRecord: Bool {
+        totalML > 0
+    }
+}
+
 @Observable
 public final class HydrationRecordListViewModel {
     private(set) var records: [HydrationRecord] = []
@@ -250,7 +267,64 @@ public final class HydrationRecordListViewModel {
     }
 
     var emptyStateDescription: String {
-        L10n.tr("historyEmptyDescription")
+        switch selectedPeriod {
+        case .today:
+            L10n.tr("historyEmptyTodayDescription")
+        case .week:
+            L10n.tr("historyEmptyWeekDescription")
+        case .month:
+            L10n.tr("historyEmptyMonthDescription")
+        }
+    }
+
+    var showsEmptyStateRecordCTA: Bool {
+        switch selectedPeriod {
+        case .today, .week:
+            return true
+        case .month:
+            return calendar.isDate(date, equalTo: nowProvider(), toGranularity: .month)
+        }
+    }
+
+    var todaySummary: HydrationRecordDaySummary? {
+        guard selectedPeriod == .today else {
+            return nil
+        }
+
+        let today = calendar.startOfDay(for: nowProvider())
+        return daySummaries.first { calendar.isDate($0.date, inSameDayAs: today) }
+    }
+
+    var weekDayItems: [HydrationRecordWeekDayItem] {
+        guard selectedPeriod == .week else {
+            return []
+        }
+
+        let now = nowProvider()
+        return dates(for: .week).map { day in
+            let summary = daySummaries.first { calendar.isDate($0.date, inSameDayAs: day) }
+            return HydrationRecordWeekDayItem(
+                date: day,
+                weekdayText: weekdaySymbol(for: day),
+                dayText: "\(calendar.component(.day, from: day))",
+                totalML: summary?.totalML ?? 0,
+                isAchieved: summary?.isAchieved(dailyGoal: dailyLimit) ?? false,
+                isToday: calendar.isDate(day, inSameDayAs: now)
+            )
+        }
+    }
+
+    private func weekdaySymbol(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        formatter.locale = calendar.locale ?? Locale.autoupdatingCurrent
+        let symbols = formatter.shortWeekdaySymbols ?? []
+        let index = calendar.component(.weekday, from: date) - 1
+        guard symbols.indices.contains(index) else {
+            return ""
+        }
+
+        return symbols[index]
     }
 
     private func dates(for period: HydrationRecordPeriod) -> [Date] {

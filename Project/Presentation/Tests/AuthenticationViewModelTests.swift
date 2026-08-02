@@ -22,14 +22,34 @@ struct AuthenticationViewModelTests {
     func initializeAuthenticationState() {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.isAuthenticatedValue = true
+        mockSignInUseCase.currentCredential = mockSignInUseCase.signInCredentialToReturn
+        let analyticsUseCase = MockAnalyticsUseCase()
         let appSession = AppSession()
 
         let viewModel = AuthenticationViewModel(
             signInUseCase: mockSignInUseCase,
-            appSession: appSession
+            appSession: appSession,
+            analyticsUseCase: analyticsUseCase
         )
 
         #expect(viewModel.isAuthenticated == true)
+        #expect(analyticsUseCase.identifiedUserIdentifiers == [mockSignInUseCase.signInCredentialToReturn.userIdentifier])
+    }
+
+    @MainActor
+    @Test("인증되지 않은 복원 세션은 사용자를 식별하지 않는다")
+    func unauthenticatedSessionDoesNotIdentify() {
+        let mockSignInUseCase = MockSignInUseCase()
+        mockSignInUseCase.currentCredential = mockSignInUseCase.signInCredentialToReturn
+        let analyticsUseCase = MockAnalyticsUseCase()
+
+        _ = AuthenticationViewModel(
+            signInUseCase: mockSignInUseCase,
+            appSession: AppSession(),
+            analyticsUseCase: analyticsUseCase
+        )
+
+        #expect(analyticsUseCase.identifiedUserIdentifiers.isEmpty)
     }
 
     @MainActor
@@ -53,14 +73,17 @@ struct AuthenticationViewModelTests {
     @Test("signInWithApple 성공 시 인증 상태가 true가 된다")
     func signInWithAppleSuccess() async {
         let mockSignInUseCase = MockSignInUseCase()
+        let analyticsUseCase = MockAnalyticsUseCase()
         let viewModel = AuthenticationViewModel(
             signInUseCase: mockSignInUseCase,
-            appSession: AppSession()
+            appSession: AppSession(),
+            analyticsUseCase: analyticsUseCase
         )
 
         await viewModel.signInWithApple()
 
         #expect(mockSignInUseCase.signInWithAppleCallCount == 1)
+        #expect(analyticsUseCase.identifiedUserIdentifiers == [mockSignInUseCase.signInCredentialToReturn.userIdentifier])
         #expect(viewModel.isAuthenticated == true)
         #expect(viewModel.isLoading == false)
         #expect(viewModel.errorMessage == nil)
@@ -89,14 +112,17 @@ struct AuthenticationViewModelTests {
     func signOut() {
         let mockSignInUseCase = MockSignInUseCase()
         mockSignInUseCase.isAuthenticatedValue = true
+        let analyticsUseCase = MockAnalyticsUseCase()
         let viewModel = AuthenticationViewModel(
             signInUseCase: mockSignInUseCase,
-            appSession: AppSession()
+            appSession: AppSession(),
+            analyticsUseCase: analyticsUseCase
         )
 
         viewModel.signOut()
 
         #expect(mockSignInUseCase.signOutCallCount == 1)
+        #expect(analyticsUseCase.resetCallCount == 1)
         #expect(viewModel.isAuthenticated == false)
     }
 }

@@ -23,7 +23,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 - 앱 타깃: `iOS 26.0+`
 - 워치 타깃: `watchOS 26.0+`
-- 진입 흐름: `SignIn -> Onboarding -> HealthKitPermissionGate -> ContentView`
+- 진입 흐름: `SignIn -> Onboarding -> HydrationReminderPermissionGate -> HealthKitPermissionGate -> ContentView`
 - 루트 내비게이션: `Project/App/Sources/ContentView.swift`
 - 루트 세션 상태: `Project/Presentation/Sources/State/AppSession.swift`
 - 공용 라우팅: `Project/Presentation/Sources/Navigation/AppCoordinator.swift`

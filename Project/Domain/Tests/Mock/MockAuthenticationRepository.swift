@@ -27,6 +27,10 @@ final class MockAuthenticationRepository: AuthenticationRepository, @unchecked S
         isAuthenticatedValue
     }
 
+    func currentUserCredential() -> UserCredential? {
+        isAuthenticated ? signInCredentialToReturn : nil
+    }
+
     func signInWithApple() async throws -> UserCredential {
         signInWithAppleCallCount += 1
 

@@ -15,7 +15,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/WidgetKit-Home_%26_Lock_Screen-0F766E?style=for-the-badge" alt="WidgetKit">
   <img src="https://img.shields.io/badge/Watch_App-MulimiWatch-374151?style=for-the-badge" alt="Watch App">
-  <img src="https://img.shields.io/badge/Firebase-Analytics_%26_Crashlytics-FF6F00?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase">
+  <img src="https://img.shields.io/badge/Firebase-Analytics-FF6F00?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase Analytics">
+  <img src="https://img.shields.io/badge/PostHog-Analytics_%26_Error_Tracking-F54E00?style=for-the-badge&logo=posthog&logoColor=white" alt="PostHog">
 </p>
 
 ## 물리미 (Mulimi)
@@ -37,7 +38,7 @@
 - `Swift 6.0`, `SwiftUI`, `Swift Concurrency`
 - `Tuist` 기반 모듈형 프로젝트
 - `HealthKit`, `WidgetKit`, `AppIntents`
-- `Firebase Analytics`, `Firebase Crashlytics`
+- `Firebase Analytics`, `PostHog Analytics`, `PostHog Error Tracking`
 - `Swinject` 기반 의존성 주입
 
 ## 🏗️ 아키텍처
@@ -65,6 +66,7 @@
 ```text
 SignIn
   -> Onboarding
+  -> HydrationReminderPermissionGate
   -> HealthKitPermissionGate
   -> ContentView
 ```

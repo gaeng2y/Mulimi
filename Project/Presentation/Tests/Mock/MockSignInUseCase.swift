@@ -10,17 +10,29 @@ final class MockSignInUseCase: SignInUseCase, @unchecked Sendable {
 
     var signInError: Error?
     var deleteAccountError: Error?
+    var currentCredential: UserCredential?
+    var signInCredentialToReturn = UserCredential(
+        userIdentifier: "mock-user-id",
+        email: nil,
+        name: nil
+    )
 
     var isAuthenticated: Bool {
         isAuthenticatedValue
     }
 
-    func signInWithApple() async throws {
+    func currentUserCredential() -> UserCredential? {
+        currentCredential
+    }
+
+    func signInWithApple() async throws -> UserCredential {
         signInWithAppleCallCount += 1
         if let signInError {
             throw signInError
         }
         isAuthenticatedValue = true
+        currentCredential = signInCredentialToReturn
+        return signInCredentialToReturn
     }
 
     func signOut() {

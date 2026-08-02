@@ -61,6 +61,7 @@ Domain -> no UI dependency
 ```text
 SignIn
   -> Onboarding
+  -> HydrationReminderPermissionGate
   -> HealthKitPermissionGate
   -> ContentView
 ```

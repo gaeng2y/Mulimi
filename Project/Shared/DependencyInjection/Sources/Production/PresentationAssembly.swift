@@ -119,7 +119,8 @@ public final class PresentationAssembly: Assembly {
         container.register(AuthenticationViewModel.self) { resolver in
             AuthenticationViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
-                appSession: resolver.resolve(AppSession.self)!
+                appSession: resolver.resolve(AppSession.self)!,
+                analyticsUseCase: resolver.resolve(AnalyticsUseCase.self)!
             )
         }
         .inObjectScope(.container)
@@ -135,6 +136,19 @@ public final class PresentationAssembly: Assembly {
                 )
             }
         }
+
+        container.register(HydrationReminderPermissionViewModel.self) { resolver in
+            let hydrationReminderUseCase = resolver.resolve(HydrationReminderUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationReminderPermissionViewModel(
+                    hydrationReminderUseCase: hydrationReminderUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
 
         container.register(HealthKitPermissionViewModel.self) { resolver in
             let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
@@ -162,9 +176,13 @@ public final class PresentationAssembly: Assembly {
 
         container.register(HydrationGoalRecommendationViewModel.self) { resolver in
             let useCase = resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
 
             return MainActor.assumeIsolated {
-                HydrationGoalRecommendationViewModel(useCase: useCase)
+                HydrationGoalRecommendationViewModel(
+                    useCase: useCase,
+                    progressUseCase: progressUseCase
+                )
             }
         }
         .inObjectScope(.container)

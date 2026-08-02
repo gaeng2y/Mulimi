@@ -6,9 +6,12 @@
 
 ## Architecture Rules
 
-- ViewModel은 Firebase SDK를 직접 알지 않는다.
+- ViewModel은 Firebase/PostHog SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- Firebase SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- 분석 SDK(Firebase, PostHog) 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- 이벤트는 `CompositeAnalyticsRepository`를 통해 Firebase와 PostHog에 동일하게 전송한다(dual-write). 한쪽에만 보내는 이벤트를 만들지 않는다.
+- PostHog는 `POSTHOG_API_KEY`(`XCConfig/Secrets.xcconfig`)가 설정된 빌드에서만 초기화한다. 키가 없으면 Firebase 단독으로 동작한다.
+- PostHog autocapture(`captureScreenViews`, `captureElementInteractions`)와 Session Replay는 사용하지 않는다. 라이프사이클 이벤트(`Application Opened` 등)만 SDK 기본 수집을 허용한다.
 - 이벤트 이름은 `snake_case`를 사용하고 40자 이하로 유지한다.
 - 파라미터 이름도 `snake_case`를 사용하고 값은 문자열, 정수, 실수, 불리언만 보낸다.
 - 개인정보, 건강 원본 값 전체, 자유 입력 텍스트는 이벤트 파라미터로 보내지 않는다.
@@ -30,7 +33,12 @@
 
 | Event | Required Parameters | Trigger |
 | --- | --- | --- |
-| `onboarding_completed` | `source` | 온보딩 마지막 CTA로 HealthKit 권한 게이트 진입 |
+| `onboarding_completed` | `source` | 온보딩 마지막 CTA로 권한 안내 흐름 진입 |
+| `hydration_reminder_priming_viewed` | `status` | 수분 리마인더 알림 권한 프라이밍 화면 노출 |
+| `hydration_reminder_request_tapped` | `status` | 알림 허용 CTA 탭 |
+| `hydration_reminder_permission_authorized` | `source`, `status` | 알림 권한 허용 확인 |
+| `hydration_reminder_permission_denied` | `source`, `status` | 알림 권한 거부 확인 |
+| `hydration_reminder_priming_skipped` | `status` | 프라이밍에서 나중에 할게요 탭 |
 | `healthkit_permission_gate_viewed` | `status` | HealthKit 권한 게이트 노출 |
 | `healthkit_permission_request_tapped` | `status` | 권한 요청 CTA 탭 |
 | `healthkit_permission_authorized` | `source`, `status` | 권한 허용 확인 |
@@ -43,7 +51,7 @@
 | `routine_created` | `source`, `enabled`, `weekday_count` | 루틴 생성 저장 성공 |
 | `routine_updated` | `source`, `enabled`, `weekday_count` | 루틴 수정 저장 성공 |
 | `routine_deleted` | `source`, `enabled`, `weekday_count` | 루틴 삭제 성공 |
-| `insight_cta_tapped` | `source`, `context`, `action` | 인사이트 루틴 복구/주간 코칭 CTA 탭 |
+| `insight_cta_tapped` | `source`, `context`, `action` | 인사이트 루틴 복구/주간 코칭/empty state CTA 탭 |
 | `challenge_cta_tapped` | `source`, `challenge_kind`, `action` | 추천 챌린지 CTA 탭 |
 | `daily_goal_changed` | `source`, `previous_goal_ml`, `new_goal_ml` | 목표 수분량 변경 |
 
@@ -52,11 +60,13 @@
 ### `source`
 
 - `onboarding`
+- `hydration_reminder_priming`
 - `healthkit_permission_gate`
 - `drink_water_main`
 - `app_intent`
 - `insight_recovery`
 - `insight_weekly_coaching`
+- `insight_empty`
 - `challenge_recommendation`
 - `profile_routine`
 - `settings`
@@ -84,6 +94,7 @@
 ### `action`
 
 - `record_now`
+- `go_record`
 - `create_routine`
 - `edit_routine`
 - `request_notification_permission`
@@ -94,6 +105,7 @@
 
 - HealthKit: `not_determined`, `denied`, `authorized`
 - Routine notification: `not_determined`, `denied`, `authorized`
+- Hydration reminder notification: `not_determined`, `denied`, `authorized`
 
 ## Validation
 
@@ -108,6 +120,8 @@
 - `Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift`
 - `Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
 - `Project/App/Sources/Analytics/FirebaseAnalyticsRepository.swift`
+- `Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift`
+- `Project/App/Sources/Analytics/CompositeAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
 

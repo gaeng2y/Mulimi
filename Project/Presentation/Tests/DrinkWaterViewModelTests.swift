@@ -511,6 +511,137 @@ struct DrinkWaterViewModelTests {
         )
     }
 
+    @MainActor
+    @Test("오늘 기록이 0이면 다음 한 잔 안내를 첫 기록 안내로 바꾼다")
+    func firstRecordGuideWhenNoIntakeToday() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 0
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 2_000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+
+        #expect(viewModel.isFirstRecordGuideActive)
+        #expect(
+            viewModel.nextActionHeadline ==
+            L10n.tr("drinkWaterNextActionFirstRecordHeadline")
+        )
+        #expect(
+            viewModel.nextActionDescription ==
+            L10n.tr(
+                "drinkWaterNextActionFirstRecordDescriptionFormat",
+                L10n.tr("drinkWaterButtonTitle"),
+                L10n.tr("commonMilliliterFormat", HydrationServing.defaultGlassVolumeML)
+            )
+        )
+    }
+
+    @MainActor
+    @Test("첫 잔 기록 후에는 기존 다음 한 잔 안내로 돌아간다")
+    func firstRecordGuideEndsAfterFirstRecord() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        let guideUseCase = StubHydrationNextActionGuideUseCase()
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 2_000
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: guideUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.loadInitialState()
+
+        #expect(viewModel.isFirstRecordGuideActive)
+
+        guideUseCase.guideValue = HydrationNextActionGuide.make(
+            currentIntakeML: Double(HydrationServing.defaultGlassVolumeML),
+            dailyGoalML: 2_000
+        )
+        await viewModel.drinkWater()
+
+        #expect(viewModel.isFirstRecordGuideActive == false)
+        #expect(
+            viewModel.nextActionHeadline ==
+            L10n.tr("drinkWaterNextActionReadyHeadline")
+        )
+        #expect(
+            viewModel.nextActionDescription ==
+            L10n.tr(
+                "drinkWaterNextActionRemainingDescriptionFormat",
+                L10n.tr("commonMilliliterFormat", 1_750),
+                7
+            )
+        )
+    }
+
+    @MainActor
+    @Test("목표가 없으면 첫 기록 안내 대신 목표 설정 안내를 유지한다")
+    func firstRecordGuideInactiveWhenGoalMissing() async {
+        let guideUseCase = StubHydrationNextActionGuideUseCase()
+        guideUseCase.guideValue = HydrationNextActionGuide.make(
+            currentIntakeML: 0,
+            dailyGoalML: 0
+        )
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: guideUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.refreshState()
+
+        #expect(viewModel.isFirstRecordGuideActive == false)
+        #expect(
+            viewModel.nextActionHeadline ==
+            L10n.tr("drinkWaterNextActionNeedsGoalHeadline")
+        )
+    }
+
+    @MainActor
+    @Test("루틴이 임박하면 기록이 0이어도 루틴 안내를 우선한다")
+    func firstRecordGuideYieldsToApproachingRoutine() async {
+        let guideUseCase = StubHydrationNextActionGuideUseCase()
+        guideUseCase.guideValue = HydrationNextActionGuide(
+            state: .approachingRoutine,
+            currentIntakeML: 0,
+            dailyGoalML: 2_000,
+            remainingML: 2_000,
+            remainingGlassCount: 8,
+            nextRoutine: HydrationNextRoutineContext(
+                id: "routine",
+                title: "오전 루틴",
+                hour: 10,
+                minute: 0,
+                minutesUntil: 30
+            )
+        )
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: guideUseCase,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+
+        await viewModel.refreshState()
+
+        #expect(viewModel.isFirstRecordGuideActive == false)
+        #expect(
+            viewModel.nextActionHeadline ==
+            L10n.tr(
+                "drinkWaterNextActionApproachingRoutineHeadlineFormat",
+                L10n.tr("drinkWaterNextActionMinutesFormat", 30)
+            )
+        )
+    }
+
 }
 
 private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {

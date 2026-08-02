@@ -99,6 +99,13 @@ public final class DomainAssembly: Assembly {
             )
         }
 
+        // MARK: - HydrationReminder
+        container.register(HydrationReminderUseCase.self) { resolver in
+            HydrationReminderUseCaseImpl(
+                repository: resolver.resolve(HydrationReminderRepository.self)!
+            )
+        }
+
         // MARK: - Authentication
         container.register(SignInUseCase.self) { resolver in
             SignInUseCaseImpl(

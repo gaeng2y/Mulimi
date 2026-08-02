@@ -144,6 +144,169 @@ struct HydrationInsightViewModelTests {
     }
 
     @MainActor
+    @Test("empty state는 기록 CTA를 우선으로 루틴, 목표 CTA를 순서대로 노출한다")
+    func emptyStateCTAsPriority() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.authorizationStatus = .authorized
+        progressUseCase.snapshot = .empty(dailyGoalML: 0)
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: routineUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(viewModel.isEmpty == true)
+        #expect(viewModel.emptyStateCTAs.map(\.id) == ["record", "routine", "dailyGoal"])
+        #expect(viewModel.emptyStateCTAs.first?.isPrimary == true)
+        #expect(viewModel.emptyStateCTAs.first?.action == .record)
+        #expect(viewModel.emptyStateCTAs[1].action == .routine(.manageRoutine(.create)))
+        #expect(viewModel.emptyStateCTAs.last?.action == .dailyGoal)
+    }
+
+    @MainActor
+    @Test("목표가 설정돼 있으면 empty state에서 목표 CTA를 제외한다")
+    func emptyStateCTAsWithoutGoalIssue() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineUseCase = SpyRoutineUseCase()
+        routineUseCase.authorizationStatus = .authorized
+        progressUseCase.snapshot = .empty(dailyGoalML: 2000)
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: routineUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(viewModel.emptyStateCTAs.map(\.id) == ["record", "routine"])
+    }
+
+    @MainActor
+    @Test("empty state 루틴 CTA는 알림 권한 상태에 따라 분기한다")
+    func emptyStateRoutineCTAPermissionBranches() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+
+        let notDeterminedRoutineUseCase = SpyRoutineUseCase()
+        notDeterminedRoutineUseCase.authorizationStatus = .notDetermined
+        let notDeterminedProgressUseCase = MockHydrationProgressUseCase()
+        notDeterminedProgressUseCase.snapshot = .empty(dailyGoalML: 2000)
+        let notDeterminedViewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: notDeterminedProgressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: notDeterminedRoutineUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await notDeterminedViewModel.loadInsights()
+
+        #expect(
+            notDeterminedViewModel.emptyStateCTAs[1].action
+                == .routine(.requestNotificationAuthorization(.create))
+        )
+
+        let deniedRoutineUseCase = SpyRoutineUseCase()
+        deniedRoutineUseCase.authorizationStatus = .denied
+        let deniedProgressUseCase = MockHydrationProgressUseCase()
+        deniedProgressUseCase.snapshot = .empty(dailyGoalML: 2000)
+        let deniedViewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: deniedProgressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: deniedRoutineUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await deniedViewModel.loadInsights()
+
+        #expect(deniedViewModel.emptyStateCTAs[1].action == .routine(.openSettings))
+    }
+
+    @MainActor
+    @Test("기록이 있으면 empty state CTA를 노출하지 않는다")
+    func emptyStateCTAsHiddenWhenNotEmpty() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineUseCase = SpyRoutineUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            todayIntakeML: 500,
+            weeklyAverageML: 500,
+            monthlyAverageML: 500,
+            weeklyAchievementRate: 0,
+            monthlyAchievementRate: 0,
+            weeklyAchievedDays: 0,
+            monthlyAchievedDays: 0,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 0,
+            isEmpty: false
+        )
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: routineUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(viewModel.isEmpty == false)
+        #expect(viewModel.emptyStateCTAs.isEmpty)
+    }
+
+    @MainActor
+    @Test("empty state CTA 탭은 insight_cta_tapped 이벤트를 남긴다")
+    func emptyStateCTAAnalytics() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        let routineUseCase = SpyRoutineUseCase()
+        let analyticsUseCase = MockAnalyticsUseCase()
+        progressUseCase.snapshot = .empty(dailyGoalML: 0)
+
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: MockDrinkWaterUseCase(),
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: routineUseCase,
+            analyticsUseCase: analyticsUseCase,
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+        viewModel.trackEmptyStateAction(.record)
+
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == ["insight_cta_tapped"])
+        #expect(analyticsUseCase.trackedEvents.first?.parameters["source"] == .string("insight_empty"))
+        #expect(analyticsUseCase.trackedEvents.first?.parameters["context"] == .string("empty_state"))
+        #expect(analyticsUseCase.trackedEvents.first?.parameters["action"] == .string("go_record"))
+    }
+
+    @MainActor
     @Test("기록이 없어도 도래한 루틴이 있으면 루틴 수행률 카드를 노출한다")
     func loadInsightsShowsRoutineAdherenceWithoutHydrationRecords() async {
         let calendar = makeCalendar()

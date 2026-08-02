@@ -9,14 +9,21 @@
 - 수분 기록의 원본 저장소는 `HealthKit`
 - 로컬에 별도 hydration 원장을 다시 두지 않는다
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다
+- 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 되돌리기/초기화를 담은 더보기(ellipsis) 메뉴만 노출한다
+- 다음 한 잔 안내는 화면 상단, `WaterDrop`과 오늘 섭취 요약은 화면 중앙, 기본 기록 CTA는 하단에 둔다. `WaterDrop`은 고정 시각 anchor로, 되돌리기나 기록 성공 피드백 상태 변화로 밀리지 않는다
+- 되돌리기(최근 앱 생성 기록 1건)와 초기화는 기본 기록 CTA 옆 더보기 메뉴에서 Label 형태로 제공한다. 되돌리기는 최근 기록이 있을 때만 메뉴에 나타나고, 초기화는 destructive action으로 구분한다
+- 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 primary CTA 상태 변화로 제공한다
 - 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 최근 앱 생성 기록 1건 되돌리기, 오늘 물리미 기록 초기화만 노출한다
 - 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 제공한다
+- 오늘 기록이 0이고 다음 한 잔 안내가 기본 상태(`readyToDrink`)면, 같은 안내 카드의 문구를 첫 기록 유도로 바꿔 기본 1잔 기록 CTA와 건강 앱 저장을 안내한다. 별도 배너나 레이아웃 요소를 추가하지 않으며, 루틴 임박/목표 미설정 안내가 우선한다. 온보딩 전환 실험 H4 기준(`Docs/product-specs/onboarding-healthkit-conversion-experiments.md`)과 정렬된다
 - 기록 단위 사용자 기본값 설정은 아직 구현하지 않았다. 기본 액션, 위젯, Watch는 기본 1잔을 유지하고, Siri/Shortcuts는 실행 시 선택한 단위를 1회 기록한다
 - 기록 후 오늘 목표를 초과하는 단위는 앱과 AppIntent에서 기록하지 않는다
 - 메인 화면의 오늘 기록 초기화는 확인 후 물리미가 오늘 만든 HealthKit 샘플만 삭제한다
-- 메인 기록 화면의 WaterDrop, 오늘 섭취 요약, 기본 기록 CTA, 초기화 CTA는 작은 화면과 Accessibility Dynamic Type에서도 스크롤로 접근 가능해야 한다
+- 메인 기록 화면의 WaterDrop, 오늘 섭취 요약, 기본 기록 CTA, 더보기 메뉴는 작은 화면과 Accessibility Dynamic Type에서도 스크롤로 접근 가능해야 한다
 - 기록 탭은 HealthKit 샘플 단위 기록을 보여주고, 앱이 생성한 기록만 개별 삭제를 허용한다
 - 기록 탭의 오늘/주간/월간 요약은 HealthKit 기록을 일별 합산한 표시 모델로 만든다
+- 기록 탭은 기간별로 시각화를 분리한다. 오늘은 당일 이벤트 타임라인, 주간은 7일 달성 스트립과 일별 요약 리스트, 월간은 달력 grid와 일별 요약 리스트를 쓴다. 기간 요약 카드는 세 기간 모두 유지하고, 개별 이벤트 삭제 정책은 기간과 무관하게 같다
+- 기록 탭 empty state는 기간별 문구를 쓴다. 오늘/주간과 현재 달 조회에서는 메인 기록 탭 전환 CTA를 노출하고, 지난달 조회에서는 CTA를 노출하지 않는다
 - 기록 탭의 잔 수와 달성일 계산은 `HydrationServing`과 사용자 목표 수분량을 기준으로 한다
 - 앱, 위젯, 워치가 서로 다른 계산 규칙을 만들지 않는다
 
@@ -100,6 +107,7 @@
 
 - `ARCHITECTURE.md`
 - `Docs/reliability-recovery.md`
+- `Docs/product-specs/onboarding-healthkit-conversion-experiments.md`
 - `Docs/skills/healthkit-flow.md`
 - `Docs/skills/widget-watch-integration.md`
 

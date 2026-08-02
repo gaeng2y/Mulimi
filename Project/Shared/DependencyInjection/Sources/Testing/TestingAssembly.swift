@@ -46,5 +46,9 @@ public final class TestingAssembly: Assembly {
         container.register(RoutineUseCase.self) { _ in
             MockRoutineUseCaseForTesting()
         }
+
+        container.register(HydrationReminderUseCase.self) { _ in
+            MockHydrationReminderUseCaseForTesting()
+        }
     }
 }

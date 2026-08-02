@@ -10,4 +10,12 @@ public struct AnalyticsUseCaseImpl: AnalyticsUseCase {
     public func track(_ event: ProductAnalyticsEvent) {
         repository.track(event)
     }
+
+    public func identify(userIdentifier: String) {
+        repository.identify(userIdentifier: userIdentifier)
+    }
+
+    public func reset() {
+        repository.reset()
+    }
 }

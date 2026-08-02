@@ -20,8 +20,12 @@ public struct SignInUseCaseImpl: SignInUseCase {
         repository.isAuthenticated
     }
 
-    public func signInWithApple() async throws {
-        _ = try await repository.signInWithApple()
+    public func currentUserCredential() -> UserCredential? {
+        repository.currentUserCredential()
+    }
+
+    public func signInWithApple() async throws -> UserCredential {
+        try await repository.signInWithApple()
     }
 
     public func signOut() {

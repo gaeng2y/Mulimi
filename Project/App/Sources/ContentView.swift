@@ -65,7 +65,12 @@ struct ContentView: View {
                         Label(L10n.tr("drinkTitle"), systemImage: "waterbottle")
                     }
 
-                HydrationRecordListView(viewModel: hydrationRecordListViewModel)
+                HydrationRecordListView(
+                    viewModel: hydrationRecordListViewModel,
+                    onRecordAction: {
+                        selectedTab = .drink
+                    }
+                )
                     .tag(AppTab.history)
                     .tabItem {
                         Label(L10n.tr("historyTitle"), systemImage: "calendar")
@@ -78,6 +83,9 @@ struct ContentView: View {
                     },
                     onDailyGoalAction: {
                         appCoordinator.push(.setting(.dailyLimit))
+                    },
+                    onRecordAction: {
+                        selectedTab = .drink
                     }
                 )
                     .tag(AppTab.insight)
@@ -176,6 +184,7 @@ struct ContentView: View {
         case .profile:
             settingsViewModel.refreshState()
             await bodyProfileViewModel.refresh()
+            await recommendationViewModel.load()
         }
     }
 }
