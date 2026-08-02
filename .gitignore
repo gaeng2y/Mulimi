@@ -75,3 +75,6 @@ XCConfig/Secrets.xcconfig
 .env
 .env.example
 .posthog-wizard-cache/
+
+### Local agent configuration ###
+.claude/
