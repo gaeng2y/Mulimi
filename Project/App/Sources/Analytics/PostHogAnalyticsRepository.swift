@@ -1,22 +1,26 @@
 import DomainLayerInterface
-import FirebaseAnalytics
 import Foundation
+import PostHog
 
-struct FirebaseAnalyticsRepository: AnalyticsRepository {
+struct PostHogAnalyticsRepository: AnalyticsRepository {
     func track(_ event: ProductAnalyticsEvent) {
-        Analytics.logEvent(
+        PostHogSDK.shared.capture(
             event.name,
-            parameters: event.parameters.mapValues(\.firebaseValue)
+            properties: event.parameters.mapValues(\.postHogValue)
         )
     }
 
+    func identify(userIdentifier: String) {
+        PostHogSDK.shared.identify(userIdentifier)
+    }
+
     func reset() {
-        Analytics.setUserID(nil)
+        PostHogSDK.shared.reset()
     }
 }
 
 private extension AnalyticsParameterValue {
-    var firebaseValue: Any {
+    var postHogValue: Any {
         switch self {
         case .string(let value):
             return value

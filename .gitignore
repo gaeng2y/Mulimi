@@ -70,3 +70,8 @@ Tuist/.build/
 
 ### Tuist managed dependencies ###
 XCConfig/Secrets.xcconfig
+
+### Local analytics configuration ###
+.env
+.env.example
+.posthog-wizard-cache/

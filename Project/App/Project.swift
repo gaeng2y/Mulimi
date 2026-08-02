@@ -21,7 +21,14 @@ let project = Project(
         ],
         configurations: [
             .debug(name: "Debug", xcconfig: .relativeToRoot("XCConfig/Debug.xcconfig")),
-            .release(name: "Release", xcconfig: .relativeToRoot("XCConfig/Release.xcconfig"))
+            .release(
+                name: "Release",
+                settings: [
+                    "DEBUG_INFORMATION_FORMAT": .string("dwarf-with-dsym"),
+                    "ENABLE_USER_SCRIPT_SANDBOXING": .string("NO")
+                ],
+                xcconfig: .relativeToRoot("XCConfig/Release.xcconfig")
+            )
         ]
     ),
     targets: [
@@ -40,6 +47,25 @@ let project = Project(
             entitlements: .file(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
+            scripts: [
+                .post(
+                    script: """
+                    if [ "$CONFIGURATION" != "Release" ]; then
+                      exit 0
+                    fi
+                    if [ -z "$POSTHOG_CLI_API_KEY" ] || [ -z "$POSTHOG_CLI_PROJECT_ID" ]; then
+                      echo "warning: PostHog dSYM upload skipped: CLI credentials are not configured."
+                      exit 0
+                    fi
+                    "$SRCROOT/../../Tuist/.build/checkouts/posthog-ios/build-tools/upload-symbols.sh"
+                    """,
+                    name: "Upload PostHog dSYMs",
+                    inputPaths: [
+                        "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(EXECUTABLE_NAME)"
+                    ],
+                    basedOnDependencyAnalysis: false
+                )
+            ],
             dependencies: [
                 .target(name: "MulimiWatch"),
                 .target(name: "WidgetExtension"),
@@ -60,7 +86,8 @@ let project = Project(
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),
                 .external(name: "FirebaseAnalytics"),
-                .external(name: "FirebaseCrashlytics")
+                .external(name: "FirebaseCrashlytics"),
+                .external(name: "PostHog")
             ],
             settings: .settings(
                 base: [

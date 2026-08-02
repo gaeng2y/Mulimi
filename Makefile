@@ -16,7 +16,7 @@ setup:
 		exit 1; \
 	fi
 	@echo "🔐 Creating Secrets.xcconfig with your Team ID..."
-	@echo "DEVELOPMENT_TEAM = $(TEAM_ID)" > XCConfig/Secrets.xcconfig
+	@sed "s/YOUR_TEAM_ID/$(TEAM_ID)/g" XCConfig/Secrets.xcconfig.template > XCConfig/Secrets.xcconfig
 	@echo "✅ Secrets.xcconfig created successfully."
 	@make fetch
 	@make generate
