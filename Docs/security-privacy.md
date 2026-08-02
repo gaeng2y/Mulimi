@@ -4,7 +4,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 
 ## Goals
 
-- HealthKit, Apple Sign In, Firebase, PostHog, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
+- HealthKit, Apple Sign In, Firebase Analytics, PostHog, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
 - 이벤트 파라미터와 로컬 저장소에 넣으면 안 되는 데이터를 명확히 한다.
 - AdMob, IAP, 서버 연동을 추가하기 전에 개인정보 영향 검토를 먼저 수행한다.
 
@@ -29,7 +29,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 | Apple account credential | Apple user identifier, optional email/name | Keychain | 로그인 상태 판단용이다. identity token, authorization code는 현재 저장하지 않는다. |
 | Firebase Analytics | allowlist 이벤트와 파라미터 | Firebase/Google Analytics | 제품 행동 측정만 허용한다. 개인정보, 건강 원본 값, 자유 입력 텍스트는 금지한다. |
 | PostHog Analytics | allowlist 이벤트와 Apple user identifier 기반 distinct ID | PostHog US Cloud | Firebase와 같은 이벤트 계약만 전송한다. 이메일/이름은 person property로 보내지 않는다. |
-| Crashlytics | SDK dependency only | Firebase Crashlytics | 커스텀 key/log를 추가할 때 HealthKit 값, 계정 식별자, 이메일, 루틴 제목을 넣지 않는다. |
+| PostHog Error Tracking | native error, stack trace, 진단 속성 | PostHog US Cloud | 오류·로그 속성에 개인정보, 건강 원본 값, 자유 입력 텍스트를 넣지 않는다. |
 
 ## HealthKit
 
@@ -71,9 +71,9 @@ HealthKit 변경 전 체크:
 - Apple Sign In token revocation이 필요한 서버 구조인지
 - 삭제 요청 후 보관해야 하는 결제/영수증/분쟁 대응 데이터가 있는지
 
-## Firebase, PostHog Analytics And Crashlytics
+## Firebase Analytics And PostHog
 
-Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. Firebase/PostHog SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다. PostHog `identify`는 안정적인 Apple user identifier만 사용하고 이메일과 이름은 전송하지 않는다. 로그아웃과 회원 탈퇴 성공 시 `reset`한다.
+Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. Firebase/PostHog SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다. PostHog `identify`는 안정적인 Apple user identifier만 사용하고 이메일과 이름은 전송하지 않는다. 로그아웃과 회원 탈퇴 성공 시 `reset`한다. 오류 수집은 PostHog Error Tracking만 사용하고 Release dSYM 업로드용 개인 API 키는 Xcode Cloud secret에만 저장한다.
 
 허용:
 
@@ -88,7 +88,7 @@ Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준
 - 루틴 제목, 자유 입력 텍스트, 알림 본문, 사용자 메모
 - 정확한 위치, 연락처, 사진, 캘린더, 파일 경로
 - 기기 식별자, 광고 식별자, fingerprinting 목적 값
-- Crashlytics custom key/log에 개인정보나 건강 데이터를 넣는 것
+- PostHog 오류 이벤트나 로그 속성에 개인정보, 건강 데이터, 자유 입력 텍스트를 넣는 것
 
 이벤트 추가 전 체크:
 
@@ -160,7 +160,7 @@ StoreKit, 구독, 결제 서버, 영수증 검증을 추가하기 전에 아래�
 - 개인정보 처리방침 또는 앱 내 고지 문구 변경이 필요한가?
 - Analytics 이벤트 파라미터가 allowlist 기준을 따르는가?
 - App Group/iCloud KVS에 민감 데이터가 추가되지 않았는가?
-- 로그, OSLog, Crashlytics custom key에 개인정보/건강 데이터가 들어가지 않는가?
+- 로그, OSLog, PostHog 오류·로그 속성에 개인정보/건강 데이터가 들어가지 않는가?
 - 회원 탈퇴/로그아웃/동의 철회 시 데이터 삭제 또는 수집 중단 범위가 명확한가?
 - 법률 검토가 필요한 항목을 PR과 이슈에 남겼는가?
 
