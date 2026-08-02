@@ -86,7 +86,6 @@ let project = Project(
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),
                 .external(name: "FirebaseAnalytics"),
-                .external(name: "FirebaseCrashlytics"),
                 .external(name: "PostHog")
             ],
             settings: .settings(
