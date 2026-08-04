@@ -4209,7 +4209,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 > 건강 > 데이터 접근 및 기기 > 물리미에서 권한을 다시 켤 수 있어요."
+            "value" : "열린 설정에서 물리미의 건강 접근 권한을 켜 주세요."
           }
         }
       }
@@ -4220,7 +4220,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "건강 권한 다시 켜기"
+            "value" : "1. 설정에서 건강 권한 켜기"
           }
         }
       }
@@ -4231,7 +4231,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 변경 후 물리미로 돌아오면 자동으로 확인하고, 필요하면 다시 확인하기를 누를 수 있어요."
+            "value" : "권한을 켠 뒤 물리미로 돌아오면 자동으로 확인해요. 화면이 그대로면 다시 확인하기를 눌러 주세요."
           }
         }
       }
@@ -4242,7 +4242,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "돌아온 뒤 상태 확인"
+            "value" : "2. 물리미로 돌아와 다시 확인"
           }
         }
       }
@@ -4253,7 +4253,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "권한을 다시 켜는 방법"
+            "value" : "권한을 다시 켜는 순서"
           }
         }
       }
