@@ -24,6 +24,9 @@ Onboarding 완료
 - 사용자가 iOS 설정에서 권한을 회수하면 다음 실행 시 남은 리마인더를 정리한다.
 - 프라이밍 노출 전에 시스템 권한 상태를 먼저 확인한다. 확인이 끝나기 전에는 빈 화면을 유지해, 이미 권한이 결정된 사용자에게 프라이밍이 잠깐이라도 보이지 않게 한다.
 - 로그아웃해도 이미 스케줄된 리마인더는 유지한다. 재방문을 유도하는 의도된 동작이며, 알림을 탭하면 로그인 화면으로 진입한다.
+- 회원 탈퇴가 성공하면 `hydrationReminder.*`로 스케줄된 리마인더를 정리한다.
+- 앱이 포그라운드일 때도 수분 리마인더 배너와 소리를 표시한다.
+- 수분 리마인더를 탭하면 `mulimi://hydration/record`를 `AppCoordinator`에 전달해 메인 기록 화면으로 이동한다.
 
 ## Reminder Schedule
 
@@ -59,9 +62,7 @@ Onboarding 완료
 
 ## Known Limitations
 
-- `UNUserNotificationCenterDelegate`가 없어 앱이 포그라운드일 때는 배너가 보이지 않는다. 포그라운드 표시와 알림 탭 딥링크는 후속 이슈로 다룬다(AppCoordinator 딥링크 이슈 #257과 연계).
 - 리마인더 시간과 문구는 아직 사용자 설정을 제공하지 않는다.
-- 회원 탈퇴 시 리마인더 자동 정리는 아직 없다. 후속 이슈로 다룬다.
 
 ## Related Code
 
@@ -73,6 +74,8 @@ Onboarding 완료
 - `Project/Presentation/Sources/ViewModel/HydrationReminderPermissionViewModel.swift`
 - `Project/Presentation/Sources/View/Authentication/HydrationReminderPermissionGateView.swift`
 - `Project/Presentation/Sources/View/RootView.swift`
+- `Project/Presentation/Sources/Navigation/AppCoordinator.swift`
+- `Project/App/Sources/AppDelegate.swift`
 
 ## Related Docs
 
