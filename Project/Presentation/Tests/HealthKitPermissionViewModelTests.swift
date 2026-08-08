@@ -101,6 +101,56 @@ struct HealthKitPermissionViewModelTests {
     }
 
     @MainActor
+    @Test("설정 이동과 다시 확인은 복구 이벤트와 권한 상태를 갱신한다")
+    func settingsRecoveryTracksEventsAndRefreshesStatus() {
+        let healthKitUseCase = MockHealthKitUseCase()
+        healthKitUseCase.authorizationStatusValue = .sharingDenied
+        let analyticsUseCase = MockAnalyticsUseCase()
+        let viewModel = HealthKitPermissionViewModel(
+            healthKitUseCase: healthKitUseCase,
+            analyticsUseCase: analyticsUseCase
+        )
+
+        viewModel.trackSettingsTapped()
+        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
+        viewModel.refreshStatusFromSettings()
+
+        #expect(viewModel.authorizationStatus == .sharingAuthorized)
+        #expect(viewModel.isAuthorized == true)
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == [
+            "healthkit_permission_settings_tapped",
+            "healthkit_permission_refresh_tapped",
+            "healthkit_permission_authorized"
+        ])
+    }
+
+    @MainActor
+    @Test("설정 복귀 시 탭 이벤트 없이 복구된 권한 결과만 기록한다")
+    func appActivationTracksRecoveredAuthorization() {
+        let healthKitUseCase = MockHealthKitUseCase()
+        healthKitUseCase.authorizationStatusValue = .sharingDenied
+        let analyticsUseCase = MockAnalyticsUseCase()
+        let viewModel = HealthKitPermissionViewModel(
+            healthKitUseCase: healthKitUseCase,
+            analyticsUseCase: analyticsUseCase
+        )
+
+        viewModel.refreshStatusAfterAppActivation()
+
+        #expect(viewModel.authorizationStatus == .sharingDenied)
+        #expect(analyticsUseCase.trackedEvents.isEmpty)
+
+        healthKitUseCase.authorizationStatusValue = .sharingAuthorized
+        viewModel.refreshStatusAfterAppActivation()
+
+        #expect(viewModel.authorizationStatus == .sharingAuthorized)
+        #expect(viewModel.isAuthorized == true)
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == [
+            "healthkit_permission_authorized"
+        ])
+    }
+
+    @MainActor
     @Test("markSignedOut는 에러 메시지를 초기화한다")
     func markSignedOutClearsErrorMessage() async {
         let healthKitUseCase = MockHealthKitUseCase()

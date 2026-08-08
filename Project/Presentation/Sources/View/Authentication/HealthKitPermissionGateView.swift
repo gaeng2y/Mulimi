@@ -40,7 +40,7 @@ public struct HealthKitPermissionGateView<Content: View>: View {
                 return
             }
 
-            viewModel.refreshStatus()
+            viewModel.refreshStatusAfterAppActivation()
         }
     }
 
