@@ -13,6 +13,7 @@ import DomainLayerInterface
 public final class SettingsViewModel {
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
+    private let hydrationReminderUseCase: HydrationReminderUseCase
     private let appSession: AppSession
     private let widgetTimelineReloader: any WidgetTimelineReloading
     private let analyticsUseCase: AnalyticsUseCase
@@ -29,6 +30,7 @@ public final class SettingsViewModel {
     public init(
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
+        hydrationReminderUseCase: HydrationReminderUseCase,
         appSession: AppSession,
         widgetTimelineReloader: any WidgetTimelineReloading,
         appInfoProvider: any AppInfoProviding,
@@ -36,6 +38,7 @@ public final class SettingsViewModel {
     ) {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
+        self.hydrationReminderUseCase = hydrationReminderUseCase
         self.appSession = appSession
         self.widgetTimelineReloader = widgetTimelineReloader
         self.analyticsUseCase = analyticsUseCase
@@ -109,6 +112,7 @@ public final class SettingsViewModel {
 
         do {
             try await signInUseCase.deleteAccount()
+            await hydrationReminderUseCase.cancelReminders()
             analyticsUseCase.reset()
             showWithdrawalConfirmation = false
 

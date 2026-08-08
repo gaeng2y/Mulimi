@@ -14,6 +14,8 @@ import SwiftUI
 
 @main
 struct DrinkWaterApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     init() {
         FirebaseApp.configure()
         DIContainer.shared.registerAnalyticsRepository(Self.makeAnalyticsRepository())

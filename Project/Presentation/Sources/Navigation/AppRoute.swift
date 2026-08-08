@@ -2,12 +2,15 @@ import DomainLayerInterface
 import Foundation
 
 public enum AppRoute: NavigationRoute, Sendable {
+    case hydrationLogging
     case profileRoutine
     case profileRoutineAction(RoutineActionIntent)
     case setting(SettingMenu)
 
     public var id: String {
         switch self {
+        case .hydrationLogging:
+            return "hydration_logging"
         case .profileRoutine:
             return "profile_routine"
         case let .profileRoutineAction(action):

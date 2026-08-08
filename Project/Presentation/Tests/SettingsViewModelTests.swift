@@ -37,6 +37,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: signInUseCase,
+            hydrationReminderUseCase: MockHydrationReminderUseCase(),
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -61,6 +62,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
+            hydrationReminderUseCase: MockHydrationReminderUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: SpyWidgetTimelineReloader {
                 counter.count += 1
@@ -87,6 +89,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
+            hydrationReminderUseCase: MockHydrationReminderUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: SpyWidgetTimelineReloader {
                 counter.count += 1
@@ -108,6 +111,7 @@ struct SettingsViewModelTests {
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
+            hydrationReminderUseCase: MockHydrationReminderUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -128,10 +132,12 @@ struct SettingsViewModelTests {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.isAuthenticatedValue = true
         let analyticsUseCase = MockAnalyticsUseCase()
+        let hydrationReminderUseCase = MockHydrationReminderUseCase()
         let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
+            hydrationReminderUseCase: hydrationReminderUseCase,
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15"),
@@ -142,6 +148,7 @@ struct SettingsViewModelTests {
         await viewModel.confirmWithdrawal()
 
         #expect(signInUseCase.deleteAccountCallCount == 1)
+        #expect(hydrationReminderUseCase.cancelRemindersCallCount == 1)
         #expect(analyticsUseCase.resetCallCount == 1)
         #expect(viewModel.isWithdrawing == false)
         #expect(viewModel.showWithdrawalConfirmation == false)
@@ -154,10 +161,12 @@ struct SettingsViewModelTests {
     func confirmWithdrawalFailure() async {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.deleteAccountError = MockError.deleteFailed
+        let hydrationReminderUseCase = MockHydrationReminderUseCase()
         let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
+            hydrationReminderUseCase: hydrationReminderUseCase,
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -167,6 +176,7 @@ struct SettingsViewModelTests {
         await viewModel.confirmWithdrawal()
 
         #expect(signInUseCase.deleteAccountCallCount == 1)
+        #expect(hydrationReminderUseCase.cancelRemindersCallCount == 0)
         #expect(viewModel.isWithdrawing == false)
         #expect(viewModel.showWithdrawalConfirmation == true)
         #expect(viewModel.withdrawalError == MockError.deleteFailed.localizedDescription)

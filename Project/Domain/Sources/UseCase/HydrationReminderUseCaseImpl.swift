@@ -35,6 +35,10 @@ public struct HydrationReminderUseCaseImpl: HydrationReminderUseCase {
         try? await repository.scheduleDailyReminders(for: HydrationReminderSlot.allCases)
     }
 
+    public func cancelReminders() async {
+        await repository.cancelDailyReminders()
+    }
+
     public func hasSeenPermissionPriming() -> Bool {
         repository.hasSeenPermissionPriming()
     }

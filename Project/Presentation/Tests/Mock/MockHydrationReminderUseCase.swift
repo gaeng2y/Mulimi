@@ -7,6 +7,7 @@ final class MockHydrationReminderUseCase: HydrationReminderUseCase, @unchecked S
     var hasSeenPermissionPrimingValue = false
     private(set) var requestAuthorizationCallCount = 0
     private(set) var syncRemindersCallCount = 0
+    private(set) var cancelRemindersCallCount = 0
     private(set) var markPermissionPrimingSeenCallCount = 0
 
     func authorizationStatus() async -> HydrationReminderAuthorizationStatus {
@@ -27,6 +28,10 @@ final class MockHydrationReminderUseCase: HydrationReminderUseCase, @unchecked S
 
     func syncReminders() async {
         syncRemindersCallCount += 1
+    }
+
+    func cancelReminders() async {
+        cancelRemindersCallCount += 1
     }
 
     func hasSeenPermissionPriming() -> Bool {
