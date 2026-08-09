@@ -24,6 +24,13 @@ public final class DomainAssembly: Assembly {
                 repository: resolver.resolve(DrinkWaterRepository.self)!
             )
         }
+        container.register(AppReviewRequestUseCase.self) { resolver in
+            AppReviewRequestUseCaseImpl(
+                drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!,
+                userPreferencesRepository: resolver.resolve(UserPreferencesRepository.self)!,
+                appReviewRequestRepository: resolver.resolve(AppReviewRequestRepository.self)!
+            )
+        }
         container.register(HydrationProgressUseCase.self) { resolver in
             HydrationProgressUseCaseImpl(
                 drinkWaterRepository: resolver.resolve(DrinkWaterRepository.self)!,

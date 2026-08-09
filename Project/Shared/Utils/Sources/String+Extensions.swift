@@ -31,4 +31,5 @@ public extension String {
     static let hasSeenHydrationReminderPriming: String = "hasSeenHydrationReminderPriming"
     static let hydrationChallengeStates: String = "hydrationChallengeStates"
     static let hydrationChallengeBadgeHistories: String = "hydrationChallengeBadgeHistories"
+    static let appReviewRequestState: String = "appReviewRequestState"
 }

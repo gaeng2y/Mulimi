@@ -235,6 +235,19 @@ public extension ProductAnalyticsEvent {
         )
     }
 
+    static func appReviewRequestAttempted(
+        source: String,
+        context: String
+    ) -> ProductAnalyticsEvent {
+        ProductAnalyticsEvent(
+            name: "app_review_request_attempted",
+            parameters: [
+                AnalyticsParameterName.source: .string(source),
+                AnalyticsParameterName.context: .string(context)
+            ]
+        )
+    }
+
     static func routineCreated(
         source: String,
         enabled: Bool,

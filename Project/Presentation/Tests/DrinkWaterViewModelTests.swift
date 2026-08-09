@@ -642,6 +642,189 @@ struct DrinkWaterViewModelTests {
         )
     }
 
+    @MainActor
+    @Test("성공한 목표 달성 기록은 리뷰 요청 one-shot을 만든다")
+    func goalAchievementCreatesAppReviewRequest() async {
+        let now = Date.now
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 750
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1_000
+        let appReviewRequestUseCase = MockAppReviewRequestUseCase()
+        appReviewRequestUseCase.shouldRequestValue = true
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appReviewRequestUseCase: appReviewRequestUseCase,
+            appInfoProvider: StaticAppInfoProvider(
+                appVersion: "2.0.0",
+                appBuildNumber: "1"
+            ),
+            nowProvider: { now }
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.drinkWater()
+
+        #expect(appReviewRequestUseCase.eligibilityCallCount == 1)
+        #expect(appReviewRequestUseCase.previousIntakeML == 750)
+        #expect(appReviewRequestUseCase.currentIntakeML == 1_000)
+        #expect(appReviewRequestUseCase.eligibilityMarketingVersion == "2.0.0")
+        #expect(appReviewRequestUseCase.eligibilityReferenceDate == now)
+        #expect(viewModel.pendingAppReviewRequestID != nil)
+    }
+
+    @MainActor
+    @Test("목표 미달 또는 기록 실패에서는 리뷰 자격을 확인하지 않는다")
+    func ineligibleRecordDoesNotCreateAppReviewRequest() async {
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1_000
+        let appReviewRequestUseCase = MockAppReviewRequestUseCase()
+        appReviewRequestUseCase.shouldRequestValue = true
+        let belowGoalWaterUseCase = MockDrinkWaterUseCase()
+        belowGoalWaterUseCase.currentWaterIntakeMLValue = 500
+        let belowGoalViewModel = DrinkWaterViewModel(
+            waterUseCase: belowGoalWaterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appReviewRequestUseCase: appReviewRequestUseCase,
+            appInfoProvider: StaticAppInfoProvider(
+                appVersion: "2.0.0",
+                appBuildNumber: "1"
+            )
+        )
+
+        await belowGoalViewModel.loadInitialState()
+        await belowGoalViewModel.drinkWater()
+
+        #expect(appReviewRequestUseCase.eligibilityCallCount == 0)
+        #expect(belowGoalViewModel.pendingAppReviewRequestID == nil)
+
+        let failedWaterUseCase = MockDrinkWaterUseCase()
+        failedWaterUseCase.currentWaterIntakeMLValue = 750
+        failedWaterUseCase.drinkWaterResult = .failure(.systemError)
+        let failedViewModel = DrinkWaterViewModel(
+            waterUseCase: failedWaterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appReviewRequestUseCase: appReviewRequestUseCase,
+            appInfoProvider: StaticAppInfoProvider(
+                appVersion: "2.0.0",
+                appBuildNumber: "1"
+            )
+        )
+
+        await failedViewModel.loadInitialState()
+        await failedViewModel.drinkWater()
+
+        #expect(appReviewRequestUseCase.eligibilityCallCount == 0)
+        #expect(failedViewModel.pendingAppReviewRequestID == nil)
+    }
+
+    @MainActor
+    @Test("리뷰 요청 one-shot은 한 번만 소비하고 시도 이벤트를 남긴다")
+    func appReviewRequestIsConsumedOnce() async {
+        let now = Date.now
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 750
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1_000
+        let appReviewRequestUseCase = MockAppReviewRequestUseCase()
+        appReviewRequestUseCase.shouldRequestValue = true
+        let analyticsUseCase = MockAnalyticsUseCase()
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            analyticsUseCase: analyticsUseCase,
+            appReviewRequestUseCase: appReviewRequestUseCase,
+            appInfoProvider: StaticAppInfoProvider(
+                appVersion: "2.0.0",
+                appBuildNumber: "1"
+            ),
+            nowProvider: { now }
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.drinkWater()
+        let requestID = viewModel.pendingAppReviewRequestID!
+
+        let firstConsumption = viewModel.consumePendingAppReviewRequest(id: requestID)
+        let secondConsumption = viewModel.consumePendingAppReviewRequest(id: requestID)
+
+        #expect(firstConsumption)
+        #expect(secondConsumption == false)
+        #expect(viewModel.pendingAppReviewRequestID == nil)
+        #expect(appReviewRequestUseCase.recordAttemptCallCount == 1)
+        #expect(appReviewRequestUseCase.attemptedMarketingVersion == "2.0.0")
+        #expect(appReviewRequestUseCase.attemptReferenceDate == now)
+        #expect(analyticsUseCase.trackedEvents.map(\.name) == [
+            "water_logged",
+            "app_review_request_attempted"
+        ])
+        #expect(
+            analyticsUseCase.trackedEvents.last?.parameters["source"] ==
+            .string("drink_water_main")
+        )
+        #expect(
+            analyticsUseCase.trackedEvents.last?.parameters["context"] ==
+            .string("sustained_goal_achievement")
+        )
+    }
+
+    @MainActor
+    @Test("취소하거나 목표 달성 기록을 되돌리거나 초기화하면 리뷰 요청을 폐기한다")
+    func appReviewRequestCancellationPaths() async {
+        let waterUseCase = MockDrinkWaterUseCase()
+        waterUseCase.currentWaterIntakeMLValue = 750
+        let userPreferencesUseCase = MockUserPreferencesUseCase()
+        userPreferencesUseCase.dailyWaterLimitValue = 1_000
+        let appReviewRequestUseCase = MockAppReviewRequestUseCase()
+        appReviewRequestUseCase.shouldRequestValue = true
+        let viewModel = DrinkWaterViewModel(
+            waterUseCase: waterUseCase,
+            userPreferencesUseCase: userPreferencesUseCase,
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appReviewRequestUseCase: appReviewRequestUseCase,
+            appInfoProvider: StaticAppInfoProvider(
+                appVersion: "2.0.0",
+                appBuildNumber: "1"
+            )
+        )
+
+        await viewModel.loadInitialState()
+        await viewModel.drinkWater()
+        let undoneRequestID = viewModel.pendingAppReviewRequestID!
+
+        await viewModel.undoRecentRecord()
+
+        #expect(viewModel.consumePendingAppReviewRequest(id: undoneRequestID) == false)
+        #expect(appReviewRequestUseCase.recordAttemptCallCount == 0)
+
+        await viewModel.drinkWater()
+        let cancelledRequestID = viewModel.pendingAppReviewRequestID!
+
+        viewModel.cancelPendingAppReviewRequest(id: cancelledRequestID)
+
+        #expect(viewModel.consumePendingAppReviewRequest(id: cancelledRequestID) == false)
+        #expect(appReviewRequestUseCase.recordAttemptCallCount == 0)
+
+        await viewModel.undoRecentRecord()
+        await viewModel.drinkWater()
+        #expect(viewModel.pendingAppReviewRequestID != nil)
+
+        await viewModel.reset()
+
+        #expect(viewModel.pendingAppReviewRequestID == nil)
+        #expect(appReviewRequestUseCase.recordAttemptCallCount == 0)
+    }
+
 }
 
 private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {
