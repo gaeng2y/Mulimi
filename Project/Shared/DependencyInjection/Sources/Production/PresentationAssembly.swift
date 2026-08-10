@@ -38,6 +38,8 @@ public final class PresentationAssembly: Assembly {
             let nextActionGuideUseCase = resolver.resolve(HydrationNextActionGuideUseCase.self)!
             let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
             let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+            let appReviewRequestUseCase = resolver.resolve(AppReviewRequestUseCase.self)!
+            let appInfoProvider = resolver.resolve((any AppInfoProviding).self)!
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
@@ -45,7 +47,9 @@ public final class PresentationAssembly: Assembly {
                     userPreferencesUseCase: userPreferencesUseCase,
                     nextActionGuideUseCase: nextActionGuideUseCase,
                     widgetTimelineReloader: widgetTimelineReloader,
-                    analyticsUseCase: analyticsUseCase
+                    analyticsUseCase: analyticsUseCase,
+                    appReviewRequestUseCase: appReviewRequestUseCase,
+                    appInfoProvider: appInfoProvider
                 )
             }
         }

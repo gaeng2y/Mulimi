@@ -8,6 +8,7 @@
 import DesignSystem
 import DomainLayerInterface
 import Localization
+import StoreKit
 import SwiftUI
 import UIKit
 
@@ -15,8 +16,16 @@ public struct DrinkWaterView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.openURL) private var openURL
+    @Environment(\.requestReview) private var requestReview
+    @Environment(\.scenePhase) private var scenePhase
     private var viewModel: DrinkWaterViewModel
     @State private var isResetConfirmationPresented = false
+
+    private struct AppReviewRequestTaskID: Equatable {
+        let requestID: UUID?
+        let isSuccessFeedbackVisible: Bool
+        let isBlocked: Bool
+    }
 
     public init(viewModel: DrinkWaterViewModel) {
         self.viewModel = viewModel
@@ -67,6 +76,9 @@ public struct DrinkWaterView: View {
 
             try? await Task.sleep(nanoseconds: 1_400_000_000)
             viewModel.clearRecordSuccessFeedback()
+        }
+        .task(id: appReviewRequestTaskID) {
+            await requestAppReviewIfReady()
         }
         .alert(
             L10n.tr("drinkWaterResetConfirmationTitle"),
@@ -126,6 +138,58 @@ public struct DrinkWaterView: View {
         } message: {
             Text(viewModel.undoErrorMessage ?? "")
         }
+        .onDisappear {
+            viewModel.cancelPendingAppReviewRequest()
+        }
+    }
+
+    private var appReviewRequestTaskID: AppReviewRequestTaskID {
+        AppReviewRequestTaskID(
+            requestID: viewModel.pendingAppReviewRequestID,
+            isSuccessFeedbackVisible: viewModel.recordSuccessFeedbackMessage != nil,
+            isBlocked: isAppReviewRequestBlocked
+        )
+    }
+
+    private var isAppReviewRequestBlocked: Bool {
+        scenePhase != .active ||
+        isResetConfirmationPresented ||
+        viewModel.recordFailureAlert != nil ||
+        viewModel.undoErrorMessage != nil
+    }
+
+    private func requestAppReviewIfReady() async {
+        let taskID = appReviewRequestTaskID
+        guard let requestID = taskID.requestID else {
+            return
+        }
+
+        guard !taskID.isBlocked else {
+            viewModel.cancelPendingAppReviewRequest(id: requestID)
+            return
+        }
+
+        guard !taskID.isSuccessFeedbackVisible else {
+            return
+        }
+
+        do {
+            try await Task.sleep(for: .seconds(2))
+        } catch {
+            return
+        }
+
+        guard !isAppReviewRequestBlocked,
+              viewModel.recordSuccessFeedbackMessage == nil else {
+            viewModel.cancelPendingAppReviewRequest(id: requestID)
+            return
+        }
+
+        guard viewModel.consumePendingAppReviewRequest(id: requestID) else {
+            return
+        }
+
+        requestReview()
     }
 
     private var progressAccessibilityLabel: String {

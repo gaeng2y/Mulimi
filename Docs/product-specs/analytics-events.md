@@ -48,6 +48,7 @@
 | `water_logged` | `source`, `serving_type`, `volume_ml`, `daily_goal_ml` | 물 기록 성공 |
 | `water_log_failed` | `source`, `serving_type`, `failure_reason` | 물 기록 권한/입력/목표 초과 차단 또는 HealthKit 저장 실패 |
 | `water_preset_logged` | `source`, `preset`, `volume_ml` | 330ml/500ml 프리셋 기록 성공 |
+| `app_review_request_attempted` | `source`, `context` | 반복 사용 후 목표 달성으로 시스템 리뷰 요청 API 호출 직전 |
 | `routine_created` | `source`, `enabled`, `weekday_count` | 루틴 생성 저장 성공 |
 | `routine_updated` | `source`, `enabled`, `weekday_count` | 루틴 수정 저장 성공 |
 | `routine_deleted` | `source`, `enabled`, `weekday_count` | 루틴 삭제 성공 |
@@ -83,6 +84,10 @@
 - `bottle`
 - `tumbler`
 
+### `context`
+
+- `sustained_goal_achievement`
+
 ### `failure_reason`
 
 - `healthkit_permission_required`
@@ -113,6 +118,7 @@
 - Firebase 퍼널, 대시보드, DebugView QA 기준은 [Analytics Operations](analytics-operations.md)를 따른다.
 - 코드 변경 후 `make lint`와 `make arch-check`를 통과시킨다.
 - ViewModel 단위 테스트에서는 Firebase 대신 Analytics mock으로 이벤트 호출을 확인한다.
+- 시스템 리뷰 요청은 표시나 작성 완료 콜백이 없으므로 `shown` 또는 `completed` 이벤트를 만들지 않는다.
 
 ## Related Code
 

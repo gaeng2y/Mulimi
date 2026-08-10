@@ -37,6 +37,18 @@ public final class DataAssembly: Assembly {
             )
         }
 
+        // MARK: - AppReviewRequest
+        container.register(AppReviewRequestStorageDataSource.self) { _ in
+            AppReviewRequestStorageDataSourceImpl(userDefaults: .standard)
+        }
+        .inObjectScope(.container)
+
+        container.register(AppReviewRequestRepository.self) { resolver in
+            AppReviewRequestRepositoryImpl(
+                storageDataSource: resolver.resolve(AppReviewRequestStorageDataSource.self)!
+            )
+        }
+
         // MARK: - Analytics
         container.register(AnalyticsRepository.self) { _ in
             NoOpAnalyticsRepository()
