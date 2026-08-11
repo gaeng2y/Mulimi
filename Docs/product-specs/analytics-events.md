@@ -6,11 +6,11 @@
 
 ## Architecture Rules
 
-- ViewModel은 Firebase/PostHog SDK를 직접 알지 않는다.
+- ViewModel은 PostHog SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- 분석 SDK(Firebase, PostHog) 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
-- 이벤트는 `CompositeAnalyticsRepository`를 통해 Firebase와 PostHog에 동일하게 전송한다(dual-write). 한쪽에만 보내는 이벤트를 만들지 않는다.
-- PostHog는 `POSTHOG_API_KEY`(`XCConfig/Secrets.xcconfig`)가 설정된 빌드에서만 초기화한다. 키가 없으면 Firebase 단독으로 동작한다.
+- PostHog SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- 제품 이벤트는 `PostHogAnalyticsRepository` 한 곳으로만 전송한다.
+- PostHog는 `POSTHOG_PROJECT_TOKEN`과 `POSTHOG_HOST`(`XCConfig/Secrets.xcconfig`)가 유효한 빌드에서만 초기화한다. 로컬 설정이 없으면 `NoOpAnalyticsRepository`로 동작하고, Release archive는 Xcode Cloud secret 검증에서 실패시킨다.
 - PostHog autocapture(`captureScreenViews`, `captureElementInteractions`)와 Session Replay는 사용하지 않는다. 라이프사이클 이벤트(`Application Opened` 등)만 SDK 기본 수집을 허용한다.
 - 이벤트 이름은 `snake_case`를 사용하고 40자 이하로 유지한다.
 - 파라미터 이름도 `snake_case`를 사용하고 값은 문자열, 정수, 실수, 불리언만 보낸다.
@@ -87,6 +87,9 @@
 ### `context`
 
 - `sustained_goal_achievement`
+- `routine_recovery`
+- `weekly_coaching`
+- `empty_state`
 
 ### `failure_reason`
 
@@ -105,6 +108,7 @@
 - `request_notification_permission`
 - `open_settings`
 - `daily_goal`
+- `none`
 
 ### `status`
 
@@ -115,9 +119,9 @@
 ## Validation
 
 - 이벤트 추가 또는 이름 변경 시 이 문서를 먼저 갱신한다.
-- Firebase 퍼널, 대시보드, DebugView QA 기준은 [Analytics Operations](analytics-operations.md)를 따른다.
+- PostHog Funnels, Insights, Activity QA 기준은 [Analytics Operations](analytics-operations.md)를 따른다.
 - 코드 변경 후 `make lint`와 `make arch-check`를 통과시킨다.
-- ViewModel 단위 테스트에서는 Firebase 대신 Analytics mock으로 이벤트 호출을 확인한다.
+- ViewModel 단위 테스트에서는 PostHog SDK 대신 Analytics mock으로 이벤트 호출을 확인한다.
 - 시스템 리뷰 요청은 표시나 작성 완료 콜백이 없으므로 `shown` 또는 `completed` 이벤트를 만들지 않는다.
 
 ## Related Code
@@ -125,9 +129,8 @@
 - `Project/Domain/Interfaces/Entity/ProductAnalyticsEvent.swift`
 - `Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift`
 - `Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
-- `Project/App/Sources/Analytics/FirebaseAnalyticsRepository.swift`
+- `Project/App/Sources/DrinkWaterApp.swift`
 - `Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift`
-- `Project/App/Sources/Analytics/CompositeAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
 

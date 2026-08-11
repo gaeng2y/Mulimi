@@ -12,4 +12,5 @@
 
 - Harness: `CLAUDE.md`, `GEMINI.md`는 `AGENTS.md` symlink 진입점으로 유지하고, 문서 유지보수 규칙에 공통 규칙 복제 금지를 명시했다. 관련 이슈: [#217](https://github.com/gaeng2y/Mulimi/issues/217).
 - Reliability: HealthKit/알림/위젯/워치 복구 정책은 `Docs/reliability-recovery.md`로 추가했다. 즉시 구현 후속은 [#219](https://github.com/gaeng2y/Mulimi/issues/219), [#220](https://github.com/gaeng2y/Mulimi/issues/220)로 분리했다.
-- Security: Apple 로그인, Firebase, App Group, iCloud KVS, AdMob/IAP 사전 체크리스트는 `Docs/security-privacy.md`로 정리했다. 관련 이슈: [#215](https://github.com/gaeng2y/Mulimi/issues/215).
+- Security: Apple 로그인, 제품 분석, App Group, iCloud KVS, AdMob/IAP 사전 체크리스트는 `Docs/security-privacy.md`로 정리했다. 관련 이슈: [#215](https://github.com/gaeng2y/Mulimi/issues/215).
+- Analytics: Firebase Analytics 의존성과 dual-write 운영 기준을 제거하고 제품 분석과 오류 추적을 PostHog로 통합했다. 관련 이슈: [#286](https://github.com/gaeng2y/Mulimi/issues/286).
