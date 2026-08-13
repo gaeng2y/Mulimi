@@ -110,11 +110,31 @@
 - `daily_goal`
 - `none`
 
+### `challenge_kind`
+
+- `routineAnchor`
+- `morningKickstart`
+- `dailyGoalBooster`
+- `consistencyDefender`
+
 ### `status`
 
 - HealthKit: `not_determined`, `denied`, `authorized`
 - Routine notification: `not_determined`, `denied`, `authorized`
 - Hydration reminder notification: `not_determined`, `denied`, `authorized`
+
+## SDK Properties
+
+PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event parameter가 아니라 Release 집계 필터로 사용한다.
+
+- `$app_namespace`
+- `$app_version`
+- `$app_build`
+- `$is_testflight`
+- `$is_sideloaded`
+- `$is_emulator`
+
+필터 값과 운영 기준은 [Growth Scorecard](growth-scorecard.md)를 따른다. 별도 `build_channel` 파라미터는 추가하지 않는다.
 
 ## Validation
 
@@ -137,4 +157,5 @@
 ## Related Docs
 
 - `Docs/product-specs/analytics-operations.md`
+- `Docs/product-specs/growth-scorecard.md`
 - `Docs/security-privacy.md`

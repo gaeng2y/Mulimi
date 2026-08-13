@@ -41,6 +41,8 @@ onboarding_completed
 
 ## Dashboard Sections
 
+마케팅 실험의 North Star와 판정 규칙은 [Growth Scorecard](growth-scorecard.md)를 단일 기준으로 사용한다.
+
 ### Activation
 
 | Metric | Source | Use |
@@ -152,6 +154,7 @@ QA는 PostHog가 설정된 검증 빌드의 Activity에서 이벤트명과 허�
 ## Related Docs
 
 - `Docs/product-specs/analytics-events.md`
+- `Docs/product-specs/growth-scorecard.md`
 - `Docs/security-privacy.md`
 - `Docs/product-specs/onboarding-healthkit-conversion-experiments.md`
 - `Docs/product-specs/sign-in-onboarding-healthkit.md`
