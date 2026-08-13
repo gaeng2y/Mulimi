@@ -4,7 +4,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 
 ## Goals
 
-- HealthKit, Apple Sign In, Firebase Analytics, PostHog, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
+- HealthKit, Apple Sign In, PostHog, App Group, iCloud KVS의 데이터 경계를 한 곳에서 확인한다.
 - 이벤트 파라미터와 로컬 저장소에 넣으면 안 되는 데이터를 명확히 한다.
 - AdMob, IAP, 서버 연동을 추가하기 전에 개인정보 영향 검토를 먼저 수행한다.
 
@@ -19,7 +19,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 
 | Area | Current Data | Current Store | Rule |
 | --- | --- | --- | --- |
-| Hydration records | `dietaryWater` 샘플의 날짜/수분량 | HealthKit | 수분 기록의 source of truth다. App Group, SwiftData, Firebase에 원장 형태로 복제하지 않는다. |
+| Hydration records | `dietaryWater` 샘플의 날짜/수분량 | HealthKit | 수분 기록의 source of truth다. App Group, SwiftData, 외부 analytics에 원장 형태로 복제하지 않는다. |
 | Body profile | HealthKit 키/몸무게 최신값 | HealthKit read-only | 목표 추천과 프로필 표시용으로만 읽는다. 직접 입력 신체 정보 플로우를 되살리지 않는다. |
 | Daily goal | `dailyWaterLimit` | iCloud KVS + App Group UserDefaults mirror | 앱/위젯/워치가 같은 목표량을 보기 위한 설정값이다. 인증 정보나 HealthKit 원본을 섞지 않는다. |
 | Main icon | `mainIcon` | App Group UserDefaults | 앱/위젯 표시 설정이다. `mainAppearance`는 legacy migration 용도만 유지한다. |
@@ -27,8 +27,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 | Routine schedules | `hydrationRoutines` JSON | App Group UserDefaults | 로컬 알림/루틴 표시용이다. Analytics에는 루틴 제목이나 UUID를 보내지 않는다. |
 | Challenge badge history | `hydrationChallengeBadgeHistories` JSON | App Group UserDefaults | 로컬 표시용 완료 이력이다. 서버 동기화 대상이 아니다. |
 | Apple account credential | Apple user identifier, optional email/name | Keychain | 로그인 상태 판단용이다. identity token, authorization code는 현재 저장하지 않는다. |
-| Firebase Analytics | allowlist 이벤트와 파라미터 | Firebase/Google Analytics | 제품 행동 측정만 허용한다. 개인정보, 건강 원본 값, 자유 입력 텍스트는 금지한다. |
-| PostHog Analytics | allowlist 이벤트와 Apple user identifier 기반 distinct ID | PostHog US Cloud | Firebase와 같은 이벤트 계약만 전송한다. 이메일/이름은 person property로 보내지 않는다. |
+| PostHog Analytics | allowlist 이벤트와 Apple user identifier 기반 distinct ID | PostHog US Cloud | 제품 행동 측정만 허용한다. 이메일/이름은 person property로 보내지 않는다. |
 | PostHog Error Tracking | native error, stack trace, 진단 속성 | PostHog US Cloud | 오류·로그 속성에 개인정보, 건강 원본 값, 자유 입력 텍스트를 넣지 않는다. |
 
 ## HealthKit
@@ -42,7 +41,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 HealthKit 변경 전 체크:
 
 - 새 HealthKit type을 추가하면 목적, read/write 범위, 권한 문구, App Store privacy label 영향도를 문서화한다.
-- HealthKit 값은 Firebase 이벤트 파라미터에 원장, 시계열, 개별 샘플 UUID 형태로 보내지 않는다.
+- HealthKit 값은 PostHog 이벤트 파라미터에 원장, 시계열, 개별 샘플 UUID 형태로 보내지 않는다.
 - 신체 정보는 HealthKit 기준이며 App Group/iCloud KVS에 새로 저장하지 않는다.
 
 ## Apple Sign In And Account Deletion
@@ -62,7 +61,7 @@ HealthKit 변경 전 체크:
 - identity token과 authorization code는 현재 저장하지 않는다.
 - 서버 인증을 도입하면 Apple identity token은 서버 검증용으로만 전송하고, 클라이언트 장기 저장을 금지한다.
 - 로그아웃과 현재 회원 탈퇴 구현은 Keychain 인증 정보를 삭제한다.
-- 회원 탈퇴가 서버 계정 삭제를 의미하게 되면 서버 데이터 삭제, Sign in with Apple token revoke, Firebase user association 해제 여부를 함께 설계한다.
+- 회원 탈퇴가 서버 계정 삭제를 의미하게 되면 서버 데이터 삭제, Sign in with Apple token revoke, 원격 분석 데이터 삭제 여부를 함께 설계한다.
 - HealthKit 기록 삭제는 Apple account 삭제와 별개의 HealthKit 데이터 작업이다. 제품 문구가 HealthKit 기록 삭제를 약속하면 실제 삭제 범위와 사용자 확인 흐름을 먼저 구현한다.
 
 법률/리뷰 검토 필요:
@@ -71,9 +70,9 @@ HealthKit 변경 전 체크:
 - Apple Sign In token revocation이 필요한 서버 구조인지
 - 삭제 요청 후 보관해야 하는 결제/영수증/분쟁 대응 데이터가 있는지
 
-## Firebase Analytics And PostHog
+## PostHog Analytics And Error Tracking
 
-Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. Firebase/PostHog SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다. PostHog `identify`는 안정적인 Apple user identifier만 사용하고 이메일과 이름은 전송하지 않는다. 로그아웃과 회원 탈퇴 성공 시 `reset`한다. 오류 수집은 PostHog Error Tracking만 사용하고 Release dSYM 업로드용 개인 API 키는 Xcode Cloud secret에만 저장한다.
+Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준이다. PostHog SDK 직접 의존은 앱 초기화와 repository 구현으로 제한한다. PostHog `identify`는 안정적인 Apple user identifier만 사용하고 이메일과 이름은 전송하지 않는다. 로그아웃과 회원 탈퇴 성공 시 `reset`한다. 오류 수집은 PostHog Error Tracking만 사용하고 Release dSYM 업로드용 개인 API 키는 Xcode Cloud secret에만 저장한다.
 
 허용:
 
@@ -94,8 +93,8 @@ Analytics 이벤트 계약은 `Docs/product-specs/analytics-events.md`가 기준
 
 1. `Docs/product-specs/analytics-events.md`에 이벤트명과 파라미터를 먼저 추가한다.
 2. 새 파라미터가 위 금지 목록에 걸리지 않는지 확인한다.
-3. App Store privacy label, Firebase data collection 설정, DebugView QA 항목을 갱신한다.
-4. ViewModel 테스트에서는 Firebase SDK가 아니라 `AnalyticsUseCase` mock 호출만 검증한다.
+3. App Store privacy label, PostHog data collection 설정, Activity QA 항목을 갱신한다.
+4. ViewModel 테스트에서는 PostHog SDK가 아니라 `AnalyticsUseCase` mock 호출만 검증한다.
 
 ## App Group And iCloud KVS
 
@@ -129,7 +128,7 @@ AdMob 또는 다른 광고 SDK를 추가하기 전에 아래를 PR 본문에 명
 - ATT 요청 여부와 IDFA 사용 여부
 - SKAdNetwork 또는 AdAttributionKit 설정 영향
 - App Store privacy label에 추가될 data type, linked-to-user 여부, tracking 여부
-- Firebase Analytics와 광고 측정 데이터 결합 여부
+- PostHog Analytics와 광고 측정 데이터 결합 여부
 - 사용자 동의 철회 또는 privacy options 진입점 제공 방식
 - Third-party SDK privacy manifest 포함 여부
 - 법률 검토 필요 여부
@@ -145,7 +144,7 @@ StoreKit, 구독, 결제 서버, 영수증 검증을 추가하기 전에 아래�
 - 클라이언트/서버에 저장할 구매 식별자와 보관 기간
 - 계정 삭제 시 구매/구독/영수증 데이터 처리 기준
 - 복원 구매와 Apple 계정 기반 식별 경계
-- Firebase 이벤트에 purchase amount, product id, transaction id를 보낼지 여부
+- Analytics 이벤트에 purchase amount, product id, transaction id를 보낼지 여부
 - App Store privacy label의 `Purchases` data type 영향
 - 환불, 구독 취소, 분쟁 대응을 위해 보관해야 하는 데이터와 법률 검토 항목
 
@@ -181,6 +180,6 @@ StoreKit, 구독, 결제 서버, 영수증 검증을 추가하기 전에 아래�
 - Apple User Privacy And Data Use: https://developer.apple.com/app-store/user-privacy-and-data-use/
 - Apple Sign in with Apple account deletion: https://developer.apple.com/support/offering-account-deletion-in-your-app
 - Apple privacy manifest files: https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
-- Firebase App Store data collection guide: https://firebase.google.com/docs/ios/app-store-data-collection
-- Firebase Analytics data collection controls: https://firebase.google.com/docs/analytics/configure-data-collection
+- PostHog events: https://posthog.com/docs/data/events
+- PostHog privacy controls: https://posthog.com/docs/product-analytics/privacy
 - Google Mobile Ads SDK privacy guide: https://developers.google.com/admob/ios/privacy

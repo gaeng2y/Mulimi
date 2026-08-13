@@ -2,17 +2,17 @@
 
 ## Goal
 
-온보딩 완료부터 HealthKit 권한 허용, 첫 수분 기록까지의 전환을 개선하기 위한 실험 기준이다. #210의 Firebase 퍼널 운영화를 전제로 하며, 실험 없이 문구나 CTA를 바꾸지 않는다.
+온보딩 완료부터 HealthKit 권한 허용, 첫 수분 기록까지의 전환을 개선하기 위한 실험 기준이다. #210에서 시작한 제품 분석 퍼널 운영을 PostHog로 이어가며, 실험 없이 문구나 CTA를 바꾸지 않는다.
 
 ## Prerequisite
 
-- #210 Firebase 분석 퍼널 및 대시보드 운영화 완료
-- `Docs/product-specs/analytics-events.md`의 이벤트명과 파라미터가 DebugView에서 확인된 상태
+- PostHog 분석 퍼널 및 대시보드 운영화 완료
+- `Docs/product-specs/analytics-events.md`의 이벤트명과 파라미터가 PostHog Activity에서 확인된 상태
 - HealthKit 권한 요청은 현재 흐름처럼 온보딩 뒤 별도 게이트에서 수행
 
 ## Baseline Funnel
 
-실험 전 baseline은 Firebase Funnel exploration에서 아래 순서로 본다.
+실험 전 baseline은 PostHog Funnel insight에서 아래 순서로 본다.
 
 ```text
 onboarding_completed
@@ -35,8 +35,9 @@ healthkit_permission_denied
 
 - 변경 전 최소 14일을 baseline으로 잡는다.
 - 14일 동안 `healthkit_permission_gate_viewed`가 100회 미만이면 28일을 baseline으로 잡는다.
-- 앱 버전, 주요 유입 경로, Firebase 이벤트 QA 상태가 다른 기간은 비교에서 제외한다.
+- 앱 버전, 주요 유입 경로, PostHog 이벤트 QA 상태가 다른 기간은 비교에서 제외한다.
 - 대시보드는 전체 사용자와 신규 설치/첫 실행 사용자 segment를 함께 본다.
+- 과거 provider 데이터와 PostHog 데이터를 사용자 단위로 연결하거나 하나의 baseline으로 이어 붙이지 않는다. PostHog 단일 전환 배포일 이후 데이터로 14일 또는 28일 baseline을 새로 확정한다.
 
 ## Success Metrics
 
@@ -126,7 +127,7 @@ healthkit_permission_denied
 ## Not Selected For MVP
 
 - 온보딩 화면 순서 전체 변경: 전환 병목이 HealthKit gate 이전인지 먼저 확인해야 한다.
-- 외부 A/B 테스트 플랫폼 도입: 현재 규모에서는 Firebase before/after 분석으로 먼저 학습한다.
+- 외부 A/B 테스트 플랫폼 도입: 현재 규모에서는 PostHog before/after 분석으로 먼저 학습한다.
 - 권한 요청을 온보딩 중간에 삽입: 신뢰 문맥이 부족하고 현재 루트 흐름 규칙을 흔든다.
 
 ## Event Parameter Review

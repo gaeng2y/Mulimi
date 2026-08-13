@@ -2,7 +2,7 @@
 
 ## Goal
 
-Firebase Analytics에 쌓이는 이벤트를 제품 의사결정에 쓸 수 있는 퍼널, 대시보드, QA 기준으로 운영한다. 이벤트 이름과 파라미터 계약은 [Analytics Events](analytics-events.md)를 기준으로 하고, 이 문서는 그 이벤트를 어떻게 볼지 정의한다.
+PostHog에 쌓이는 이벤트를 제품 의사결정에 쓸 수 있는 퍼널, 인사이트, 대시보드, QA 기준으로 운영한다. 이벤트 이름과 파라미터 계약은 [Analytics Events](analytics-events.md)를 기준으로 하고, 이 문서는 그 이벤트를 어떻게 볼지 정의한다.
 
 ## Non-Goals
 
@@ -27,17 +27,17 @@ onboarding_completed
 
 ### Funnel Step Definitions
 
-| Step | Firebase Event | Measurement Meaning |
+| Step | Event | Measurement Meaning |
 | --- | --- | --- |
 | Onboarding complete | `onboarding_completed` | 사용자가 온보딩 마지막 CTA를 눌러 권한 게이트로 이동 |
 | Permission gate viewed | `healthkit_permission_gate_viewed` | HealthKit 권한 설명 화면 노출 |
 | Permission request tapped | `healthkit_permission_request_tapped` | 권한 요청 CTA 탭 |
 | Permission authorized | `healthkit_permission_authorized` | HealthKit 권한 허용 확인 |
 | First water logged | `water_logged` | 권한 허용 이후 첫 수분 기록 성공 |
-| Repeat water logged | `water_logged` count >= 2 | 같은 사용자 또는 Firebase user pseudo id 기준 반복 기록 |
+| Repeat water logged | 두 번째 `water_logged` | 같은 PostHog person/distinct ID 기준 반복 기록 |
 | Routine created | `routine_created` | 루틴 생성 저장 성공 |
 
-`repeat water_logged`는 별도 이벤트가 아니라 `water_logged`의 반복 발생으로 계산한다. Firebase exploration에서 event count 또는 user segment 조건으로 산출한다.
+`repeat water_logged`는 별도 이벤트가 아니다. Funnel에서 `water_logged`를 두 번째 step으로 추가해 서로 다른 두 번의 기록으로 계산하고, 장기 빈도는 Trends 또는 cohort 조건으로 산출한다.
 
 ## Dashboard Sections
 
@@ -76,19 +76,19 @@ onboarding_completed
 | Refresh after settings | `healthkit_permission_refresh_tapped` | 설정 복귀 후 재확인 행동 확인 |
 | Recovery authorization | `healthkit_permission_authorized.source == healthkit_permission_gate` | 설정 복구 흐름의 성공 여부 확인 |
 
-## Firebase Exploration Setup
+## PostHog Insights Setup
 
-### Funnel Exploration
+### Funnel Insight
 
-1. Firebase Console에서 Explore > Funnel exploration을 생성한다.
+1. PostHog의 Product Analytics에서 New insight를 만들고 Funnel을 선택한다.
 2. Step은 Core Funnel 순서로 추가한다.
-3. `water_logged`의 반복 기록은 별도 step 조건으로 `event_count >= 2` 또는 user segment를 사용한다.
+3. 반복 기록은 `water_logged`를 두 번째 step으로 추가해 별도 발생을 요구한다.
 4. Breakdown은 가능한 경우 `source`, `serving_type`, `status`를 우선 사용한다.
 5. Date range는 출시 직후 7일, 안정화 후 28일 기준으로 본다.
 
-### Event Tables
+### Saved Insights
 
-아래 표는 dashboard 또는 exploration에서 먼저 만들어야 한다.
+아래 표는 dashboard 또는 saved insight로 먼저 만들어야 한다.
 
 | View | Rows | Columns / Filters |
 | --- | --- | --- |
@@ -99,9 +99,9 @@ onboarding_completed
 | Coaching CTA | `context`, `action` | insight/challenge source filter |
 | Goal Changes | `source` | previous/new goal distribution |
 
-## DebugView QA Checklist
+## PostHog Activity QA Checklist
 
-QA는 Firebase DebugView에서 이벤트명과 파라미터가 문서와 맞는지만 확인한다. 건강 원본 값이나 자유 입력 텍스트가 전송되면 실패로 본다.
+QA는 PostHog가 설정된 검증 빌드의 Activity에서 이벤트명과 허용 파라미터가 문서와 일치하고 한 사용자 행동당 의도한 횟수만 도착하는지 확인한다. 건강 원본 값이나 자유 입력 텍스트가 전송되면 실패로 본다. PostHog 설정이 없는 로컬·Debug 빌드에서는 제품 이벤트가 전송되지 않아야 한다.
 
 ### Onboarding And Permission
 
@@ -158,3 +158,9 @@ QA는 Firebase DebugView에서 이벤트명과 파라미터가 문서와 맞는�
 - `Docs/product-specs/hydration-logging.md`
 - `Docs/product-specs/routine-notifications.md`
 - `Docs/product-specs/challenge-insight.md`
+
+## References
+
+- PostHog Funnels: https://posthog.com/docs/product-analytics/funnels
+- PostHog Trends: https://posthog.com/docs/product-analytics/trends/overview
+- PostHog Events and Activity: https://posthog.com/docs/data/events
