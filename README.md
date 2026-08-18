@@ -207,6 +207,18 @@ make arch-check
 make verify
 ```
 
+### 코드 지식 그래프
+
+저장소에는 Codex용 Graphify 스킬과 공유 지식 그래프가 포함됩니다.
+
+```bash
+uv tool install graphifyy
+graphify query "수분 기록은 앱과 위젯 사이에서 어떻게 연결되는가?"
+graphify update .
+```
+
+Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습니다. 분석 범위는 `.graphifyignore`, 공유 산출물은 `graphify-out/`에서 관리합니다.
+
 ## 📖 문서 읽기 순서
 
 처음 저장소에 들어오거나 큰 구조 변경을 시작할 때는 아래 순서를 권장합니다.
