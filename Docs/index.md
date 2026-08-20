@@ -33,6 +33,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 - [Challenge and Insight](product-specs/challenge-insight.md)
 - [Analytics Events](product-specs/analytics-events.md)
 - [Analytics Operations](product-specs/analytics-operations.md)
+- [Growth Scorecard](product-specs/growth-scorecard.md)
 
 ## Domain And Architecture Docs
 
