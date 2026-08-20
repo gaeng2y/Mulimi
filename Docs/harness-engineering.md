@@ -25,6 +25,9 @@ Docs/documentation-maintenance.md -> 문서 유지보수 규칙
 Docs/delivery-workflow.md -> 이슈, 브랜치, PR 전달 흐름
 Docs/security-privacy.md -> 보안/개인정보 운영 기준
 Docs/*.md          -> 도메인/설계 배경 문서
+.codex/skills/graphify -> Codex용 코드 지식 그래프 스킬
+.graphifyignore    -> Graphify 분석 제외 범위
+graphify-out       -> 공유 코드 지식 그래프
 .github/workflows/lint.yml -> PR lint와 architecture check
 .github/workflows/pr-unit-tests.yml -> PR 단위 Unit Test
 .github/workflows/ai-pr-review.yml -> Git Flow PR AI 리뷰
@@ -108,6 +111,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | Surface | File | Responsibility |
 | --- | --- | --- |
 | Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
+| Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 `graphify update .`로 갱신한다. |
 | Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
 | GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
 | GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 `DomainLayer`, `DataLayer`, `PresentationLayer` 테스트를 실행한다. |
@@ -124,6 +128,7 @@ PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Clo
 - 이슈/PR 운영 기준 변경: `Docs/delivery-workflow.md`와 필요한 템플릿 갱신
 - 보안/개인정보 경계 변경: `Docs/security-privacy.md` 갱신
 - 에이전트 공통 규칙 변경: `AGENTS.md` 갱신, 도구별 파일은 포인터 상태 유지
+- Graphify 분석 범위 변경: `.graphifyignore`와 `graphify-out/`을 함께 갱신
 - 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
 - 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
