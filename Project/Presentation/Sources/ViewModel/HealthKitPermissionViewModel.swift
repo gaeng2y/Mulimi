@@ -103,6 +103,16 @@ public final class HealthKitPermissionViewModel {
         trackPermissionOutcomeIfNeeded(source: "healthkit_permission_gate")
     }
 
+    func refreshStatusAfterAppActivation() {
+        refreshStatus()
+
+        guard isAuthorized else {
+            return
+        }
+
+        trackPermissionOutcomeIfNeeded(source: "healthkit_permission_gate")
+    }
+
     public func markSignedOut() {
         errorMessage = nil
         refreshStatus()

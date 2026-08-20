@@ -42,6 +42,17 @@
 
 기본 기록량 개인화가 필요하면 #203 범위를 기능 이슈로 복원하고, App Group에서 앱/Widget/AppIntent/Watch가 함께 읽을 수 있는 사용자 설정으로 설계한다.
 
+## App Store Review Request Policy
+
+- 메인 화면의 성공한 수분 기록으로 오늘 목표를 처음 달성한 순간만 리뷰 요청 후보로 본다.
+- 최근 30일에 물리미 소유 HealthKit 기록일이 3일 이상이고, 가장 이른 소유 기록일이 7일 이상 지난 사용자만 후보가 된다.
+- 수분 기록과 기록일의 원본은 계속 HealthKit으로 유지한다. 로컬에는 요청을 시도한 marketing version과 최근 요청 시각만 저장한다.
+- 같은 marketing version에서는 한 번만 시도하고, 마지막 시도 후 120일이 지나야 하며, 최근 365일 요청 시도는 3회 미만이어야 한다.
+- 기존 기록 성공 피드백이 사라진 뒤 2초를 더 기다리고, 앱이 inactive가 되거나 alert가 나타나거나 사용자가 화면을 벗어나면 후보를 취소한다.
+- StoreKit의 시스템 `RequestReviewAction`만 사용하며 커스텀 사전 리뷰 팝업은 만들지 않는다.
+- 요청 API는 실제 프롬프트 표시나 리뷰 작성 결과를 알려주지 않는다. 개발 빌드에서는 흐름을 확인할 수 있지만 TestFlight에서는 프롬프트가 표시되지 않는다.
+- 로그아웃이나 회원 탈퇴로 리뷰 요청 이력을 초기화하지 않는다.
+
 ## Siri And Shortcuts Policy
 
 - Shortcuts, Siri, Spotlight에는 `LogWaterAppShortcuts`로 기본 물 기록 App Shortcut을 노출한다.

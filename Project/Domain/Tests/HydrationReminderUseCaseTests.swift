@@ -108,6 +108,16 @@ struct HydrationReminderUseCaseTests {
         #expect(repository.cancelDailyRemindersCallCount == 1)
     }
 
+    @Test("cancelReminders는 Repository에 취소를 위임한다")
+    func cancelReminders() async {
+        let repository = MockHydrationReminderRepository()
+        let useCase = HydrationReminderUseCaseImpl(repository: repository)
+
+        await useCase.cancelReminders()
+
+        #expect(repository.cancelDailyRemindersCallCount == 1)
+    }
+
     @Test("프라이밍 노출 여부를 Repository에 위임한다")
     func primingFlagDelegatesToRepository() {
         let repository = MockHydrationReminderRepository()

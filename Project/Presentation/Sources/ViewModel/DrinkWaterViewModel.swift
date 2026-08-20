@@ -53,6 +53,7 @@ public final class DrinkWaterViewModel {
     private(set) var undoErrorMessage: String?
     private(set) var recordFailureAlert: HydrationRecordFailureAlertModel?
     private(set) var recordSuccessFeedbackMessage: String?
+    private(set) var pendingAppReviewRequestID: UUID?
     private(set) var isRecording = false
 
     private let waterUseCase: DrinkWaterUseCase
@@ -60,6 +61,8 @@ public final class DrinkWaterViewModel {
     private let nextActionGuideUseCase: HydrationNextActionGuideUseCase
     private let widgetTimelineReloader: any WidgetTimelineReloading
     private let analyticsUseCase: AnalyticsUseCase
+    private let appReviewRequestUseCase: AppReviewRequestUseCase
+    private let appInfoProvider: any AppInfoProviding
     private let calendar: Calendar
     private let nowProvider: @Sendable () -> Date
     private(set) var nextActionGuide: HydrationNextActionGuide
@@ -169,6 +172,11 @@ public final class DrinkWaterViewModel {
         nextActionGuideUseCase: HydrationNextActionGuideUseCase,
         widgetTimelineReloader: any WidgetTimelineReloading,
         analyticsUseCase: AnalyticsUseCase = NoOpAnalyticsUseCase(),
+        appReviewRequestUseCase: AppReviewRequestUseCase = NoOpAppReviewRequestUseCase(),
+        appInfoProvider: any AppInfoProviding = StaticAppInfoProvider(
+            appVersion: "-",
+            appBuildNumber: "-"
+        ),
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = { .now }
     ) {
@@ -177,6 +185,8 @@ public final class DrinkWaterViewModel {
         self.nextActionGuideUseCase = nextActionGuideUseCase
         self.widgetTimelineReloader = widgetTimelineReloader
         self.analyticsUseCase = analyticsUseCase
+        self.appReviewRequestUseCase = appReviewRequestUseCase
+        self.appInfoProvider = appInfoProvider
         self.calendar = calendar
         self.nowProvider = nowProvider
         let initialWaterIntakeML = 0.0
@@ -263,6 +273,7 @@ public final class DrinkWaterViewModel {
         }
 
         recordSuccessFeedbackMessage = nil
+        cancelPendingAppReviewRequest()
 
         guard isRecordable(volumeML: volumeML) else {
             return false
@@ -273,6 +284,7 @@ public final class DrinkWaterViewModel {
             isRecording = false
         }
 
+        let previousIntakeML = currentWaterIntakeML
         let writeResult = await waterUseCase.drinkWater(volumeML: volumeML)
         guard writeResult.isSuccess else {
             recordFailureAlert = makeRecordFailureAlert(
@@ -296,6 +308,10 @@ public final class DrinkWaterViewModel {
             volumeML: volumeML,
             servingType: servingType,
             preset: preset
+        )
+        await prepareAppReviewRequest(
+            previousIntakeML: previousIntakeML,
+            currentIntakeML: currentWaterIntakeML
         )
         return true
     }
@@ -360,6 +376,7 @@ public final class DrinkWaterViewModel {
     }
 
     func reset() async {
+        cancelPendingAppReviewRequest()
         let writeResult = await waterUseCase.reset()
         guard writeResult.isSuccess else {
             recordFailureAlert = makeResetFailureAlert(
@@ -378,6 +395,7 @@ public final class DrinkWaterViewModel {
 
     @discardableResult
     func undoRecentRecord() async -> Bool {
+        cancelPendingAppReviewRequest()
         guard let recentRecordUndo else {
             return false
         }
@@ -406,6 +424,34 @@ public final class DrinkWaterViewModel {
 
     func clearRecordSuccessFeedback() {
         recordSuccessFeedbackMessage = nil
+    }
+
+    func consumePendingAppReviewRequest(id: UUID) -> Bool {
+        guard pendingAppReviewRequestID == id else {
+            return false
+        }
+
+        pendingAppReviewRequestID = nil
+        appReviewRequestUseCase.recordRequestAttempt(
+            marketingVersion: appInfoProvider.appVersion,
+            referenceDate: nowProvider(),
+            calendar: calendar
+        )
+        analyticsUseCase.track(
+            .appReviewRequestAttempted(
+                source: "drink_water_main",
+                context: "sustained_goal_achievement"
+            )
+        )
+        return true
+    }
+
+    func cancelPendingAppReviewRequest(id: UUID? = nil) {
+        guard id == nil || pendingAppReviewRequestID == id else {
+            return
+        }
+
+        pendingAppReviewRequestID = nil
     }
 
     public func refreshState() async {
@@ -440,6 +486,33 @@ public final class DrinkWaterViewModel {
             ),
             actionTitle: L10n.tr("drinkWaterUndoRecordActionTitle")
         )
+    }
+
+    private func prepareAppReviewRequest(
+        previousIntakeML: Double,
+        currentIntakeML: Double
+    ) async {
+        guard previousIntakeML.rounded() < dailyLimit.rounded(),
+              currentIntakeML.rounded() >= dailyLimit.rounded(),
+              pendingAppReviewRequestID == nil else {
+            return
+        }
+
+        let shouldRequest = await appReviewRequestUseCase
+            .shouldRequestAfterSuccessfulHydrationRecord(
+                previousIntakeML: previousIntakeML,
+                currentIntakeML: currentIntakeML,
+                marketingVersion: appInfoProvider.appVersion,
+                referenceDate: nowProvider(),
+                calendar: calendar
+            )
+
+        if shouldRequest,
+           currentWaterIntakeML.rounded() == currentIntakeML.rounded(),
+           isLimitReached,
+           recordFailureAlert == nil {
+            pendingAppReviewRequestID = UUID()
+        }
     }
 
     private func servingTitle(for preset: HydrationServingPreset) -> String {

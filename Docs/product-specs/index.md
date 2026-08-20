@@ -12,6 +12,7 @@
 - [Challenge and Insight](challenge-insight.md)
 - [Analytics Events](analytics-events.md)
 - [Analytics Operations](analytics-operations.md)
+- [Growth Scorecard](growth-scorecard.md)
 
 ## Rule
 

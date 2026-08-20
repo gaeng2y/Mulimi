@@ -1,0 +1,2114 @@
+{
+  ".githooks/pre-commit": {
+    "mtime": 1783428632.5528507,
+    "seen": 1787055953.878859,
+    "ast_hash": "8933369cf12be40180fafe8dd63ca723",
+    "semantic_hash": "8933369cf12be40180fafe8dd63ca723"
+  },
+  "Images/mulimi.icon/icon.json": {
+    "mtime": 1761483566.637082,
+    "seen": 1787055953.878861,
+    "ast_hash": "598a5eace7358273a251ab609dec6561",
+    "semantic_hash": "598a5eace7358273a251ab609dec6561"
+  },
+  "Project/App/Project.swift": {
+    "mtime": 1786370668.5229447,
+    "seen": 1787055953.8788621,
+    "ast_hash": "1b57fdb5e55e97143fe7703fdb70b7b3",
+    "semantic_hash": "1b57fdb5e55e97143fe7703fdb70b7b3"
+  },
+  "Project/App/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1756124983.3683772,
+    "seen": 1787055953.878863,
+    "ast_hash": "e7209fd1465568930b33e870f73a331c",
+    "semantic_hash": "e7209fd1465568930b33e870f73a331c"
+  },
+  "Project/App/Resources/Assets.xcassets/Contents.json": {
+    "mtime": 1756124983.3728273,
+    "seen": 1787055953.878863,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/App/Resources/Preview Content/Preview Assets.xcassets/Contents.json": {
+    "mtime": 1756124983.3732119,
+    "seen": 1787055953.8788638,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift": {
+    "mtime": 1785649941.1771455,
+    "seen": 1787055953.8788638,
+    "ast_hash": "1006eef5790453059432a9860226792a",
+    "semantic_hash": "1006eef5790453059432a9860226792a"
+  },
+  "Project/App/Sources/AppDelegate.swift": {
+    "mtime": 1786167997.1485684,
+    "seen": 1787055953.878865,
+    "ast_hash": "20d65247b8d2ff8fdad0db00c5dd8c2e",
+    "semantic_hash": "20d65247b8d2ff8fdad0db00c5dd8c2e"
+  },
+  "Project/App/Sources/AppIntents/LogWaterAppIntent.swift": {
+    "mtime": 1783428632.564856,
+    "seen": 1787055953.878865,
+    "ast_hash": "c18e4d94b1833305cb2bd04930e44d8d",
+    "semantic_hash": "c18e4d94b1833305cb2bd04930e44d8d"
+  },
+  "Project/App/Sources/AppIntents/LogWaterAppShortcuts.swift": {
+    "mtime": 1783428632.565091,
+    "seen": 1787055953.878865,
+    "ast_hash": "e51919f86865a74be17f49192ec9135f",
+    "semantic_hash": "e51919f86865a74be17f49192ec9135f"
+  },
+  "Project/App/Sources/ContentView.swift": {
+    "mtime": 1786167997.1487093,
+    "seen": 1787055953.878866,
+    "ast_hash": "ee489709ef36545c9f119c6058c95509",
+    "semantic_hash": "ee489709ef36545c9f119c6058c95509"
+  },
+  "Project/App/Sources/DrinkWaterApp.swift": {
+    "mtime": 1786373533.3347242,
+    "seen": 1787055953.878866,
+    "ast_hash": "0e9ccd542d955a3cb520d065cbd66e94",
+    "semantic_hash": "0e9ccd542d955a3cb520d065cbd66e94"
+  },
+  "Project/App/Test/AppIntent.swift": {
+    "mtime": 1759587299.2413807,
+    "seen": 1787055953.878866,
+    "ast_hash": "5eb9d1ee9a1afa939a4edaa47e8affde",
+    "semantic_hash": "5eb9d1ee9a1afa939a4edaa47e8affde"
+  },
+  "Project/App/Test/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1759587299.2415743,
+    "seen": 1787055953.878867,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "Project/App/Test/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1759587299.241903,
+    "seen": 1787055953.878867,
+    "ast_hash": "cbe75704b2680422c4156009a528e292",
+    "semantic_hash": "cbe75704b2680422c4156009a528e292"
+  },
+  "Project/App/Test/Assets.xcassets/Contents.json": {
+    "mtime": 1759587299.2419825,
+    "seen": 1787055953.878867,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/App/Test/Assets.xcassets/WidgetBackground.colorset/Contents.json": {
+    "mtime": 1759587299.24211,
+    "seen": 1787055953.8788679,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "Project/App/Test/Test.swift": {
+    "mtime": 1783428632.5671542,
+    "seen": 1787055953.8788679,
+    "ast_hash": "1ccffab065b61d812dc4a2c226db6472",
+    "semantic_hash": "1ccffab065b61d812dc4a2c226db6472"
+  },
+  "Project/App/Test/TestBundle.swift": {
+    "mtime": 1759587299.242917,
+    "seen": 1787055953.878869,
+    "ast_hash": "c5e58c4c040c3038bce72ad1d4363093",
+    "semantic_hash": "c5e58c4c040c3038bce72ad1d4363093"
+  },
+  "Project/App/Test/TestControl.swift": {
+    "mtime": 1759587299.2433865,
+    "seen": 1787055953.878869,
+    "ast_hash": "6f7bcd7b6ce24687ba05a855498c6889",
+    "semantic_hash": "6f7bcd7b6ce24687ba05a855498c6889"
+  },
+  "Project/App/Test/TestLiveActivity.swift": {
+    "mtime": 1783428632.5674274,
+    "seen": 1787055953.878869,
+    "ast_hash": "49d16137bf73bea8cf00f6e8a01473e9",
+    "semantic_hash": "49d16137bf73bea8cf00f6e8a01473e9"
+  },
+  "Project/App/Watch/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1783428632.567911,
+    "seen": 1787055953.87887,
+    "ast_hash": "2398576504696e5580d6340b1f485292",
+    "semantic_hash": "2398576504696e5580d6340b1f485292"
+  },
+  "Project/App/Watch/Resources/Assets.xcassets/Contents.json": {
+    "mtime": 1783428632.570576,
+    "seen": 1787055953.87887,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/App/Watch/Sources/App/MulimiWatchApp.swift": {
+    "mtime": 1783428632.5713778,
+    "seen": 1787055953.878871,
+    "ast_hash": "bc11c01d984fcd0010775a50d747ef50",
+    "semantic_hash": "bc11c01d984fcd0010775a50d747ef50"
+  },
+  "Project/Data/Project.swift": {
+    "mtime": 1783428632.5723522,
+    "seen": 1787055953.878871,
+    "ast_hash": "1bacc4baf1afb97b488127d2c82a5f4c",
+    "semantic_hash": "1bacc4baf1afb97b488127d2c82a5f4c"
+  },
+  "Project/Data/Sources/DataSource/AppReviewRequestStorageDataSource.swift": {
+    "mtime": 1786370094.6367822,
+    "seen": 1787055953.878871,
+    "ast_hash": "bfc3dfb66ac9c69f9338560b73597dd6",
+    "semantic_hash": "bfc3dfb66ac9c69f9338560b73597dd6"
+  },
+  "Project/Data/Sources/DataSource/AppleSignInDataSource.swift": {
+    "mtime": 1783428632.5725577,
+    "seen": 1787055953.8788722,
+    "ast_hash": "39446ebf0b9c342afa732e14b043b6ad",
+    "semantic_hash": "39446ebf0b9c342afa732e14b043b6ad"
+  },
+  "Project/Data/Sources/DataSource/AuthenticationNetworkDataSource.swift": {
+    "mtime": 1783428632.5728016,
+    "seen": 1787055953.8788722,
+    "ast_hash": "8f568516a147e479326c9ed29f7720b5",
+    "semantic_hash": "8f568516a147e479326c9ed29f7720b5"
+  },
+  "Project/Data/Sources/DataSource/ChallengeStorageDataSource.swift": {
+    "mtime": 1783428632.5730453,
+    "seen": 1787055953.8788722,
+    "ast_hash": "6d2601f9fbb71b096990075d153b453e",
+    "semantic_hash": "6d2601f9fbb71b096990075d153b453e"
+  },
+  "Project/Data/Sources/DataSource/DrinkWaterHealthKitDataSource.swift": {
+    "mtime": 1783428632.573263,
+    "seen": 1787055953.878873,
+    "ast_hash": "6ddbcce58b72786890ea345c91cc5d9c",
+    "semantic_hash": "6ddbcce58b72786890ea345c91cc5d9c"
+  },
+  "Project/Data/Sources/DataSource/FoundationModelsHydrationGoalRecommendationDataSource.swift": {
+    "mtime": 1783428632.573496,
+    "seen": 1787055953.878873,
+    "ast_hash": "292c1af2c5b045acb1a0c18769f6ae63",
+    "semantic_hash": "292c1af2c5b045acb1a0c18769f6ae63"
+  },
+  "Project/Data/Sources/DataSource/HealthKitDataSource.swift": {
+    "mtime": 1783428632.5740461,
+    "seen": 1787055953.878873,
+    "ast_hash": "457473c2b597d3ba3c032d75f6635c02",
+    "semantic_hash": "457473c2b597d3ba3c032d75f6635c02"
+  },
+  "Project/Data/Sources/DataSource/HydrationReminderNotificationDataSource.swift": {
+    "mtime": 1785649941.1778488,
+    "seen": 1787055953.878874,
+    "ast_hash": "562000a0a045a6d71c757a3b649f46e1",
+    "semantic_hash": "562000a0a045a6d71c757a3b649f46e1"
+  },
+  "Project/Data/Sources/DataSource/HydrationReminderStorageDataSource.swift": {
+    "mtime": 1785649941.1780512,
+    "seen": 1787055953.878874,
+    "ast_hash": "e7ef04fba2447d9e3fa5ca3625d4b98d",
+    "semantic_hash": "e7ef04fba2447d9e3fa5ca3625d4b98d"
+  },
+  "Project/Data/Sources/DataSource/KeyChainDataSource.swift": {
+    "mtime": 1783428632.5743527,
+    "seen": 1787055953.878874,
+    "ast_hash": "2eef7e9a779a41b92520d02035556135",
+    "semantic_hash": "2eef7e9a779a41b92520d02035556135"
+  },
+  "Project/Data/Sources/DataSource/RoutineNotificationDataSource.swift": {
+    "mtime": 1783428632.57467,
+    "seen": 1787055953.8788748,
+    "ast_hash": "a44930b07a2fd568eb4e99987ddf0a9b",
+    "semantic_hash": "a44930b07a2fd568eb4e99987ddf0a9b"
+  },
+  "Project/Data/Sources/DataSource/RoutineStorageDataSource.swift": {
+    "mtime": 1783428632.575012,
+    "seen": 1787055953.8788748,
+    "ast_hash": "45bc0d401374d49487d333eb4d42ec68",
+    "semantic_hash": "45bc0d401374d49487d333eb4d42ec68"
+  },
+  "Project/Data/Sources/DataSource/UserPreferencesDataSource.swift": {
+    "mtime": 1783428632.5752466,
+    "seen": 1787055953.8788748,
+    "ast_hash": "ceb0604af765efdebe8518431d8bb12c",
+    "semantic_hash": "ceb0604af765efdebe8518431d8bb12c"
+  },
+  "Project/Data/Sources/Repository/AppReviewRequestRepositoryImpl.swift": {
+    "mtime": 1786370094.6370502,
+    "seen": 1787055953.878876,
+    "ast_hash": "49bc3f1842908c796e988bfc209c3c41",
+    "semantic_hash": "49bc3f1842908c796e988bfc209c3c41"
+  },
+  "Project/Data/Sources/Repository/AuthenticationRepositoryImpl.swift": {
+    "mtime": 1785649941.1782043,
+    "seen": 1787055953.878876,
+    "ast_hash": "adaa8b3a28396d131a7e9ebcd56837e3",
+    "semantic_hash": "adaa8b3a28396d131a7e9ebcd56837e3"
+  },
+  "Project/Data/Sources/Repository/ChallengeRepositoryImpl.swift": {
+    "mtime": 1783428632.5757442,
+    "seen": 1787055953.878877,
+    "ast_hash": "044a9a4f57076d7cfceb7e57752f7fa6",
+    "semantic_hash": "044a9a4f57076d7cfceb7e57752f7fa6"
+  },
+  "Project/Data/Sources/Repository/DrinkWaterRepositoryImpl.swift": {
+    "mtime": 1783428632.5759535,
+    "seen": 1787055953.878877,
+    "ast_hash": "32da84ebea2d618aaf368328bbd232e9",
+    "semantic_hash": "32da84ebea2d618aaf368328bbd232e9"
+  },
+  "Project/Data/Sources/Repository/HealthKitRepositoryImpl.swift": {
+    "mtime": 1783428632.5761635,
+    "seen": 1787055953.878877,
+    "ast_hash": "caf5b8b6434f98ac143a3e905ac1ca3c",
+    "semantic_hash": "caf5b8b6434f98ac143a3e905ac1ca3c"
+  },
+  "Project/Data/Sources/Repository/HydrationGoalRecommendationRepositoryImpl.swift": {
+    "mtime": 1783428632.5764441,
+    "seen": 1787055953.8788779,
+    "ast_hash": "9153e7f2da0aab1cc34ab64bfac41e24",
+    "semantic_hash": "9153e7f2da0aab1cc34ab64bfac41e24"
+  },
+  "Project/Data/Sources/Repository/HydrationReminderRepositoryImpl.swift": {
+    "mtime": 1785649941.178418,
+    "seen": 1787055953.8788779,
+    "ast_hash": "65b8006f71e3886cd94ec228eb15cdd3",
+    "semantic_hash": "65b8006f71e3886cd94ec228eb15cdd3"
+  },
+  "Project/Data/Sources/Repository/RoutineRepositoryImpl.swift": {
+    "mtime": 1783428632.5766273,
+    "seen": 1787055953.878879,
+    "ast_hash": "a58195ca82906916c81e3243f55afa6b",
+    "semantic_hash": "a58195ca82906916c81e3243f55afa6b"
+  },
+  "Project/Data/Sources/Repository/UserPreferencesRepositoryImpl.swift": {
+    "mtime": 1783428632.5768514,
+    "seen": 1787055953.878879,
+    "ast_hash": "20e407a8e256696463555f9f03fdf796",
+    "semantic_hash": "20e407a8e256696463555f9f03fdf796"
+  },
+  "Project/Data/Tests/AppReviewRequestStorageDataSourceTests.swift": {
+    "mtime": 1786370094.6373172,
+    "seen": 1787055953.878879,
+    "ast_hash": "2ca79ad689004b76fbe42a01a73953c0",
+    "semantic_hash": "2ca79ad689004b76fbe42a01a73953c0"
+  },
+  "Project/Data/Tests/ChallengeStorageDataSourceTests.swift": {
+    "mtime": 1783428632.577194,
+    "seen": 1787055953.87888,
+    "ast_hash": "217b626c346f0d2ad2fe2b234101758e",
+    "semantic_hash": "217b626c346f0d2ad2fe2b234101758e"
+  },
+  "Project/Data/Tests/HydrationReminderRepositoryImplTests.swift": {
+    "mtime": 1785649941.1788645,
+    "seen": 1787055953.87888,
+    "ast_hash": "6329f33b33b98b77abc050ab9dbbc263",
+    "semantic_hash": "6329f33b33b98b77abc050ab9dbbc263"
+  },
+  "Project/Data/Tests/Root.swift": {
+    "mtime": 1756124983.374905,
+    "seen": 1787055953.87888,
+    "ast_hash": "851d6854c011e6fe77037310a773a73f",
+    "semantic_hash": "851d6854c011e6fe77037310a773a73f"
+  },
+  "Project/Data/Tests/RoutineRepositoryImplTests.swift": {
+    "mtime": 1783428632.5774674,
+    "seen": 1787055953.878881,
+    "ast_hash": "064cd03bc3db9c28f63ef798333747cc",
+    "semantic_hash": "064cd03bc3db9c28f63ef798333747cc"
+  },
+  "Project/Data/WatchSources/DataSource/WatchDailyGoalLocalDataSource.swift": {
+    "mtime": 1783428632.577722,
+    "seen": 1787055953.878881,
+    "ast_hash": "0289a1bc47914de19f53d394c9a2b44f",
+    "semantic_hash": "0289a1bc47914de19f53d394c9a2b44f"
+  },
+  "Project/Data/WatchSources/DataSource/WatchHydrationLocalDataSource.swift": {
+    "mtime": 1783428632.5780144,
+    "seen": 1787055953.878881,
+    "ast_hash": "5a0209111a337e9653373050033e2bcd",
+    "semantic_hash": "5a0209111a337e9653373050033e2bcd"
+  },
+  "Project/Data/WatchSources/Repository/WatchDailyGoalRepositoryImpl.swift": {
+    "mtime": 1783428632.5782242,
+    "seen": 1787055953.878882,
+    "ast_hash": "1f535e446601f33243b8f2160aa20179",
+    "semantic_hash": "1f535e446601f33243b8f2160aa20179"
+  },
+  "Project/Data/WatchSources/Repository/WatchHydrationRepositoryImpl.swift": {
+    "mtime": 1783428632.578508,
+    "seen": 1787055953.878882,
+    "ast_hash": "c80b46bd47feaa22ff42c6c4009df3ad",
+    "semantic_hash": "c80b46bd47feaa22ff42c6c4009df3ad"
+  },
+  "Project/Data/WatchSources/Support/WatchDataConstants.swift": {
+    "mtime": 1783428632.57872,
+    "seen": 1787055953.878882,
+    "ast_hash": "6c488c49e85d54f83063627fc871d220",
+    "semantic_hash": "6c488c49e85d54f83063627fc871d220"
+  },
+  "Project/Domain/Interfaces/Entity/AppReviewRequestState.swift": {
+    "mtime": 1786370094.6375706,
+    "seen": 1787055953.8788831,
+    "ast_hash": "92bcb84515cc7273adf911576bb02a74",
+    "semantic_hash": "92bcb84515cc7273adf911576bb02a74"
+  },
+  "Project/Domain/Interfaces/Entity/AuthProvider.swift": {
+    "mtime": 1783428632.578916,
+    "seen": 1787055953.8788831,
+    "ast_hash": "06240d8bde0b13510cb2b993f2069095",
+    "semantic_hash": "06240d8bde0b13510cb2b993f2069095"
+  },
+  "Project/Domain/Interfaces/Entity/AuthenticationError.swift": {
+    "mtime": 1783428632.5790904,
+    "seen": 1787055953.878884,
+    "ast_hash": "b366dc5295964435812f46172c137c2f",
+    "semantic_hash": "b366dc5295964435812f46172c137c2f"
+  },
+  "Project/Domain/Interfaces/Entity/BodyProfile.swift": {
+    "mtime": 1783428632.5793273,
+    "seen": 1787055953.878884,
+    "ast_hash": "3f9c2804069e1f178d0823a23647a090",
+    "semantic_hash": "3f9c2804069e1f178d0823a23647a090"
+  },
+  "Project/Domain/Interfaces/Entity/BodyProfileAvailability.swift": {
+    "mtime": 1783428632.5794625,
+    "seen": 1787055953.878884,
+    "ast_hash": "5b202ca0aebd24217cec3e6f1df670b4",
+    "semantic_hash": "5b202ca0aebd24217cec3e6f1df670b4"
+  },
+  "Project/Domain/Interfaces/Entity/BodyProfileSnapshot.swift": {
+    "mtime": 1783428632.5796206,
+    "seen": 1787055953.878885,
+    "ast_hash": "7f1da692e82fb14005d08d7dbf03b4c1",
+    "semantic_hash": "7f1da692e82fb14005d08d7dbf03b4c1"
+  },
+  "Project/Domain/Interfaces/Entity/HealthKitAuthorizationStatus.swift": {
+    "mtime": 1783428632.580082,
+    "seen": 1787055953.878885,
+    "ast_hash": "f928aa40a0f7dcb67e59ac554e079320",
+    "semantic_hash": "f928aa40a0f7dcb67e59ac554e079320"
+  },
+  "Project/Domain/Interfaces/Entity/HealthKitError.swift": {
+    "mtime": 1756124983.3752077,
+    "seen": 1787055953.878885,
+    "ast_hash": "8f996f84d7f296fe3eaa01edecd32718",
+    "semantic_hash": "8f996f84d7f296fe3eaa01edecd32718"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationChallenge.swift": {
+    "mtime": 1783428632.580371,
+    "seen": 1787055953.878886,
+    "ast_hash": "3eaf6bf1616763e2d122d64f3957aeb7",
+    "semantic_hash": "3eaf6bf1616763e2d122d64f3957aeb7"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationChallengeBadgeHistory.swift": {
+    "mtime": 1783428632.5806055,
+    "seen": 1787055953.878886,
+    "ast_hash": "d5ad389a8d70d75e80266f3298366df6",
+    "semantic_hash": "d5ad389a8d70d75e80266f3298366df6"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationEvent.swift": {
+    "mtime": 1783428632.5807586,
+    "seen": 1787055953.878886,
+    "ast_hash": "f5e1031bcad38ceee1c4af6aabf89052",
+    "semantic_hash": "f5e1031bcad38ceee1c4af6aabf89052"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationGoalRecommendation.swift": {
+    "mtime": 1783428632.580997,
+    "seen": 1787055953.878887,
+    "ast_hash": "c27ec14cfca67b0c4a319b04858d480e",
+    "semantic_hash": "c27ec14cfca67b0c4a319b04858d480e"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationProgressSnapshot.swift": {
+    "mtime": 1783428632.5812368,
+    "seen": 1787055953.878887,
+    "ast_hash": "71ddc0262e97b79d0e0b1a0ce792718e",
+    "semantic_hash": "71ddc0262e97b79d0e0b1a0ce792718e"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationRecord.swift": {
+    "mtime": 1783428632.5814326,
+    "seen": 1787055953.878887,
+    "ast_hash": "6baf180c59e14ae185aee2d11dc33a18",
+    "semantic_hash": "6baf180c59e14ae185aee2d11dc33a18"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationReminderAuthorizationStatus.swift": {
+    "mtime": 1785649941.179044,
+    "seen": 1787055953.878888,
+    "ast_hash": "13a8f4595613283526b1f970dd39c037",
+    "semantic_hash": "13a8f4595613283526b1f970dd39c037"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationReminderSlot.swift": {
+    "mtime": 1785649941.1791623,
+    "seen": 1787055953.878888,
+    "ast_hash": "ccbe1b3a83fcae527583afdd6f8818ae",
+    "semantic_hash": "ccbe1b3a83fcae527583afdd6f8818ae"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationRoutine.swift": {
+    "mtime": 1783428632.5816653,
+    "seen": 1787055953.878888,
+    "ast_hash": "bd318c68cac76c6df2cdf3145a7ecaca",
+    "semantic_hash": "bd318c68cac76c6df2cdf3145a7ecaca"
+  },
+  "Project/Domain/Interfaces/Entity/HydrationRoutineRecommendation.swift": {
+    "mtime": 1783428632.581912,
+    "seen": 1787055953.8788888,
+    "ast_hash": "d70ed4868df23355cbd114fd25d39446",
+    "semantic_hash": "d70ed4868df23355cbd114fd25d39446"
+  },
+  "Project/Domain/Interfaces/Entity/MainAppearance.swift": {
+    "mtime": 1783428632.5821033,
+    "seen": 1787055953.8788888,
+    "ast_hash": "8fa226a16bd494d7ce3a02e29ccf67b1",
+    "semantic_hash": "8fa226a16bd494d7ce3a02e29ccf67b1"
+  },
+  "Project/Domain/Interfaces/Entity/PersonalizedHydrationChallenge.swift": {
+    "mtime": 1783428632.5823488,
+    "seen": 1787055953.87889,
+    "ast_hash": "410d8678c40c6f3b3f79ec2b9935e158",
+    "semantic_hash": "410d8678c40c6f3b3f79ec2b9935e158"
+  },
+  "Project/Domain/Interfaces/Entity/ProductAnalyticsEvent.swift": {
+    "mtime": 1786370094.6379168,
+    "seen": 1787055953.87889,
+    "ast_hash": "42b7e2df6b6f22b2504c8cb979d02a48",
+    "semantic_hash": "42b7e2df6b6f22b2504c8cb979d02a48"
+  },
+  "Project/Domain/Interfaces/Entity/RoutineError.swift": {
+    "mtime": 1783428632.582708,
+    "seen": 1787055953.87889,
+    "ast_hash": "275ecb9f76d4a5eb871ee76d8892a71f",
+    "semantic_hash": "275ecb9f76d4a5eb871ee76d8892a71f"
+  },
+  "Project/Domain/Interfaces/Entity/RoutineNotificationAuthorizationStatus.swift": {
+    "mtime": 1783428632.5828812,
+    "seen": 1787055953.878891,
+    "ast_hash": "782c73d7c402699e2a089f4bd0ac563c",
+    "semantic_hash": "782c73d7c402699e2a089f4bd0ac563c"
+  },
+  "Project/Domain/Interfaces/Entity/SettingMenu.swift": {
+    "mtime": 1783428632.5831535,
+    "seen": 1787055953.878891,
+    "ast_hash": "3e4238904c6245f03253c9d3fc6eb142",
+    "semantic_hash": "3e4238904c6245f03253c9d3fc6eb142"
+  },
+  "Project/Domain/Interfaces/Entity/ToeknProperty.swift": {
+    "mtime": 1783428632.5833397,
+    "seen": 1787055953.878891,
+    "ast_hash": "8adb3ee231313918e70e3b96078679d4",
+    "semantic_hash": "8adb3ee231313918e70e3b96078679d4"
+  },
+  "Project/Domain/Interfaces/Entity/UserCredential.swift": {
+    "mtime": 1785649941.1795454,
+    "seen": 1787055953.878892,
+    "ast_hash": "1547df3aa48ef2cc79a7082f2ae2b9cd",
+    "semantic_hash": "1547df3aa48ef2cc79a7082f2ae2b9cd"
+  },
+  "Project/Domain/Interfaces/Repository/AnalyticsRepository.swift": {
+    "mtime": 1785649941.17968,
+    "seen": 1787055953.878892,
+    "ast_hash": "e1e24119d5bd3a1692406c4b2752cf6e",
+    "semantic_hash": "e1e24119d5bd3a1692406c4b2752cf6e"
+  },
+  "Project/Domain/Interfaces/Repository/AppReviewRequestRepository.swift": {
+    "mtime": 1786370094.6381583,
+    "seen": 1787055953.878892,
+    "ast_hash": "0b5d3de1ca21e3a7913b8a3b7b464fef",
+    "semantic_hash": "0b5d3de1ca21e3a7913b8a3b7b464fef"
+  },
+  "Project/Domain/Interfaces/Repository/AuthenticationRepository.swift": {
+    "mtime": 1785649941.1798081,
+    "seen": 1787055953.8788931,
+    "ast_hash": "ba588443a2d5d465069766c54a918c69",
+    "semantic_hash": "ba588443a2d5d465069766c54a918c69"
+  },
+  "Project/Domain/Interfaces/Repository/ChallengeRepository.swift": {
+    "mtime": 1783428632.5841713,
+    "seen": 1787055953.8788931,
+    "ast_hash": "350e85e766a4ff7d9d727366ca69acde",
+    "semantic_hash": "350e85e766a4ff7d9d727366ca69acde"
+  },
+  "Project/Domain/Interfaces/Repository/DrinkWaterRepository.swift": {
+    "mtime": 1783428632.5843797,
+    "seen": 1787055953.878894,
+    "ast_hash": "c896cba75433a82434b8486fbc8166ec",
+    "semantic_hash": "c896cba75433a82434b8486fbc8166ec"
+  },
+  "Project/Domain/Interfaces/Repository/HealthKitRepository.swift": {
+    "mtime": 1783428632.5845716,
+    "seen": 1787055953.878894,
+    "ast_hash": "a44512d132cf4ae6c8a16161300c3d3d",
+    "semantic_hash": "a44512d132cf4ae6c8a16161300c3d3d"
+  },
+  "Project/Domain/Interfaces/Repository/HydrationGoalRecommendationRepository.swift": {
+    "mtime": 1783428632.5847473,
+    "seen": 1787055953.878895,
+    "ast_hash": "3d3e57c0e4821689e0593ef89eb9c184",
+    "semantic_hash": "3d3e57c0e4821689e0593ef89eb9c184"
+  },
+  "Project/Domain/Interfaces/Repository/HydrationReminderRepository.swift": {
+    "mtime": 1785649941.1799216,
+    "seen": 1787055953.878895,
+    "ast_hash": "fcdb48a2c0e3d459b0545d7281b64a32",
+    "semantic_hash": "fcdb48a2c0e3d459b0545d7281b64a32"
+  },
+  "Project/Domain/Interfaces/Repository/RoutineRepository.swift": {
+    "mtime": 1783428632.5849867,
+    "seen": 1787055953.878895,
+    "ast_hash": "572094d58b8de3c2d82fce2fa3a42d72",
+    "semantic_hash": "572094d58b8de3c2d82fce2fa3a42d72"
+  },
+  "Project/Domain/Interfaces/Repository/UserPreferencesRepository.swift": {
+    "mtime": 1783428632.5852692,
+    "seen": 1787055953.8788962,
+    "ast_hash": "3ee7f5aa11360a68903e5d3b60498456",
+    "semantic_hash": "3ee7f5aa11360a68903e5d3b60498456"
+  },
+  "Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift": {
+    "mtime": 1785649941.180037,
+    "seen": 1787055953.8788962,
+    "ast_hash": "1906c84e2e6c183c188545014abb17da",
+    "semantic_hash": "1906c84e2e6c183c188545014abb17da"
+  },
+  "Project/Domain/Interfaces/UseCase/AppReviewRequestUseCase.swift": {
+    "mtime": 1786370094.6384075,
+    "seen": 1787055953.8788962,
+    "ast_hash": "8c05cab58c30809bc0695d9f8d4405fe",
+    "semantic_hash": "8c05cab58c30809bc0695d9f8d4405fe"
+  },
+  "Project/Domain/Interfaces/UseCase/BodyProfileUseCase.swift": {
+    "mtime": 1783428632.5857053,
+    "seen": 1787055953.878897,
+    "ast_hash": "24512b80dd2f5b69f7e6b2260e5aec2f",
+    "semantic_hash": "24512b80dd2f5b69f7e6b2260e5aec2f"
+  },
+  "Project/Domain/Interfaces/UseCase/ChallengeUseCase.swift": {
+    "mtime": 1783428632.58593,
+    "seen": 1787055953.878897,
+    "ast_hash": "46b2f99183162b9b4a918a22de27de80",
+    "semantic_hash": "46b2f99183162b9b4a918a22de27de80"
+  },
+  "Project/Domain/Interfaces/UseCase/DrinkWaterUseCase.swift": {
+    "mtime": 1783428632.5861363,
+    "seen": 1787055953.878897,
+    "ast_hash": "f23d1315cb7a8f74685cf03bade5ca4e",
+    "semantic_hash": "f23d1315cb7a8f74685cf03bade5ca4e"
+  },
+  "Project/Domain/Interfaces/UseCase/HealthKitUseCase.swift": {
+    "mtime": 1783428632.5864165,
+    "seen": 1787055953.878898,
+    "ast_hash": "ae65967601b225c6f6792d541576b865",
+    "semantic_hash": "ae65967601b225c6f6792d541576b865"
+  },
+  "Project/Domain/Interfaces/UseCase/HydrationGoalRecommendationUseCase.swift": {
+    "mtime": 1783428632.5865965,
+    "seen": 1787055953.878898,
+    "ast_hash": "9f7580d31eade5b664ea064c9ead4496",
+    "semantic_hash": "9f7580d31eade5b664ea064c9ead4496"
+  },
+  "Project/Domain/Interfaces/UseCase/HydrationNextActionGuideUseCase.swift": {
+    "mtime": 1783428632.5868258,
+    "seen": 1787055953.878898,
+    "ast_hash": "78752a0c3c42647da613057c169c206c",
+    "semantic_hash": "78752a0c3c42647da613057c169c206c"
+  },
+  "Project/Domain/Interfaces/UseCase/HydrationProgressUseCase.swift": {
+    "mtime": 1783428632.5870745,
+    "seen": 1787055953.8788989,
+    "ast_hash": "d086654de3f9a71e2cab2dfd3fb5d875",
+    "semantic_hash": "d086654de3f9a71e2cab2dfd3fb5d875"
+  },
+  "Project/Domain/Interfaces/UseCase/HydrationReminderUseCase.swift": {
+    "mtime": 1786167997.1489286,
+    "seen": 1787055953.8788989,
+    "ast_hash": "3bedc80b442bd7a8dfe8657109c4351e",
+    "semantic_hash": "3bedc80b442bd7a8dfe8657109c4351e"
+  },
+  "Project/Domain/Interfaces/UseCase/HydrationRoutineAdherenceUseCase.swift": {
+    "mtime": 1783428632.5873384,
+    "seen": 1787055953.8788989,
+    "ast_hash": "fde3cbb1ac2daed0f4536e33381023df",
+    "semantic_hash": "fde3cbb1ac2daed0f4536e33381023df"
+  },
+  "Project/Domain/Interfaces/UseCase/PersonalizedChallengeUseCase.swift": {
+    "mtime": 1783428632.5875134,
+    "seen": 1787055953.8789,
+    "ast_hash": "74a84d3825f31cdc89f80dabd30b635e",
+    "semantic_hash": "74a84d3825f31cdc89f80dabd30b635e"
+  },
+  "Project/Domain/Interfaces/UseCase/RoutineRecommendationUseCase.swift": {
+    "mtime": 1783428632.5876997,
+    "seen": 1787055953.8789,
+    "ast_hash": "f97d71344db93203b64fa8f49f9275e6",
+    "semantic_hash": "f97d71344db93203b64fa8f49f9275e6"
+  },
+  "Project/Domain/Interfaces/UseCase/RoutineUseCase.swift": {
+    "mtime": 1783428632.5879033,
+    "seen": 1787055953.878901,
+    "ast_hash": "59d446abce3388548a47619c060ced0e",
+    "semantic_hash": "59d446abce3388548a47619c060ced0e"
+  },
+  "Project/Domain/Interfaces/UseCase/SignInUseCase.swift": {
+    "mtime": 1785649941.1802554,
+    "seen": 1787055953.878901,
+    "ast_hash": "a00857459940224c7d7f31cddb66db8b",
+    "semantic_hash": "a00857459940224c7d7f31cddb66db8b"
+  },
+  "Project/Domain/Interfaces/UseCase/UserPreferencesUseCase.swift": {
+    "mtime": 1783428632.5883303,
+    "seen": 1787055953.878901,
+    "ast_hash": "73821e4feb0ee9744bc37ad15e939d22",
+    "semantic_hash": "73821e4feb0ee9744bc37ad15e939d22"
+  },
+  "Project/Domain/Project.swift": {
+    "mtime": 1783428632.5885267,
+    "seen": 1787055953.878902,
+    "ast_hash": "7b95614efe630bdecb4e4fc5d774cddc",
+    "semantic_hash": "7b95614efe630bdecb4e4fc5d774cddc"
+  },
+  "Project/Domain/SharedInterfaces/Entity/HydrationNextActionGuide.swift": {
+    "mtime": 1783428632.5887668,
+    "seen": 1787055953.878902,
+    "ast_hash": "7124f1ef9e891343ce0f1faccef64405",
+    "semantic_hash": "7124f1ef9e891343ce0f1faccef64405"
+  },
+  "Project/Domain/SharedInterfaces/Entity/HydrationRoutineAdherenceInsight.swift": {
+    "mtime": 1783428632.5890338,
+    "seen": 1787055953.878902,
+    "ast_hash": "dc8261101bd90d0865365123fb250787",
+    "semantic_hash": "dc8261101bd90d0865365123fb250787"
+  },
+  "Project/Domain/SharedInterfaces/Entity/HydrationServing.swift": {
+    "mtime": 1783428632.5893369,
+    "seen": 1787055953.8789032,
+    "ast_hash": "8273f35c9dd26ab9a19b9468c822434e",
+    "semantic_hash": "8273f35c9dd26ab9a19b9468c822434e"
+  },
+  "Project/Domain/SharedInterfaces/Entity/HydrationWriteResult.swift": {
+    "mtime": 1783428632.5895588,
+    "seen": 1787055953.8789032,
+    "ast_hash": "0dd6915bcd606269965f17f5660a63f0",
+    "semantic_hash": "0dd6915bcd606269965f17f5660a63f0"
+  },
+  "Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift": {
+    "mtime": 1785649941.180377,
+    "seen": 1787055953.8789032,
+    "ast_hash": "d72e23346b1c5560ea5a86eac5c14ebd",
+    "semantic_hash": "d72e23346b1c5560ea5a86eac5c14ebd"
+  },
+  "Project/Domain/Sources/UseCase/AppReviewRequestUseCaseImpl.swift": {
+    "mtime": 1786370094.6388083,
+    "seen": 1787055953.878904,
+    "ast_hash": "993b0f42840aeed97b8a694a1401eb8e",
+    "semantic_hash": "993b0f42840aeed97b8a694a1401eb8e"
+  },
+  "Project/Domain/Sources/UseCase/BodyProfileUseCaseImpl.swift": {
+    "mtime": 1783428632.5899203,
+    "seen": 1787055953.878904,
+    "ast_hash": "c8b634a7795d1eef475814dac1cb7474",
+    "semantic_hash": "c8b634a7795d1eef475814dac1cb7474"
+  },
+  "Project/Domain/Sources/UseCase/ChallengeUseCaseImpl.swift": {
+    "mtime": 1783428632.5900865,
+    "seen": 1787055953.878904,
+    "ast_hash": "186aecfbf95c796160cbb4a19b1ac276",
+    "semantic_hash": "186aecfbf95c796160cbb4a19b1ac276"
+  },
+  "Project/Domain/Sources/UseCase/DrinkWaterUseCaseImpl.swift": {
+    "mtime": 1783428632.5902963,
+    "seen": 1787055953.878905,
+    "ast_hash": "85efdb232ffa668228153b5e29d4a454",
+    "semantic_hash": "85efdb232ffa668228153b5e29d4a454"
+  },
+  "Project/Domain/Sources/UseCase/HealthKitUseCaseImpl.swift": {
+    "mtime": 1783428632.5904958,
+    "seen": 1787055953.878905,
+    "ast_hash": "770086bd5100e9b9730dcb81eed00cbe",
+    "semantic_hash": "770086bd5100e9b9730dcb81eed00cbe"
+  },
+  "Project/Domain/Sources/UseCase/HydrationGoalRecommendationUseCaseImpl.swift": {
+    "mtime": 1783428632.5907006,
+    "seen": 1787055953.878905,
+    "ast_hash": "0fe2429c5433dea559deb71443fd8584",
+    "semantic_hash": "0fe2429c5433dea559deb71443fd8584"
+  },
+  "Project/Domain/Sources/UseCase/HydrationNextActionGuideUseCaseImpl.swift": {
+    "mtime": 1783428632.590854,
+    "seen": 1787055953.878906,
+    "ast_hash": "e4f8c2eadd436dabcb3595d2a85ba83b",
+    "semantic_hash": "e4f8c2eadd436dabcb3595d2a85ba83b"
+  },
+  "Project/Domain/Sources/UseCase/HydrationProgressUseCaseImpl.swift": {
+    "mtime": 1783428632.59104,
+    "seen": 1787055953.878906,
+    "ast_hash": "c10880bcaa9ecd57ae82f8fd6c5516e0",
+    "semantic_hash": "c10880bcaa9ecd57ae82f8fd6c5516e0"
+  },
+  "Project/Domain/Sources/UseCase/HydrationReminderUseCaseImpl.swift": {
+    "mtime": 1786167997.1490388,
+    "seen": 1787055953.878906,
+    "ast_hash": "681b97314b8342729c709f35466a1c70",
+    "semantic_hash": "681b97314b8342729c709f35466a1c70"
+  },
+  "Project/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift": {
+    "mtime": 1783428632.591274,
+    "seen": 1787055953.878907,
+    "ast_hash": "2b1d5192b1385802d7152613a8d0881c",
+    "semantic_hash": "2b1d5192b1385802d7152613a8d0881c"
+  },
+  "Project/Domain/Sources/UseCase/PersonalizedChallengeUseCaseImpl.swift": {
+    "mtime": 1783428632.5916145,
+    "seen": 1787055953.878907,
+    "ast_hash": "0be331de94be88d6ac2b66274768862c",
+    "semantic_hash": "0be331de94be88d6ac2b66274768862c"
+  },
+  "Project/Domain/Sources/UseCase/RoutineRecommendationUseCaseImpl.swift": {
+    "mtime": 1783428632.5917995,
+    "seen": 1787055953.878907,
+    "ast_hash": "3a2f0343065ef860db96260a67c6ff0e",
+    "semantic_hash": "3a2f0343065ef860db96260a67c6ff0e"
+  },
+  "Project/Domain/Sources/UseCase/RoutineUseCaseImpl.swift": {
+    "mtime": 1783428632.591968,
+    "seen": 1787055953.878908,
+    "ast_hash": "7f01d7832fb83be4a9e6d3764149525e",
+    "semantic_hash": "7f01d7832fb83be4a9e6d3764149525e"
+  },
+  "Project/Domain/Sources/UseCase/SignInUseCaseImpl.swift": {
+    "mtime": 1785649941.1806428,
+    "seen": 1787055953.878908,
+    "ast_hash": "18870f0efa15b764adbd874895c920d3",
+    "semantic_hash": "18870f0efa15b764adbd874895c920d3"
+  },
+  "Project/Domain/Sources/UseCase/UserPreferencesUseCaseImpl.swift": {
+    "mtime": 1783428632.592359,
+    "seen": 1787055953.878908,
+    "ast_hash": "7e6b5c30da61247baa62bb88c79ab287",
+    "semantic_hash": "7e6b5c30da61247baa62bb88c79ab287"
+  },
+  "Project/Domain/Tests/AppReviewRequestUseCaseTests.swift": {
+    "mtime": 1786370094.6391215,
+    "seen": 1787055953.8789089,
+    "ast_hash": "682a12901f374b42130084fe5be36d53",
+    "semantic_hash": "682a12901f374b42130084fe5be36d53"
+  },
+  "Project/Domain/Tests/BodyProfileUseCaseTests.swift": {
+    "mtime": 1783428632.5925527,
+    "seen": 1787055953.8789089,
+    "ast_hash": "b23be19bbb61a105b66e5e881cadd83a",
+    "semantic_hash": "b23be19bbb61a105b66e5e881cadd83a"
+  },
+  "Project/Domain/Tests/ChallengeUseCaseTests.swift": {
+    "mtime": 1783428632.5928235,
+    "seen": 1787055953.87891,
+    "ast_hash": "71dcae70752c5a6001c08a169c74d2a0",
+    "semantic_hash": "71dcae70752c5a6001c08a169c74d2a0"
+  },
+  "Project/Domain/Tests/DrinkWaterUseCaseTests.swift": {
+    "mtime": 1783428632.5930445,
+    "seen": 1787055953.87891,
+    "ast_hash": "05b2556155123e679c35400766bfc133",
+    "semantic_hash": "05b2556155123e679c35400766bfc133"
+  },
+  "Project/Domain/Tests/HealthKitUseCaseTests.swift": {
+    "mtime": 1783428632.5932744,
+    "seen": 1787055953.87891,
+    "ast_hash": "72845d2ff43f96b50575592703eb8d90",
+    "semantic_hash": "72845d2ff43f96b50575592703eb8d90"
+  },
+  "Project/Domain/Tests/HydrationGoalRecommendationUseCaseTests.swift": {
+    "mtime": 1783428632.5935185,
+    "seen": 1787055953.878911,
+    "ast_hash": "85f7c5bf01c5ff535e6a5eb6030e78b1",
+    "semantic_hash": "85f7c5bf01c5ff535e6a5eb6030e78b1"
+  },
+  "Project/Domain/Tests/HydrationNextActionGuideUseCaseTests.swift": {
+    "mtime": 1783428632.5936818,
+    "seen": 1787055953.878911,
+    "ast_hash": "fe2e1e1ce4271a9510ea8f452e92c55d",
+    "semantic_hash": "fe2e1e1ce4271a9510ea8f452e92c55d"
+  },
+  "Project/Domain/Tests/HydrationProgressUseCaseTests.swift": {
+    "mtime": 1783428632.59386,
+    "seen": 1787055953.878911,
+    "ast_hash": "5312e2a980031cbc31ea13ba5936fcac",
+    "semantic_hash": "5312e2a980031cbc31ea13ba5936fcac"
+  },
+  "Project/Domain/Tests/HydrationReminderUseCaseTests.swift": {
+    "mtime": 1786167997.1491847,
+    "seen": 1787055953.878912,
+    "ast_hash": "c4aa2ba503d1c0ad9b206d6819703e37",
+    "semantic_hash": "c4aa2ba503d1c0ad9b206d6819703e37"
+  },
+  "Project/Domain/Tests/HydrationRoutineAdherenceUseCaseTests.swift": {
+    "mtime": 1783428632.5940635,
+    "seen": 1787055953.878912,
+    "ast_hash": "e9bbe2f092becb3f70a89ca29dca28bb",
+    "semantic_hash": "e9bbe2f092becb3f70a89ca29dca28bb"
+  },
+  "Project/Domain/Tests/Mock/MockAuthenticationRepository.swift": {
+    "mtime": 1785649941.1808858,
+    "seen": 1787055953.878912,
+    "ast_hash": "904c4af17a8aa4e4837bb21c52ea6995",
+    "semantic_hash": "904c4af17a8aa4e4837bb21c52ea6995"
+  },
+  "Project/Domain/Tests/Mock/MockChallengeRepository.swift": {
+    "mtime": 1783428632.5944827,
+    "seen": 1787055953.878913,
+    "ast_hash": "cea51bbefa9c1fa061b081001a1ffcf3",
+    "semantic_hash": "cea51bbefa9c1fa061b081001a1ffcf3"
+  },
+  "Project/Domain/Tests/Mock/MockDrinkWaterRepository.swift": {
+    "mtime": 1783428632.594757,
+    "seen": 1787055953.878913,
+    "ast_hash": "ffe04419e5310d763ef5e089d8d67fc2",
+    "semantic_hash": "ffe04419e5310d763ef5e089d8d67fc2"
+  },
+  "Project/Domain/Tests/Mock/MockHealthKitRepository.swift": {
+    "mtime": 1783428632.5949736,
+    "seen": 1787055953.878913,
+    "ast_hash": "15e74b41fe8aafdbeb139708f9a22062",
+    "semantic_hash": "15e74b41fe8aafdbeb139708f9a22062"
+  },
+  "Project/Domain/Tests/Mock/MockHydrationGoalRecommendationRepository.swift": {
+    "mtime": 1783428632.5951383,
+    "seen": 1787055953.878914,
+    "ast_hash": "317f5c6af6b1400b3503a078a900ed36",
+    "semantic_hash": "317f5c6af6b1400b3503a078a900ed36"
+  },
+  "Project/Domain/Tests/Mock/MockHydrationProgressUseCase.swift": {
+    "mtime": 1783428632.5954459,
+    "seen": 1787055953.878914,
+    "ast_hash": "85b3d898445590ed53e2ceaea3b4e7f9",
+    "semantic_hash": "85b3d898445590ed53e2ceaea3b4e7f9"
+  },
+  "Project/Domain/Tests/Mock/MockHydrationReminderRepository.swift": {
+    "mtime": 1785649941.1810863,
+    "seen": 1787055953.878915,
+    "ast_hash": "73ba8910b4398452ce68815734557b63",
+    "semantic_hash": "73ba8910b4398452ce68815734557b63"
+  },
+  "Project/Domain/Tests/Mock/MockRoutineRepository.swift": {
+    "mtime": 1783428632.5956228,
+    "seen": 1787055953.878915,
+    "ast_hash": "9cd6abeaa0c8e21d6d2254b61c4db7e6",
+    "semantic_hash": "9cd6abeaa0c8e21d6d2254b61c4db7e6"
+  },
+  "Project/Domain/Tests/Mock/MockUserPreferencesRepository.swift": {
+    "mtime": 1783428632.595913,
+    "seen": 1787055953.878915,
+    "ast_hash": "4a1ad745267fb38dd56ffbc19e826d1d",
+    "semantic_hash": "4a1ad745267fb38dd56ffbc19e826d1d"
+  },
+  "Project/Domain/Tests/PersonalizedChallengeUseCaseTests.swift": {
+    "mtime": 1783428632.5962071,
+    "seen": 1787055953.878916,
+    "ast_hash": "adc5fd2a8891713df43c64ed92f5ea1e",
+    "semantic_hash": "adc5fd2a8891713df43c64ed92f5ea1e"
+  },
+  "Project/Domain/Tests/RoutineRecommendationUseCaseTests.swift": {
+    "mtime": 1783428632.5964363,
+    "seen": 1787055953.878916,
+    "ast_hash": "eadb076bc6d93433a775d89bd156b316",
+    "semantic_hash": "eadb076bc6d93433a775d89bd156b316"
+  },
+  "Project/Domain/Tests/RoutineUseCaseTests.swift": {
+    "mtime": 1783428632.5966356,
+    "seen": 1787055953.878916,
+    "ast_hash": "a7287764c9ebd1b0a7d50d1983d22136",
+    "semantic_hash": "a7287764c9ebd1b0a7d50d1983d22136"
+  },
+  "Project/Domain/Tests/SignInUseCaseTests.swift": {
+    "mtime": 1785649941.1811943,
+    "seen": 1787055953.8789172,
+    "ast_hash": "1497c460e5140fb6f8c72843a3f61e96",
+    "semantic_hash": "1497c460e5140fb6f8c72843a3f61e96"
+  },
+  "Project/Domain/Tests/UserPreferencesUseCaseTests.swift": {
+    "mtime": 1783428632.59709,
+    "seen": 1787055953.8789172,
+    "ast_hash": "f2cef49499c67a9752957790e8c68481",
+    "semantic_hash": "f2cef49499c67a9752957790e8c68481"
+  },
+  "Project/Domain/WatchInterfaces/Entities/WatchHydrationEvent.swift": {
+    "mtime": 1783428632.597345,
+    "seen": 1787055953.8789172,
+    "ast_hash": "959d335b4437d33220d03825f8c337ce",
+    "semantic_hash": "959d335b4437d33220d03825f8c337ce"
+  },
+  "Project/Domain/WatchInterfaces/Entities/WatchHydrationMutationResult.swift": {
+    "mtime": 1783428632.597498,
+    "seen": 1787055953.878918,
+    "ast_hash": "71e4be131efadacf4aa98bd4d684db32",
+    "semantic_hash": "71e4be131efadacf4aa98bd4d684db32"
+  },
+  "Project/Domain/WatchInterfaces/Entities/WatchHydrationSnapshot.swift": {
+    "mtime": 1783428632.5976665,
+    "seen": 1787055953.878918,
+    "ast_hash": "3386c50b52c7b3497a2b7fc50fa32105",
+    "semantic_hash": "3386c50b52c7b3497a2b7fc50fa32105"
+  },
+  "Project/Domain/WatchInterfaces/Repositories/WatchDailyGoalRepository.swift": {
+    "mtime": 1783428632.5978327,
+    "seen": 1787055953.878918,
+    "ast_hash": "ef7be8d2e703c8b6a7cbb16dfa2ccae6",
+    "semantic_hash": "ef7be8d2e703c8b6a7cbb16dfa2ccae6"
+  },
+  "Project/Domain/WatchInterfaces/Repositories/WatchHydrationRepository.swift": {
+    "mtime": 1783428632.5979953,
+    "seen": 1787055953.878919,
+    "ast_hash": "65dab849a140321e8f4b4e354e790933",
+    "semantic_hash": "65dab849a140321e8f4b4e354e790933"
+  },
+  "Project/Domain/WatchInterfaces/UseCase/WatchHydrationUseCase.swift": {
+    "mtime": 1783428632.598232,
+    "seen": 1787055953.878919,
+    "ast_hash": "58f3167704d0ef46d00efc8af07ba2ab",
+    "semantic_hash": "58f3167704d0ef46d00efc8af07ba2ab"
+  },
+  "Project/Domain/WatchSources/UseCase/WatchHydrationUseCaseImpl.swift": {
+    "mtime": 1783428632.5986073,
+    "seen": 1787055953.878919,
+    "ast_hash": "375a3f9ee93d1a27bf5aaf6c70fae828",
+    "semantic_hash": "375a3f9ee93d1a27bf5aaf6c70fae828"
+  },
+  "Project/Presentation/Project.swift": {
+    "mtime": 1783428632.5988955,
+    "seen": 1787055953.8789198,
+    "ast_hash": "b5d2bd2519dbc2c335313b457598709a",
+    "semantic_hash": "b5d2bd2519dbc2c335313b457598709a"
+  },
+  "Project/Presentation/Sources/Extensions/HydrationNextRoutineContext+Presentation.swift": {
+    "mtime": 1783428632.5991158,
+    "seen": 1787055953.8789198,
+    "ast_hash": "e0df0301da71084f0db5275f452ddc10",
+    "semantic_hash": "e0df0301da71084f0db5275f452ddc10"
+  },
+  "Project/Presentation/Sources/Extensions/HydrationRoutine+Presentation.swift": {
+    "mtime": 1783428632.5993865,
+    "seen": 1787055953.8789198,
+    "ast_hash": "002ebba2ef670b69692e69d4e0e7e9f6",
+    "semantic_hash": "002ebba2ef670b69692e69d4e0e7e9f6"
+  },
+  "Project/Presentation/Sources/Extensions/HydrationRoutineRecommendation+Presentation.swift": {
+    "mtime": 1783428632.5995812,
+    "seen": 1787055953.878921,
+    "ast_hash": "184b59dd7e2b6549ec1fa98844db4e9c",
+    "semantic_hash": "184b59dd7e2b6549ec1fa98844db4e9c"
+  },
+  "Project/Presentation/Sources/Extensions/MainIcon+Presentation.swift": {
+    "mtime": 1783428632.5997388,
+    "seen": 1787055953.878921,
+    "ast_hash": "8be131f3aacf3fbfd6aeb299c682832e",
+    "semantic_hash": "8be131f3aacf3fbfd6aeb299c682832e"
+  },
+  "Project/Presentation/Sources/Navigation/AppCoordinator.swift": {
+    "mtime": 1786167997.1493318,
+    "seen": 1787055953.878922,
+    "ast_hash": "f86cd0a0e02351285cd8ab4956242b42",
+    "semantic_hash": "f86cd0a0e02351285cd8ab4956242b42"
+  },
+  "Project/Presentation/Sources/Navigation/AppRoute.swift": {
+    "mtime": 1786167997.149452,
+    "seen": 1787055953.878922,
+    "ast_hash": "d5769b19da9794f50574e3b311cf3b2f",
+    "semantic_hash": "d5769b19da9794f50574e3b311cf3b2f"
+  },
+  "Project/Presentation/Sources/Navigation/Core/DeepLinkHandling.swift": {
+    "mtime": 1783428632.6005843,
+    "seen": 1787055953.878922,
+    "ast_hash": "f354dbc9a30a3dcb4c4cc16b829b907d",
+    "semantic_hash": "f354dbc9a30a3dcb4c4cc16b829b907d"
+  },
+  "Project/Presentation/Sources/Navigation/Core/FullScreenRouting.swift": {
+    "mtime": 1783428632.600791,
+    "seen": 1787055953.878923,
+    "ast_hash": "366974b9fe53e5241e71aa5f0c346799",
+    "semantic_hash": "366974b9fe53e5241e71aa5f0c346799"
+  },
+  "Project/Presentation/Sources/Navigation/Core/NavigationPresentationStyle.swift": {
+    "mtime": 1783428632.6010075,
+    "seen": 1787055953.878923,
+    "ast_hash": "b46f9c818b9b17ffc187d8ecc25af49c",
+    "semantic_hash": "b46f9c818b9b17ffc187d8ecc25af49c"
+  },
+  "Project/Presentation/Sources/Navigation/Core/NavigationRoute.swift": {
+    "mtime": 1783428632.6012402,
+    "seen": 1787055953.8789241,
+    "ast_hash": "06936ccdd1c32035caba69ec838f6066",
+    "semantic_hash": "06936ccdd1c32035caba69ec838f6066"
+  },
+  "Project/Presentation/Sources/Navigation/Core/SheetRouting.swift": {
+    "mtime": 1783428632.6013503,
+    "seen": 1787055953.8789241,
+    "ast_hash": "bee3993bf8de163c5a62b387087ed3f0",
+    "semantic_hash": "bee3993bf8de163c5a62b387087ed3f0"
+  },
+  "Project/Presentation/Sources/Navigation/Core/StackRouting.swift": {
+    "mtime": 1783428632.6014705,
+    "seen": 1787055953.878925,
+    "ast_hash": "d7b094e210cce5697b8b95eef4bf7f80",
+    "semantic_hash": "d7b094e210cce5697b8b95eef4bf7f80"
+  },
+  "Project/Presentation/Sources/Navigation/RoutineActionIntent.swift": {
+    "mtime": 1783428632.6017413,
+    "seen": 1787055953.878925,
+    "ast_hash": "f4e15b1137c134978505b1ff5a73ebbf",
+    "semantic_hash": "f4e15b1137c134978505b1ff5a73ebbf"
+  },
+  "Project/Presentation/Sources/State/AppSession.swift": {
+    "mtime": 1783428632.6021106,
+    "seen": 1787055953.878925,
+    "ast_hash": "d67a2d00ae57b691267e28a838a430ba",
+    "semantic_hash": "d67a2d00ae57b691267e28a838a430ba"
+  },
+  "Project/Presentation/Sources/System/AppInfoProviding.swift": {
+    "mtime": 1783428632.6023412,
+    "seen": 1787055953.878926,
+    "ast_hash": "37ad2229d01ed57af857c5e81eeb3c10",
+    "semantic_hash": "37ad2229d01ed57af857c5e81eeb3c10"
+  },
+  "Project/Presentation/Sources/System/WidgetTimelineReloading.swift": {
+    "mtime": 1783428632.6025324,
+    "seen": 1787055953.878926,
+    "ast_hash": "a2ad83e7460d1dafacb80f2a2bc7a112",
+    "semantic_hash": "a2ad83e7460d1dafacb80f2a2bc7a112"
+  },
+  "Project/Presentation/Sources/View/Authentication/HealthKitPermissionGateView.swift": {
+    "mtime": 1786167997.123772,
+    "seen": 1787055953.878926,
+    "ast_hash": "2d0d08df2393145c5ed00abee5ebbf5b",
+    "semantic_hash": "2d0d08df2393145c5ed00abee5ebbf5b"
+  },
+  "Project/Presentation/Sources/View/Authentication/HydrationReminderPermissionGateView.swift": {
+    "mtime": 1785649941.1814468,
+    "seen": 1787055953.878927,
+    "ast_hash": "3517a9b976512e7eb561ca1b158727cb",
+    "semantic_hash": "3517a9b976512e7eb561ca1b158727cb"
+  },
+  "Project/Presentation/Sources/View/Authentication/OnboardingView.swift": {
+    "mtime": 1785649941.181801,
+    "seen": 1787055953.878927,
+    "ast_hash": "5ab0c7f9867553075f6ba3fa1c4afe2e",
+    "semantic_hash": "5ab0c7f9867553075f6ba3fa1c4afe2e"
+  },
+  "Project/Presentation/Sources/View/Authentication/SignInView.swift": {
+    "mtime": 1783428632.6033516,
+    "seen": 1787055953.878927,
+    "ast_hash": "89a1c3deb2f94611970dd0df77470e5f",
+    "semantic_hash": "89a1c3deb2f94611970dd0df77470e5f"
+  },
+  "Project/Presentation/Sources/View/Challenge/ChallengeView.swift": {
+    "mtime": 1783428632.6035745,
+    "seen": 1787055953.878928,
+    "ast_hash": "c47a5f1cc799fc9826b8f74e5fc1f539",
+    "semantic_hash": "c47a5f1cc799fc9826b8f74e5fc1f539"
+  },
+  "Project/Presentation/Sources/View/DrinkWater/DrinkWaterView.swift": {
+    "mtime": 1786370094.6395936,
+    "seen": 1787055953.878928,
+    "ast_hash": "cb6b3f439215ee6a3618f61e2fe153bd",
+    "semantic_hash": "cb6b3f439215ee6a3618f61e2fe153bd"
+  },
+  "Project/Presentation/Sources/View/DrinkWater/WaterDropShaders.metal": {
+    "mtime": 1783514726.8807251,
+    "seen": 1787055953.878928,
+    "ast_hash": "3c869601d19c59b38911f0198d0648df",
+    "semantic_hash": "3c869601d19c59b38911f0198d0648df"
+  },
+  "Project/Presentation/Sources/View/DrinkWater/WaterWaveView.swift": {
+    "mtime": 1783514726.8809464,
+    "seen": 1787055953.878929,
+    "ast_hash": "82d3549e98865bd35b535fce6f49282c",
+    "semantic_hash": "82d3549e98865bd35b535fce6f49282c"
+  },
+  "Project/Presentation/Sources/View/HydrationInsight/HydrationInsightView.swift": {
+    "mtime": 1785649941.1825912,
+    "seen": 1787055953.878929,
+    "ast_hash": "be67c165df84317c684dc946de69aed0",
+    "semantic_hash": "be67c165df84317c684dc946de69aed0"
+  },
+  "Project/Presentation/Sources/View/HydrationRecord/HydrationRecordListView.swift": {
+    "mtime": 1785649941.1828089,
+    "seen": 1787055953.8789299,
+    "ast_hash": "c8edd0539aabd72f9c0186ba419dfa44",
+    "semantic_hash": "c8edd0539aabd72f9c0186ba419dfa44"
+  },
+  "Project/Presentation/Sources/View/HydrationRecord/RecordCalendarView.swift": {
+    "mtime": 1785649941.1830618,
+    "seen": 1787055953.8789299,
+    "ast_hash": "9e5618b8f73c0f598274c086c5ff4802",
+    "semantic_hash": "9e5618b8f73c0f598274c086c5ff4802"
+  },
+  "Project/Presentation/Sources/View/Profile/ProfileRoutineView.swift": {
+    "mtime": 1783428632.6051822,
+    "seen": 1787055953.8789299,
+    "ast_hash": "2a2834cf5d5ece3852b112041d82524c",
+    "semantic_hash": "2a2834cf5d5ece3852b112041d82524c"
+  },
+  "Project/Presentation/Sources/View/Profile/ProfileView.swift": {
+    "mtime": 1785649941.1834223,
+    "seen": 1787055953.8789299,
+    "ast_hash": "9e11bac420bf1bc369506dc32a7e6762",
+    "semantic_hash": "9e11bac420bf1bc369506dc32a7e6762"
+  },
+  "Project/Presentation/Sources/View/Profile/RoutineEditorView.swift": {
+    "mtime": 1783428632.6058443,
+    "seen": 1787055953.878931,
+    "ast_hash": "850dd8c190facd66cabc004745de50b9",
+    "semantic_hash": "850dd8c190facd66cabc004745de50b9"
+  },
+  "Project/Presentation/Sources/View/RootView.swift": {
+    "mtime": 1785649941.1836538,
+    "seen": 1787055953.878931,
+    "ast_hash": "3cecde0a607f0fa56d7a78074675054b",
+    "semantic_hash": "3cecde0a607f0fa56d7a78074675054b"
+  },
+  "Project/Presentation/Sources/View/Settings/SettingDetailView.swift": {
+    "mtime": 1783428632.606352,
+    "seen": 1787055953.878931,
+    "ast_hash": "08a4922367857e17a806e9207387112a",
+    "semantic_hash": "08a4922367857e17a806e9207387112a"
+  },
+  "Project/Presentation/Sources/View/Shared/LiquidGlassSegmentedControl.swift": {
+    "mtime": 1783428632.6065934,
+    "seen": 1787055953.878932,
+    "ast_hash": "a78481e94b30dab71f20ea042b787d8d",
+    "semantic_hash": "a78481e94b30dab71f20ea042b787d8d"
+  },
+  "Project/Presentation/Sources/ViewModel/AuthenticationViewModel.swift": {
+    "mtime": 1785649941.183782,
+    "seen": 1787055953.878932,
+    "ast_hash": "5d0d3b61cbef5802b6dcb1cbe6065166",
+    "semantic_hash": "5d0d3b61cbef5802b6dcb1cbe6065166"
+  },
+  "Project/Presentation/Sources/ViewModel/BodyProfileViewModel.swift": {
+    "mtime": 1783428632.6071086,
+    "seen": 1787055953.878932,
+    "ast_hash": "f2be5b8c5003d351d1783e9a0ae8cb96",
+    "semantic_hash": "f2be5b8c5003d351d1783e9a0ae8cb96"
+  },
+  "Project/Presentation/Sources/ViewModel/ChallengeViewModel.swift": {
+    "mtime": 1783428632.6073596,
+    "seen": 1787055953.878933,
+    "ast_hash": "2440197d62d83ba332da94a316193560",
+    "semantic_hash": "2440197d62d83ba332da94a316193560"
+  },
+  "Project/Presentation/Sources/ViewModel/DrinkWaterViewModel.swift": {
+    "mtime": 1786370094.6403122,
+    "seen": 1787055953.878933,
+    "ast_hash": "528081f0622670e3fbe3a36240430bc9",
+    "semantic_hash": "528081f0622670e3fbe3a36240430bc9"
+  },
+  "Project/Presentation/Sources/ViewModel/HealthKitPermissionViewModel.swift": {
+    "mtime": 1786167997.1239252,
+    "seen": 1787055953.878934,
+    "ast_hash": "207dfc68589f989b724cd3eb576b3897",
+    "semantic_hash": "207dfc68589f989b724cd3eb576b3897"
+  },
+  "Project/Presentation/Sources/ViewModel/HydrationGoalRecommendationViewModel.swift": {
+    "mtime": 1785649941.184339,
+    "seen": 1787055953.878934,
+    "ast_hash": "2bb1fad4bd56615cc807b479c947045a",
+    "semantic_hash": "2bb1fad4bd56615cc807b479c947045a"
+  },
+  "Project/Presentation/Sources/ViewModel/HydrationInsightViewModel.swift": {
+    "mtime": 1785649941.1847117,
+    "seen": 1787055953.878934,
+    "ast_hash": "0b9e066308a2be6cfbf7676f7306b03b",
+    "semantic_hash": "0b9e066308a2be6cfbf7676f7306b03b"
+  },
+  "Project/Presentation/Sources/ViewModel/HydrationRecordListViewModel.swift": {
+    "mtime": 1785649941.184978,
+    "seen": 1787055953.878935,
+    "ast_hash": "f1ef28c5b737025ef83ec1076a2afe70",
+    "semantic_hash": "f1ef28c5b737025ef83ec1076a2afe70"
+  },
+  "Project/Presentation/Sources/ViewModel/HydrationReminderPermissionViewModel.swift": {
+    "mtime": 1785649941.185139,
+    "seen": 1787055953.878935,
+    "ast_hash": "36e6c84889c0665a21605e4bd04754b2",
+    "semantic_hash": "36e6c84889c0665a21605e4bd04754b2"
+  },
+  "Project/Presentation/Sources/ViewModel/OnboardingViewModel.swift": {
+    "mtime": 1783428632.6086,
+    "seen": 1787055953.878935,
+    "ast_hash": "67b3bf8d1dca78c2bcc896b9a078ef79",
+    "semantic_hash": "67b3bf8d1dca78c2bcc896b9a078ef79"
+  },
+  "Project/Presentation/Sources/ViewModel/ProfileRoutineViewModel.swift": {
+    "mtime": 1783428632.6088676,
+    "seen": 1787055953.878936,
+    "ast_hash": "5a66dc9958ebd367dfb855de8ec5303b",
+    "semantic_hash": "5a66dc9958ebd367dfb855de8ec5303b"
+  },
+  "Project/Presentation/Sources/ViewModel/SettingsViewModel.swift": {
+    "mtime": 1786167997.149632,
+    "seen": 1787055953.878936,
+    "ast_hash": "e49b484093d86804e663a127ab175dc4",
+    "semantic_hash": "e49b484093d86804e663a127ab175dc4"
+  },
+  "Project/Presentation/Tests/AppCoordinatorTests.swift": {
+    "mtime": 1786167997.1497388,
+    "seen": 1787055953.878936,
+    "ast_hash": "1e3ebf4ff192b7909dbf2dd34a07230f",
+    "semantic_hash": "1e3ebf4ff192b7909dbf2dd34a07230f"
+  },
+  "Project/Presentation/Tests/AuthenticationViewModelTests.swift": {
+    "mtime": 1785649941.1854274,
+    "seen": 1787055953.878937,
+    "ast_hash": "71c27e6b93bdd0a1645fcba7a99b9912",
+    "semantic_hash": "71c27e6b93bdd0a1645fcba7a99b9912"
+  },
+  "Project/Presentation/Tests/BodyProfileViewModelTests.swift": {
+    "mtime": 1783428632.609515,
+    "seen": 1787055953.878937,
+    "ast_hash": "2264322d794c074049c7eb97371ea0d4",
+    "semantic_hash": "2264322d794c074049c7eb97371ea0d4"
+  },
+  "Project/Presentation/Tests/ChallengeViewModelTests.swift": {
+    "mtime": 1783428632.609686,
+    "seen": 1787055953.878937,
+    "ast_hash": "898188eb1b192578e3683d7620046814",
+    "semantic_hash": "898188eb1b192578e3683d7620046814"
+  },
+  "Project/Presentation/Tests/DrinkWaterViewModelTests.swift": {
+    "mtime": 1786370094.6406238,
+    "seen": 1787055953.8789382,
+    "ast_hash": "785d4f6e639806bd313f91790e672f8f",
+    "semantic_hash": "785d4f6e639806bd313f91790e672f8f"
+  },
+  "Project/Presentation/Tests/HealthKitPermissionViewModelTests.swift": {
+    "mtime": 1786167997.1243114,
+    "seen": 1787055953.8789382,
+    "ast_hash": "9d150787992f517b0e40b833abc91a8e",
+    "semantic_hash": "9d150787992f517b0e40b833abc91a8e"
+  },
+  "Project/Presentation/Tests/HydrationGoalRecommendationViewModelTests.swift": {
+    "mtime": 1785649941.1858864,
+    "seen": 1787055953.878939,
+    "ast_hash": "879fc2fbcaa9309e6cbcd6dc8d55b117",
+    "semantic_hash": "879fc2fbcaa9309e6cbcd6dc8d55b117"
+  },
+  "Project/Presentation/Tests/HydrationInsightViewModelTests.swift": {
+    "mtime": 1785649941.1862693,
+    "seen": 1787055953.878939,
+    "ast_hash": "828fbba4c655dcdc3d3dc0bce249f911",
+    "semantic_hash": "828fbba4c655dcdc3d3dc0bce249f911"
+  },
+  "Project/Presentation/Tests/HydrationRecordListViewModelTests.swift": {
+    "mtime": 1785649941.1865215,
+    "seen": 1787055953.878939,
+    "ast_hash": "238c1d103397a45295d43d3ba65fbf0b",
+    "semantic_hash": "238c1d103397a45295d43d3ba65fbf0b"
+  },
+  "Project/Presentation/Tests/HydrationReminderPermissionViewModelTests.swift": {
+    "mtime": 1785649941.186708,
+    "seen": 1787055953.8789399,
+    "ast_hash": "b49329cd052f295989884f73c19b433c",
+    "semantic_hash": "b49329cd052f295989884f73c19b433c"
+  },
+  "Project/Presentation/Tests/Mock/MockAnalyticsUseCase.swift": {
+    "mtime": 1785649941.1868613,
+    "seen": 1787055953.8789399,
+    "ast_hash": "96bf4fa908ff9b0c30fe086f90b9fa5c",
+    "semantic_hash": "96bf4fa908ff9b0c30fe086f90b9fa5c"
+  },
+  "Project/Presentation/Tests/Mock/MockAppReviewRequestUseCase.swift": {
+    "mtime": 1786370094.64099,
+    "seen": 1787055953.8789399,
+    "ast_hash": "d8c3ed6cc6482460afa97bb220896818",
+    "semantic_hash": "d8c3ed6cc6482460afa97bb220896818"
+  },
+  "Project/Presentation/Tests/Mock/MockBodyProfileUseCase.swift": {
+    "mtime": 1783428632.6109288,
+    "seen": 1787055953.8789408,
+    "ast_hash": "7df625e3d4e458a015761eb30e1fc6d1",
+    "semantic_hash": "7df625e3d4e458a015761eb30e1fc6d1"
+  },
+  "Project/Presentation/Tests/Mock/MockChallengeUseCase.swift": {
+    "mtime": 1783428632.6111767,
+    "seen": 1787055953.8789408,
+    "ast_hash": "3033365c2b68be6040773205e6fbcc24",
+    "semantic_hash": "3033365c2b68be6040773205e6fbcc24"
+  },
+  "Project/Presentation/Tests/Mock/MockDrinkWaterUseCase.swift": {
+    "mtime": 1783514726.8816702,
+    "seen": 1787055953.8789408,
+    "ast_hash": "dd7004132db0bc4999cf38a32667e7bc",
+    "semantic_hash": "dd7004132db0bc4999cf38a32667e7bc"
+  },
+  "Project/Presentation/Tests/Mock/MockHealthKitUseCase.swift": {
+    "mtime": 1783428632.6114984,
+    "seen": 1787055953.878942,
+    "ast_hash": "0b841a3cf5919e3b91b2edb703213181",
+    "semantic_hash": "0b841a3cf5919e3b91b2edb703213181"
+  },
+  "Project/Presentation/Tests/Mock/MockHydrationGoalRecommendationUseCase.swift": {
+    "mtime": 1783428632.6116743,
+    "seen": 1787055953.878942,
+    "ast_hash": "d72855ee441afe66859d2d391bdf8c28",
+    "semantic_hash": "d72855ee441afe66859d2d391bdf8c28"
+  },
+  "Project/Presentation/Tests/Mock/MockHydrationProgressUseCase.swift": {
+    "mtime": 1783428632.611849,
+    "seen": 1787055953.878942,
+    "ast_hash": "3b099934fc111438afe628027bb36831",
+    "semantic_hash": "3b099934fc111438afe628027bb36831"
+  },
+  "Project/Presentation/Tests/Mock/MockHydrationReminderUseCase.swift": {
+    "mtime": 1786167997.1498673,
+    "seen": 1787055953.878943,
+    "ast_hash": "859a5c7190b4dda56c9f4372abfc3de1",
+    "semantic_hash": "859a5c7190b4dda56c9f4372abfc3de1"
+  },
+  "Project/Presentation/Tests/Mock/MockHydrationRoutineAdherenceUseCase.swift": {
+    "mtime": 1783428632.6120055,
+    "seen": 1787055953.878943,
+    "ast_hash": "622b776689f5dc0b029ad6262c973d36",
+    "semantic_hash": "622b776689f5dc0b029ad6262c973d36"
+  },
+  "Project/Presentation/Tests/Mock/MockPersonalizedChallengeUseCase.swift": {
+    "mtime": 1783428632.6121795,
+    "seen": 1787055953.878943,
+    "ast_hash": "bf2cb72a79a2e1defe875c2077a79ca2",
+    "semantic_hash": "bf2cb72a79a2e1defe875c2077a79ca2"
+  },
+  "Project/Presentation/Tests/Mock/MockSignInUseCase.swift": {
+    "mtime": 1785649941.1871724,
+    "seen": 1787055953.878944,
+    "ast_hash": "9f8d8c95d36f32fd8bb16e02cadd9c53",
+    "semantic_hash": "9f8d8c95d36f32fd8bb16e02cadd9c53"
+  },
+  "Project/Presentation/Tests/Mock/MockUserPreferencesUseCase.swift": {
+    "mtime": 1783428632.612585,
+    "seen": 1787055953.878944,
+    "ast_hash": "3b6475cb1c45b6b1fac44cb7243dcf5b",
+    "semantic_hash": "3b6475cb1c45b6b1fac44cb7243dcf5b"
+  },
+  "Project/Presentation/Tests/OnboardingViewModelTests.swift": {
+    "mtime": 1783428632.6127486,
+    "seen": 1787055953.878944,
+    "ast_hash": "6877e3862154b6e5c36dd4b915af2bfc",
+    "semantic_hash": "6877e3862154b6e5c36dd4b915af2bfc"
+  },
+  "Project/Presentation/Tests/ProfileRoutineViewModelTests.swift": {
+    "mtime": 1783428632.612937,
+    "seen": 1787055953.878945,
+    "ast_hash": "9be87a50eec77cdfc4aa8b42b11bb88a",
+    "semantic_hash": "9be87a50eec77cdfc4aa8b42b11bb88a"
+  },
+  "Project/Presentation/Tests/Root.swift": {
+    "mtime": 1783428632.613165,
+    "seen": 1787055953.878945,
+    "ast_hash": "f8d46b5dc6b4ee6105ab13a41b3e18b1",
+    "semantic_hash": "f8d46b5dc6b4ee6105ab13a41b3e18b1"
+  },
+  "Project/Presentation/Tests/SettingsViewModelTests.swift": {
+    "mtime": 1786167997.1500173,
+    "seen": 1787055953.878945,
+    "ast_hash": "af46098f02e13c03f9d2684869532dca",
+    "semantic_hash": "af46098f02e13c03f9d2684869532dca"
+  },
+  "Project/Presentation/WatchSources/Core/WatchL10n.swift": {
+    "mtime": 1783428632.6136756,
+    "seen": 1787055953.878946,
+    "ast_hash": "c6ea70a4053eff8ed51a93fa1b642233",
+    "semantic_hash": "c6ea70a4053eff8ed51a93fa1b642233"
+  },
+  "Project/Presentation/WatchSources/View/WatchRootView.swift": {
+    "mtime": 1783428632.6139994,
+    "seen": 1787055953.878946,
+    "ast_hash": "1f3ea960c48d4c6f94e9dc0adaf43718",
+    "semantic_hash": "1f3ea960c48d4c6f94e9dc0adaf43718"
+  },
+  "Project/Presentation/WatchSources/ViewModel/WatchHydrationViewModel.swift": {
+    "mtime": 1783428632.614219,
+    "seen": 1787055953.878946,
+    "ast_hash": "e3fe557dc9574ec4620fe48548ea7dde",
+    "semantic_hash": "e3fe557dc9574ec4620fe48548ea7dde"
+  },
+  "Project/Shared/DependencyInjection/Project.swift": {
+    "mtime": 1783428632.614453,
+    "seen": 1787055953.878947,
+    "ast_hash": "ae6d913ba9781f9c7df7f365401231e3",
+    "semantic_hash": "ae6d913ba9781f9c7df7f365401231e3"
+  },
+  "Project/Shared/DependencyInjection/Sources/Core/DIContainer.swift": {
+    "mtime": 1783428632.61467,
+    "seen": 1787055953.878947,
+    "ast_hash": "4ab4743584db45687298f5c6d2b6d4c5",
+    "semantic_hash": "4ab4743584db45687298f5c6d2b6d4c5"
+  },
+  "Project/Shared/DependencyInjection/Sources/Core/DIEnvironment.swift": {
+    "mtime": 1783428632.614861,
+    "seen": 1787055953.878947,
+    "ast_hash": "9cd3e5da79de5aecc961dab333ed9672",
+    "semantic_hash": "9cd3e5da79de5aecc961dab333ed9672"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/DIContainer+Preview.swift": {
+    "mtime": 1783428632.6150966,
+    "seen": 1787055953.8789482,
+    "ast_hash": "746c322282efbe009644b4abb17cfc68",
+    "semantic_hash": "746c322282efbe009644b4abb17cfc68"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockBodyProfileUseCase.swift": {
+    "mtime": 1783428632.6153986,
+    "seen": 1787055953.8789482,
+    "ast_hash": "43ebbd44c622514600e6b6d2c2c1b9e3",
+    "semantic_hash": "43ebbd44c622514600e6b6d2c2c1b9e3"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockChallengeUseCase.swift": {
+    "mtime": 1783428632.6156397,
+    "seen": 1787055953.8789492,
+    "ast_hash": "ab5801a47f4285930eaa488aa63b717c",
+    "semantic_hash": "ab5801a47f4285930eaa488aa63b717c"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockDrinkWaterUseCase.swift": {
+    "mtime": 1783428632.6157684,
+    "seen": 1787055953.8789492,
+    "ast_hash": "22feb40e6ed9321dfc597530edf437f5",
+    "semantic_hash": "22feb40e6ed9321dfc597530edf437f5"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHealthKitUseCase.swift": {
+    "mtime": 1783428632.616043,
+    "seen": 1787055953.8789492,
+    "ast_hash": "462f52d1cdcbea67248bb68af2454d1a",
+    "semantic_hash": "462f52d1cdcbea67248bb68af2454d1a"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHydrationGoalRecommendationUseCase.swift": {
+    "mtime": 1783428632.6162205,
+    "seen": 1787055953.8789499,
+    "ast_hash": "05adde3a266fab589cd04f84244cb110",
+    "semantic_hash": "05adde3a266fab589cd04f84244cb110"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHydrationNextActionGuideUseCase.swift": {
+    "mtime": 1783428632.6164918,
+    "seen": 1787055953.8789499,
+    "ast_hash": "fd08119110fa90c0d227d789e49d997f",
+    "semantic_hash": "fd08119110fa90c0d227d789e49d997f"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHydrationProgressUseCase.swift": {
+    "mtime": 1783428632.6166492,
+    "seen": 1787055953.8789499,
+    "ast_hash": "951e5ca2e2786388298a8cb1dee91fac",
+    "semantic_hash": "951e5ca2e2786388298a8cb1dee91fac"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHydrationReminderUseCase.swift": {
+    "mtime": 1786167997.150173,
+    "seen": 1787055953.8789508,
+    "ast_hash": "9dcc1d7a26f92ced9da74a8290e7f113",
+    "semantic_hash": "9dcc1d7a26f92ced9da74a8290e7f113"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockHydrationRoutineAdherenceUseCase.swift": {
+    "mtime": 1783428632.616812,
+    "seen": 1787055953.8789508,
+    "ast_hash": "032b73ea4b8b2e8e4492d0944323f1bb",
+    "semantic_hash": "032b73ea4b8b2e8e4492d0944323f1bb"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockPersonalizedChallengeUseCase.swift": {
+    "mtime": 1783428632.616988,
+    "seen": 1787055953.8789508,
+    "ast_hash": "35d3ac646f058c9bfae00c65f141d91f",
+    "semantic_hash": "35d3ac646f058c9bfae00c65f141d91f"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockRoutineRecommendationUseCase.swift": {
+    "mtime": 1783428632.6172225,
+    "seen": 1787055953.878952,
+    "ast_hash": "3bbc403bb8acabdd0fb4177021dfd7b3",
+    "semantic_hash": "3bbc403bb8acabdd0fb4177021dfd7b3"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockRoutineUseCase.swift": {
+    "mtime": 1783428632.6173995,
+    "seen": 1787055953.878952,
+    "ast_hash": "2ac09186934dc32e81a5c460cf4712a4",
+    "semantic_hash": "2ac09186934dc32e81a5c460cf4712a4"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockSignInUseCase.swift": {
+    "mtime": 1785649941.187625,
+    "seen": 1787055953.878952,
+    "ast_hash": "417fc5ea9709fed69941c8f293090d47",
+    "semantic_hash": "417fc5ea9709fed69941c8f293090d47"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/MockUserPreferencesUseCase.swift": {
+    "mtime": 1783428632.6179452,
+    "seen": 1787055953.878953,
+    "ast_hash": "af79b6cccd864907977b03aa244bc531",
+    "semantic_hash": "af79b6cccd864907977b03aa244bc531"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/PreviewAssembly.swift": {
+    "mtime": 1786167997.1503525,
+    "seen": 1787055953.878953,
+    "ast_hash": "f0562c7f5d706b0d59fdced26f31f2c8",
+    "semantic_hash": "f0562c7f5d706b0d59fdced26f31f2c8"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/PreviewViewModelFactory.swift": {
+    "mtime": 1783428632.6184027,
+    "seen": 1787055953.878953,
+    "ast_hash": "09398453b03a11b59428a8452e04959b",
+    "semantic_hash": "09398453b03a11b59428a8452e04959b"
+  },
+  "Project/Shared/DependencyInjection/Sources/Preview/ViewPreviews.swift": {
+    "mtime": 1783428632.61871,
+    "seen": 1787055953.878954,
+    "ast_hash": "eee54513cd9238c7df908dc5fb3e8681",
+    "semantic_hash": "eee54513cd9238c7df908dc5fb3e8681"
+  },
+  "Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift": {
+    "mtime": 1786370094.6412373,
+    "seen": 1787055953.878954,
+    "ast_hash": "0d2f032ae75c51cda79d12279f6a6982",
+    "semantic_hash": "0d2f032ae75c51cda79d12279f6a6982"
+  },
+  "Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift": {
+    "mtime": 1786370094.6414654,
+    "seen": 1787055953.8789551,
+    "ast_hash": "3f397dd0d8bc05ee4db500f8fc17db46",
+    "semantic_hash": "3f397dd0d8bc05ee4db500f8fc17db46"
+  },
+  "Project/Shared/DependencyInjection/Sources/Production/PresentationAssembly.swift": {
+    "mtime": 1786370094.6417656,
+    "seen": 1787055953.8789551,
+    "ast_hash": "e0a3c3a3a9744e9b42b06298f7a584eb",
+    "semantic_hash": "e0a3c3a3a9744e9b42b06298f7a584eb"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/DIContainer+Testing.swift": {
+    "mtime": 1783428632.6198263,
+    "seen": 1787055953.8789551,
+    "ast_hash": "a84f072ee3b141662900c0d2135db78c",
+    "semantic_hash": "a84f072ee3b141662900c0d2135db78c"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockChallengeUseCaseForTesting.swift": {
+    "mtime": 1783428632.620026,
+    "seen": 1787055953.878956,
+    "ast_hash": "1d56264c91ca9137e4227d2aef93f10b",
+    "semantic_hash": "1d56264c91ca9137e4227d2aef93f10b"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockDrinkWaterUseCaseForTesting.swift": {
+    "mtime": 1783428632.6204524,
+    "seen": 1787055953.878956,
+    "ast_hash": "96d3a2930fb03e88db788ed309144c57",
+    "semantic_hash": "96d3a2930fb03e88db788ed309144c57"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockHealthKitUseCaseForTesting.swift": {
+    "mtime": 1783428632.6207035,
+    "seen": 1787055953.878956,
+    "ast_hash": "821213b1adf8b111b2d06d29ebf7144d",
+    "semantic_hash": "821213b1adf8b111b2d06d29ebf7144d"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockHydrationNextActionGuideUseCaseForTesting.swift": {
+    "mtime": 1783428632.6209831,
+    "seen": 1787055953.878957,
+    "ast_hash": "370df7061d2220c932395f52c8944bcb",
+    "semantic_hash": "370df7061d2220c932395f52c8944bcb"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockHydrationProgressUseCaseForTesting.swift": {
+    "mtime": 1783428632.621205,
+    "seen": 1787055953.878957,
+    "ast_hash": "c3e4be33c2eac7f5ebcd6ba6f6064699",
+    "semantic_hash": "c3e4be33c2eac7f5ebcd6ba6f6064699"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockHydrationReminderUseCaseForTesting.swift": {
+    "mtime": 1786167997.1506484,
+    "seen": 1787055953.878957,
+    "ast_hash": "6b04d160ec72a92f90945907581ecba8",
+    "semantic_hash": "6b04d160ec72a92f90945907581ecba8"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockHydrationRoutineAdherenceUseCaseForTesting.swift": {
+    "mtime": 1783428632.6214132,
+    "seen": 1787055953.878958,
+    "ast_hash": "44d6a2570f85e2d1018bfc1f1e2ae7e8",
+    "semantic_hash": "44d6a2570f85e2d1018bfc1f1e2ae7e8"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockPersonalizedChallengeUseCaseForTesting.swift": {
+    "mtime": 1783428632.6216009,
+    "seen": 1787055953.878958,
+    "ast_hash": "28c1538d8eb16af1bd1e35043fc54efd",
+    "semantic_hash": "28c1538d8eb16af1bd1e35043fc54efd"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockRoutineRecommendationUseCaseForTesting.swift": {
+    "mtime": 1783428632.6218734,
+    "seen": 1787055953.878958,
+    "ast_hash": "8083598ad270e27e00b81070df3bc014",
+    "semantic_hash": "8083598ad270e27e00b81070df3bc014"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockRoutineUseCaseForTesting.swift": {
+    "mtime": 1783428632.6220615,
+    "seen": 1787055953.8789592,
+    "ast_hash": "c3659e4abc7b5941efa0e22cd66d39e0",
+    "semantic_hash": "c3659e4abc7b5941efa0e22cd66d39e0"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/MockUserPreferencesUseCaseForTesting.swift": {
+    "mtime": 1783428632.6223738,
+    "seen": 1787055953.8789592,
+    "ast_hash": "111b3d13db023860f8cc16d112d5de3f",
+    "semantic_hash": "111b3d13db023860f8cc16d112d5de3f"
+  },
+  "Project/Shared/DependencyInjection/Sources/Testing/TestingAssembly.swift": {
+    "mtime": 1785649941.1889284,
+    "seen": 1787055953.8789592,
+    "ast_hash": "7e89382e7af1ac707d5eceb9508c370f",
+    "semantic_hash": "7e89382e7af1ac707d5eceb9508c370f"
+  },
+  "Project/Shared/DependencyInjection/Sources/Watch/WatchDIContainer.swift": {
+    "mtime": 1783428632.622891,
+    "seen": 1787055953.8789601,
+    "ast_hash": "046c195d8c8a122a5fc8415eb2373ebc",
+    "semantic_hash": "046c195d8c8a122a5fc8415eb2373ebc"
+  },
+  "Project/Shared/DesignSystem/Project.swift": {
+    "mtime": 1783428632.6232631,
+    "seen": 1787055953.8789601,
+    "ast_hash": "ce724a445bdd139252d0facc4a23fcd9",
+    "semantic_hash": "ce724a445bdd139252d0facc4a23fcd9"
+  },
+  "Project/Shared/DesignSystem/Resources/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1756124983.377707,
+    "seen": 1787055953.8789601,
+    "ast_hash": "98c943773f2e224e7096029d729f9104",
+    "semantic_hash": "98c943773f2e224e7096029d729f9104"
+  },
+  "Project/Shared/DesignSystem/Resources/Assets.xcassets/BackgroundColor.colorset/Contents.json": {
+    "mtime": 1756124983.3778398,
+    "seen": 1787055953.8789608,
+    "ast_hash": "7d14862d142b2f19361fbba534b17c00",
+    "semantic_hash": "7d14862d142b2f19361fbba534b17c00"
+  },
+  "Project/Shared/DesignSystem/Resources/Assets.xcassets/Contents.json": {
+    "mtime": 1756124983.3779032,
+    "seen": 1787055953.8789608,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/Shared/DesignSystem/Resources/bubble.json": {
+    "mtime": 1756124983.3779926,
+    "seen": 1787055953.8789608,
+    "ast_hash": "8617e7a8819e2fe199792c7cb397c887",
+    "semantic_hash": "8617e7a8819e2fe199792c7cb397c887"
+  },
+  "Project/Shared/DesignSystem/Sources/Color+Extension.swift": {
+    "mtime": 1783428632.6234682,
+    "seen": 1787055953.8789618,
+    "ast_hash": "c6d7b6c49e9d7a5d8dd3fae5b2ca0e3e",
+    "semantic_hash": "c6d7b6c49e9d7a5d8dd3fae5b2ca0e3e"
+  },
+  "Project/Shared/DesignSystem/Sources/GlareCircleView.swift": {
+    "mtime": 1783428632.6237776,
+    "seen": 1787055953.8789618,
+    "ast_hash": "d49e23d76b3b6219de9cd313b77705dd",
+    "semantic_hash": "d49e23d76b3b6219de9cd313b77705dd"
+  },
+  "Project/Shared/DesignSystem/Sources/WaterDropGlareEffectModifier.swift": {
+    "mtime": 1783428632.6240554,
+    "seen": 1787055953.878963,
+    "ast_hash": "02478d1dd5ac6b108eed02dd300ba854",
+    "semantic_hash": "02478d1dd5ac6b108eed02dd300ba854"
+  },
+  "Project/Shared/Localization/Project.swift": {
+    "mtime": 1783428632.624247,
+    "seen": 1787055953.878963,
+    "ast_hash": "ae5bb423fc7ccdd7e5b96450d36fa4af",
+    "semantic_hash": "ae5bb423fc7ccdd7e5b96450d36fa4af"
+  },
+  "Project/Shared/Localization/Sources/L10n.swift": {
+    "mtime": 1783428632.6249766,
+    "seen": 1787055953.878963,
+    "ast_hash": "710ed4aa755d4e31c7f3963ecc8e1fca",
+    "semantic_hash": "710ed4aa755d4e31c7f3963ecc8e1fca"
+  },
+  "Project/Shared/Persistence/Project.swift": {
+    "mtime": 1783428632.6252334,
+    "seen": 1787055953.878964,
+    "ast_hash": "5fdbcb7b40755151e811df7e35ef91d3",
+    "semantic_hash": "5fdbcb7b40755151e811df7e35ef91d3"
+  },
+  "Project/Shared/Persistence/Sources/HydrationEventModel.swift": {
+    "mtime": 1783428632.6254537,
+    "seen": 1787055953.878964,
+    "ast_hash": "ffa75e2d1599c45a1470cd1d736b9b95",
+    "semantic_hash": "ffa75e2d1599c45a1470cd1d736b9b95"
+  },
+  "Project/Shared/Persistence/Sources/SharedHydrationStore.swift": {
+    "mtime": 1783428632.6255686,
+    "seen": 1787055953.878964,
+    "ast_hash": "7cc91067ac7375782072c0267bd810b6",
+    "semantic_hash": "7cc91067ac7375782072c0267bd810b6"
+  },
+  "Project/Shared/Utils/Project.swift": {
+    "mtime": 1783428632.6257682,
+    "seen": 1787055953.878965,
+    "ast_hash": "9787460598b97af24afef02e4b2d1ddf",
+    "semantic_hash": "9787460598b97af24afef02e4b2d1ddf"
+  },
+  "Project/Shared/Utils/Sources/String+Extensions.swift": {
+    "mtime": 1786370094.6419847,
+    "seen": 1787055953.878965,
+    "ast_hash": "2bc8e444c912242bb9f06ac63d02f1dc",
+    "semantic_hash": "2bc8e444c912242bb9f06ac63d02f1dc"
+  },
+  "Project/Shared/Utils/Sources/UserDefaults+Extensions.swift": {
+    "mtime": 1783428632.626105,
+    "seen": 1787055953.878965,
+    "ast_hash": "402f2b70f9f1ead0706354bf572d25ca",
+    "semantic_hash": "402f2b70f9f1ead0706354bf572d25ca"
+  },
+  "Project/Widget/Resources/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1756124983.3788939,
+    "seen": 1787055953.878966,
+    "ast_hash": "4c1941f074a5a7fa072e3baf3d52645d",
+    "semantic_hash": "4c1941f074a5a7fa072e3baf3d52645d"
+  },
+  "Project/Widget/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1756124983.3790088,
+    "seen": 1787055953.878966,
+    "ast_hash": "4024ba07fb3ad975f26970129064ef45",
+    "semantic_hash": "4024ba07fb3ad975f26970129064ef45"
+  },
+  "Project/Widget/Resources/Assets.xcassets/Contents.json": {
+    "mtime": 1756124983.380236,
+    "seen": 1787055953.878966,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "Project/Widget/Resources/Assets.xcassets/WidgetBackground.colorset/Contents.json": {
+    "mtime": 1756124983.3803728,
+    "seen": 1787055953.878967,
+    "ast_hash": "e54bc9920019128b2900aeb6ac79be60",
+    "semantic_hash": "e54bc9920019128b2900aeb6ac79be60"
+  },
+  "Project/Widget/Sources/AppIntent.swift": {
+    "mtime": 1783428632.6269007,
+    "seen": 1787055953.878967,
+    "ast_hash": "6faca65347e4902e52352393927be4a0",
+    "semantic_hash": "6faca65347e4902e52352393927be4a0"
+  },
+  "Project/Widget/Sources/DrinkWaterLockScreenWidget.swift": {
+    "mtime": 1783428632.6270797,
+    "seen": 1787055953.878967,
+    "ast_hash": "243441d1201c89a009791c3abd521259",
+    "semantic_hash": "243441d1201c89a009791c3abd521259"
+  },
+  "Project/Widget/Sources/DrinkWaterWidget.swift": {
+    "mtime": 1783428632.6273088,
+    "seen": 1787055953.878968,
+    "ast_hash": "3f478f82fa3ce036c907f86945c07d09",
+    "semantic_hash": "3f478f82fa3ce036c907f86945c07d09"
+  },
+  "Project/Widget/Sources/DrinkWaterWidgetBundle.swift": {
+    "mtime": 1783428632.6275933,
+    "seen": 1787055953.878968,
+    "ast_hash": "c2c1c819c30baa8e0f0bd3591d44e92c",
+    "semantic_hash": "c2c1c819c30baa8e0f0bd3591d44e92c"
+  },
+  "Project/Widget/Sources/DrinkWaterWidgetShared.swift": {
+    "mtime": 1783428632.6277642,
+    "seen": 1787055953.8789692,
+    "ast_hash": "6dd39e116385dd04050b3780ec8875b3",
+    "semantic_hash": "6dd39e116385dd04050b3780ec8875b3"
+  },
+  "Project/Widget/Sources/MainIcon+Widget.swift": {
+    "mtime": 1783428632.6279247,
+    "seen": 1787055953.8789692,
+    "ast_hash": "128a4b610281ba859a5a86e786cc247b",
+    "semantic_hash": "128a4b610281ba859a5a86e786cc247b"
+  },
+  "Tuist/Package.swift": {
+    "mtime": 1786370668.6164157,
+    "seen": 1787055953.8789692,
+    "ast_hash": "58539484646e467c7cf66d1cdf113e0b",
+    "semantic_hash": "58539484646e467c7cf66d1cdf113e0b"
+  },
+  "Tuist/ProjectDescriptionHelpers/AppVersion.swift": {
+    "mtime": 1785649941.2770774,
+    "seen": 1787055953.8789701,
+    "ast_hash": "3a418924f8d89843472313c650163cc8",
+    "semantic_hash": "3a418924f8d89843472313c650163cc8"
+  },
+  "Tuist/Tuist.swift": {
+    "mtime": 1786623425.8229234,
+    "seen": 1787055953.8789701,
+    "ast_hash": "d787277994ab777d7ea6eade79e97476",
+    "semantic_hash": "d787277994ab777d7ea6eade79e97476"
+  },
+  "Workspace.swift": {
+    "mtime": 1758550361.7748246,
+    "seen": 1787055953.8789701,
+    "ast_hash": "1f6f1f10f2b8c714209fffeedde11e99",
+    "semantic_hash": "1f6f1f10f2b8c714209fffeedde11e99"
+  },
+  "ci_scripts/ci_post_clone.sh": {
+    "mtime": 1785649941.1904144,
+    "seen": 1787055953.8789709,
+    "ast_hash": "b411fa5576a5e10aefc1f3efc835faad",
+    "semantic_hash": "b411fa5576a5e10aefc1f3efc835faad"
+  },
+  "scripts/check-architecture.sh": {
+    "mtime": 1783428632.6298451,
+    "seen": 1787055953.8789709,
+    "ast_hash": "520f224a926654204be4de5f2f213872",
+    "semantic_hash": "520f224a926654204be4de5f2f213872"
+  },
+  "scripts/lint-fix.sh": {
+    "mtime": 1783428632.6301324,
+    "seen": 1787055953.8789709,
+    "ast_hash": "7bbe3c520f7cc0f342fd7f4b726fab9f",
+    "semantic_hash": "7bbe3c520f7cc0f342fd7f4b726fab9f"
+  },
+  "scripts/lint.sh": {
+    "mtime": 1783428632.630297,
+    "seen": 1787055953.8789718,
+    "ast_hash": "4b6e6b62b24aacc5459cf5c4eaa019c0",
+    "semantic_hash": "4b6e6b62b24aacc5459cf5c4eaa019c0"
+  },
+  ".github/pull_request_template.md": {
+    "mtime": 1783514726.8783991,
+    "seen": 1787055953.8789718,
+    "ast_hash": "1178c99a8e68b4c8c3267152e3cc63c9",
+    "semantic_hash": "1178c99a8e68b4c8c3267152e3cc63c9"
+  },
+  ".github/workflows/ai-pr-review.yml": {
+    "mtime": 1783428632.55353,
+    "seen": 1787055953.8789718,
+    "ast_hash": "ede294fb4f21c677edb85c4293eba2d3",
+    "semantic_hash": "ede294fb4f21c677edb85c4293eba2d3"
+  },
+  ".github/workflows/lint.yml": {
+    "mtime": 1783428632.5537333,
+    "seen": 1787055953.878973,
+    "ast_hash": "58f87125d534cec54caa598b72dafd0a",
+    "semantic_hash": "58f87125d534cec54caa598b72dafd0a"
+  },
+  ".github/workflows/pr-unit-tests.yml": {
+    "mtime": 1783428632.5539474,
+    "seen": 1787055953.878973,
+    "ast_hash": "867203b265ce924e7ae7aa4f799b0329",
+    "semantic_hash": "867203b265ce924e7ae7aa4f799b0329"
+  },
+  ".swiftlint.yml": {
+    "mtime": 1783428632.5541391,
+    "seen": 1787055953.878974,
+    "ast_hash": "78c7bd8581b999a89394d47346374e97",
+    "semantic_hash": "78c7bd8581b999a89394d47346374e97"
+  },
+  "AGENTS.md": {
+    "mtime": 1787053380.489602,
+    "seen": 1787055953.878974,
+    "ast_hash": "2926fdb187cee0a2ebc516466d25e5d5",
+    "semantic_hash": "2926fdb187cee0a2ebc516466d25e5d5"
+  },
+  "ARCHITECTURE.md": {
+    "mtime": 1785649941.1745799,
+    "seen": 1787055953.878974,
+    "ast_hash": "cf60fb986bfca6a763e25aa7cc65965c",
+    "semantic_hash": "cf60fb986bfca6a763e25aa7cc65965c"
+  },
+  "CLAUDE.md": {
+    "mtime": 1787053380.489602,
+    "seen": 1787055953.878975,
+    "ast_hash": "2926fdb187cee0a2ebc516466d25e5d5",
+    "semantic_hash": "2926fdb187cee0a2ebc516466d25e5d5"
+  },
+  "Docs/accessibility-dynamic-type-audit.md": {
+    "mtime": 1783428632.5549269,
+    "seen": 1787055953.878975,
+    "ast_hash": "a907ec2992b3449c5e151ae7a3efb1d9",
+    "semantic_hash": "a907ec2992b3449c5e151ae7a3efb1d9"
+  },
+  "Docs/challenge-state-model.md": {
+    "mtime": 1783428632.5551982,
+    "seen": 1787055953.878975,
+    "ast_hash": "553ddee12aa9ba6f5d042d775215e976",
+    "semantic_hash": "553ddee12aa9ba6f5d042d775215e976"
+  },
+  "Docs/delivery-workflow.md": {
+    "mtime": 1783514726.8789818,
+    "seen": 1787055953.878976,
+    "ast_hash": "736e878a4088a2c0649e6ce3bf1093cc",
+    "semantic_hash": "736e878a4088a2c0649e6ce3bf1093cc"
+  },
+  "Docs/documentation-maintenance.md": {
+    "mtime": 1783428632.5559838,
+    "seen": 1787055953.878976,
+    "ast_hash": "11763b371f584dc0e5d168797f572172",
+    "semantic_hash": "11763b371f584dc0e5d168797f572172"
+  },
+  "Docs/exec-plans/active/README.md": {
+    "mtime": 1783428632.5562382,
+    "seen": 1787055953.878976,
+    "ast_hash": "2d747c3766b36db886298784f61ab38a",
+    "semantic_hash": "2d747c3766b36db886298784f61ab38a"
+  },
+  "Docs/exec-plans/completed/README.md": {
+    "mtime": 1783428632.5564957,
+    "seen": 1787055953.878977,
+    "ast_hash": "38b14e18f031093f71a8ea605d828391",
+    "semantic_hash": "38b14e18f031093f71a8ea605d828391"
+  },
+  "Docs/exec-plans/tech-debt-tracker.md": {
+    "mtime": 1786371699.8625479,
+    "seen": 1787055953.878977,
+    "ast_hash": "c8044d005f12d0b8966bd89e8dec543b",
+    "semantic_hash": "c8044d005f12d0b8966bd89e8dec543b"
+  },
+  "Docs/exec-plans/template.md": {
+    "mtime": 1783428632.5569825,
+    "seen": 1787055953.878978,
+    "ast_hash": "3e82d47e49661c70ee0c3702cb46fcab",
+    "semantic_hash": "3e82d47e49661c70ee0c3702cb46fcab"
+  },
+  "Docs/harness-engineering.md": {
+    "mtime": 1787055490.2709756,
+    "seen": 1787055953.878978,
+    "ast_hash": "f0bb4c67d9711c6688527ae12284fe00",
+    "semantic_hash": "f0bb4c67d9711c6688527ae12284fe00"
+  },
+  "Docs/index.md": {
+    "mtime": 1787052731.5426302,
+    "seen": 1787055953.878978,
+    "ast_hash": "742457632c5455fac7b40392e092ae66",
+    "semantic_hash": "742457632c5455fac7b40392e092ae66"
+  },
+  "Docs/personalized-challenge-strategy.md": {
+    "mtime": 1783428632.5578885,
+    "seen": 1787055953.878979,
+    "ast_hash": "2c519c070a44c091e9f6012cb7baf7b1",
+    "semantic_hash": "2c519c070a44c091e9f6012cb7baf7b1"
+  },
+  "Docs/product-specs/analytics-events.md": {
+    "mtime": 1787052731.5433154,
+    "seen": 1787055953.878979,
+    "ast_hash": "33e98014d7016b3663daa459aabee0a2",
+    "semantic_hash": "33e98014d7016b3663daa459aabee0a2"
+  },
+  "Docs/product-specs/analytics-operations.md": {
+    "mtime": 1787052731.5439339,
+    "seen": 1787055953.878979,
+    "ast_hash": "0539185aae072f85dffa527e818c5448",
+    "semantic_hash": "0539185aae072f85dffa527e818c5448"
+  },
+  "Docs/product-specs/challenge-insight.md": {
+    "mtime": 1785649941.175034,
+    "seen": 1787055953.8789802,
+    "ast_hash": "326ad5a872eb62e4e899d2ac64f92337",
+    "semantic_hash": "326ad5a872eb62e4e899d2ac64f92337"
+  },
+  "Docs/product-specs/hydration-logging.md": {
+    "mtime": 1786370094.6363719,
+    "seen": 1787055953.8789802,
+    "ast_hash": "59acf20b9704f95873b5db8da2a63db6",
+    "semantic_hash": "59acf20b9704f95873b5db8da2a63db6"
+  },
+  "Docs/product-specs/hydration-reminder-priming.md": {
+    "mtime": 1786167997.1484752,
+    "seen": 1787055953.878981,
+    "ast_hash": "c9035055beecb3350734cdbe8f668939",
+    "semantic_hash": "c9035055beecb3350734cdbe8f668939"
+  },
+  "Docs/product-specs/index.md": {
+    "mtime": 1787052731.5443993,
+    "seen": 1787055953.878981,
+    "ast_hash": "484d18301ca9b50c94bb00ff12a05005",
+    "semantic_hash": "484d18301ca9b50c94bb00ff12a05005"
+  },
+  "Docs/product-specs/onboarding-healthkit-conversion-experiments.md": {
+    "mtime": 1786370840.1598423,
+    "seen": 1787055953.878981,
+    "ast_hash": "ecdcc7fbd5adae4681c6b5ca6d9b7eb0",
+    "semantic_hash": "ecdcc7fbd5adae4681c6b5ca6d9b7eb0"
+  },
+  "Docs/product-specs/routine-notifications.md": {
+    "mtime": 1783428632.5596123,
+    "seen": 1787055953.8789818,
+    "ast_hash": "4ac62d02fc93f9688ce3aa9211fd9501",
+    "semantic_hash": "4ac62d02fc93f9688ce3aa9211fd9501"
+  },
+  "Docs/product-specs/sign-in-onboarding-healthkit.md": {
+    "mtime": 1786370776.2503564,
+    "seen": 1787055953.8789818,
+    "ast_hash": "06ba58ba9875dccbc8ec1a3226bb1d0b",
+    "semantic_hash": "06ba58ba9875dccbc8ec1a3226bb1d0b"
+  },
+  "Docs/profile-information-architecture.md": {
+    "mtime": 1785649941.1762273,
+    "seen": 1787055953.8789818,
+    "ast_hash": "1988ed4a7946287d8c9205f6e3203230",
+    "semantic_hash": "1988ed4a7946287d8c9205f6e3203230"
+  },
+  "Docs/quality-gates.md": {
+    "mtime": 1783514726.8796246,
+    "seen": 1787055953.878983,
+    "ast_hash": "695366887eba0c0bf4dba88b89adbbc4",
+    "semantic_hash": "695366887eba0c0bf4dba88b89adbbc4"
+  },
+  "Docs/reliability-recovery.md": {
+    "mtime": 1783428632.5605419,
+    "seen": 1787055953.878983,
+    "ast_hash": "2bf152f6eb725ecaa307a23f63daefb0",
+    "semantic_hash": "2bf152f6eb725ecaa307a23f63daefb0"
+  },
+  "Docs/security-privacy.md": {
+    "mtime": 1786370798.0414143,
+    "seen": 1787055953.878983,
+    "ast_hash": "74bdc02d36848bd3f678470fb9fe8160",
+    "semantic_hash": "74bdc02d36848bd3f678470fb9fe8160"
+  },
+  "Docs/skills/architecture-boundary.md": {
+    "mtime": 1783428632.5611699,
+    "seen": 1787055953.878984,
+    "ast_hash": "1f3fce688ad5ca4f66b9671c82a926bd",
+    "semantic_hash": "1f3fce688ad5ca4f66b9671c82a926bd"
+  },
+  "Docs/skills/healthkit-flow.md": {
+    "mtime": 1783428632.5614471,
+    "seen": 1787055953.878987,
+    "ast_hash": "48f0674142b234624dc811ed3bb02cea",
+    "semantic_hash": "48f0674142b234624dc811ed3bb02cea"
+  },
+  "Docs/skills/lint-fix-loop.md": {
+    "mtime": 1783428632.5616395,
+    "seen": 1787055953.878988,
+    "ast_hash": "08ad78c52530c982063dc4dccb909814",
+    "semantic_hash": "08ad78c52530c982063dc4dccb909814"
+  },
+  "Docs/skills/navigation-coordinator.md": {
+    "mtime": 1783428632.5618656,
+    "seen": 1787055953.878988,
+    "ast_hash": "3abaa14d03cd5b463dfd0fb3887fb575",
+    "semantic_hash": "3abaa14d03cd5b463dfd0fb3887fb575"
+  },
+  "Docs/skills/widget-watch-integration.md": {
+    "mtime": 1783428632.5623715,
+    "seen": 1787055953.878988,
+    "ast_hash": "bb204c2b2964c7c44d3e22dc42689367",
+    "semantic_hash": "bb204c2b2964c7c44d3e22dc42689367"
+  },
+  "Docs/skills/xcode-build-test.md": {
+    "mtime": 1783514726.8798635,
+    "seen": 1787055953.878989,
+    "ast_hash": "97935addf1e779229049bdfc60c86bee",
+    "semantic_hash": "97935addf1e779229049bdfc60c86bee"
+  },
+  "Docs/swiftdata-cloudkit-sync.md": {
+    "mtime": 1783428632.563085,
+    "seen": 1787055953.878989,
+    "ast_hash": "da09362840cebf394985f3632f2c4002",
+    "semantic_hash": "da09362840cebf394985f3632f2c4002"
+  },
+  "Docs/swiftdata-userdefaults-migration.md": {
+    "mtime": 1783428632.5634272,
+    "seen": 1787055953.878989,
+    "ast_hash": "ae5f46dc8ea1df2aaddfc9eb1f73548b",
+    "semantic_hash": "ae5f46dc8ea1df2aaddfc9eb1f73548b"
+  },
+  "Docs/xcode-cloud-release-build.md": {
+    "mtime": 1785649941.17659,
+    "seen": 1787055953.8789902,
+    "ast_hash": "931f37291e0b10c69cdea9cc4fec0f10",
+    "semantic_hash": "931f37291e0b10c69cdea9cc4fec0f10"
+  },
+  "GEMINI.md": {
+    "mtime": 1787053380.489602,
+    "seen": 1787055953.8789902,
+    "ast_hash": "2926fdb187cee0a2ebc516466d25e5d5",
+    "semantic_hash": "2926fdb187cee0a2ebc516466d25e5d5"
+  },
+  "README.md": {
+    "mtime": 1787055490.2273762,
+    "seen": 1787055953.8789902,
+    "ast_hash": "d5fcd3289f7cce3c23106a1f3c838281",
+    "semantic_hash": "d5fcd3289f7cce3c23106a1f3c838281"
+  }
+}

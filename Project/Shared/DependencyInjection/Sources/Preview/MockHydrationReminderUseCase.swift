@@ -30,6 +30,8 @@ public final class MockHydrationReminderUseCase: HydrationReminderUseCase, @unch
 
     public func syncReminders() async {}
 
+    public func cancelReminders() async {}
+
     public func hasSeenPermissionPriming() -> Bool {
         hasSeenPriming
     }

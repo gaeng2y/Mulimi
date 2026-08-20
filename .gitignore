@@ -78,3 +78,10 @@ XCConfig/Secrets.xcconfig
 
 ### Local agent configuration ###
 .claude/
+.codex/hooks.json
+
+### Graphify local state ###
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/cache/
+graphify-out/cost.json

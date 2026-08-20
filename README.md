@@ -15,7 +15,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/WidgetKit-Home_%26_Lock_Screen-0F766E?style=for-the-badge" alt="WidgetKit">
   <img src="https://img.shields.io/badge/Watch_App-MulimiWatch-374151?style=for-the-badge" alt="Watch App">
-  <img src="https://img.shields.io/badge/Firebase-Analytics-FF6F00?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase Analytics">
   <img src="https://img.shields.io/badge/PostHog-Analytics_%26_Error_Tracking-F54E00?style=for-the-badge&logo=posthog&logoColor=white" alt="PostHog">
 </p>
 
@@ -38,7 +37,7 @@
 - `Swift 6.0`, `SwiftUI`, `Swift Concurrency`
 - `Tuist` 기반 모듈형 프로젝트
 - `HealthKit`, `WidgetKit`, `AppIntents`
-- `Firebase Analytics`, `PostHog Analytics`, `PostHog Error Tracking`
+- `PostHog Analytics`, `PostHog Error Tracking`
 - `Swinject` 기반 의존성 주입
 
 ## 🏗️ 아키텍처
@@ -181,10 +180,13 @@ curl https://mise.run | sh
 mise install tuist
 ```
 
-3. 팀 설정
+3. 팀 및 분석 설정
 
 - `XCConfig/Secrets.xcconfig.template`를 복사해 `XCConfig/Secrets.xcconfig` 생성
 - `DEVELOPMENT_TEAM` 값을 본인 Apple Developer Team ID로 설정
+- PostHog 이벤트를 검증하려면 `POSTHOG_PROJECT_TOKEN`과 `POSTHOG_HOST`를 설정
+- 유효한 PostHog 설정이 없는 로컬·Debug 빌드는 `NoOpAnalyticsRepository`로 동작
+- Xcode Cloud Release archive는 시작 전에 PostHog 필수 설정을 검증
 
 4. 의존성 설치 및 프로젝트 생성
 
@@ -204,6 +206,18 @@ make lint-fix
 make arch-check
 make verify
 ```
+
+### 코드 지식 그래프
+
+저장소에는 Codex용 Graphify 스킬과 공유 지식 그래프가 포함됩니다.
+
+```bash
+uv tool install graphifyy
+graphify query "수분 기록은 앱과 위젯 사이에서 어떻게 연결되는가?"
+graphify update .
+```
+
+Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습니다. 분석 범위는 `.graphifyignore`, 공유 산출물은 `graphify-out/`에서 관리합니다.
 
 ## 📖 문서 읽기 순서
 

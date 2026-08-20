@@ -140,6 +140,8 @@ struct ContentView: View {
     @ViewBuilder
     private func destinationView(for route: AppRoute) -> some View {
         switch route {
+        case .hydrationLogging:
+            DrinkWaterView(viewModel: drinkWaterViewModel)
         case .profileRoutine:
             ProfileRoutineView(viewModel: routineViewModel)
         case let .profileRoutineAction(action):

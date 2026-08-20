@@ -40,10 +40,7 @@ let project = Project(
             deploymentTargets: .iOS("26.0"),
             infoPlist: .file(path: .path("Supports/Info.plist")),
             sources: ["Sources/**"],
-            resources: [
-                "Resources/**",
-                "Supports/GoogleService-Info.plist"
-            ],
+            resources: ["Resources/**"],
             entitlements: .file(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
@@ -85,7 +82,6 @@ let project = Project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),
-                .external(name: "FirebaseAnalytics"),
                 .external(name: "PostHog")
             ],
             settings: .settings(

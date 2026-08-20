@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-public final class AppCoordinator: StackRouting {
+public final class AppCoordinator: DeepLinkHandling, StackRouting {
     public var path = NavigationPath()
 
     public init() {}
@@ -12,6 +12,12 @@ public final class AppCoordinator: StackRouting {
     }
 
     public func handleDeepLink(_ url: URL) {
-        // TODO: Map deep links to app routes.
+        guard url.scheme == "mulimi",
+              url.host == "hydration",
+              url.path == "/record" else {
+            return
+        }
+
+        push(.hydrationLogging)
     }
 }
