@@ -60,10 +60,10 @@ SignIn
 ## Related Code
 
 - `Project/App/Sources/ContentView.swift`
-- `Project/Presentation/Sources/View/RootView.swift`
-- `Project/Presentation/Sources/View/Authentication/OnboardingView.swift`
-- `Project/Presentation/Sources/View/Authentication/HydrationReminderPermissionGateView.swift`
-- `Project/Presentation/Sources/View/Authentication/HealthKitPermissionGateView.swift`
+- `Project/App/Sources/RootView.swift`
+- `Project/Features/Account/Presentation/Sources/View/Authentication/OnboardingView.swift`
+- `Project/Features/HydrationReminder/Presentation/Sources/View/HydrationReminderPermissionGateView.swift`
+- `Project/Features/Hydration/Presentation/Sources/View/Authentication/HealthKitPermissionGateView.swift`
 
 ## Related Docs
 

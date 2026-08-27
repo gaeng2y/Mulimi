@@ -8,8 +8,16 @@
 // Presentation Layer는 이 파일을 알지 못하며, 클린 아키텍처 원칙을 준수합니다.
 
 import DependencyInjection
-import DomainLayerInterface
-import PresentationLayer
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
+import AccountPresentation
+import ChallengePresentation
+import CorePresentation
+import HydrationPresentation
+import RoutinePresentation
 import SwiftUI
 
 // MARK: - DrinkWaterView Preview

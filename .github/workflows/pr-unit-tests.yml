@@ -83,7 +83,13 @@ jobs:
       - name: Run unit tests
         run: |
           set -euo pipefail
-          for SCHEME in DomainLayer DataLayer PresentationLayer; do
+          for SCHEME in \
+            CorePresentation \
+            AccountDomain AccountPresentation \
+            HydrationDomain HydrationData HydrationPresentation \
+            RoutineDomain RoutineData RoutinePresentation \
+            ChallengeDomain ChallengeData ChallengePresentation \
+            HydrationReminderDomain HydrationReminderData HydrationReminderPresentation; do
             echo "Running tests for $SCHEME"
             xcodebuild test \
               -workspace Mulimi.xcworkspace \

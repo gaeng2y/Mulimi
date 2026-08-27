@@ -5,7 +5,7 @@
 //  Created by Kyeongmo Yang on 9/17/25.
 //
 
-import DomainLayerInterface
+import CoreDomain
 import Swinject
 
 public final class DIContainer: @unchecked Sendable {

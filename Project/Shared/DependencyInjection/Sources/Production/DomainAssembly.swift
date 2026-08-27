@@ -5,8 +5,12 @@
 //  Created by Kyeongmo Yang on 9/17/25.
 //
 
-import DomainLayer
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
+import HydrationReminderDomain
 import Swinject
 
 public final class DomainAssembly: Assembly {

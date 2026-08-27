@@ -18,11 +18,13 @@ Mulimi의 `Clean Architecture + MVVM` 경계를 유지한다.
 - `Data`는 외부 시스템과 저장소 연동을 담당한다.
 - `App`은 루트 조립과 타깃 정의를 담당한다.
 - `Widget`과 `Watch`는 앱과 다른 도메인 규칙을 만들지 않는다.
+- 기능 수직 모듈은 `Project/Features/<Feature>/{Domain,Data,Presentation}`에 둔다.
+- 기능 `Presentation`과 `Data`는 자신의 기능 `Domain`을 향해 안쪽으로 의존하고, 기능 간 의존은 명시적인 Domain 또는 공용 Presentation 타깃으로 연결한다.
 
 ## Guardrails
 
-- `Project/Domain`에서 `SwiftUI`, `UIKit`, `WidgetKit`, `Localization` import 금지
-- `Project/Presentation/Sources/ViewModel`에서 시스템 side-effect API 직접 접근 금지
+- `Project/Features/*/Domain`에서 `SwiftUI`, `UIKit`, `WidgetKit`, `Localization`, `Data`, `Presentation` import 금지
+- `Project/Features/*/Presentation`의 ViewModel에서 시스템 side-effect API 직접 접근 금지
 - ViewModel 간 직접 타입 참조 금지
 - 전역 push는 `ContentView + AppCoordinator`
 - `250ml = 1잔`은 `HydrationServing`

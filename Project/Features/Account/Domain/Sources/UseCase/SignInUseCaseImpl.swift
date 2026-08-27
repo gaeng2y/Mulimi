@@ -1,0 +1,37 @@
+//
+//  SignInUseCaseImpl.swift
+//  AccountDomain
+//
+//  Created by Kyeongmo Yang on 11/23/25.
+//  Copyright © 2025 gaeng2y. All rights reserved.
+//
+
+import Foundation
+
+public struct SignInUseCaseImpl: SignInUseCase {
+    private let repository: AuthenticationRepository
+
+    public init(repository: AuthenticationRepository) {
+        self.repository = repository
+    }
+
+    public var isAuthenticated: Bool {
+        repository.isAuthenticated
+    }
+
+    public func currentUserCredential() -> UserCredential? {
+        repository.currentUserCredential()
+    }
+
+    public func signInWithApple() async throws -> UserCredential {
+        try await repository.signInWithApple()
+    }
+
+    public func signOut() {
+        repository.signOut()
+    }
+
+    public func deleteAccount() async throws {
+        try await repository.deleteAccount()
+    }
+}

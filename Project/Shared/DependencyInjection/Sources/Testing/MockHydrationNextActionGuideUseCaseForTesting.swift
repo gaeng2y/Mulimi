@@ -1,4 +1,8 @@
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
 import Foundation
 
 public final class MockHydrationNextActionGuideUseCaseForTesting: HydrationNextActionGuideUseCase, @unchecked Sendable {

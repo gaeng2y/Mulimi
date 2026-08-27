@@ -50,11 +50,11 @@
 
 ## Related Code
 
-- `Project/Presentation/Sources/View/Challenge/ChallengeView.swift`
-- `Project/Presentation/Sources/View/HydrationInsight/HydrationInsightView.swift`
-- `Project/Presentation/Sources/ViewModel/ChallengeViewModel.swift`
-- `Project/Presentation/Sources/ViewModel/HydrationInsightViewModel.swift`
-- `Project/Presentation/Sources/Navigation/AppRoute.swift`
-- `Project/Presentation/Sources/Navigation/RoutineActionIntent.swift`
-- `Project/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
-- `Project/Domain/SharedInterfaces/Entity/HydrationRoutineAdherenceInsight.swift`
+- `Project/Features/Challenge/Presentation/Sources/View/ChallengeView.swift`
+- `Project/Features/Hydration/Presentation/Sources/View/HydrationInsight/HydrationInsightView.swift`
+- `Project/Features/Challenge/Presentation/Sources/ViewModel/ChallengeViewModel.swift`
+- `Project/Features/Hydration/Presentation/Sources/ViewModel/HydrationInsightViewModel.swift`
+- `Project/Features/Core/Presentation/Sources/Navigation/AppRoute.swift`
+- `Project/Features/Core/Presentation/Sources/Navigation/RoutineActionIntent.swift`
+- `Project/Features/Routine/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
+- `Project/Features/Routine/Domain/Sources/Entity/HydrationRoutineAdherenceInsight.swift`

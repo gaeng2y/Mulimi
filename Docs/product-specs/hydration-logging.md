@@ -107,12 +107,12 @@
 
 ## Related Code
 
-- `Project/Domain/SharedInterfaces/Entity/HydrationServing.swift`
-- `Project/Domain/SharedInterfaces/Entity/HydrationNextActionGuide.swift`
-- `Project/Domain/Sources/UseCase/HydrationNextActionGuideUseCaseImpl.swift`
-- `Project/Data/Sources/Repository/HealthKitRepositoryImpl.swift`
+- `Project/Features/Hydration/Domain/Sources/Entity/HydrationServing.swift`
+- `Project/Features/Hydration/Domain/Sources/Entity/HydrationNextActionGuide.swift`
+- `Project/Features/Routine/Domain/Sources/UseCase/HydrationNextActionGuideUseCaseImpl.swift`
+- `Project/Features/Hydration/Data/Sources/Repository/HealthKitRepositoryImpl.swift`
 - `Project/Widget/Sources/`
-- `Project/Domain/WatchSources/`
+- `Project/Features/WatchHydration/Domain/Sources/`
 
 ## Related Docs
 

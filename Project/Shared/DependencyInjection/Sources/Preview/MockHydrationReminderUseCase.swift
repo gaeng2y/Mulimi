@@ -1,5 +1,5 @@
-import DomainLayerInterface
 import Foundation
+import HydrationReminderDomain
 
 public final class MockHydrationReminderUseCase: HydrationReminderUseCase, @unchecked Sendable {
     public var authorizationStatusValue: HydrationReminderAuthorizationStatus

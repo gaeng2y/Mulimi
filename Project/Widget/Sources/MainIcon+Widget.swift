@@ -1,4 +1,4 @@
-import DomainLayerInterface
+import AccountDomain
 
 extension MainIcon {
     var fillSystemImage: String {

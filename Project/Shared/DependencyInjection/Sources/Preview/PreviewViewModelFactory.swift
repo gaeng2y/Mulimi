@@ -6,7 +6,11 @@
 //
 
 import DependencyInjection
-import PresentationLayer
+import AccountPresentation
+import ChallengePresentation
+import CorePresentation
+import HydrationPresentation
+import RoutinePresentation
 import SwiftUI
 
 /// Preview 전용 View 확장

@@ -36,12 +36,12 @@
 
 ## Related Code
 
-- `Project/Presentation/Sources/View/Profile/ProfileRoutineView.swift`
-- `Project/Presentation/Sources/View/Profile/RoutineEditorView.swift`
-- `Project/Presentation/Sources/ViewModel/ProfileRoutineViewModel.swift`
-- `Project/Domain/Sources/UseCase/RoutineRecommendationUseCaseImpl.swift`
-- `Project/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
-- `Project/Data/Sources/DataSource/RoutineNotificationDataSource.swift`
+- `Project/Features/Routine/Presentation/Sources/View/Profile/ProfileRoutineView.swift`
+- `Project/Features/Routine/Presentation/Sources/View/Profile/RoutineEditorView.swift`
+- `Project/Features/Routine/Presentation/Sources/ViewModel/ProfileRoutineViewModel.swift`
+- `Project/Features/Routine/Domain/Sources/UseCase/RoutineRecommendationUseCaseImpl.swift`
+- `Project/Features/Routine/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
+- `Project/Features/Routine/Data/Sources/DataSource/RoutineNotificationDataSource.swift`
 
 ## Related Docs
 

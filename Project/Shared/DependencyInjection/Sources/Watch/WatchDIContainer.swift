@@ -1,7 +1,7 @@
 import SwiftUI
-import WatchDataLayer
-import WatchDomainLayer
-import WatchPresentationLayer
+import WatchHydrationData
+import WatchHydrationDomain
+import WatchHydrationPresentation
 
 public struct WatchDIContainer {
     public init() {}

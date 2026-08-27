@@ -25,19 +25,18 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 워치 타깃: `watchOS 26.0+`
 - 진입 흐름: `SignIn -> Onboarding -> HydrationReminderPermissionGate -> HealthKitPermissionGate -> ContentView`
 - 루트 내비게이션: `Project/App/Sources/ContentView.swift`
-- 루트 세션 상태: `Project/Presentation/Sources/State/AppSession.swift`
-- 공용 라우팅: `Project/Presentation/Sources/Navigation/AppCoordinator.swift`
+- 루트 세션 상태: `Project/Features/Core/Presentation/Sources/State/AppSession.swift`
+- 공용 라우팅: `Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
 - 모듈 구조:
   - `App`: 앱 조립과 타깃
-  - `Presentation`: View / ViewModel / Coordinator
-  - `Domain`: Entity / UseCase / Repository interface
-  - `Data`: repository 구현과 외부 시스템 연결
+  - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
+  - `Features/Core`: 분석 이벤트, 세션, 공용 라우팅과 공용 UI
   - `Widget`: WidgetKit / AppIntent
   - `Shared`: DI / Localization / DesignSystem / Persistence / Utils
 
 ## Constitution
 
-- `DomainLayerInterface`와 `DomainLayer`는 `SwiftUI`, `Localization`, UI 문구, 심볼 이름에 의존하지 않는다.
+- 모든 기능 `Domain`은 `SwiftUI`, `Localization`, UI 문구, 심볼 이름에 의존하지 않는다.
 - ViewModel은 프레젠테이션 상태만 관리한다. `UIApplication`, `WidgetCenter`, `NotificationCenter`, `Bundle`, `UserDefaults`를 직접 다루지 않는다.
 - ViewModel이 다른 ViewModel을 주입받아 상태를 직접 바꾸지 않는다.
 - 앱 전역 push 내비게이션은 `ContentView + AppCoordinator`에서 처리한다.
@@ -45,6 +44,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다. 하드코딩한 `250`을 새로 추가하지 않는다.
 - 목표 수분량은 `iCloud KVS + App Group UserDefaults mirror` 정책을 따른다.
 - `mainIcon`은 App Group 설정값이다. `mainAppearance`를 새로 확장하지 않는다.
+- 새 수직 모듈은 `Project/Features/<Feature>/{Domain,Data,Presentation}`에 두고 `Presentation/Data -> Domain` 방향을 지킨다.
 - 신체 정보는 `HealthKit` 기준이다. 직접 입력 플로우를 새로 되살리지 않는다.
 - 구조를 바꾸면 `README.md` 또는 관련 `Docs/`를 함께 갱신한다.
 
@@ -52,7 +52,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 - 변경 전에 관련 모듈의 `Project.swift`와 의존성을 확인한다.
 - 비즈니스 규칙은 `Domain`, 시스템 연동은 `Data`, 화면 조합은 `Presentation`에 둔다.
-- 기능 추가 시 테스트 가능 단위를 먼저 찾고, 가능하면 `DomainLayer` 또는 `PresentationLayer` 테스트를 갱신한다.
+- 기능 추가 시 테스트 가능 단위를 먼저 찾고, 해당 기능의 `Domain` 또는 `Presentation` 테스트를 갱신한다.
 - 설정/세션/라우팅은 기존 `AppSession`, `AppCoordinator`, DI 조립 흐름을 재사용한다.
 - 오래된 규칙과 충돌하는 새 구조를 넣었다면 이 파일에 한 줄 규칙을 추가한다.
 - 에이전트별 진입 파일은 `AGENTS.md`를 가리키는 얇은 포인터로 유지한다.
@@ -69,7 +69,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 1. 이슈와 관련 문서를 읽는다.
 2. `Docs/delivery-workflow.md` 기준으로 작업 브랜치와 PR base를 정한다.
-3. 수정 대상 레이어를 고른다.
+3. 수정 대상 기능과 레이어를 고른다.
 4. 경계를 먼저 확인한다.
 5. 코드 변경 후 `make lint`와 `make arch-check`를 우선 통과시킨다.
 6. `tuist generate`가 필요한지 판단한다.
@@ -98,12 +98,9 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
   - `make arch-check`
 - 프로젝트 생성:
   - `tuist generate`
-- 도메인 검증:
-  - `xcodebuild test -workspace Mulimi.xcworkspace -scheme DomainLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
-- 데이터 검증:
-  - `xcodebuild test -workspace Mulimi.xcworkspace -scheme DataLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
-- 프레젠테이션 검증:
-  - `xcodebuild test -workspace Mulimi.xcworkspace -scheme PresentationLayer -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
+- 기능 검증:
+  - `xcodebuild test -workspace Mulimi.xcworkspace -scheme <Feature>Domain -destination 'platform=iOS Simulator,id=<SIM_ID>' -sdk iphonesimulator`
+  - 테스트가 있는 기능은 같은 방식으로 `<Feature>Data`, `<Feature>Presentation` 스킴을 실행한다.
 - 앱 빌드:
   - `xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`
 

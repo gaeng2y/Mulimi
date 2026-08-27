@@ -114,7 +114,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 `graphify update .`로 갱신한다. |
 | Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
 | GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
-| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 `DomainLayer`, `DataLayer`, `PresentationLayer` 테스트를 실행한다. |
+| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 기능별 `Domain`, `Data`, `Presentation` 테스트를 실행한다. |
 | GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
 | Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
 

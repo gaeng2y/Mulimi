@@ -56,4 +56,4 @@ Xcode Cloud 워크플로에 아래 값을 설정한다. 실제 값은 저장소�
 - 포함: Release Archive 자동화
 - 포함: Release dSYM 생성 및 PostHog symbol set 업로드
 - 제외: Xcode Cloud 기반 PR 유닛 테스트 게이팅
-- GitHub Actions 담당: PR lint, architecture check, `DomainLayer`/`DataLayer`/`PresentationLayer` 유닛 테스트
+- GitHub Actions 담당: PR lint, architecture check, 기능별 `Domain`/`Data`/`Presentation` 유닛 테스트

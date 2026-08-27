@@ -8,7 +8,11 @@
 
 import DependencyInjection
 import Localization
-import PresentationLayer
+import AccountPresentation
+import ChallengePresentation
+import CorePresentation
+import HydrationPresentation
+import RoutinePresentation
 import SwiftUI
 
 struct ContentView: View {
