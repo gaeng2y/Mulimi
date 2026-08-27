@@ -5,8 +5,17 @@
 //  Created by Kyeongmo Yang on 9/17/25.
 //
 
-import DataLayer
-import DomainLayerInterface
+import AccountData
+import AccountDomain
+import ChallengeData
+import ChallengeDomain
+import CoreDomain
+import HydrationData
+import HydrationDomain
+import RoutineData
+import RoutineDomain
+import HydrationReminderData
+import HydrationReminderDomain
 import Swinject
 import Utils
 

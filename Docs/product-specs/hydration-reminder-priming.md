@@ -66,15 +66,15 @@ Onboarding 완료
 
 ## Related Code
 
-- `Project/Domain/Interfaces/Entity/HydrationReminderSlot.swift`
-- `Project/Domain/Interfaces/UseCase/HydrationReminderUseCase.swift`
-- `Project/Domain/Sources/UseCase/HydrationReminderUseCaseImpl.swift`
-- `Project/Data/Sources/DataSource/HydrationReminderNotificationDataSource.swift`
-- `Project/Data/Sources/Repository/HydrationReminderRepositoryImpl.swift`
-- `Project/Presentation/Sources/ViewModel/HydrationReminderPermissionViewModel.swift`
-- `Project/Presentation/Sources/View/Authentication/HydrationReminderPermissionGateView.swift`
-- `Project/Presentation/Sources/View/RootView.swift`
-- `Project/Presentation/Sources/Navigation/AppCoordinator.swift`
+- `Project/Features/HydrationReminder/Domain/Sources/HydrationReminderSlot.swift`
+- `Project/Features/HydrationReminder/Domain/Sources/HydrationReminderUseCase.swift`
+- `Project/Features/HydrationReminder/Domain/Sources/HydrationReminderUseCaseImpl.swift`
+- `Project/Features/HydrationReminder/Data/Sources/DataSource/HydrationReminderNotificationDataSource.swift`
+- `Project/Features/HydrationReminder/Data/Sources/Repository/HydrationReminderRepositoryImpl.swift`
+- `Project/Features/HydrationReminder/Presentation/Sources/ViewModel/HydrationReminderPermissionViewModel.swift`
+- `Project/Features/HydrationReminder/Presentation/Sources/View/HydrationReminderPermissionGateView.swift`
+- `Project/App/Sources/RootView.swift`
+- `Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
 - `Project/App/Sources/AppDelegate.swift`
 
 ## Related Docs

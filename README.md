@@ -55,6 +55,9 @@
   - UI/로컬라이제이션 의존성이 없는 비즈니스 규칙
 - `Data`
   - Repository 구현체, HealthKit/UserDefaults/iCloud KVS 연동
+- `Features`
+  - 기능별 `Domain / Data / Presentation` 수직 모듈
+  - 신규 전환은 `HydrationReminder`부터 적용
 - `Shared`
   - `DependencyInjection`, `Localization`, `DesignSystem`, `Persistence`, `Utils`
 - `Widget`
@@ -97,19 +100,15 @@ Mulimi/
 │   ├── App/
 │   │   ├── Sources/
 │   │   └── Watch/
-│   ├── Domain/
-│   │   ├── Interfaces/
-│   │   ├── SharedInterfaces/
-│   │   ├── Sources/
-│   │   ├── WatchInterfaces/
-│   │   └── WatchSources/
-│   ├── Data/
-│   │   ├── Sources/
-│   │   └── WatchSources/
-│   ├── Presentation/
-│   │   ├── Sources/
-│   │   ├── Tests/
-│   │   └── WatchSources/
+│   ├── Features/
+│   │   ├── Account/
+│   │   ├── Challenge/
+│   │   ├── Core/
+│   │   ├── Hydration/
+│   │   ├── HydrationReminder/
+│   │   ├── Routine/
+│   │   └── WatchHydration/
+│   │       └── 각 기능의 Domain / Data / Presentation
 │   ├── Widget/
 │   │   ├── Sources/
 │   │   └── Resources/
@@ -138,14 +137,13 @@ Mulimi/
 
 - `Project/App`
   - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`
-- `Project/Domain`
-  - `DomainLayerInterface`, `DomainLayer`
-  - `WatchDomainLayerInterface`, `WatchDomainLayer`
-  - `SharedInterfaces`: 앱/워치가 같은 수분 단위, next-action, 루틴 수행률 계산을 보는 공용 소스
-- `Project/Data`
-  - `DataLayer`, `WatchDataLayer`
-- `Project/Presentation`
-  - `PresentationLayer`, `WatchPresentationLayer`
+- `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
+  - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
+- `Project/Features/Core`
+  - `CoreDomain`, `CorePresentation`
+- `Project/Features/WatchHydration`
+  - `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`
+  - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유
 - `Project/Shared/DependencyInjection`
   - `DependencyInjection`, `WatchDependencyInjection`
 

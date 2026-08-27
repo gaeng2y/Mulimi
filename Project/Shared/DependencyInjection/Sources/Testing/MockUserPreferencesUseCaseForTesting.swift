@@ -6,13 +6,16 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
 
 public final class MockUserPreferencesUseCaseForTesting: UserPreferencesUseCase, @unchecked Sendable {
     public var mainIcon: MainIcon = .drop
     public var dailyWaterLimit: Double = 2000
     public var hasCompletedOnboarding = false
-    public var manualBodyProfile: BodyProfile = .empty
     public var accentColor: String = "blue"
 
     public init() {}
@@ -39,14 +42,6 @@ public final class MockUserPreferencesUseCaseForTesting: UserPreferencesUseCase,
 
     public func setHasCompletedOnboarding(_ completed: Bool) {
         hasCompletedOnboarding = completed
-    }
-
-    public func getManualBodyProfile() -> BodyProfile {
-        manualBodyProfile
-    }
-
-    public func setManualBodyProfile(_ profile: BodyProfile) {
-        manualBodyProfile = profile
     }
 
     public func getAccentColor() -> String {

@@ -5,8 +5,18 @@
 //  Created by Kyeongmo Yang on 9/17/25.
 //
 
-import DomainLayerInterface
-import PresentationLayer
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
+import HydrationReminderDomain
+import HydrationReminderPresentation
+import AccountPresentation
+import ChallengePresentation
+import CorePresentation
+import HydrationPresentation
+import RoutinePresentation
 import Swinject
 
 public final class PreviewAssembly: Assembly {

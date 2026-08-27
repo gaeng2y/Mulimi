@@ -146,9 +146,9 @@ PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event param
 
 ## Related Code
 
-- `Project/Domain/Interfaces/Entity/ProductAnalyticsEvent.swift`
-- `Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift`
-- `Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
+- `Project/Features/Core/Domain/Sources/Entity/ProductAnalyticsEvent.swift`
+- `Project/Features/Core/Domain/Sources/UseCase/AnalyticsUseCase.swift`
+- `Project/Features/Core/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
 - `Project/App/Sources/DrinkWaterApp.swift`
 - `Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`

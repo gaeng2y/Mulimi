@@ -27,8 +27,9 @@
 - AppIntent: `Project/App/Sources/AppIntents/`
 - watch 앱 진입: `Project/App/Watch/Sources/App/MulimiWatchApp.swift`
 - watch DI: `Project/Shared/DependencyInjection/Sources/Watch`
-- 공용 수분 계산: `Project/Domain/SharedInterfaces/`
-- 앱 기본 기록: `Project/Presentation/Sources/ViewModel/DrinkWaterViewModel.swift`
+- 공용 수분 계산: `Project/Features/Hydration/Domain/Sources/Entity/`
+- 앱 기본 기록: `Project/Features/Hydration/Presentation/Sources/ViewModel/DrinkWaterViewModel.swift`
+- Watch 기능: `Project/Features/WatchHydration/`
 
 ## Validation
 

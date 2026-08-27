@@ -13,9 +13,14 @@ Mulimi의 구조 SSOT다. 제품 설명은 `README.md`, 작업 규칙은 `AGENTS
 ```text
 Project/
 ├── App
-├── Presentation
-├── Domain
-├── Data
+├── Features
+│   ├── Account
+│   ├── Challenge
+│   ├── Core
+│   ├── Hydration
+│   ├── HydrationReminder
+│   ├── Routine
+│   └── WatchHydration
 ├── Widget
 └── Shared
 ```
@@ -26,18 +31,23 @@ Project/
 - 앱 타깃, 엔트리포인트, 루트 조립
 - `ContentView`와 앱 수준 흐름 연결
 
-### Presentation
+### Feature Presentation
 - `View`, `ViewModel`, `Coordinator`
 - 화면 상태, 포맷된 프레젠테이션 모델, 라우팅 조합
 - 시스템 API 직접 호출은 지양하고 필요한 경우 추상화 뒤에서 사용
 
-### Domain
+### Feature Domain
 - 엔티티, 유스케이스, 저장소 인터페이스
 - UI 문구, 로컬라이제이션, 심볼 이름에 의존하지 않는 비즈니스 규칙
 
-### Data
+### Feature Data
 - `Repository` 구현
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
+
+### Features
+- `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
+- `WatchHydration`도 Watch 전용 `Domain`, `Data`, `Presentation` 타깃을 가진다.
+- `Core`는 분석 계약과 공용 세션·라우팅·UI만 가지며 비즈니스 기능을 소유하지 않는다.
 
 ### Widget
 - `WidgetKit`, `AppIntent`, 위젯별 표현 조합
@@ -48,12 +58,14 @@ Project/
 ## Dependency Direction
 
 ```text
-App -> Presentation -> Domain interfaces
-App -> Data -> Domain interfaces
-Widget -> Domain interfaces / Shared / AppIntent glue
-Presentation -> Shared
-Data -> Shared
-Domain -> no UI dependency
+App -> Feature Presentation
+App / DependencyInjection -> Feature Presentation + Feature Data + Feature Domain
+Feature Presentation -> Feature Domain
+Feature Data -> Feature Domain
+Widget -> AccountDomain + HydrationDomain + RoutineDomain
+ChallengeDomain -> RoutineDomain -> HydrationDomain -> AccountDomain
+Feature Presentation / Data -> Shared as needed
+Feature Domain -> no UI dependency
 ```
 
 ## Core User Flow
@@ -84,11 +96,11 @@ SignIn
 
 ## Non-Negotiable Rules
 
-- `DomainLayerInterface`와 `DomainLayer`는 `SwiftUI`, `Localization`, UI 문구에 의존하지 않는다.
+- 기능 모듈의 `Domain`은 UI, 로컬라이제이션, `Data`, `Presentation`에 의존하지 않는다.
 - ViewModel은 프레젠테이션 상태만 관리한다.
 - ViewModel이 다른 ViewModel의 상태를 직접 변경하지 않는다.
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다.
-- 앱/워치가 함께 써야 하는 수분 단위, next-action, 루틴 수행률 계산은 `Project/Domain/SharedInterfaces/`에 둔다.
+- 앱/워치가 함께 쓰는 `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide`는 `Hydration` 소스를 `WatchHydrationDomain`에서도 컴파일한다.
 - HealthKit 문제를 로컬 수분 원장 이중 저장으로 덮지 않는다.
 - 워치/위젯이 앱과 다른 수분 계산 규칙을 만들지 않는다.
 

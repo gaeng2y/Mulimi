@@ -22,18 +22,36 @@ report_violation() {
   fi
 }
 
-DOMAIN_IMPORTS="$(rg -n '^\s*import\s+(SwiftUI|UIKit|WidgetKit|Localization)\b' Project/Domain --glob '!**/Tests/**' --glob '!**/Derived/**' || true)"
+DOMAIN_IMPORTS="$(
+  rg -n '^\s*import\s+(SwiftUI|UIKit|WidgetKit|Localization)\b' \
+    Project/Features \
+    --glob '**/Domain/**' \
+    --glob '!**/Tests/**' \
+    --glob '!**/Derived/**' \
+    || true
+)"
 report_violation "Domain must not import UI or localization frameworks." "$DOMAIN_IMPORTS"
 
-VIEWMODEL_SYSTEM_APIS="$(rg -n '\b(UIApplication|WidgetCenter|NotificationCenter|UserDefaults|Bundle)\b' Project/Presentation/Sources/ViewModel --glob '!**/Tests/**' || true)"
+VIEWMODEL_FILES="$(
+  rg --files Project/Features \
+    | rg '/Presentation/.+ViewModel\.swift$' \
+    || true
+)"
+
+VIEWMODEL_SYSTEM_APIS=""
+if [ -n "$VIEWMODEL_FILES" ]; then
+  VIEWMODEL_SYSTEM_APIS="$(printf '%s\n' "$VIEWMODEL_FILES" \
+    | xargs rg -n '\b(UIApplication|WidgetCenter|NotificationCenter|UserDefaults|Bundle)\b' \
+    || true)"
+fi
 report_violation "ViewModels must not directly access system side-effect APIs." "$VIEWMODEL_SYSTEM_APIS"
 
 CROSS_VIEWMODEL_REFERENCES=""
-for FILE in Project/Presentation/Sources/ViewModel/*ViewModel.swift; do
+for FILE in $VIEWMODEL_FILES; do
   [ -f "$FILE" ] || continue
   OWN_NAME="$(basename "$FILE" .swift)"
 
-  for OTHER_FILE in Project/Presentation/Sources/ViewModel/*ViewModel.swift; do
+  for OTHER_FILE in $VIEWMODEL_FILES; do
     [ -f "$OTHER_FILE" ] || continue
     OTHER_NAME="$(basename "$OTHER_FILE" .swift)"
 
@@ -50,13 +68,22 @@ for FILE in Project/Presentation/Sources/ViewModel/*ViewModel.swift; do
 done
 report_violation "ViewModels must not directly reference other ViewModel types." "$CROSS_VIEWMODEL_REFERENCES"
 
+FEATURE_REVERSE_IMPORTS="$(
+  rg -n '^\s*import\s+\w+(Data|Presentation)\b' \
+    Project/Features \
+    --glob '**/Domain/**' \
+    --glob '!**/Tests/**' \
+    || true
+  rg -n '^\s*import\s+\w+Data\b' \
+    Project/Features \
+    --glob '**/Presentation/**' \
+    --glob '!**/Tests/**' \
+    || true
+)"
+report_violation "Feature modules must keep Domain and Presentation dependency direction." "$FEATURE_REVERSE_IMPORTS"
+
 HARD_CODED_GLASS_COUNT="$(rg -n '\b250(\.0)?\b' \
-  Project/Domain/Sources \
-  Project/Domain/WatchSources \
-  Project/Domain/WatchInterfaces \
-  Project/Data/Sources \
-  Project/Data/WatchSources \
-  Project/Presentation \
+  Project/Features \
   Project/Widget \
   --glob '!**/Tests/**' \
   --glob '!**/Derived/**' \

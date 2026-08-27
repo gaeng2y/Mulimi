@@ -5,7 +5,11 @@
 //  Created by Codex on 3/30/26.
 //
 
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
 
 public final class MockBodyProfileUseCase: BodyProfileUseCase, @unchecked Sendable {
     public var snapshot: BodyProfileSnapshot = BodyProfileSnapshot(

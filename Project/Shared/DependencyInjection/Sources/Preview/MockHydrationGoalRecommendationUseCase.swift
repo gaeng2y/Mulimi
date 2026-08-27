@@ -5,7 +5,11 @@
 //  Created by Codex on 3/30/26.
 //
 
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
 import Foundation
 
 public final class MockHydrationGoalRecommendationUseCase: HydrationGoalRecommendationUseCase, @unchecked Sendable {

@@ -7,7 +7,9 @@
 
 import AppIntents
 import DependencyInjection
-import DomainLayerInterface
+import AccountDomain
+import CoreDomain
+import HydrationDomain
 import WidgetKit
 
 enum LogWaterAmountOption: String, AppEnum {

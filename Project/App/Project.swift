@@ -70,10 +70,18 @@ let project = Project(
                     target: "DependencyInjection",
                     path: .relativeToRoot("Project/Shared/DependencyInjection")
                 ),
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(
-                    target: "DomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "HydrationReminderPresentation",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
+                .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
                 .project(
                     target: "Localization",
                     path: .relativeToRoot("Project/Shared/Localization")
@@ -106,6 +114,10 @@ let project = Project(
                 path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")
             ),
             dependencies: [
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")

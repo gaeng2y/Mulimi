@@ -6,7 +6,11 @@
 //  Copyright © 2025 gaeng2y. All rights reserved.
 //
 
-import DomainLayerInterface
+import AccountDomain
+import ChallengeDomain
+import CoreDomain
+import HydrationDomain
+import RoutineDomain
 
 public final class MockSignInUseCase: SignInUseCase, @unchecked Sendable {
     public var isAuthenticated: Bool = true

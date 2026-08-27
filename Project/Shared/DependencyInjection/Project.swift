@@ -35,22 +35,32 @@ let project = Project(
             sources: ["Sources/Production/**", "Sources/Core/**"],
             dependencies: [
                 .external(name: "Swinject"),
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "AccountData", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "ChallengeDomain", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "ChallengeData", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "HydrationData", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(
-                    target: "DataLayer",
-                    path: .relativeToRoot("Project/Data")
+                    target: "HydrationReminderDomain",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
                 .project(
-                    target: "DomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "HydrationReminderData",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
                 .project(
-                    target: "DomainLayer",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "HydrationReminderPresentation",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
-                .project(
-                    target: "PresentationLayer",
-                    path: .relativeToRoot("Project/Presentation")
-                ),
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
+                .project(target: "RoutineData", path: .relativeToRoot("Project/Features/Routine")),
+                .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
@@ -66,20 +76,16 @@ let project = Project(
             sources: ["Sources/Watch/**"],
             dependencies: [
                 .project(
-                    target: "WatchDataLayer",
-                    path: .relativeToRoot("Project/Data")
+                    target: "WatchHydrationData",
+                    path: .relativeToRoot("Project/Features/WatchHydration")
                 ),
                 .project(
-                    target: "WatchDomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "WatchHydrationDomain",
+                    path: .relativeToRoot("Project/Features/WatchHydration")
                 ),
                 .project(
-                    target: "WatchDomainLayer",
-                    path: .relativeToRoot("Project/Domain")
-                ),
-                .project(
-                    target: "WatchPresentationLayer",
-                    path: .relativeToRoot("Project/Presentation")
+                    target: "WatchHydrationPresentation",
+                    path: .relativeToRoot("Project/Features/WatchHydration")
                 )
             ]
         ),
@@ -95,14 +101,24 @@ let project = Project(
             dependencies: [
                 .target(name: "DependencyInjection"),
                 .external(name: "Swinject"),
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "ChallengeDomain", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(
-                    target: "DomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "HydrationReminderDomain",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
                 .project(
-                    target: "PresentationLayer",
-                    path: .relativeToRoot("Project/Presentation")
-                )
+                    target: "HydrationReminderPresentation",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
+                ),
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
+                .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine"))
             ]
         ),
 
@@ -117,10 +133,15 @@ let project = Project(
             dependencies: [
                 .target(name: "DependencyInjection"),
                 .external(name: "Swinject"),
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "ChallengeDomain", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(
-                    target: "DomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
-                )
+                    target: "HydrationReminderDomain",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
+                ),
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine"))
             ]
         )
     ]

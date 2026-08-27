@@ -1,4 +1,4 @@
-import DomainLayerInterface
+import CoreDomain
 import Foundation
 import PostHog
 

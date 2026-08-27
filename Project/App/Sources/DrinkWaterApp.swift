@@ -6,10 +6,13 @@
 //
 
 import DependencyInjection
-import DomainLayerInterface
+import CoreDomain
 import Foundation
+import HydrationReminderPresentation
 import PostHog
-import PresentationLayer
+import AccountPresentation
+import CorePresentation
+import HydrationPresentation
 import SwiftUI
 
 @main

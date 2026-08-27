@@ -1,4 +1,5 @@
-import DomainLayerInterface
+import AccountDomain
+import HydrationDomain
 import SwiftUI
 import WidgetKit
 
