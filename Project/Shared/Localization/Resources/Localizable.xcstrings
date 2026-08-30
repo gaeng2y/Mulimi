@@ -4962,17 +4962,6 @@
         }
       }
     },
-    "profileRoutineComingSoonTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "준비 중"
-          }
-        }
-      }
-    },
     "profileRoutineDeleteError" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5750,17 +5739,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "매일"
-          }
-        }
-      }
-    },
-    "profileRoutineSectionDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시간대별 알림과 반복 요일을 관리하는 루틴 기능을 곧 추가합니다."
           }
         }
       }
