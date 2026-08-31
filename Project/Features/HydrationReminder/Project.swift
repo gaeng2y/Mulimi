@@ -56,7 +56,7 @@ let project = Project(
                 .target(name: "HydrationReminderDomain"),
                 .project(
                     target: "CoreDomain",
-                    path: .relativeToRoot("Project/Features/Core")
+                    path: .relativeToRoot("Project/Core")
                 ),
                 .project(
                     target: "Localization",
@@ -103,7 +103,7 @@ let project = Project(
                 .target(name: "HydrationReminderDomain"),
                 .project(
                     target: "CoreDomain",
-                    path: .relativeToRoot("Project/Features/Core")
+                    path: .relativeToRoot("Project/Core")
                 ),
                 .project(
                     target: "Localization",

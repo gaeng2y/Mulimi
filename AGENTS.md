@@ -25,12 +25,12 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 워치 타깃: `watchOS 26.0+`
 - 진입 흐름: `SignIn -> Onboarding -> HydrationReminderPermissionGate -> HealthKitPermissionGate -> ContentView`
 - 루트 내비게이션: `Project/App/Sources/ContentView.swift`
-- 루트 세션 상태: `Project/Features/Core/Presentation/Sources/State/AppSession.swift`
-- 공용 라우팅: `Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
+- 루트 세션 상태: `Project/Core/Presentation/Sources/State/AppSession.swift`
+- 공용 라우팅: `Project/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
 - 모듈 구조:
   - `App`: 앱 조립과 타깃
+  - `Core`: 분석 이벤트, 세션, 공용 라우팅과 공용 UI
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
-  - `Features/Core`: 분석 이벤트, 세션, 공용 라우팅과 공용 UI
   - `Widget`: WidgetKit / AppIntent
   - `Shared`: DI / Localization / DesignSystem / Persistence / Utils
 

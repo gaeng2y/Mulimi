@@ -54,7 +54,7 @@
 - `Project/Features/Hydration/Presentation/Sources/View/HydrationInsight/HydrationInsightView.swift`
 - `Project/Features/Challenge/Presentation/Sources/ViewModel/ChallengeViewModel.swift`
 - `Project/Features/Hydration/Presentation/Sources/ViewModel/HydrationInsightViewModel.swift`
-- `Project/Features/Core/Presentation/Sources/Navigation/AppRoute.swift`
-- `Project/Features/Core/Presentation/Sources/Navigation/RoutineActionIntent.swift`
+- `Project/Core/Presentation/Sources/Navigation/AppRoute.swift`
+- `Project/Core/Presentation/Sources/Navigation/RoutineActionIntent.swift`
 - `Project/Features/Routine/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
 - `Project/Features/Routine/Domain/Sources/Entity/HydrationRoutineAdherenceInsight.swift`

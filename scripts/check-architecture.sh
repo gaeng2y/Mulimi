@@ -25,6 +25,7 @@ report_violation() {
 DOMAIN_IMPORTS="$(
   rg -n '^\s*import\s+(SwiftUI|UIKit|WidgetKit|Localization)\b' \
     Project/Features \
+    Project/Core \
     --glob '**/Domain/**' \
     --glob '!**/Tests/**' \
     --glob '!**/Derived/**' \
@@ -33,7 +34,7 @@ DOMAIN_IMPORTS="$(
 report_violation "Domain must not import UI or localization frameworks." "$DOMAIN_IMPORTS"
 
 VIEWMODEL_FILES="$(
-  rg --files Project/Features \
+  rg --files Project/Features Project/Core \
     | rg '/Presentation/.+ViewModel\.swift$' \
     || true
 )"
@@ -71,11 +72,13 @@ report_violation "ViewModels must not directly reference other ViewModel types."
 FEATURE_REVERSE_IMPORTS="$(
   rg -n '^\s*import\s+\w+(Data|Presentation)\b' \
     Project/Features \
+    Project/Core \
     --glob '**/Domain/**' \
     --glob '!**/Tests/**' \
     || true
   rg -n '^\s*import\s+\w+Data\b' \
     Project/Features \
+    Project/Core \
     --glob '**/Presentation/**' \
     --glob '!**/Tests/**' \
     || true
@@ -84,6 +87,7 @@ report_violation "Feature modules must keep Domain and Presentation dependency d
 
 HARD_CODED_GLASS_COUNT="$(rg -n '\b250(\.0)?\b' \
   Project/Features \
+  Project/Core \
   Project/Widget \
   --glob '!**/Tests/**' \
   --glob '!**/Derived/**' \

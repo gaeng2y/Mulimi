@@ -48,8 +48,8 @@ let project = Project(
             sources: ["Presentation/Sources/**"],
             dependencies: [
                 .target(name: "ChallengeDomain"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
@@ -99,8 +99,8 @@ let project = Project(
             ]),
             dependencies: [
                 .target(name: "ChallengePresentation"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(target: "Localization", path: .relativeToRoot("Project/Shared/Localization"))
