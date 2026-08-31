@@ -100,10 +100,10 @@ Mulimi/
 │   ├── App/
 │   │   ├── Sources/
 │   │   └── Watch/
+│   ├── Core/
 │   ├── Features/
 │   │   ├── Account/
 │   │   ├── Challenge/
-│   │   ├── Core/
 │   │   ├── Hydration/
 │   │   ├── HydrationReminder/
 │   │   ├── Routine/
