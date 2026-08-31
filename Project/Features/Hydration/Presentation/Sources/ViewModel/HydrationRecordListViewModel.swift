@@ -7,7 +7,7 @@
 //
 
 import AccountDomain
-import CoreDomain
+import MulimiAnalytics
 import CorePresentation
 import HydrationDomain
 import RoutineDomain

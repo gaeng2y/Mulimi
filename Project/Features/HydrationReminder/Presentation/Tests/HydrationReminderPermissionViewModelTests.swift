@@ -1,4 +1,4 @@
-import CoreDomain
+import MulimiAnalytics
 import Foundation
 import HydrationReminderDomain
 import Localization

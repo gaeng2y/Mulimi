@@ -5,7 +5,7 @@
 //  Created by Claude on 7/25/26.
 //
 
-import CoreDomain
+import MulimiAnalytics
 import Foundation
 import HydrationReminderDomain
 import Localization

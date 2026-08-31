@@ -48,7 +48,7 @@ let project = Project(
             sources: ["Presentation/Sources/**"],
             dependencies: [
                 .target(name: "ChallengeDomain"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
@@ -99,7 +99,7 @@ let project = Project(
             ]),
             dependencies: [
                 .target(name: "ChallengePresentation"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),

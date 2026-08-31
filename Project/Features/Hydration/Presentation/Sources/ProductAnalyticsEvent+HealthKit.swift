@@ -1,4 +1,4 @@
-import CoreDomain
+import MulimiAnalytics
 import HydrationDomain
 
 public extension ProductAnalyticsEvent {

@@ -73,7 +73,8 @@ let project = Project(
                 .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
                 .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
                 .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
+                .project(target: "MulimiAnalyticsData", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
@@ -89,8 +90,7 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                ),
-                .external(name: "PostHog")
+                )
             ],
             settings: .settings(
                 base: [
@@ -115,7 +115,7 @@ let project = Project(
             ),
             dependencies: [
                 .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(

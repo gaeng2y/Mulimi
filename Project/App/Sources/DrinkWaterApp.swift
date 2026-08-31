@@ -6,10 +6,10 @@
 //
 
 import DependencyInjection
-import CoreDomain
+import MulimiAnalytics
+import MulimiAnalyticsData
 import Foundation
 import HydrationReminderPresentation
-import PostHog
 import AccountPresentation
 import CorePresentation
 import HydrationPresentation
@@ -35,15 +35,7 @@ struct DrinkWaterApp: App {
             return NoOpAnalyticsRepository()
         }
 
-        let config = PostHogConfig(projectToken: projectToken, host: host)
-        config.captureApplicationLifecycleEvents = true
-        config.errorTrackingConfig.autoCapture = true
-        config.captureScreenViews = false
-        config.captureElementInteractions = false
-        config.capturePushNotificationSubscriptions = false
-        config.capturePushNotificationOpened = false
-        PostHogSDK.shared.setup(config)
-        return PostHogAnalyticsRepository()
+        return PostHogAnalyticsRepository(projectToken: projectToken, host: host)
     }
 
     var body: some Scene {

@@ -46,6 +46,7 @@ Project/
 
 ### Core
 - `Project/Core`는 최상위 공용 레이어로, 분석 계약과 공용 세션·라우팅·UI만 가지며 비즈니스 기능을 소유하지 않는다.
+- `Project/Core/Analytics`는 책임별 독립 모듈로, `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현)를 가진다. 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 앱 조립에서만 사용한다.
 
 ### Features
 - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
