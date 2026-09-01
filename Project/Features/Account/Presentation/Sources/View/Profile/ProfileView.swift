@@ -28,7 +28,7 @@ public struct ProfileView: View {
     public var body: some View {
         List {
             Section(L10n.tr("profileRoutineSectionTitle")) {
-                NavigationLink(value: AppRoute.profileRoutine) {
+                NavigationLink(value: AccountRoute.profileRoutine) {
                     routineCard
                 }
             }
@@ -40,7 +40,7 @@ public struct ProfileView: View {
             }
 
             Section {
-                NavigationLink(value: AppRoute.setting(.bodyProfile)) {
+                NavigationLink(value: AccountRoute.setting(.bodyProfile)) {
                     settingsRow(
                         title: L10n.tr("settingBodyProfileTitle"),
                         value: bodyProfileViewModel.summaryText,
@@ -48,7 +48,7 @@ public struct ProfileView: View {
                     )
                 }
 
-                NavigationLink(value: AppRoute.setting(.dailyLimit)) {
+                NavigationLink(value: AccountRoute.setting(.dailyLimit)) {
                     settingsRow(
                         title: L10n.tr("settingDailyLimitTitle"),
                         value: L10n.tr(
@@ -59,7 +59,7 @@ public struct ProfileView: View {
                     )
                 }
 
-                NavigationLink(value: AppRoute.setting(.mainIcon)) {
+                NavigationLink(value: AccountRoute.setting(.mainIcon)) {
                     settingsRow(
                         title: L10n.tr("settingMainShapeTitle"),
                         value: settingsViewModel.currentMainIcon.displayName,
@@ -73,7 +73,7 @@ public struct ProfileView: View {
             }
 
             Section(L10n.tr("profileAccountSectionTitle")) {
-                NavigationLink(value: AppRoute.setting(.withdrawal)) {
+                NavigationLink(value: AccountRoute.setting(.withdrawal)) {
                     actionRow(
                         title: L10n.tr("settingWithdrawalTitle"),
                         description: L10n.tr("profileWithdrawalDescription"),
@@ -104,7 +104,7 @@ public struct ProfileView: View {
         }
     }
 
-    private var goalRecommendationRoute: AppRoute {
+    private var goalRecommendationRoute: AccountRoute {
         switch recommendationViewModel.entryDestination {
         case .dailyLimitSetting:
             .setting(.dailyLimit)

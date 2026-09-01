@@ -11,6 +11,7 @@ import ChallengeDomain
 import ChallengePresentation
 import MulimiAnalytics
 import CorePresentation
+import MulimiNavigation
 import HydrationDomain
 import HydrationPresentation
 import RoutineDomain

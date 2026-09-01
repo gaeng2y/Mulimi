@@ -12,6 +12,7 @@ import AccountPresentation
 import ChallengePresentation
 import CorePresentation
 import HydrationPresentation
+import MulimiNavigation
 import RoutinePresentation
 import SwiftUI
 
@@ -86,7 +87,7 @@ struct ContentView: View {
                         appCoordinator.push(.profileRoutineAction(action))
                     },
                     onDailyGoalAction: {
-                        appCoordinator.push(.setting(.dailyLimit))
+                        appCoordinator.pushRoute(AccountRoute.setting(.dailyLimit))
                     },
                     onRecordAction: {
                         selectedTab = .drink
@@ -122,6 +123,9 @@ struct ContentView: View {
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
+            .navigationDestination(for: AccountRoute.self) { route in
+                destinationView(for: route)
+            }
         }
         .tint(.accent)
         .task {
@@ -146,13 +150,19 @@ struct ContentView: View {
         switch route {
         case .hydrationLogging:
             DrinkWaterView(viewModel: drinkWaterViewModel)
-        case .profileRoutine:
-            ProfileRoutineView(viewModel: routineViewModel)
         case let .profileRoutineAction(action):
             ProfileRoutineView(
                 viewModel: routineViewModel,
                 initialAction: action
             )
+        }
+    }
+
+    @ViewBuilder
+    private func destinationView(for route: AccountRoute) -> some View {
+        switch route {
+        case .profileRoutine:
+            ProfileRoutineView(viewModel: routineViewModel)
         case let .setting(menu):
             switch menu {
             case .bodyProfile:

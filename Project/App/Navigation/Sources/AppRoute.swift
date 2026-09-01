@@ -1,21 +1,16 @@
 import Foundation
+import RoutineDomain
 
 public enum AppRoute: NavigationRoute, Sendable {
     case hydrationLogging
-    case profileRoutine
     case profileRoutineAction(RoutineActionIntent)
-    case setting(SettingMenu)
 
     public var id: String {
         switch self {
         case .hydrationLogging:
             return "hydration_logging"
-        case .profileRoutine:
-            return "profile_routine"
         case let .profileRoutineAction(action):
             return "profile_routine_\(action.id)"
-        case let .setting(menu):
-            return "setting_\(menu.rawValue)"
         }
     }
 

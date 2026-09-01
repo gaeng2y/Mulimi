@@ -26,10 +26,10 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 진입 흐름: `SignIn -> Onboarding -> HydrationReminderPermissionGate -> HealthKitPermissionGate -> ContentView`
 - 루트 내비게이션: `Project/App/Sources/ContentView.swift`
 - 루트 세션 상태: `Project/Core/Presentation/Sources/State/AppSession.swift`
-- 공용 라우팅: `Project/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
+- 공용 라우팅: `Project/App/Navigation/Sources/AppCoordinator.swift`
 - 모듈 구조:
-  - `App`: 앱 조립과 타깃
-  - `Core`: 분석 이벤트, 세션, 공용 라우팅과 공용 UI
+  - `App`: 앱 조립과 타깃, 전역 내비게이션(`MulimiNavigation`)
+  - `Core`: 시스템 인프라 모듈(`Analytics` 등)과 정리 중인 `CorePresentation`(세션·공용 UI)
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
   - `Widget`: WidgetKit / AppIntent
   - `Shared`: DI / Localization / DesignSystem / Persistence / Utils

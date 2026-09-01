@@ -30,6 +30,7 @@ Project/
 ### App
 - 앱 타깃, 엔트리포인트, 루트 조립
 - `ContentView`와 앱 수준 흐름 연결
+- 전역 내비게이션 소유: `MulimiNavigation` 타깃(`AppCoordinator`, `AppRoute`). feature는 coordinator를 직접 알지 않고 feature 소유 라우트 값 또는 클로저로 의도만 전달한다.
 
 ### Feature Presentation
 - `View`, `ViewModel`, `Coordinator`
@@ -45,7 +46,7 @@ Project/
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
 
 ### Core
-- `Project/Core`는 최상위 공용 레이어로, 분석 계약과 공용 세션·라우팅·UI만 가지며 비즈니스 기능을 소유하지 않는다.
+- `Project/Core`는 시스템 인프라 서비스 레이어로, 비즈니스 기능을 소유하지 않는다. 남은 `CorePresentation`(세션·시스템 어댑터·공용 UI)은 #299, #300에서 해체한다.
 - `Project/Core/Analytics`는 책임별 독립 모듈로, `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현)를 가진다. 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 DI 조립(`DataAssembly`)에서만 사용한다.
 
 ### Features

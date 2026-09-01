@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import CorePresentation
+@testable import MulimiNavigation
 
 @Suite("AppCoordinator Tests")
 struct AppCoordinatorTests {
