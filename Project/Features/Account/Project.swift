@@ -32,6 +32,7 @@ let project = Project(
             sources: ["Data/Sources/**"],
             dependencies: [
                 .target(name: "AccountDomain"),
+                .project(target: "MulimiCloudKit", path: .relativeToRoot("Project/Core/CloudKit")),
                 .project(target: "MulimiKeychain", path: .relativeToRoot("Project/Core/Keychain")),
                 .project(
                     target: "Utils",

@@ -8,6 +8,7 @@
 
 import AccountDomain
 import Foundation
+import MulimiCloudKit
 import Utils
 
 public protocol UserPreferencesDataSource: Sendable {
@@ -25,14 +26,17 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
     }
 
     private let userDefaults: UserDefaults
-    private let ubiquitousStore: NSUbiquitousKeyValueStore
+    private let syncedStore: SyncedValueStoring
 
     public init(
         userDefaults: UserDefaults,
         ubiquitousStore: NSUbiquitousKeyValueStore = .default
     ) {
         self.userDefaults = userDefaults
-        self.ubiquitousStore = ubiquitousStore
+        self.syncedStore = UbiquitousMirroredStore(
+            userDefaults: userDefaults,
+            ubiquitousStore: ubiquitousStore
+        )
     }
 
     // MARK: - MainIcon
@@ -65,33 +69,11 @@ public final class UserPreferencesDataSourceImpl: UserPreferencesDataSource, @un
 
     // MARK: - Daily Water Limit
     public func getDailyWaterLimit() -> Double {
-        ubiquitousStore.synchronize()
-
-        let localValue = userDefaults.dailyLimit
-        let syncedValue = ubiquitousStore.double(forKey: .dailyWaterLimit)
-
-        if syncedValue > 0 {
-            if localValue != syncedValue {
-                userDefaults.dailyLimit = syncedValue
-                userDefaults.synchronize()
-            }
-            return syncedValue
-        }
-
-        if localValue > 0 {
-            ubiquitousStore.set(localValue, forKey: .dailyWaterLimit)
-            ubiquitousStore.synchronize()
-            return localValue
-        }
-
-        return Constants.defaultDailyWaterLimit
+        syncedStore.double(forKey: .dailyWaterLimit, default: Constants.defaultDailyWaterLimit)
     }
 
     public func setDailyWaterLimit(_ limit: Double) {
-        userDefaults.dailyLimit = limit
-        userDefaults.synchronize()
-        ubiquitousStore.set(limit, forKey: .dailyWaterLimit)
-        ubiquitousStore.synchronize()
+        syncedStore.setDouble(limit, forKey: .dailyWaterLimit)
     }
 
     // MARK: - Onboarding

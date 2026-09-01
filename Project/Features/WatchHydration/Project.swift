@@ -35,7 +35,10 @@ let project = Project(
             bundleId: "\(bundleId).Data",
             deploymentTargets: .watchOS("26.0"),
             sources: ["Data/Sources/**"],
-            dependencies: [.target(name: "WatchHydrationDomain")]
+            dependencies: [
+                .target(name: "WatchHydrationDomain"),
+                .project(target: "MulimiCloudKit", path: .relativeToRoot("Project/Core/CloudKit"))
+            ]
         ),
         .target(
             name: "WatchHydrationPresentation",
