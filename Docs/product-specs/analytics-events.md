@@ -150,8 +150,8 @@ PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event param
 - `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCase.swift`
 - `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
 - `Project/Core/Analytics/Data/Sources/PostHogAnalyticsRepository.swift`
-- `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
-- `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
+- `Project/App/DependencyInjection/Sources/Production/DomainAssembly.swift`
+- `Project/App/DependencyInjection/Sources/Production/DataAssembly.swift`
 
 ## Related Docs
 

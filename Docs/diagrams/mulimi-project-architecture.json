@@ -62,9 +62,9 @@
       "pos": [60, 170],
       "size": [220, 80],
       "sources": [
-        { "path": "Project/Shared/DependencyInjection/Sources/Production/PresentationAssembly.swift", "line": 22, "label": "Presentation 조립" },
-        { "path": "Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift", "line": 16, "label": "Domain 조립" },
-        { "path": "Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 22, "label": "Data 조립" }
+        { "path": "Project/App/DependencyInjection/Sources/Production/PresentationAssembly.swift", "line": 22, "label": "Presentation 조립" },
+        { "path": "Project/App/DependencyInjection/Sources/Production/DomainAssembly.swift", "line": 16, "label": "Domain 조립" },
+        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 22, "label": "Data 조립" }
       ]
     },
     {
@@ -119,7 +119,7 @@
       "size": [220, 96],
       "sources": [
         { "path": "Project/Features/WatchHydration/Project.swift", "line": 18, "label": "Watch 레이어" },
-        { "path": "Project/Shared/DependencyInjection/Sources/Watch/WatchDIContainer.swift", "line": 6, "label": "Watch 조립" }
+        { "path": "Project/App/DependencyInjection/Sources/Watch/WatchDIContainer.swift", "line": 6, "label": "Watch 조립" }
       ]
     },
     {
@@ -145,7 +145,7 @@
       "pos": [380, 530],
       "size": [240, 88],
       "sources": [
-        { "path": "Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 76, "label": "추천·알림·인증" },
+        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 76, "label": "추천·알림·인증" },
         { "path": "Project/App/Sources/DrinkWaterApp.swift", "line": 25, "label": "PostHog" }
       ]
     },
@@ -159,7 +159,7 @@
       "size": [240, 88],
       "sources": [
         { "path": "Project/Features/Account/Data/Sources/DataSource/UserPreferencesDataSource.swift", "line": 25, "label": "목표량 동기화" },
-        { "path": "Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 65, "label": "App Group 저장" },
+        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 65, "label": "App Group 저장" },
         { "path": "Project/Features/WatchHydration/Data/Sources/DataSource/WatchDailyGoalLocalDataSource.swift", "line": 7, "label": "Watch 목표 mirror" }
       ]
     },
