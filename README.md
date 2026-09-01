@@ -138,7 +138,8 @@ Mulimi/
 - `Project/App`
   - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`
 - `Project/Core`
-  - `CoreDomain`, `CorePresentation`
+  - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
+  - `CorePresentation`
 - `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
   - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
 - `Project/Features/WatchHydration`

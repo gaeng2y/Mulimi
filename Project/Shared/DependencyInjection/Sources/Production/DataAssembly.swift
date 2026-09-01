@@ -9,7 +9,9 @@ import AccountData
 import AccountDomain
 import ChallengeData
 import ChallengeDomain
-import CoreDomain
+import Foundation
+import MulimiAnalytics
+import MulimiAnalyticsData
 import HydrationData
 import HydrationDomain
 import RoutineData
@@ -60,8 +62,9 @@ public final class DataAssembly: Assembly {
 
         // MARK: - Analytics
         container.register(AnalyticsRepository.self) { _ in
-            NoOpAnalyticsRepository()
+            Self.makeAnalyticsRepository()
         }
+        .inObjectScope(.container)
 
         // MARK: - UserPreferences
         container.register(UserPreferencesDataSource.self) { resolver in
@@ -147,5 +150,21 @@ public final class DataAssembly: Assembly {
                 keyChainDataSource: resolver.resolve(KeyChainDataSource.self)!
             )
         }
+    }
+
+    // 위젯 확장의 Info.plist에는 PostHog 키가 없어 NoOp으로 동작한다.
+    private static func makeAnalyticsRepository() -> AnalyticsRepository {
+        guard let projectToken = Bundle.main.object(forInfoDictionaryKey: "PostHogProjectToken") as? String,
+              projectToken.hasPrefix("phc_"),
+              projectToken.count > 4,
+              let host = Bundle.main.object(forInfoDictionaryKey: "PostHogHost") as? String,
+              let hostURL = URL(string: host),
+              let hostScheme = hostURL.scheme?.lowercased(),
+              ["http", "https"].contains(hostScheme),
+              hostURL.host?.isEmpty == false else {
+            return NoOpAnalyticsRepository()
+        }
+
+        return PostHogAnalyticsRepository(projectToken: projectToken, host: host)
     }
 }

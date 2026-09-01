@@ -55,8 +55,8 @@ let project = Project(
             dependencies: [
                 .target(name: "HydrationReminderDomain"),
                 .project(
-                    target: "CoreDomain",
-                    path: .relativeToRoot("Project/Core")
+                    target: "MulimiAnalytics",
+                    path: .relativeToRoot("Project/Core/Analytics")
                 ),
                 .project(
                     target: "Localization",
@@ -102,8 +102,8 @@ let project = Project(
                 .target(name: "HydrationReminderPresentation"),
                 .target(name: "HydrationReminderDomain"),
                 .project(
-                    target: "CoreDomain",
-                    path: .relativeToRoot("Project/Core")
+                    target: "MulimiAnalytics",
+                    path: .relativeToRoot("Project/Core/Analytics")
                 ),
                 .project(
                     target: "Localization",

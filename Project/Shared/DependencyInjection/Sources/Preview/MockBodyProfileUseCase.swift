@@ -7,7 +7,7 @@
 
 import AccountDomain
 import ChallengeDomain
-import CoreDomain
+import MulimiAnalytics
 import HydrationDomain
 import RoutineDomain
 

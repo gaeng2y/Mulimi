@@ -9,7 +9,7 @@ import AccountDomain
 import AccountPresentation
 import ChallengeDomain
 import ChallengePresentation
-import CoreDomain
+import MulimiAnalytics
 import CorePresentation
 import HydrationDomain
 import HydrationPresentation

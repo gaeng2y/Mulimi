@@ -45,6 +45,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 목표 수분량은 `iCloud KVS + App Group UserDefaults mirror` 정책을 따른다.
 - `mainIcon`은 App Group 설정값이다. `mainAppearance`를 새로 확장하지 않는다.
 - 새 수직 모듈은 `Project/Features/<Feature>/{Domain,Data,Presentation}`에 두고 `Presentation/Data -> Domain` 방향을 지킨다.
+- 새 framework 타깃 이름은 Apple 시스템·프라이빗 프레임워크와 겹치지 않게 한다(`CoreAnalytics`, `CoreNavigation` 등 금지). 겹치면 시뮬레이터 dyld가 시스템 의존성을 우리 프레임워크로 잘못 로드해 테스트 번들이 깨진다. Core 모듈은 `Mulimi*` 접두사를 쓴다.
 - 신체 정보는 `HealthKit` 기준이다. 직접 입력 플로우를 새로 되살리지 않는다.
 - 구조를 바꾸면 `README.md` 또는 관련 `Docs/`를 함께 갱신한다.
 

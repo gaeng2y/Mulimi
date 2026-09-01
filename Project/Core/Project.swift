@@ -16,14 +16,6 @@ let project = Project(
     ),
     targets: [
         .target(
-            name: "CoreDomain",
-            destinations: .iOS,
-            product: .framework,
-            bundleId: "\(bundleId).Domain",
-            deploymentTargets: .iOS("26.0"),
-            sources: ["Domain/Sources/**"]
-        ),
-        .target(
             name: "CorePresentation",
             destinations: .iOS,
             product: .framework,
@@ -31,7 +23,6 @@ let project = Project(
             deploymentTargets: .iOS("26.0"),
             sources: ["Presentation/Sources/**"],
             dependencies: [
-                .target(name: "CoreDomain"),
                 .project(
                     target: "AccountDomain",
                     path: .relativeToRoot("Project/Features/Account")

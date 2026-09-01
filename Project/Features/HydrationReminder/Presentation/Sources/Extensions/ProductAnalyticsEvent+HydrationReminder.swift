@@ -1,4 +1,4 @@
-import CoreDomain
+import MulimiAnalytics
 import HydrationReminderDomain
 
 private enum HydrationReminderAnalyticsParameterName {

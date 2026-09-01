@@ -8,7 +8,7 @@
 import AppIntents
 import DependencyInjection
 import AccountDomain
-import CoreDomain
+import MulimiAnalytics
 import HydrationDomain
 import WidgetKit
 

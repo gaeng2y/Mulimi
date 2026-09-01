@@ -1,4 +1,4 @@
-import CoreDomain
+import MulimiAnalytics
 
 final class MockAnalyticsUseCase: AnalyticsUseCase, @unchecked Sendable {
     private(set) var trackedEvents: [ProductAnalyticsEvent] = []
