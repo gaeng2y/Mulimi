@@ -20,8 +20,8 @@ Mulimi의 루트 내비게이션 구조를 `ContentView + AppCoordinator` 기준
 ## Where to look
 
 - 루트 내비게이션: `Project/App/Sources/ContentView.swift`
-- 라우터: `Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
-- 목적지 enum: `Project/Features/Core/Presentation/Sources/Navigation/AppRoute.swift`
+- 라우터: `Project/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
+- 목적지 enum: `Project/Core/Presentation/Sources/Navigation/AppRoute.swift`
 
 ## Checklist
 

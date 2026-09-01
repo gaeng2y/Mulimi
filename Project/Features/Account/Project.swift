@@ -47,8 +47,8 @@ let project = Project(
             sources: ["Presentation/Sources/**"],
             dependencies: [
                 .target(name: "AccountDomain"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
@@ -87,8 +87,8 @@ let project = Project(
             ]),
             dependencies: [
                 .target(name: "AccountPresentation"),
-                .project(target: "CoreDomain", path: .relativeToRoot("Project/Features/Core")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Features/Core")),
+                .project(target: "CoreDomain", path: .relativeToRoot("Project/Core")),
+                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(
                     target: "HydrationReminderDomain",
                     path: .relativeToRoot("Project/Features/HydrationReminder")

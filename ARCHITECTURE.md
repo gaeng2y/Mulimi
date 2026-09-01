@@ -13,10 +13,10 @@ Mulimi의 구조 SSOT다. 제품 설명은 `README.md`, 작업 규칙은 `AGENTS
 ```text
 Project/
 ├── App
+├── Core
 ├── Features
 │   ├── Account
 │   ├── Challenge
-│   ├── Core
 │   ├── Hydration
 │   ├── HydrationReminder
 │   ├── Routine
@@ -44,10 +44,12 @@ Project/
 - `Repository` 구현
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
 
+### Core
+- `Project/Core`는 최상위 공용 레이어로, 분석 계약과 공용 세션·라우팅·UI만 가지며 비즈니스 기능을 소유하지 않는다.
+
 ### Features
 - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
 - `WatchHydration`도 Watch 전용 `Domain`, `Data`, `Presentation` 타깃을 가진다.
-- `Core`는 분석 계약과 공용 세션·라우팅·UI만 가지며 비즈니스 기능을 소유하지 않는다.
 
 ### Widget
 - `WidgetKit`, `AppIntent`, 위젯별 표현 조합

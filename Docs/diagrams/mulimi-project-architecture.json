@@ -76,8 +76,8 @@
       "pos": [50, 310],
       "size": [240, 96],
       "sources": [
-        { "path": "Project/Features/Core/Presentation/Sources/State/AppSession.swift", "line": 4, "label": "전역 세션" },
-        { "path": "Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift", "line": 5, "label": "전역 push" },
+        { "path": "Project/Core/Presentation/Sources/State/AppSession.swift", "line": 4, "label": "전역 세션" },
+        { "path": "Project/Core/Presentation/Sources/Navigation/AppCoordinator.swift", "line": 5, "label": "전역 push" },
         { "path": "Project/App/Sources/ContentView.swift", "line": 31, "label": "화면 조합" }
       ]
     },

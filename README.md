@@ -100,10 +100,10 @@ Mulimi/
 │   ├── App/
 │   │   ├── Sources/
 │   │   └── Watch/
+│   ├── Core/
 │   ├── Features/
 │   │   ├── Account/
 │   │   ├── Challenge/
-│   │   ├── Core/
 │   │   ├── Hydration/
 │   │   ├── HydrationReminder/
 │   │   ├── Routine/
@@ -137,10 +137,10 @@ Mulimi/
 
 - `Project/App`
   - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`
+- `Project/Core`
+  - `CoreDomain`, `CorePresentation`
 - `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
   - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
-- `Project/Features/Core`
-  - `CoreDomain`, `CorePresentation`
 - `Project/Features/WatchHydration`
   - `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`
   - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유

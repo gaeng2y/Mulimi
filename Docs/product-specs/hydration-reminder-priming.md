@@ -74,7 +74,7 @@ Onboarding 완료
 - `Project/Features/HydrationReminder/Presentation/Sources/ViewModel/HydrationReminderPermissionViewModel.swift`
 - `Project/Features/HydrationReminder/Presentation/Sources/View/HydrationReminderPermissionGateView.swift`
 - `Project/App/Sources/RootView.swift`
-- `Project/Features/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
+- `Project/Core/Presentation/Sources/Navigation/AppCoordinator.swift`
 - `Project/App/Sources/AppDelegate.swift`
 
 ## Related Docs
