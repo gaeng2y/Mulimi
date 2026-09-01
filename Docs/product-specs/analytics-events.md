@@ -8,7 +8,7 @@
 
 - ViewModel은 PostHog SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- PostHog SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- PostHog SDK 직접 의존은 `MulimiAnalyticsData`의 repository 구현으로 제한하고, 구현체 선택과 등록은 DI `DataAssembly`가 담당한다.
 - 제품 이벤트는 `PostHogAnalyticsRepository` 한 곳으로만 전송한다.
 - PostHog는 `POSTHOG_PROJECT_TOKEN`과 `POSTHOG_HOST`(`XCConfig/Secrets.xcconfig`)가 유효한 빌드에서만 초기화한다. 로컬 설정이 없으면 `NoOpAnalyticsRepository`로 동작하고, Release archive는 Xcode Cloud secret 검증에서 실패시킨다.
 - PostHog autocapture(`captureScreenViews`, `captureElementInteractions`)와 Session Replay는 사용하지 않는다. 라이프사이클 이벤트(`Application Opened` 등)만 SDK 기본 수집을 허용한다.
@@ -149,7 +149,6 @@ PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event param
 - `Project/Core/Analytics/Domain/Sources/Entity/ProductAnalyticsEvent.swift`
 - `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCase.swift`
 - `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
-- `Project/App/Sources/DrinkWaterApp.swift`
 - `Project/Core/Analytics/Data/Sources/PostHogAnalyticsRepository.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
 - `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`

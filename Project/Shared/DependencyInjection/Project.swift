@@ -42,6 +42,7 @@ let project = Project(
                 .project(target: "ChallengeData", path: .relativeToRoot("Project/Features/Challenge")),
                 .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
+                .project(target: "MulimiAnalyticsData", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationData", path: .relativeToRoot("Project/Features/Hydration")),
