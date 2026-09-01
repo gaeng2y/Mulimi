@@ -49,7 +49,6 @@ let project = Project(
                 .target(name: "AccountDomain"),
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "MulimiPlatform", path: .relativeToRoot("Project/Core/Platform")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
@@ -90,7 +89,6 @@ let project = Project(
                 .target(name: "AccountPresentation"),
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "MulimiPlatform", path: .relativeToRoot("Project/Core/Platform")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(
                     target: "HydrationReminderDomain",
                     path: .relativeToRoot("Project/Features/HydrationReminder")

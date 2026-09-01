@@ -1,5 +1,4 @@
 import ChallengeDomain
-import CorePresentation
 import RoutineDomain
 import DesignSystem
 import Localization
