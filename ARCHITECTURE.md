@@ -46,8 +46,9 @@ Project/
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
 
 ### Core
-- `Project/Core`는 시스템 인프라 서비스 레이어로, 비즈니스 기능을 소유하지 않는다. 남은 `CorePresentation`(세션·시스템 어댑터·공용 UI)은 #299, #300에서 해체한다.
-- `Project/Core/Analytics`는 책임별 독립 모듈로, `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현)를 가진다. 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 DI 조립(`DataAssembly`)에서만 사용한다.
+- `Project/Core`는 시스템 인프라 서비스 레이어로, 비즈니스 기능을 소유하지 않는다. 남은 `CorePresentation`(MainIcon 표현·공용 UI)은 #300에서 해체한다.
+- `Project/Core/Analytics`: `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현). 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 DI 조립(`DataAssembly`)에서만 사용한다.
+- `Project/Core/Platform`: `MulimiPlatform`. `Bundle`·`WidgetCenter` 등 시스템 API를 프레젠테이션이 직접 만지지 않게 하는 어댑터(`AppInfoProviding`, `WidgetTimelineReloading`)를 가진다.
 
 ### Features
 - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.

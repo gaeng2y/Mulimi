@@ -7,7 +7,6 @@
 
 import AccountDomain
 import MulimiAnalytics
-import CorePresentation
 import HydrationDomain
 import HydrationPresentation
 import RoutinePresentation
