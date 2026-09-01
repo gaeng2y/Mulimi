@@ -15,7 +15,6 @@ import HydrationDomain
 import RoutineDomain
 import AccountPresentation
 import ChallengePresentation
-import CorePresentation
 import HydrationPresentation
 import RoutinePresentation
 import SwiftUI

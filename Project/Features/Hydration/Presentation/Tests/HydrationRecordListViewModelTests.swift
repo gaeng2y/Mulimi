@@ -1,6 +1,6 @@
 import AccountDomain
 import MulimiAnalytics
-import CorePresentation
+import MulimiPlatform
 import HydrationDomain
 import RoutineDomain
 import Foundation

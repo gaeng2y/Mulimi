@@ -14,7 +14,7 @@ import HydrationReminderDomain
 import HydrationReminderPresentation
 import AccountPresentation
 import ChallengePresentation
-import CorePresentation
+import MulimiPlatform
 import MulimiNavigation
 import HydrationPresentation
 import RoutinePresentation

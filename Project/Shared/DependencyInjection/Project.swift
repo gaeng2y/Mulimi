@@ -43,8 +43,8 @@ let project = Project(
                 .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "MulimiNavigation", path: .relativeToRoot("Project/App")),
+                .project(target: "MulimiPlatform", path: .relativeToRoot("Project/Core/Platform")),
                 .project(target: "MulimiAnalyticsData", path: .relativeToRoot("Project/Core/Analytics")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationData", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
@@ -109,7 +109,7 @@ let project = Project(
                 .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "MulimiNavigation", path: .relativeToRoot("Project/App")),
-                .project(target: "CorePresentation", path: .relativeToRoot("Project/Core")),
+                .project(target: "MulimiPlatform", path: .relativeToRoot("Project/Core/Platform")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(

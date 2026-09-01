@@ -8,7 +8,6 @@
 import DependencyInjection
 import AccountPresentation
 import ChallengePresentation
-import CorePresentation
 import HydrationPresentation
 import RoutinePresentation
 import SwiftUI

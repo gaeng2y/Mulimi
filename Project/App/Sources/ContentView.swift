@@ -10,7 +10,6 @@ import DependencyInjection
 import Localization
 import AccountPresentation
 import ChallengePresentation
-import CorePresentation
 import HydrationPresentation
 import MulimiNavigation
 import RoutinePresentation
