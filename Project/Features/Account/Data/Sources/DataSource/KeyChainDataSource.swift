@@ -8,6 +8,7 @@
 
 import AccountDomain
 import Foundation
+import MulimiKeychain
 
 public protocol KeyChainDataSource: Sendable {
     func validateToken() -> Bool
@@ -17,49 +18,25 @@ public protocol KeyChainDataSource: Sendable {
 }
 
 public struct KeyChainDataSourceImpl: KeyChainDataSource {
-    public init() {}
+    private let store: KeychainStoring
+
+    public init(store: KeychainStoring = KeychainStore()) {
+        self.store = store
+    }
 
     public func validateToken() -> Bool {
         load(property: .accessToken).isEmpty == false
     }
 
     public func save(property: TokenProperty, value: String) {
-        let query: NSDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: property.rawValue,
-            kSecValueData: value.data(using: .utf8, allowLossyConversion: false) ?? .init()
-        ]
-
-        SecItemDelete(query)
-        SecItemAdd(query, nil)
+        store.save(key: property.rawValue, value: value)
     }
 
     public func load(property: TokenProperty) -> String {
-        let query: NSDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: property.rawValue,
-            kSecReturnData: kCFBooleanTrue!,
-            kSecMatchLimit: kSecMatchLimitOne
-        ]
-
-        var dataTypeRef: AnyObject?
-
-        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-
-        if status == errSecSuccess {
-            guard let data = dataTypeRef as? Data else { return "" }
-            return String(data: data, encoding: .utf8) ?? ""
-        }
-
-        return ""
+        store.load(key: property.rawValue)
     }
 
     public func delete(property: TokenProperty) {
-        let query: NSDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: property.rawValue
-        ]
-
-        SecItemDelete(query)
+        store.delete(key: property.rawValue)
     }
 }
