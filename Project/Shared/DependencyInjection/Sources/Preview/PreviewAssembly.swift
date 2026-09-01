@@ -15,6 +15,7 @@ import HydrationReminderPresentation
 import AccountPresentation
 import ChallengePresentation
 import CorePresentation
+import MulimiNavigation
 import HydrationPresentation
 import RoutinePresentation
 import Swinject

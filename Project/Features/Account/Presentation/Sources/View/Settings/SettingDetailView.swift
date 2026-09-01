@@ -430,7 +430,7 @@ private struct HydrationGoalRecommendationCard: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 if bodyProfileViewModel != nil {
-                    NavigationLink(value: AppRoute.setting(.bodyProfile)) {
+                    NavigationLink(value: AccountRoute.setting(.bodyProfile)) {
                         actionLabel(
                             title: L10n.tr("hydrationGoalRecommendationBodyProfileActionTitle"),
                             fillsBackground: true

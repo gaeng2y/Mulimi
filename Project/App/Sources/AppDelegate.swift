@@ -1,5 +1,5 @@
 import DependencyInjection
-import CorePresentation
+import MulimiNavigation
 import UIKit
 import UserNotifications
 

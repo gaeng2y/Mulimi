@@ -66,6 +66,7 @@ let project = Project(
             dependencies: [
                 .target(name: "MulimiWatch"),
                 .target(name: "WidgetExtension"),
+                .target(name: "MulimiNavigation"),
                 .project(
                     target: "DependencyInjection",
                     path: .relativeToRoot("Project/Shared/DependencyInjection")
@@ -125,6 +126,50 @@ let project = Project(
                     target: "DependencyInjection",
                     path: .relativeToRoot("Project/Shared/DependencyInjection")
                 )
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+                    "SWIFT_VERSION": .string("6.0")
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
+                ]
+            )
+        ),
+        .target(
+            name: "MulimiNavigation",
+            destinations: .iOS,
+            product: .framework,
+            bundleId: "\(bundleId).Navigation",
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Navigation/Sources/**"],
+            dependencies: [
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine"))
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+                    "SWIFT_VERSION": .string("6.0")
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
+                ]
+            )
+        ),
+        .target(
+            name: "MulimiNavigationTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId: "\(bundleId).Navigation.Tests",
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Navigation/Tests/**"],
+            dependencies: [
+                .target(name: "MulimiNavigation")
             ],
             settings: .settings(
                 base: [

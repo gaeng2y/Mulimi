@@ -32,15 +32,6 @@ let project = Project(
                     path: .relativeToRoot("Project/Shared/Localization")
                 )
             ]
-        ),
-        .target(
-            name: "CorePresentationTests",
-            destinations: .iOS,
-            product: .unitTests,
-            bundleId: "\(bundleId).Presentation.Tests",
-            deploymentTargets: .iOS("26.0"),
-            sources: ["Presentation/Tests/**"],
-            dependencies: [.target(name: "CorePresentation")]
         )
     ]
 )
