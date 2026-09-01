@@ -47,9 +47,10 @@
 - `App`
   - 앱 진입점, `ContentView`, 루트 조립
   - iOS 앱, 위젯, watch 앱 타깃 정의
+  - 전역 내비게이션(`AppCoordinator`, `AppRoute`) 소유
 - `Presentation`
   - SwiftUI View / ViewModel
-  - `AppCoordinator`, `AppSession` 등 화면 상태와 라우팅
+  - 화면 상태, 포맷된 표시 모델, feature 소유 라우트 값
 - `Domain`
   - Entity, UseCase, Repository 인터페이스
   - UI/로컬라이제이션 의존성이 없는 비즈니스 규칙
@@ -136,10 +137,10 @@ Mulimi/
 ### 대표 모듈
 
 - `Project/App`
-  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`
+  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`, `MulimiNavigation`(전역 내비게이션)
 - `Project/Core`
   - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
-  - `CorePresentation`
+  - `Platform`: `MulimiPlatform`(`Bundle`·`WidgetCenter` 어댑터)
 - `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
   - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
 - `Project/Features/WatchHydration`
