@@ -1,5 +1,6 @@
 import Foundation
 import HealthKit
+import MulimiHealthKit
 import OSLog
 import WatchHydrationDomain
 
@@ -12,82 +13,62 @@ protocol WatchHydrationLocalDataSource: Sendable {
 }
 
 actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
-    private enum Constants {
-        static let appSourcePrefix = "gaeng2y.DrinkWater"
-    }
-
     private let logger = Logger(
         subsystem: "gaeng2y.DrinkWater",
         category: "WatchHydrationHealthKitDataSource"
     )
-    private let healthStore = HKHealthStore()
+    private let store: HealthQuantityStoring
     private let calendar: Calendar
 
-    init(calendar: Calendar = .autoupdatingCurrent) {
+    init(
+        store: HealthQuantityStoring = HealthKitQuantityStore(),
+        calendar: Calendar = .autoupdatingCurrent
+    ) {
+        self.store = store
         self.calendar = calendar
     }
 
+    private var isWaterSharingAuthorized: Bool {
+        store.isHealthDataAvailable
+            && store.authorizationStatus(for: .dietaryWater) == .sharingAuthorized
+    }
+
     func hydrationEvents(on date: Date) async -> [WatchHydrationEvent] {
-        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
-            logger.error("Unable to resolve dietaryWater quantity type on watch.")
-            return []
-        }
-
         let interval = dayInterval(for: date)
-        let predicate = HKQuery.predicateForSamples(
-            withStart: interval.start,
-            end: interval.end,
-            options: .strictStartDate
-        )
 
-        return await withCheckedContinuation { continuation in
-            let query = HKSampleQuery(
-                sampleType: waterType,
-                predicate: predicate,
-                limit: HKObjectQueryNoLimit,
-                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
-            ) { _, samples, error in
-                if let error {
-                    self.logger.error("Failed to fetch watch hydration samples: \(String(describing: error))")
-                    continuation.resume(returning: [])
-                    return
-                }
-
-                let events = (samples as? [HKQuantitySample])?.map { sample in
-                    WatchHydrationEvent(
-                        id: sample.uuid,
-                        consumedAt: sample.startDate,
-                        volumeML: Int(
-                            sample.quantity.doubleValue(for: .literUnit(with: .milli)).rounded()
-                        )
-                    )
-                } ?? []
-
-                continuation.resume(returning: events)
+        do {
+            return try await store.samples(
+                of: .dietaryWater,
+                unit: .literUnit(with: .milli),
+                from: interval.start,
+                to: interval.end
+            ).map { sample in
+                WatchHydrationEvent(
+                    id: sample.id,
+                    consumedAt: sample.startDate,
+                    volumeML: Int(sample.value.rounded())
+                )
             }
-
-            healthStore.execute(query)
+        } catch {
+            logger.error("Failed to fetch watch hydration samples: \(String(describing: error))")
+            return []
         }
     }
 
     @discardableResult
     func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult {
-        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
-            logger.error("Unable to resolve dietaryWater quantity type on watch.")
-            return .failure(.invalidObjectType)
-        }
-
-        guard HKHealthStore.isHealthDataAvailable(),
-              healthStore.authorizationStatus(for: waterType) == .sharingAuthorized else {
+        guard isWaterSharingAuthorized else {
             logger.error("HealthKit water write permission is unavailable on watch.")
             return .failure(.permissionDenied)
         }
 
-        let quantity = HKQuantity(unit: .literUnit(with: .milli), doubleValue: Double(volumeML))
-        let sample = HKQuantitySample(type: waterType, quantity: quantity, start: consumedAt, end: consumedAt)
-
         do {
-            try await healthStore.save(sample)
+            try await store.save(
+                Double(volumeML),
+                unit: .literUnit(with: .milli),
+                of: .dietaryWater,
+                at: consumedAt
+            )
             return .success
         } catch {
             logger.error("Failed to save watch hydration sample: \(String(describing: error))")
@@ -97,64 +78,31 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
 
     @discardableResult
     func resetEvents(on date: Date) async -> HydrationWriteResult {
-        guard let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) else {
-            logger.error("Unable to resolve dietaryWater quantity type on watch.")
-            return .failure(.invalidObjectType)
-        }
-
-        guard HKHealthStore.isHealthDataAvailable(),
-              healthStore.authorizationStatus(for: waterType) == .sharingAuthorized else {
+        guard isWaterSharingAuthorized else {
             logger.error("HealthKit water reset permission is unavailable on watch.")
             return .failure(.permissionDenied)
         }
 
         let interval = dayInterval(for: date)
-        let predicate = HKQuery.predicateForSamples(
-            withStart: interval.start,
-            end: interval.end,
-            options: .strictStartDate
-        )
 
-        return await withCheckedContinuation { (continuation: CheckedContinuation<HydrationWriteResult, Never>) in
-            let query = HKSampleQuery(
-                sampleType: waterType,
-                predicate: predicate,
-                limit: HKObjectQueryNoLimit,
-                sortDescriptors: nil
-            ) { _, samples, error in
-                if let error {
-                    self.logger.error("Failed to fetch watch samples for reset: \(String(describing: error))")
-                    continuation.resume(returning: HydrationWriteResult.failure(Self.writeFailureReason(for: error)))
-                    return
-                }
-
-                let ownedSamples = (samples as? [HKQuantitySample])?.filter { sample in
-                    sample.sourceRevision.source.bundleIdentifier.hasPrefix(Constants.appSourcePrefix)
-                } ?? []
-
-                guard !ownedSamples.isEmpty else {
-                    continuation.resume(returning: HydrationWriteResult.success)
-                    return
-                }
-
-                self.healthStore.delete(ownedSamples) { _, error in
-                    if let error {
-                        self.logger.error("Failed to reset watch hydration samples: \(String(describing: error))")
-                        continuation.resume(
-                            returning: HydrationWriteResult.failure(Self.writeFailureReason(for: error))
-                        )
-                        return
-                    }
-
-                    continuation.resume(returning: HydrationWriteResult.success)
-                }
-            }
-
-            healthStore.execute(query)
+        do {
+            try await store.deleteOwnedSamples(
+                of: .dietaryWater,
+                from: interval.start,
+                to: interval.end
+            )
+            return .success
+        } catch {
+            logger.error("Failed to reset watch hydration samples: \(String(describing: error))")
+            return .failure(Self.writeFailureReason(for: error))
         }
     }
 
     private static func writeFailureReason(for error: Error) -> HydrationWriteFailureReason {
+        if case HealthQuantityStoreError.invalidObjectType = error {
+            return .invalidObjectType
+        }
+
         if let healthKitError = error as? HKError {
             switch healthKitError.code {
             case .errorAuthorizationDenied, .errorAuthorizationNotDetermined:

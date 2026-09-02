@@ -37,7 +37,8 @@ let project = Project(
             sources: ["Data/Sources/**"],
             dependencies: [
                 .target(name: "WatchHydrationDomain"),
-                .project(target: "MulimiCloudKit", path: .relativeToRoot("Project/Core/CloudKit"))
+                .project(target: "MulimiCloudKit", path: .relativeToRoot("Project/Core/CloudKit")),
+                .project(target: "MulimiHealthKit", path: .relativeToRoot("Project/Core/HealthKit"))
             ]
         ),
         .target(

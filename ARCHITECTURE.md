@@ -52,6 +52,7 @@ Project/
 - `Project/Core/Platform`: `MulimiPlatform`. `Bundle`·`WidgetCenter` 등 시스템 API를 프레젠테이션이 직접 만지지 않게 하는 어댑터(`AppInfoProviding`, `WidgetTimelineReloading`)를 가진다.
 - `Project/Core/Keychain`: `MulimiKeychain`. String 키 기반 범용 Keychain 저장소(`KeychainStoring`). feature Data가 자기 키 체계를 얹어 사용한다.
 - `Project/Core/CloudKit`: `MulimiCloudKit`(iOS+watchOS). iCloud KVS 원본 + 로컬 UserDefaults 미러 규칙을 구현한 `UbiquitousMirroredStore`를 가진다. 목표 수분량 동기화의 단일 구현이며 Account Data와 WatchHydration Data가 함께 사용한다.
+- `Project/Core/HealthKit`: `MulimiHealthKit`(iOS+watchOS). HealthKit quantity 샘플의 범용 저장소(`HealthQuantityStoring`). 권한 정책·도메인 매핑은 Hydration Data와 WatchHydration Data 어댑터가 담당한다.
 
 ### Features
 - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
