@@ -28,11 +28,11 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 루트 세션 상태: `Project/Features/Account/Presentation/Sources/State/AppSession.swift`
 - 공용 라우팅: `Project/App/Navigation/Sources/AppCoordinator.swift`
 - 모듈 구조:
-  - `App`: 앱 조립과 타깃, 전역 내비게이션(`MulimiNavigation`)
+  - `App`: 앱 조립과 타깃, DI 조립 루트, 전역 내비게이션(`MulimiNavigation`)
   - `Core`: 시스템 인프라 모듈(`Analytics`, `Platform`)
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
   - `Widget`: WidgetKit / AppIntent
-  - `Shared`: DI / Localization / DesignSystem / Persistence / Utils
+  - `Shared`: Localization / DesignSystem / Persistence / Utils
 
 ## Constitution
 

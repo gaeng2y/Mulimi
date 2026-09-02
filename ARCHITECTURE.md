@@ -29,6 +29,7 @@ Project/
 
 ### App
 - 앱 타깃, 엔트리포인트, 루트 조립
+- 조립 루트 `DependencyInjection`(`Project/App/DependencyInjection`) 소유 — 소비자는 실행 타깃뿐이다
 - `ContentView`와 앱 수준 흐름 연결
 - 전역 내비게이션 소유: `MulimiNavigation` 타깃(`AppCoordinator`, `AppRoute`). feature는 coordinator를 직접 알지 않고 feature 소유 라우트 값 또는 클로저로 의도만 전달한다.
 
@@ -58,7 +59,7 @@ Project/
 - `WidgetKit`, `AppIntent`, 위젯별 표현 조합
 
 ### Shared
-- `DependencyInjection`, `Localization`, `DesignSystem`, `Persistence`, `Utils`
+- `Localization`, `DesignSystem`, `Persistence`, `Utils`
 
 ## Dependency Direction
 

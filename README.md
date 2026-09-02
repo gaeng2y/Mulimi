@@ -60,7 +60,7 @@
   - 기능별 `Domain / Data / Presentation` 수직 모듈
   - 신규 전환은 `HydrationReminder`부터 적용
 - `Shared`
-  - `DependencyInjection`, `Localization`, `DesignSystem`, `Persistence`, `Utils`
+  - `Localization`, `DesignSystem`, `Persistence`, `Utils`
 - `Widget`
   - 홈 화면/잠금화면 위젯과 AppIntent
 
@@ -100,7 +100,8 @@ Mulimi/
 ├── Project/
 │   ├── App/
 │   │   ├── Sources/
-│   │   └── Watch/
+│   │   ├── Watch/
+│   │   └── DependencyInjection/
 │   ├── Core/
 │   ├── Features/
 │   │   ├── Account/
@@ -114,7 +115,6 @@ Mulimi/
 │   │   ├── Sources/
 │   │   └── Resources/
 │   └── Shared/
-│       ├── DependencyInjection/
 │       ├── DesignSystem/
 │       ├── Localization/
 │       ├── Persistence/
@@ -146,7 +146,7 @@ Mulimi/
 - `Project/Features/WatchHydration`
   - `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`
   - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유
-- `Project/Shared/DependencyInjection`
+- `Project/App/DependencyInjection`
   - `DependencyInjection`, `WatchDependencyInjection`
 
 ## 🚀 시작하기

@@ -69,7 +69,7 @@ let project = Project(
                 .target(name: "MulimiNavigation"),
                 .project(
                     target: "DependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 ),
                 .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
                 .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
@@ -123,7 +123,7 @@ let project = Project(
                 ),
                 .project(
                     target: "DependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 )
             ],
             settings: .settings(
@@ -225,7 +225,7 @@ let project = Project(
             dependencies: [
                 .project(
                     target: "WatchDependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 )
             ],
             settings: .settings(
