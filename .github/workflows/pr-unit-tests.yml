@@ -84,7 +84,7 @@ jobs:
         run: |
           set -euo pipefail
           for SCHEME in \
-            CorePresentation \
+            MulimiNavigation \
             AccountDomain AccountPresentation \
             HydrationDomain HydrationData HydrationPresentation \
             RoutineDomain RoutineData RoutinePresentation \
