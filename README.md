@@ -141,6 +141,7 @@ Mulimi/
 - `Project/Core`
   - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
   - `Platform`: `MulimiPlatform`(`Bundle`·`WidgetCenter` 어댑터)
+  - `Keychain`: `MulimiKeychain`(String 키 Keychain 저장소)
 - `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
   - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
 - `Project/Features/WatchHydration`
