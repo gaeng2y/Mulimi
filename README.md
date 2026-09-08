@@ -217,10 +217,11 @@ make verify
 ```bash
 uv tool install graphifyy
 graphify query "수분 기록은 앱과 위젯 사이에서 어떻게 연결되는가?"
-graphify update .
 ```
 
 Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습니다. 분석 범위는 `.graphifyignore`, 공유 산출물은 `graphify-out/`에서 관리합니다.
+
+공유 그래프와 라벨 정보는 Git으로 관리하고, HTML·캐시·날짜별 백업·세션 기록은 로컬에만 둡니다. 자세한 구분은 [Graphify 산출물 관리](Docs/harness-engineering.md#graphify-artifacts)를 따릅니다.
 
 ## 📖 문서 읽기 순서
 
