@@ -133,8 +133,8 @@ Graphify는 `memory/`를 ignore와 무관하게 읽고 학습 요약을 보고�
   set -eu
   mulimi_graph_out="$(mktemp -d)"
   trap 'rm -rf -- "$mulimi_graph_out"' EXIT
-  cp graphify-out/graph.json graphify-out/.graphify_labels.json \
-    graphify-out/.graphify_labels.json.sig "$mulimi_graph_out/"
+  cp graphify-out/graph.json graphify-out/GRAPH_REPORT.md \
+    graphify-out/.graphify_labels.json graphify-out/.graphify_labels.json.sig "$mulimi_graph_out/"
   GRAPHIFY_OUT="$mulimi_graph_out" graphify update .
   cp "$mulimi_graph_out/graph.json" "$mulimi_graph_out/GRAPH_REPORT.md" \
     "$mulimi_graph_out/.graphify_labels.json" "$mulimi_graph_out/.graphify_labels.json.sig" \
