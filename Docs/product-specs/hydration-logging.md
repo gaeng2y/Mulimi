@@ -37,6 +37,7 @@
 | 앱 프리셋 버튼 | 없음 | - | 메인 화면에는 노출하지 않는다. 사용자 기본값으로 저장하지 않는다. |
 | 앱 직접 입력 | 없음 | - | 메인 화면에는 노출하지 않는다. 사용자 기본값으로 저장하지 않는다. |
 | Widget button | `HydrationServing.defaultGlassVolumeML` = 250ml | `LogWaterAppIntent`의 기본 `amount = .glass` | 목표 초과 시 HealthKit에 쓰지 않고 결과 메시지를 반환한다. |
+| Control Widget 실험 (#322) | `HydrationServing.defaultGlassVolumeML` | 같은 `LogWaterAppIntent()` | 실험 빌드에서만 제어 센터·잠금 화면·액션 버튼에 노출한다. |
 | Watch | `HydrationServing.defaultGlassVolumeML` = 250ml | `WatchHydrationUseCaseImpl.defaultDrinkVolumeML` | Watch 전용 단위 규칙을 만들지 않는다. |
 | Siri/Shortcuts | 250ml, 330ml, 500ml, 직접 입력 ml | `LogWaterAppIntent.amount`, `customAmountML`, `LogWaterAppShortcuts` | App Shortcut phrase로 노출하고, 성공/목표 초과/권한 필요 결과 메시지를 반환한다. |
 
@@ -79,6 +80,98 @@
 - 기록 차단 결과는 `water_log_failed.failure_reason`으로 구분된다.
 - HealthKit 저장 실패 결과는 성공 dialog, Widget timeline 갱신, `water_logged` analytics로 처리하지 않는다.
 - 기록 성공 후 Widget timeline이 갱신된다.
+
+## Control Widget Experiment (#322)
+
+상태: 로컬 구현·검증 완료. TestFlight 배포, 실기기 QA, 참여자 모집과 지표 수집은 아직 수행하지 않았다. 실제 결과가 나오기 전에는 #322를 닫거나 정식 출시 이슈를 만들지 않는다.
+
+### Build And Installation
+
+- 기존 Widget 번들에 `LogWaterControl` 하나를 조건부 등록한다. `LogWaterAppIntent()`의 기본 한 잔, 권한·목표 초과·실패 처리, 저장 성공 후 timeline 갱신을 그대로 사용한다.
+- `MULIMI_CONTROL_WIDGET_EXPERIMENT` 컴파일 조건을 켠 내부 실험 빌드에만 Control을 포함한다. 기본 Debug/Release 빌드에는 포함하지 않는다. 새 AppIntent, 용량 설정, 저장소는 추가하지 않는다.
+- 검증 범위는 iOS 26.0 이상 iPhone의 제어 센터와 잠금 화면, 액션 버튼이 있는 iPhone의 액션 버튼이다. 실제 지원 판정은 아래 실기기 QA를 통과한 모델·OS 조합별로 남긴다.
+- 앱에서 온보딩, HealthKit 권한, 일일 목표 설정을 먼저 완료한다. 제어 센터의 제어 항목 추가에서 물리미의 `물 한 잔 기록`을 선택한다. 잠금 화면은 사용자화의 하단 제어 항목, 액션 버튼은 설정의 제어 항목에서 같은 Control을 선택한다.
+- 아래 컴파일 조건은 실험 archive에만 적용한다. 이 archive는 TestFlight 내부 테스트용으로 배포하고 App Store 출시 빌드로 승격하지 않는다. 정식 출시 archive는 조건을 제거하고 새로 만든다.
+
+```bash
+tuist generate --no-open
+xcodebuild archive -workspace Mulimi.xcworkspace -scheme Mulimi \
+  -configuration Release -destination 'generic/platform=iOS' \
+  -archivePath /tmp/Mulimi-Control-322.xcarchive \
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) MULIMI_CONTROL_WIDGET_EXPERIMENT'
+```
+
+Archive에는 기존 서명·배포 설정이 필요하다. 로컬 컴파일 검증은 같은 조건으로 `build`와 `CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`를 사용한다. 조건을 끈 기본 빌드도 함께 검증한다.
+
+### Measurement Protocol
+
+현재 Widget extension의 `Info.plist`에는 PostHog 설정이 없어 `NoOpAnalyticsRepository`를 사용한다. 앱 프로세스에서 실행되더라도 기존 이벤트의 `source = app_intent`만으로는 Control과 Widget/Shortcuts를 구분할 수 없으며, Watch 기록까지 같은 사용자로 집계할 수도 없다. 따라서 이 실험은 참여자 기록표와 기기 내 HealthKit 확인으로 측정한다. `app_intent` 이벤트 수를 Control 사용 횟수로 해석하지 않는다.
+
+1. 지원 기기와 실험 빌드 설치를 확인한 참여자에게 같은 설치 안내를 제공하고 안내 인원 `N`을 기록한다. Control 설치를 직접 확인한 인원 `I`와 설치일 `D0`를 별도로 기록한다. 첫 실행은 설치의 대용 지표가 아니다.
+2. 기준선은 설치 전 14개의 완전한 KST 날짜(`D-14`~`D-1`)다. HealthKit에서 물리미 앱·Widget·Watch로 남긴 기록이 있는 날짜 수를 세고 2로 나눠 주간 활성일로 환산한다. 다른 앱이 만든 기록은 제외한다.
+3. 설치일의 안내·연습 기록은 반복 사용 집계에서 제외한다. 설치 다음 날부터 7개의 완전한 KST 날짜(`D1`~`D7`) 동안 기존 기록 경로도 계속 사용할 수 있게 한다.
+4. 매일 참여자가 Control 시도 횟수, HealthKit에서 확인한 성공 횟수, 차단/실패 횟수, 사용한 위치를 기록한다. 시도 직후 저장을 확인해 다른 경로의 기록과 구분하며, 피드백 표시만으로 성공을 세지 않는다. 첫 성공일과 두 번째 성공일도 남긴다.
+5. 같은 7일 동안 HealthKit의 물리미 기록 활성일을 전체 경로에 걸쳐 센다. 같은 날 여러 경로로 기록해도 활성일은 1일이다. 확인되지 않은 날은 0으로 치환하지 않고 측정 공백으로 남긴다.
+6. 참여자 코드는 연구 기록표 안에서만 사용한다. Apple ID, PostHog ID, HealthKit 샘플 ID나 건강 원본을 기록표에 복사하거나 외부 서비스와 사용자 단위로 결합하지 않는다. 연구 결과에는 집계값만 남긴다.
+
+| Metric | Calculation |
+| --- | --- |
+| 설치율 | `I / N`. 안내 후 미설치 이유도 별도로 기록한다. |
+| 첫 사용률 | 첫 성공을 확인한 설치자 / `I` |
+| 반복 사용률 | D1~D7에 2회 이상 성공한 설치자 / 관찰을 완료한 설치자 |
+| 주간 Control 기록 횟수 | D1~D7 성공 횟수의 사용자별 중앙값. 설치 후 0회 사용자도 포함한다. |
+| 기록 활성일 변화 | 사용자별 `D1~D7 활성일 - (D-14~D-1 활성일 / 2)`의 중앙값과 증가 사용자 비율 |
+| 실패·차단 | 시도 수와 성공 수, 권한 필요/목표 초과/저장 실패/결과 미확인 수를 각각 기록한다. |
+| 중복 저장 | 사용자가 의도한 성공 1회에 HealthKit 샘플이 여러 개 추가된 사례 수 |
+
+참여자별 기록표는 아래 열을 사용한다. 매일 기록표의 Control 횟수는 날짜별 7개 값을 유지하고, 연구 종료 시에만 합산한다.
+
+```text
+참여자 코드 | 기기·OS | 빌드 | 안내일 | 설치 확인일·위치 | 첫 성공일 | 두 번째 성공일
+기준선 14일 활성일 | D1~D7 전체 활성일 | 날짜별 Control 시도·성공·차단·실패·미확인
+중복 사례 수 | 설치 실패·제거 이유 | 측정 공백·확인 근거
+```
+
+자기 보고의 누락 가능성이 있으므로 매일 기기 내 기록을 대조한다. 관찰 기간 중 Control을 제거한 참여자도 제외하지 않고 제거 사유와 이후 0회/미확인을 구분한다. 설치 표본 또는 완전한 전후 관찰 표본이 30명 미만이거나 측정 공백이 남으면 판정을 보류한다.
+
+### Device QA Gate
+
+각 행에 기기 모델, OS, 빌드, 제어 센터/잠금 화면/액션 버튼 위치, 결과와 확인일을 기록한다. 시뮬레이터 컴파일·단위 테스트 통과는 실기기 저장·피드백 통과를 뜻하지 않는다.
+
+| Scenario | Required observation |
+| --- | --- |
+| 권한 허용, 목표 여유 | Control 한 번 실행에 기본 한 잔 샘플이 정확히 1개 추가되고 앱·Widget·Watch에 같은 합계가 보인다. |
+| 앱 종료 상태 | 앱을 종료한 뒤 각 위치에서 실행해 같은 저장과 피드백을 확인한다. |
+| 잠긴 기기 / 재부팅 후 첫 잠금 해제 전 | HealthKit 접근과 시스템 인증/foreground 전환 동작을 확인한다. 저장되지 않은 경우를 성공으로 세지 않는다. |
+| 권한 미설정 / 거부 / 실행 중 철회 | 저장되지 않으며 앱의 권한 확인으로 이어지는지 확인한다. 복귀만으로 추가 기록되지 않아야 한다. |
+| 목표 도달 / 한 잔보다 적게 남음 | 샘플이 추가되지 않아야 한다. Control 위치에서 반환 dialog가 실제로 전달되는지도 확인한다. |
+| 저장 실패 | 샘플과 성공 피드백이 생기지 않아야 한다. Control이 오류 대신 완료로 보이면 관찰을 중단하고 원인을 기록한다. |
+| 연속 탭 / 앱·Widget·Watch와 교차 사용 | 각 의도된 실행당 저장 1회, 재개·화면 갱신만으로 추가 저장 0회. 목표 직전 동시 실행도 확인한다. |
+| 비행기 모드 | 기존 로컬 HealthKit 저장과 동일하게 동작하는지 확인한다. 네트워크 복귀로 추가 저장되지 않아야 한다. |
+| 접근성 | VoiceOver가 `물 한 잔 기록`으로 읽으며 제어 크기별로 시스템 레이블이 식별 가능해야 한다. |
+| 실험 조건을 끈 빌드 | Control이 갤러리에 노출되지 않고 기존 Widget·Shortcuts가 그대로 동작한다. |
+
+`ProvidesDialog`가 모든 Control 위치에 같은 방식으로 표시된다고 가정하지 않는다. 저장 실패·목표 차단을 사용자가 구분하지 못하거나 중복 저장/데이터 손실이 발견되면 모집을 진행하지 않는다. 기존 Intent의 목표 확인과 쓰기는 원자적 연산이 아니므로 동시 실행에 대한 중복·초과 방지를 보장했다고 보고하지 않는다.
+
+### Result And Decision
+
+| Item | Current result |
+| --- | --- |
+| 로컬 환경 (2026-09-08) | Xcode 26.6 (17F113), Tuist 4.205.0, iPhone 17 Pro / iOS 26.5 Simulator |
+| 로컬 검증 | lint·architecture 검사, 기본 앱 Debug 빌드, Control 활성화 WidgetExtension Release 빌드 통과. HydrationDomain 59개 테스트 통과. |
+| 실기기 모델·OS / TestFlight 빌드 | 미검증 / 미배포 |
+| 안내·설치·완전 관찰 표본 | 미모집 / 미수집 |
+| 설치율·첫 사용률·반복 사용률 | 미측정 |
+| 주간 성공 횟수 중앙값·활성일 변화 | 미측정 |
+| 중복·실패·피드백 가드레일 | 실기기 확인 대기 |
+| 판정 | 보류 — 실험 데이터 없음 |
+
+- 성공: 완전 관찰 설치자 30명 이상, 주간 성공 횟수 중앙값 3회 이상, 사용자별 활성일 변화 중앙값이 0보다 크고 가드레일을 통과한다. 이 경우에만 정식 Widget 번들 포함 이슈를 생성한다.
+- 개선 후 재실험: 설치율은 낮지만 설치자의 반복 사용이 높다. 설치 실패 이유를 바탕으로 안내를 한 번 수정한다.
+- 중단: 충분한 설치 표본에서도 반복 사용과 활성일 증가가 없거나 중복·실패 가드레일을 위반한다.
+- 보류: 표본 30명 미만, 관찰 미완료 또는 측정 공백이 있다. 미측정값을 0이나 성공으로 보고하지 않는다.
+
+근거: [Apple Control 구성](https://developer.apple.com/documentation/widgetkit/creating-controls-to-perform-actions-across-the-system), [#322](https://github.com/gaeng2y/Mulimi/issues/322). 기본 기록량 개인화는 #315 범위로 유지한다.
 
 ## User Expectations
 
@@ -127,3 +220,4 @@
 - #203 기본 수분 기록량 및 즐겨찾는 용량 설정 추가
 - #195 다양한 수분 기록 단위 프리셋 추가
 - #67 Siri/Shortcuts 물 기록 적용
+- #322 제어 센터·액션 버튼 수분 기록 사용성 검증
