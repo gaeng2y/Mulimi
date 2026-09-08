@@ -47,17 +47,20 @@ struct DrinkWaterUseCaseTests {
 
     // MARK: - Drink Water Tests
 
-    @Test("물 마시기 기능 테스트")
+    @Test("기본 한 잔 기록은 공용 용량으로 정확히 한 번 저장한다")
     func drinkWater() async {
         // Given: 초기 상태의 Repository와 UseCase가 있을 때
         let mockRepository = MockDrinkWaterRepository()
         let useCase = DrinkWaterUseCaseImpl(repository: mockRepository)
 
         // When: 물 마시기 기능을 실행하면
-        await useCase.drinkWater()
+        let result = await useCase.drinkWater()
 
         // Then: Repository의 drinkWater 메소드가 정확히 1번 호출된다
+        #expect(result.isSuccess)
         #expect(mockRepository.drinkWaterCallCount == 1)
+        #expect(mockRepository.recordedVolumesML == [HydrationServing.defaultGlassVolumeML])
+        #expect(await useCase.currentWaterIntakeML == Double(HydrationServing.defaultGlassVolumeML))
     }
 
     @Test("물 마시기는 지정한 ml 단위를 Repository에 전달한다")
