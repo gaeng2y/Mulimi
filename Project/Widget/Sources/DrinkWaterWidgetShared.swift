@@ -1,5 +1,7 @@
 import DependencyInjection
-import DomainLayerInterface
+import AccountDomain
+import HydrationDomain
+import RoutineDomain
 import Foundation
 import WidgetKit
 

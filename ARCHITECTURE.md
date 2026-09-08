@@ -13,9 +13,14 @@ Mulimi의 구조 SSOT다. 제품 설명은 `README.md`, 작업 규칙은 `AGENTS
 ```text
 Project/
 ├── App
-├── Presentation
-├── Domain
-├── Data
+├── Core
+├── Features
+│   ├── Account
+│   ├── Challenge
+│   ├── Hydration
+│   ├── HydrationReminder
+│   ├── Routine
+│   └── WatchHydration
 ├── Widget
 └── Shared
 ```
@@ -24,36 +29,52 @@ Project/
 
 ### App
 - 앱 타깃, 엔트리포인트, 루트 조립
+- 조립 루트 `DependencyInjection`(`Project/App/DependencyInjection`) 소유 — 소비자는 실행 타깃뿐이다
 - `ContentView`와 앱 수준 흐름 연결
+- 전역 내비게이션 소유: `MulimiNavigation` 타깃(`AppCoordinator`, `AppRoute`). feature는 coordinator를 직접 알지 않고 feature 소유 라우트 값 또는 클로저로 의도만 전달한다.
 
-### Presentation
+### Feature Presentation
 - `View`, `ViewModel`, `Coordinator`
 - 화면 상태, 포맷된 프레젠테이션 모델, 라우팅 조합
 - 시스템 API 직접 호출은 지양하고 필요한 경우 추상화 뒤에서 사용
 
-### Domain
+### Feature Domain
 - 엔티티, 유스케이스, 저장소 인터페이스
 - UI 문구, 로컬라이제이션, 심볼 이름에 의존하지 않는 비즈니스 규칙
 
-### Data
+### Feature Data
 - `Repository` 구현
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
+
+### Core
+- `Project/Core`는 시스템 인프라 서비스 레이어로, 비즈니스 기능·UI를 소유하지 않고 feature나 Localization에 역방향 의존하지 않는다.
+- `Project/Core/Analytics`: `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현). 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 DI 조립(`DataAssembly`)에서만 사용한다.
+- `Project/Core/Platform`: `MulimiPlatform`. `Bundle`·`WidgetCenter` 등 시스템 API를 프레젠테이션이 직접 만지지 않게 하는 어댑터(`AppInfoProviding`, `WidgetTimelineReloading`)를 가진다.
+- `Project/Core/Keychain`: `MulimiKeychain`. String 키 기반 범용 Keychain 저장소(`KeychainStoring`). feature Data가 자기 키 체계를 얹어 사용한다.
+- `Project/Core/CloudKit`: `MulimiCloudKit`(iOS+watchOS). iCloud KVS 원본 + 로컬 UserDefaults 미러 규칙을 구현한 `UbiquitousMirroredStore`를 가진다. 목표 수분량 동기화의 단일 구현이며 Account Data와 WatchHydration Data가 함께 사용한다.
+- `Project/Core/HealthKit`: `MulimiHealthKit`(iOS+watchOS). HealthKit quantity 샘플의 범용 저장소(`HealthQuantityStoring`). 권한 정책·도메인 매핑은 Hydration Data와 WatchHydration Data 어댑터가 담당한다.
+
+### Features
+- `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
+- `WatchHydration`도 Watch 전용 `Domain`, `Data`, `Presentation` 타깃을 가진다.
 
 ### Widget
 - `WidgetKit`, `AppIntent`, 위젯별 표현 조합
 
 ### Shared
-- `DependencyInjection`, `Localization`, `DesignSystem`, `Persistence`, `Utils`
+- `Localization`, `DesignSystem`, `Persistence`, `Utils`
 
 ## Dependency Direction
 
 ```text
-App -> Presentation -> Domain interfaces
-App -> Data -> Domain interfaces
-Widget -> Domain interfaces / Shared / AppIntent glue
-Presentation -> Shared
-Data -> Shared
-Domain -> no UI dependency
+App -> Feature Presentation
+App / DependencyInjection -> Feature Presentation + Feature Data + Feature Domain
+Feature Presentation -> Feature Domain
+Feature Data -> Feature Domain
+Widget -> AccountDomain + HydrationDomain + RoutineDomain
+ChallengeDomain -> RoutineDomain -> HydrationDomain -> AccountDomain
+Feature Presentation / Data -> Shared as needed
+Feature Domain -> no UI dependency
 ```
 
 ## Core User Flow
@@ -84,11 +105,11 @@ SignIn
 
 ## Non-Negotiable Rules
 
-- `DomainLayerInterface`와 `DomainLayer`는 `SwiftUI`, `Localization`, UI 문구에 의존하지 않는다.
+- 기능 모듈의 `Domain`은 UI, 로컬라이제이션, `Data`, `Presentation`에 의존하지 않는다.
 - ViewModel은 프레젠테이션 상태만 관리한다.
 - ViewModel이 다른 ViewModel의 상태를 직접 변경하지 않는다.
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다.
-- 앱/워치가 함께 써야 하는 수분 단위, next-action, 루틴 수행률 계산은 `Project/Domain/SharedInterfaces/`에 둔다.
+- 앱/워치가 함께 쓰는 `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide`는 `Hydration` 소스를 `WatchHydrationDomain`에서도 컴파일한다.
 - HealthKit 문제를 로컬 수분 원장 이중 저장으로 덮지 않는다.
 - 워치/위젯이 앱과 다른 수분 계산 규칙을 만들지 않는다.
 

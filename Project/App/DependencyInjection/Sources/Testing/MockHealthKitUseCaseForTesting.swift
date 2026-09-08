@@ -1,0 +1,74 @@
+//
+//  MockHealthKitUseCaseForTesting.swift
+//  DependencyInjectionTesting
+//
+//  Created by Kyeongmo Yang on 9/17/25.
+//
+
+import AccountDomain
+import ChallengeDomain
+import MulimiAnalytics
+import HydrationDomain
+import RoutineDomain
+import Foundation
+
+public final class MockHealthKitUseCaseForTesting: HealthKitUseCase, @unchecked Sendable {
+    public var authorisationStatus: HealthKitAuthorizationStatus = .sharingAuthorized
+    public var shouldThrowError = false
+    public var fetchHistoryResult: [HydrationRecord] = []
+    public var bodyProfileResult: BodyProfile = .empty
+
+    public var drinkWaterCallCount = 0
+    public var resetCallCount = 0
+    public var requestAuthorizationCallCount = 0
+    public var fetchHistoryCallCount = 0
+    public var fetchBodyProfileCallCount = 0
+
+    public init() {}
+
+    public func requestAuthorization() async throws {
+        requestAuthorizationCallCount += 1
+
+        if shouldThrowError {
+            throw HealthKitError.permissionDenied
+        }
+        authorisationStatus = .sharingAuthorized
+    }
+
+    public func drinkWater() async throws {
+        drinkWaterCallCount += 1
+    }
+
+    public func reset() async throws {
+        resetCallCount += 1
+    }
+
+    public func fetchHistory(from startDate: Date, to endDate: Date) async throws -> [HydrationRecord] {
+        fetchHistoryCallCount += 1
+
+        if shouldThrowError {
+            throw HealthKitError.healthKitInternalError
+        }
+
+        return fetchHistoryResult
+    }
+
+    public func fetchBodyProfile() async throws -> BodyProfile {
+        fetchBodyProfileCallCount += 1
+
+        if shouldThrowError {
+            throw HealthKitError.healthKitInternalError
+        }
+
+        return bodyProfileResult
+    }
+
+    // Testing helpers
+    public func setFetchHistoryResult(_ records: [HydrationRecord]) {
+        fetchHistoryResult = records
+    }
+
+    public func setShouldThrowError(_ shouldThrow: Bool) {
+        shouldThrowError = shouldThrow
+    }
+}

@@ -111,14 +111,43 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | Surface | File | Responsibility |
 | --- | --- | --- |
 | Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
-| Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 `graphify update .`로 갱신한다. |
+| Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 아래 격리 절차로 공유 산출물을 갱신한다. |
 | Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
 | GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
-| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 `DomainLayer`, `DataLayer`, `PresentationLayer` 테스트를 실행한다. |
+| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 기능별 `Domain`, `Data`, `Presentation` 테스트를 실행한다. |
 | GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
 | Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
 
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
+
+### Graphify Artifacts
+
+- `graphify-out/graph.json`, `GRAPH_REPORT.md`와 라벨·서명 파일은 공유 산출물로 함께 갱신한다. `.graphify_labels.json.sig`는 커뮤니티 구성이 바뀌었을 때 오래된 라벨을 재사용하지 않게 하는 정보다.
+- HTML, `manifest.json`, 비용·캐시·어휘·학습 상태, 날짜별 백업, `memory/`, `reflections/`는 `.gitignore`로 제외하고 로컬에 보존한다. 세션에서 얻은 장기적인 결정은 `Docs/`에 정리한다.
+- `.graphifyignore`는 `graphify-out/` 전체를 분석 입력에서 제외한다. 이미 저장된 그래프 조회에는 영향을 주지 않는다.
+
+Graphify는 `memory/`를 ignore와 무관하게 읽고 학습 요약을 보고서에 붙일 수 있다. 공유용 갱신은 저장소 루트에서 아래처럼 임시 출력 경로를 사용한다. 기존 그래프와 라벨만 복사하므로 코드·문서 관계는 보존하면서 세션 기록은 읽지 않는다.
+
+```sh
+(
+  set -eu
+  mulimi_graph_out="$(mktemp -d)"
+  trap 'rm -rf -- "$mulimi_graph_out"' EXIT
+  cp graphify-out/graph.json graphify-out/GRAPH_REPORT.md \
+    graphify-out/.graphify_labels.json graphify-out/.graphify_labels.json.sig "$mulimi_graph_out/"
+  GRAPHIFY_OUT="$mulimi_graph_out" graphify update .
+  cp "$mulimi_graph_out/graph.json" "$mulimi_graph_out/GRAPH_REPORT.md" \
+    "$mulimi_graph_out/.graphify_labels.json" "$mulimi_graph_out/.graphify_labels.json.sig" \
+    graphify-out/
+)
+```
+
+공유 전에는 생성물 출처 노드와 세션 학습 섹션이 없는지 확인한다.
+
+```sh
+jq -e 'all(.. | objects | .source_file? | strings; startswith("graphify-out/") | not)' graphify-out/graph.json
+! rg -n '^## Work-memory lessons' graphify-out/GRAPH_REPORT.md
+```
 
 ## Update Rules
 

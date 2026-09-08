@@ -8,7 +8,7 @@
 
 - ViewModel은 PostHog SDK를 직접 알지 않는다.
 - Presentation은 `AnalyticsUseCase` 추상화만 호출한다.
-- PostHog SDK 직접 의존은 앱 초기화/조립 계층의 repository 구현으로 제한한다.
+- PostHog SDK 직접 의존은 `MulimiAnalyticsData`의 repository 구현으로 제한하고, 구현체 선택과 등록은 DI `DataAssembly`가 담당한다.
 - 제품 이벤트는 `PostHogAnalyticsRepository` 한 곳으로만 전송한다.
 - PostHog는 `POSTHOG_PROJECT_TOKEN`과 `POSTHOG_HOST`(`XCConfig/Secrets.xcconfig`)가 유효한 빌드에서만 초기화한다. 로컬 설정이 없으면 `NoOpAnalyticsRepository`로 동작하고, Release archive는 Xcode Cloud secret 검증에서 실패시킨다.
 - PostHog autocapture(`captureScreenViews`, `captureElementInteractions`)와 Session Replay는 사용하지 않는다. 라이프사이클 이벤트(`Application Opened` 등)만 SDK 기본 수집을 허용한다.
@@ -48,6 +48,11 @@
 | `water_logged` | `source`, `serving_type`, `volume_ml`, `daily_goal_ml` | 물 기록 성공 |
 | `water_log_failed` | `source`, `serving_type`, `failure_reason` | 물 기록 권한/입력/목표 초과 차단 또는 HealthKit 저장 실패 |
 | `water_preset_logged` | `source`, `preset`, `volume_ml` | 330ml/500ml 프리셋 기록 성공 |
+| `hydration_comeback_eligible` | `source`, `context` | #323의 2~6일 공백 복귀자가 기록 탭을 실제로 봄. 같은 공백에서는 1회 |
+| `hydration_comeback_viewed` | `source`, `context` | 실험군의 컴백 카드 실제 노출 |
+| `hydration_comeback_cta_tapped` | `source`, `context` | 노출 중인 컴백 안내의 기존 한 잔 기록 버튼 탭 |
+| `hydration_comeback_record_result` | `source`, `context`, `status` | 위 CTA의 기존 기록 경로 반환. `success` 또는 `failed` |
+| `hydration_comeback_dismissed` | `source`, `context` | 컴백 카드 닫기 탭. 탭 이동/백그라운드는 닫기 탭으로 세지 않음 |
 | `app_review_request_attempted` | `source`, `context` | 반복 사용 후 목표 달성으로 시스템 리뷰 요청 API 호출 직전 |
 | `routine_created` | `source`, `enabled`, `weekday_count` | 루틴 생성 저장 성공 |
 | `routine_updated` | `source`, `enabled`, `weekday_count` | 루틴 수정 저장 성공 |
@@ -90,6 +95,8 @@
 - `routine_recovery`
 - `weekly_coaching`
 - `empty_state`
+- `comeback_baseline`
+- `comeback_card`
 
 ### `failure_reason`
 
@@ -122,6 +129,16 @@
 - HealthKit: `not_determined`, `denied`, `authorized`
 - Routine notification: `not_determined`, `denied`, `authorized`
 - Hydration reminder notification: `not_determined`, `denied`, `authorized`
+- Comeback record result: `success`, `failed`
+
+## Comeback Experiment (#323)
+
+- Release는 컴백 카드를 기본 활성화하며, 기본 Debug와 컴백 조건을 모두 제거한 빌드는 컴백 이벤트를 보내지 않는다. 비교군/카드 빌드 구분과 판정 기준은 [Challenge and Insight](challenge-insight.md#comeback-experiment-323)를 따른다.
+- 공통 `source`는 `drink_water_main`, `context`는 `comeback_baseline` 또는 `comeback_card`다. 마지막 건강 기록 시각, 자유 입력, 별도 사용자 식별자는 추가하지 않는다.
+- 즉시 기록률은 두 군 모두 `hydration_comeback_eligible` 이후 같은 PostHog `distinct_id` + SDK `$session_id`의 `water_logged` 성공으로 계산한다. 카드 노출 대비 기록률은 실험군에서 별도로 계산한다. 기존 `water_logged`를 재발행하지 않는다.
+- CTA 성공률은 `hydration_comeback_record_result.status = success / hydration_comeback_cta_tapped`다. 실패 후 재시도는 별도 시도이며, 저장 중 중복 탭은 집계하지 않는다.
+- 동일 공백의 앱 재진입/재시작에는 재노출하지 않는다. 반복 노출 QA는 같은 공백에 두 번째 `viewed`가 없는지 확인하며, 거부감은 `dismissed / viewed`와 참여자 피드백으로 본다.
+- iPhone 이벤트만으로 Widget/Watch/다른 HealthKit 출처를 포함한 7일 기록 일수를 확정하지 않는다. 실제 HealthKit 이력 확인과 결측 처리 기준은 실험 문서를 따른다.
 
 ## SDK Properties
 
@@ -146,13 +163,12 @@ PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event param
 
 ## Related Code
 
-- `Project/Domain/Interfaces/Entity/ProductAnalyticsEvent.swift`
-- `Project/Domain/Interfaces/UseCase/AnalyticsUseCase.swift`
-- `Project/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
-- `Project/App/Sources/DrinkWaterApp.swift`
-- `Project/App/Sources/Analytics/PostHogAnalyticsRepository.swift`
-- `Project/Shared/DependencyInjection/Sources/Production/DomainAssembly.swift`
-- `Project/Shared/DependencyInjection/Sources/Production/DataAssembly.swift`
+- `Project/Core/Analytics/Domain/Sources/Entity/ProductAnalyticsEvent.swift`
+- `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCase.swift`
+- `Project/Core/Analytics/Domain/Sources/UseCase/AnalyticsUseCaseImpl.swift`
+- `Project/Core/Analytics/Data/Sources/PostHogAnalyticsRepository.swift`
+- `Project/App/DependencyInjection/Sources/Production/DomainAssembly.swift`
+- `Project/App/DependencyInjection/Sources/Production/DataAssembly.swift`
 
 ## Related Docs
 

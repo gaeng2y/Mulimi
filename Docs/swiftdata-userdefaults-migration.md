@@ -29,8 +29,8 @@
 - This allows staged rollout where some layers still read UserDefaults.
 
 ## Verification
-- `DomainLayer` tests include UseCase delegation checks for event read/migration APIs.
-- `DataLayer` tests validate:
+- `HydrationDomain` tests include UseCase delegation checks for event read/migration APIs.
+- `HydrationData` tests validate:
   - one-time migration behavior,
   - event persistence on drink action,
   - event reset behavior.

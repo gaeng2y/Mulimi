@@ -1,0 +1,174 @@
+//
+//  DataAssembly.swift
+//  DependencyInjection
+//
+//  Created by Kyeongmo Yang on 9/17/25.
+//
+
+import AccountData
+import AccountDomain
+import ChallengeData
+import ChallengeDomain
+import Foundation
+import MulimiAnalytics
+import MulimiAnalyticsData
+import HydrationData
+import HydrationDomain
+import RoutineData
+import RoutineDomain
+import HydrationReminderData
+import HydrationReminderDomain
+import Swinject
+import Utils
+
+public final class DataAssembly: Assembly {
+    public func assemble(container: Container) {
+        // MARK: - DrinkWater
+        container.register(DrinkWaterDataSource.self) { resolver in
+            DrinkWaterHealthKitDataSource(
+                healthKitDataSource: resolver.resolve(HealthKitDataSource.self)!
+            )
+        }
+        .inObjectScope(.container)
+
+        // MARK: - HealthKit
+        container.register(HealthKitDataSource.self) { resolver in
+            HealthKitDataSourceImpl()
+        }
+
+        container.register(HealthKitRepository.self) { resolver in
+            HealthKitRepositoryImpl(
+                dataSource: resolver.resolve(HealthKitDataSource.self)!
+            )
+        }
+
+        container.register(DrinkWaterRepository.self) { resolver in
+            DrinkWaterRepositoryImpl(
+                dataSource: resolver.resolve(DrinkWaterDataSource.self)!
+            )
+        }
+
+        // MARK: - AppReviewRequest
+        container.register(AppReviewRequestStorageDataSource.self) { _ in
+            AppReviewRequestStorageDataSourceImpl(userDefaults: .standard)
+        }
+        .inObjectScope(.container)
+
+        container.register(AppReviewRequestRepository.self) { resolver in
+            AppReviewRequestRepositoryImpl(
+                storageDataSource: resolver.resolve(AppReviewRequestStorageDataSource.self)!
+            )
+        }
+
+        container.register(HydrationComebackRepository.self) { _ in
+            HydrationComebackRepositoryImpl(userDefaults: .standard)
+        }
+
+        // MARK: - Analytics
+        container.register(AnalyticsRepository.self) { _ in
+            Self.makeAnalyticsRepository()
+        }
+        .inObjectScope(.container)
+
+        // MARK: - UserPreferences
+        container.register(UserPreferencesDataSource.self) { resolver in
+            UserPreferencesDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(UserPreferencesRepository.self) { resolver in
+            UserPreferencesRepositoryImpl(
+                dataSource: resolver.resolve(UserPreferencesDataSource.self)!
+            )
+        }
+
+        container.register(HydrationGoalRecommendationDataSource.self) { _ in
+            FoundationModelsHydrationGoalRecommendationDataSource()
+        }
+
+        container.register(HydrationGoalRecommendationRepository.self) { resolver in
+            HydrationGoalRecommendationRepositoryImpl(
+                dataSource: resolver.resolve(HydrationGoalRecommendationDataSource.self)!
+            )
+        }
+
+        // MARK: - Routine
+        container.register(RoutineStorageDataSource.self) { _ in
+            RoutineStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(RoutineNotificationDataSource.self) { _ in
+            RoutineNotificationDataSourceImpl()
+        }
+
+        container.register(RoutineRepository.self) { resolver in
+            RoutineRepositoryImpl(
+                storageDataSource: resolver.resolve(RoutineStorageDataSource.self)!,
+                notificationDataSource: resolver.resolve(RoutineNotificationDataSource.self)!
+            )
+        }
+
+        // MARK: - HydrationReminder
+        container.register(HydrationReminderNotificationDataSource.self) { _ in
+            HydrationReminderNotificationDataSourceImpl()
+        }
+
+        container.register(HydrationReminderStorageDataSource.self) { _ in
+            HydrationReminderStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(HydrationReminderRepository.self) { resolver in
+            HydrationReminderRepositoryImpl(
+                notificationDataSource: resolver.resolve(HydrationReminderNotificationDataSource.self)!,
+                storageDataSource: resolver.resolve(HydrationReminderStorageDataSource.self)!
+            )
+        }
+
+        // MARK: - Challenge
+        container.register(ChallengeStorageDataSource.self) { _ in
+            ChallengeStorageDataSourceImpl(userDefaults: .appGroup)
+        }
+
+        container.register(ChallengeRepository.self) { resolver in
+            ChallengeRepositoryImpl(
+                storageDataSource: resolver.resolve(ChallengeStorageDataSource.self)!
+            )
+        }
+
+        // MARK: - Authentication
+        container.register(KeyChainDataSource.self) { resolver in
+            KeyChainDataSourceImpl()
+        }
+
+        container.register(AppleSignInDataSource.self) { resolver in
+            AppleSignInDataSourceImpl()
+        }
+
+        // 향후 서버 통신 시 추가:
+        // container.register(AuthenticationNetworkDataSource.self) { resolver in
+        //     AuthenticationNetworkDataSourceImpl()
+        // }
+
+        container.register(AuthenticationRepository.self) { resolver in
+            AuthenticationRepositoryImpl(
+                appleSignInDataSource: resolver.resolve(AppleSignInDataSource.self)!,
+                keyChainDataSource: resolver.resolve(KeyChainDataSource.self)!
+            )
+        }
+    }
+
+    // 위젯 확장의 Info.plist에는 PostHog 키가 없어 NoOp으로 동작한다.
+    private static func makeAnalyticsRepository() -> AnalyticsRepository {
+        guard let projectToken = Bundle.main.object(forInfoDictionaryKey: "PostHogProjectToken") as? String,
+              projectToken.hasPrefix("phc_"),
+              projectToken.count > 4,
+              let host = Bundle.main.object(forInfoDictionaryKey: "PostHogHost") as? String,
+              let hostURL = URL(string: host),
+              let hostScheme = hostURL.scheme?.lowercased(),
+              ["http", "https"].contains(hostScheme),
+              hostURL.host?.isEmpty == false else {
+            return NoOpAnalyticsRepository()
+        }
+
+        return PostHogAnalyticsRepository(projectToken: projectToken, host: host)
+    }
+}

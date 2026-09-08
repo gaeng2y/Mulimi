@@ -1,0 +1,290 @@
+import ChallengeDomain
+import HydrationDomain
+import RoutineDomain
+import Foundation
+import Testing
+
+@testable import ChallengeDomain
+
+@Suite("ChallengeUseCase Tests")
+struct ChallengeUseCaseTests {
+    @Test("3종 챌린지를 계산하고 새 완료 이력을 저장한다")
+    func fetchChallenges() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 1900,
+            monthlyAverageML: 1800,
+            weeklyAchievementRate: 0.75,
+            monthlyAchievementRate: 0.4,
+            weeklyAchievedDays: 3,
+            monthlyAchievedDays: 5,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 7,
+            currentStreakStartDate: calendar.date(from: DateComponents(year: 2026, month: 3, day: 6))!,
+            isEmpty: false
+        )
+
+        let drinkWaterRepository = MockDrinkWaterRepository()
+        drinkWaterRepository.setHydrationEvents(makeGoalAchievementEvents(calendar: calendar))
+        let challengeRepository = MockChallengeRepository()
+
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: progressUseCase,
+            challengeRepository: challengeRepository,
+            drinkWaterRepository: drinkWaterRepository
+        )
+
+        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+
+        #expect(challenges.count == 3)
+
+        let streak = challenges.first { $0.kind == .streak7 }
+        #expect(streak?.isCompleted == true)
+        #expect(streak?.progress == 1)
+        #expect(streak?.achievedAt == referenceDate)
+
+        let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
+        #expect(weekly?.isCompleted == false)
+        #expect(weekly?.primaryCurrentValue == 75)
+        #expect(weekly?.secondaryCurrentValue == 3)
+        #expect(weekly?.secondaryTargetValue == 4)
+
+        let count = challenges.first { $0.kind == .goalAchievement30 }
+        #expect(count?.primaryCurrentValue == 12)
+        #expect(count?.primaryTargetValue == 30)
+        #expect(count?.isCompleted == false)
+
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 1)
+        #expect(challengeRepository.lastSavedBadgeHistories.count == 1)
+        #expect(challengeRepository.lastSavedBadgeHistories.first?.kind == .streak7)
+        #expect(challengeRepository.lastSavedBadgeHistories.first?.achievedAt == referenceDate)
+    }
+
+    @Test("같은 주기의 반복형 챌린지는 완료 상태와 달성 시점을 유지한다")
+    func keepsRecurringCompletionWithinSameCycle() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let achievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 8))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 1200,
+            monthlyAverageML: 1200,
+            weeklyAchievementRate: 0.25,
+            monthlyAchievementRate: 0.25,
+            weeklyAchievedDays: 1,
+            monthlyAchievedDays: 3,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 1,
+            isEmpty: false
+        )
+
+        let challengeRepository = MockChallengeRepository()
+        let weeklyCycleID = HydrationChallengeKind.weeklyAchievement80.recurringCycleID(
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
+        challengeRepository.setBadgeHistories(
+            [
+                HydrationChallengeBadgeHistory(
+                    kind: .weeklyAchievement80,
+                    achievedAt: achievedAt,
+                    cycleID: weeklyCycleID
+                )
+            ]
+        )
+
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: progressUseCase,
+            challengeRepository: challengeRepository,
+            drinkWaterRepository: MockDrinkWaterRepository()
+        )
+
+        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
+
+        #expect(weekly?.isCompleted == true)
+        #expect(weekly?.progress == 1)
+        #expect(weekly?.achievedAt == achievedAt)
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 0)
+    }
+
+    @Test("새 주기로 넘어가면 반복형 챌린지는 완료 상태를 초기화한다")
+    func resetsRecurringCompletionWhenCycleChanges() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 17, hour: 9))!
+        let previousWeekDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let achievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 8))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 1200,
+            monthlyAverageML: 1200,
+            weeklyAchievementRate: 0.25,
+            monthlyAchievementRate: 0.3,
+            weeklyAchievedDays: 1,
+            monthlyAchievedDays: 5,
+            weeklyElapsedDays: 2,
+            monthlyElapsedDays: 17,
+            currentStreak: 0,
+            isEmpty: false
+        )
+
+        let challengeRepository = MockChallengeRepository()
+        let previousCycleID = HydrationChallengeKind.weeklyAchievement80.recurringCycleID(
+            referenceDate: previousWeekDate,
+            calendar: calendar
+        )
+        challengeRepository.setBadgeHistories(
+            [
+                HydrationChallengeBadgeHistory(
+                    kind: .weeklyAchievement80,
+                    achievedAt: achievedAt,
+                    cycleID: previousCycleID
+                )
+            ]
+        )
+
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: progressUseCase,
+            challengeRepository: challengeRepository,
+            drinkWaterRepository: MockDrinkWaterRepository()
+        )
+
+        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
+
+        #expect(weekly?.isCompleted == false)
+        #expect(weekly?.achievedAt == nil)
+        #expect(weekly?.progress == 0.3125)
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 0)
+    }
+
+    @Test("누적형 챌린지는 진행도가 바뀌어도 완료 상태를 유지한다")
+    func keepsCumulativeCompletion() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let achievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 9, hour: 8))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 1200,
+            monthlyAverageML: 1200,
+            weeklyAchievementRate: 0.25,
+            monthlyAchievementRate: 0.25,
+            weeklyAchievedDays: 1,
+            monthlyAchievedDays: 3,
+            weeklyElapsedDays: 4,
+            monthlyElapsedDays: 12,
+            currentStreak: 1,
+            isEmpty: false
+        )
+
+        let drinkWaterRepository = MockDrinkWaterRepository()
+        drinkWaterRepository.setHydrationEvents(makeGoalAchievementEvents(calendar: calendar, achievedDays: [1, 2, 3, 4, 5]))
+        let challengeRepository = MockChallengeRepository()
+        challengeRepository.setBadgeHistories(
+            [
+                HydrationChallengeBadgeHistory(
+                    kind: .goalAchievement30,
+                    achievedAt: achievedAt
+                )
+            ]
+        )
+
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: progressUseCase,
+            challengeRepository: challengeRepository,
+            drinkWaterRepository: drinkWaterRepository
+        )
+
+        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let count = challenges.first { $0.kind == .goalAchievement30 }
+
+        #expect(count?.isCompleted == true)
+        #expect(count?.progress == 1)
+        #expect(count?.achievedAt == achievedAt)
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 0)
+    }
+
+    @Test("반복형 챌린지는 새 주기 완료 시 배지 이력을 누적 저장한다")
+    func appendsRecurringBadgeHistoryForNewCycleCompletion() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 17, hour: 9))!
+        let previousWeekDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
+        let previousAchievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 8))!
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 2200,
+            monthlyAverageML: 2000,
+            weeklyAchievementRate: 1,
+            monthlyAchievementRate: 0.5,
+            weeklyAchievedDays: 2,
+            monthlyAchievedDays: 8,
+            weeklyElapsedDays: 2,
+            monthlyElapsedDays: 17,
+            currentStreak: 2,
+            isEmpty: false
+        )
+
+        let challengeRepository = MockChallengeRepository()
+        let previousCycleID = HydrationChallengeKind.weeklyAchievement80.recurringCycleID(
+            referenceDate: previousWeekDate,
+            calendar: calendar
+        )
+        challengeRepository.setBadgeHistories(
+            [
+                HydrationChallengeBadgeHistory(
+                    kind: .weeklyAchievement80,
+                    achievedAt: previousAchievedAt,
+                    cycleID: previousCycleID
+                )
+            ]
+        )
+
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: progressUseCase,
+            challengeRepository: challengeRepository,
+            drinkWaterRepository: MockDrinkWaterRepository()
+        )
+
+        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
+
+        #expect(weekly?.isCompleted == true)
+        #expect(weekly?.achievedAt == referenceDate)
+        #expect(challengeRepository.saveBadgeHistoriesCallCount == 1)
+        #expect(challengeRepository.lastSavedBadgeHistories.count == 2)
+        #expect(challengeRepository.lastSavedBadgeHistories.first?.cycleID != previousCycleID)
+        #expect(challengeRepository.lastSavedBadgeHistories.first?.achievedAt == referenceDate)
+    }
+
+    private func makeGoalAchievementEvents(calendar: Calendar, achievedDays: [Int] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) -> [HydrationEvent] {
+        achievedDays.compactMap { day in
+            guard let date = calendar.date(from: DateComponents(year: 2026, month: 3, day: day, hour: 9)) else {
+                return nil
+            }
+
+            return HydrationEvent(
+                id: UUID(),
+                consumedAt: date,
+                volumeML: 2000
+            )
+        }
+    }
+
+    private func makeCalendar() -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "ko_KR")
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar.firstWeekday = 2
+        calendar.minimumDaysInFirstWeek = 4
+        return calendar
+    }
+}

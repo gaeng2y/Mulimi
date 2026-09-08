@@ -1,0 +1,232 @@
+//
+//  PresentationAssembly.swift
+//  DependencyInjection
+//
+//  Created by Kyeongmo Yang on 9/17/25.
+//
+
+import AccountDomain
+import AccountPresentation
+import ChallengeDomain
+import ChallengePresentation
+import MulimiAnalytics
+import MulimiPlatform
+import MulimiNavigation
+import HydrationDomain
+import HydrationPresentation
+import RoutineDomain
+import RoutinePresentation
+import HydrationReminderDomain
+import HydrationReminderPresentation
+import Swinject
+
+public final class PresentationAssembly: Assembly {
+    public func assemble(container: Container) {
+        // MARK: - Navigation
+        container.register(AppSession.self) { _ in
+            AppSession()
+        }
+        .inObjectScope(.container)
+        container.register(AppCoordinator.self) { _ in
+            AppCoordinator()
+        }
+        .inObjectScope(.container)
+
+        container.register((any WidgetTimelineReloading).self) { _ in
+            SystemWidgetTimelineReloader()
+        }
+        .inObjectScope(.container)
+
+        container.register((any AppInfoProviding).self) { _ in
+            BundleAppInfoProvider()
+        }
+        .inObjectScope(.container)
+
+        // MARK: - DrinkWater
+        container.register(DrinkWaterViewModel.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let nextActionGuideUseCase = resolver.resolve(HydrationNextActionGuideUseCase.self)!
+            let widgetTimelineReloader = resolver.resolve((any WidgetTimelineReloading).self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+            let appReviewRequestUseCase = resolver.resolve(AppReviewRequestUseCase.self)!
+            let appInfoProvider = resolver.resolve((any AppInfoProviding).self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let comebackRepository = resolver.resolve(HydrationComebackRepository.self)!
+            #if MULIMI_COMEBACK_EXPERIMENT && MULIMI_COMEBACK_BASELINE
+            #error("Select only one comeback experiment variant")
+            #elseif MULIMI_COMEBACK_EXPERIMENT
+            let comebackMode = HydrationComebackMode.card
+            #elseif MULIMI_COMEBACK_BASELINE
+            let comebackMode = HydrationComebackMode.baseline
+            #else
+            let comebackMode = HydrationComebackMode.disabled
+            #endif
+
+            return MainActor.assumeIsolated {
+                DrinkWaterViewModel(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    nextActionGuideUseCase: nextActionGuideUseCase,
+                    widgetTimelineReloader: widgetTimelineReloader,
+                    analyticsUseCase: analyticsUseCase,
+                    appReviewRequestUseCase: appReviewRequestUseCase,
+                    appInfoProvider: appInfoProvider,
+                    progressUseCase: progressUseCase,
+                    comebackRepository: comebackRepository,
+                    comebackMode: comebackMode
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        // MARK: - HealthKit
+        container.register(HydrationRecordListViewModel.self) { resolver in
+            HydrationRecordListViewModel(
+                useCase: resolver.resolve(DrinkWaterUseCase.self)!,
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!
+            )
+        }
+
+        container.register(HydrationInsightViewModel.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let routineAdherenceUseCase = resolver.resolve(HydrationRoutineAdherenceUseCase.self)!
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationInsightViewModel(
+                    waterUseCase: waterUseCase,
+                    progressUseCase: progressUseCase,
+                    routineAdherenceUseCase: routineAdherenceUseCase,
+                    routineUseCase: routineUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(ChallengeViewModel.self) { resolver in
+            let challengeUseCase = resolver.resolve(ChallengeUseCase.self)!
+            let personalizedChallengeUseCase = resolver.resolve(PersonalizedChallengeUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ChallengeViewModel(
+                    challengeUseCase: challengeUseCase,
+                    personalizedChallengeUseCase: personalizedChallengeUseCase,
+                    progressUseCase: progressUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(ProfileRoutineViewModel.self) { resolver in
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let routineRecommendationUseCase = resolver.resolve(RoutineRecommendationUseCase.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                ProfileRoutineViewModel(
+                    routineUseCase: routineUseCase,
+                    routineRecommendationUseCase: routineRecommendationUseCase,
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        // MARK: - Authentication
+        container.register(AuthenticationViewModel.self) { resolver in
+            AuthenticationViewModel(
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                appSession: resolver.resolve(AppSession.self)!,
+                analyticsUseCase: resolver.resolve(AnalyticsUseCase.self)!
+            )
+        }
+        .inObjectScope(.container)
+
+        container.register(OnboardingViewModel.self) { resolver in
+            let userPreferencesUseCase = resolver.resolve(UserPreferencesUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                OnboardingViewModel(
+                    userPreferencesUseCase: userPreferencesUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+
+        container.register(HydrationReminderPermissionViewModel.self) { resolver in
+            let hydrationReminderUseCase = resolver.resolve(HydrationReminderUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationReminderPermissionViewModel(
+                    hydrationReminderUseCase: hydrationReminderUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HealthKitPermissionViewModel.self) { resolver in
+            let healthKitUseCase = resolver.resolve(HealthKitUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HealthKitPermissionViewModel(
+                    healthKitUseCase: healthKitUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(BodyProfileViewModel.self) { resolver in
+            let bodyProfileUseCase = resolver.resolve(BodyProfileUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                BodyProfileViewModel(
+                    bodyProfileUseCase: bodyProfileUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationGoalRecommendationViewModel.self) { resolver in
+            let useCase = resolver.resolve(HydrationGoalRecommendationUseCase.self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+
+            return MainActor.assumeIsolated {
+                HydrationGoalRecommendationViewModel(
+                    useCase: useCase,
+                    progressUseCase: progressUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        // MARK: - Settings
+        container.register(SettingsViewModel.self) { resolver in
+            SettingsViewModel(
+                userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
+                signInUseCase: resolver.resolve(SignInUseCase.self)!,
+                hydrationReminderUseCase: resolver.resolve(HydrationReminderUseCase.self)!,
+                appSession: resolver.resolve(AppSession.self)!,
+                widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!,
+                appInfoProvider: resolver.resolve((any AppInfoProviding).self)!,
+                analyticsUseCase: resolver.resolve(AnalyticsUseCase.self)!
+            )
+        }
+    }
+}

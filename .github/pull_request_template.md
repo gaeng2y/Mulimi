@@ -54,9 +54,9 @@
 - [ ] `make lint`
 - [ ] `make arch-check`
 - [ ] `tuist generate`
-- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme DomainLayer ...`
-- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme DataLayer ...`
-- [ ] `xcodebuild test -workspace Mulimi.xcworkspace -scheme PresentationLayer ...`
+- [ ] 변경 기능의 `<Feature>Domain` 테스트
+- [ ] 변경 기능의 `<Feature>Data` 테스트
+- [ ] 변경 기능의 `<Feature>Presentation` 테스트
 - [ ] `xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi ...`
 
 ### 실행하지 않은 검증과 이유

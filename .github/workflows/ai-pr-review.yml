@@ -117,7 +117,7 @@ jobs:
               "Do not invent facts, line numbers, files, or test results that are not visible in the diff.",
               "Focus on correctness, regressions, security, architecture boundaries, and missing tests.",
               "Mulimi architecture rules:",
-              "- DomainLayerInterface and DomainLayer must not depend on SwiftUI, Localization, UI strings, or system images.",
+              "- Feature Domain targets must not depend on SwiftUI, Localization, UI strings, system images, Data, or Presentation.",
               "- ViewModels must manage presentation state only and must not directly use UIApplication, WidgetCenter, NotificationCenter, Bundle, or UserDefaults.",
               "- Global push navigation belongs in ContentView and AppCoordinator.",
               "- Hydration records use HealthKit as the source of truth.",

@@ -1,3 +1,6 @@
 .agents/
 .codex/
 *.png
+
+# Generated graphs, backups, and local session history are not source material.
+graphify-out/

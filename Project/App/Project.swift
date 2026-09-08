@@ -66,14 +66,22 @@ let project = Project(
             dependencies: [
                 .target(name: "MulimiWatch"),
                 .target(name: "WidgetExtension"),
+                .target(name: "MulimiNavigation"),
                 .project(
                     target: "DependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 ),
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "AccountPresentation", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "ChallengePresentation", path: .relativeToRoot("Project/Features/Challenge")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "HydrationPresentation", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(
-                    target: "DomainLayerInterface",
-                    path: .relativeToRoot("Project/Domain")
+                    target: "HydrationReminderPresentation",
+                    path: .relativeToRoot("Project/Features/HydrationReminder")
                 ),
+                .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
                 .project(
                     target: "Localization",
                     path: .relativeToRoot("Project/Shared/Localization")
@@ -81,8 +89,7 @@ let project = Project(
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
-                ),
-                .external(name: "PostHog")
+                )
             ],
             settings: .settings(
                 base: [
@@ -106,14 +113,62 @@ let project = Project(
                 path: .relativeToRoot("Supporting Files/WidgetExtension.entitlements")
             ),
             dependencies: [
+                .project(target: "AccountDomain", path: .relativeToRoot("Project/Features/Account")),
+                .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
+                .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")
                 ),
                 .project(
                     target: "DependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 )
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+                    "SWIFT_VERSION": .string("6.0")
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
+                ]
+            )
+        ),
+        .target(
+            name: "MulimiNavigation",
+            destinations: .iOS,
+            product: .framework,
+            bundleId: "\(bundleId).Navigation",
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Navigation/Sources/**"],
+            dependencies: [
+                .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine"))
+            ],
+            settings: .settings(
+                base: [
+                    "APP_MARKETING_VERSION": .string(AppVersion.marketingVersion),
+                    "APP_BUILD_NUMBER": .string(AppVersion.buildNumber),
+                    "SWIFT_VERSION": .string("6.0")
+                ],
+                configurations: [
+                    .debug(name: "Debug"),
+                    .release(name: "Release")
+                ]
+            )
+        ),
+        .target(
+            name: "MulimiNavigationTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId: "\(bundleId).Navigation.Tests",
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Navigation/Tests/**"],
+            dependencies: [
+                .target(name: "MulimiNavigation")
             ],
             settings: .settings(
                 base: [
@@ -170,7 +225,7 @@ let project = Project(
             dependencies: [
                 .project(
                     target: "WatchDependencyInjection",
-                    path: .relativeToRoot("Project/Shared/DependencyInjection")
+                    path: .relativeToRoot("Project/App/DependencyInjection")
                 )
             ],
             settings: .settings(

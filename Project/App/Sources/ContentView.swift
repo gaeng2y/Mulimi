@@ -8,7 +8,11 @@
 
 import DependencyInjection
 import Localization
-import PresentationLayer
+import AccountPresentation
+import ChallengePresentation
+import HydrationPresentation
+import MulimiNavigation
+import RoutinePresentation
 import SwiftUI
 
 struct ContentView: View {
@@ -82,7 +86,7 @@ struct ContentView: View {
                         appCoordinator.push(.profileRoutineAction(action))
                     },
                     onDailyGoalAction: {
-                        appCoordinator.push(.setting(.dailyLimit))
+                        appCoordinator.pushRoute(AccountRoute.setting(.dailyLimit))
                     },
                     onRecordAction: {
                         selectedTab = .drink
@@ -118,6 +122,9 @@ struct ContentView: View {
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
+            .navigationDestination(for: AccountRoute.self) { route in
+                destinationView(for: route)
+            }
         }
         .tint(.accent)
         .task {
@@ -126,7 +133,22 @@ struct ContentView: View {
         .task(id: selectedTab) {
             await refreshSelectedTab()
         }
+        .task(id: scenePhase == .active && appCoordinator.path.isEmpty) {
+            guard scenePhase == .active, appCoordinator.path.isEmpty else {
+                return
+            }
+            if await drinkWaterViewModel.prepareComebackIfNeeded() {
+                guard !Task.isCancelled, scenePhase == .active, appCoordinator.path.isEmpty else {
+                    drinkWaterViewModel.endComebackPresentation()
+                    return
+                }
+                selectedTab = .drink
+            }
+        }
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                drinkWaterViewModel.endComebackPresentation()
+            }
             guard newPhase == .active else {
                 return
             }
@@ -142,13 +164,19 @@ struct ContentView: View {
         switch route {
         case .hydrationLogging:
             DrinkWaterView(viewModel: drinkWaterViewModel)
-        case .profileRoutine:
-            ProfileRoutineView(viewModel: routineViewModel)
         case let .profileRoutineAction(action):
             ProfileRoutineView(
                 viewModel: routineViewModel,
                 initialAction: action
             )
+        }
+    }
+
+    @ViewBuilder
+    private func destinationView(for route: AccountRoute) -> some View {
+        switch route {
+        case .profileRoutine:
+            ProfileRoutineView(viewModel: routineViewModel)
         case let .setting(menu):
             switch menu {
             case .bodyProfile:

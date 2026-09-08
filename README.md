@@ -47,16 +47,20 @@
 - `App`
   - 앱 진입점, `ContentView`, 루트 조립
   - iOS 앱, 위젯, watch 앱 타깃 정의
+  - 전역 내비게이션(`AppCoordinator`, `AppRoute`) 소유
 - `Presentation`
   - SwiftUI View / ViewModel
-  - `AppCoordinator`, `AppSession` 등 화면 상태와 라우팅
+  - 화면 상태, 포맷된 표시 모델, feature 소유 라우트 값
 - `Domain`
   - Entity, UseCase, Repository 인터페이스
   - UI/로컬라이제이션 의존성이 없는 비즈니스 규칙
 - `Data`
   - Repository 구현체, HealthKit/UserDefaults/iCloud KVS 연동
+- `Features`
+  - 기능별 `Domain / Data / Presentation` 수직 모듈
+  - 신규 전환은 `HydrationReminder`부터 적용
 - `Shared`
-  - `DependencyInjection`, `Localization`, `DesignSystem`, `Persistence`, `Utils`
+  - `Localization`, `DesignSystem`, `Persistence`, `Utils`
 - `Widget`
   - 홈 화면/잠금화면 위젯과 AppIntent
 
@@ -96,25 +100,21 @@ Mulimi/
 ├── Project/
 │   ├── App/
 │   │   ├── Sources/
-│   │   └── Watch/
-│   ├── Domain/
-│   │   ├── Interfaces/
-│   │   ├── SharedInterfaces/
-│   │   ├── Sources/
-│   │   ├── WatchInterfaces/
-│   │   └── WatchSources/
-│   ├── Data/
-│   │   ├── Sources/
-│   │   └── WatchSources/
-│   ├── Presentation/
-│   │   ├── Sources/
-│   │   ├── Tests/
-│   │   └── WatchSources/
+│   │   ├── Watch/
+│   │   └── DependencyInjection/
+│   ├── Core/
+│   ├── Features/
+│   │   ├── Account/
+│   │   ├── Challenge/
+│   │   ├── Hydration/
+│   │   ├── HydrationReminder/
+│   │   ├── Routine/
+│   │   └── WatchHydration/
+│   │       └── 각 기능의 Domain / Data / Presentation
 │   ├── Widget/
 │   │   ├── Sources/
 │   │   └── Resources/
 │   └── Shared/
-│       ├── DependencyInjection/
 │       ├── DesignSystem/
 │       ├── Localization/
 │       ├── Persistence/
@@ -137,16 +137,19 @@ Mulimi/
 ### 대표 모듈
 
 - `Project/App`
-  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`
-- `Project/Domain`
-  - `DomainLayerInterface`, `DomainLayer`
-  - `WatchDomainLayerInterface`, `WatchDomainLayer`
-  - `SharedInterfaces`: 앱/워치가 같은 수분 단위, next-action, 루틴 수행률 계산을 보는 공용 소스
-- `Project/Data`
-  - `DataLayer`, `WatchDataLayer`
-- `Project/Presentation`
-  - `PresentationLayer`, `WatchPresentationLayer`
-- `Project/Shared/DependencyInjection`
+  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`, `MulimiNavigation`(전역 내비게이션)
+- `Project/Core`
+  - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
+  - `Platform`: `MulimiPlatform`(`Bundle`·`WidgetCenter` 어댑터)
+  - `CloudKit`: `MulimiCloudKit`(iCloud KVS+미러 저장소, iOS·watchOS)
+  - `HealthKit`: `MulimiHealthKit`(HealthKit quantity 저장소, iOS·watchOS)
+  - `Keychain`: `MulimiKeychain`(String 키 Keychain 저장소)
+- `Project/Features/Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`
+  - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
+- `Project/Features/WatchHydration`
+  - `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`
+  - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유
+- `Project/App/DependencyInjection`
   - `DependencyInjection`, `WatchDependencyInjection`
 
 ## 🚀 시작하기
@@ -214,10 +217,11 @@ make verify
 ```bash
 uv tool install graphifyy
 graphify query "수분 기록은 앱과 위젯 사이에서 어떻게 연결되는가?"
-graphify update .
 ```
 
 Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습니다. 분석 범위는 `.graphifyignore`, 공유 산출물은 `graphify-out/`에서 관리합니다.
+
+공유 그래프와 라벨 정보는 Git으로 관리하고, HTML·캐시·날짜별 백업·세션 기록은 로컬에만 둡니다. 자세한 구분은 [Graphify 산출물 관리](Docs/harness-engineering.md#graphify-artifacts)를 따릅니다.
 
 ## 📖 문서 읽기 순서
 
