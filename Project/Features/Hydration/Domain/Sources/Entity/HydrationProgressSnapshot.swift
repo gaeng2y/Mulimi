@@ -14,6 +14,8 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
     public let monthlyElapsedDays: Int
     public let currentStreak: Int
     public let currentStreakStartDate: Date?
+    /// The latest positive record in the seven-day lookback, including today.
+    public let recentRecordDate: Date?
     public let isEmpty: Bool
 
     public init(
@@ -30,6 +32,7 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
         monthlyElapsedDays: Int,
         currentStreak: Int,
         currentStreakStartDate: Date? = nil,
+        recentRecordDate: Date? = nil,
         isEmpty: Bool
     ) {
         self.dailyGoalML = dailyGoalML
@@ -45,7 +48,23 @@ public struct HydrationProgressSnapshot: Equatable, Sendable {
         self.monthlyElapsedDays = monthlyElapsedDays
         self.currentStreak = currentStreak
         self.currentStreakStartDate = currentStreakStartDate
+        self.recentRecordDate = recentRecordDate
         self.isEmpty = isEmpty
+    }
+
+    public func comebackGapDays(referenceDate: Date, calendar: Calendar) -> Int? {
+        guard todayIntakeML == 0, let recentRecordDate, recentRecordDate <= referenceDate,
+              let elapsedDays = calendar.dateComponents(
+                [.day],
+                from: calendar.startOfDay(for: recentRecordDate),
+                to: calendar.startOfDay(for: referenceDate)
+              ).day else {
+            return nil
+        }
+
+        // Exclude the last recorded day and the incomplete return day.
+        let gapDays = elapsedDays - 1
+        return (2...6).contains(gapDays) ? gapDays : nil
     }
 
     public static func empty(dailyGoalML: Double) -> HydrationProgressSnapshot {

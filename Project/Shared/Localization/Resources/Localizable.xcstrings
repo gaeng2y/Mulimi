@@ -1,6 +1,50 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "drinkWaterComebackBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 시작해요"
+          }
+        }
+      }
+    },
+    "drinkWaterComebackHeadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 한 번으로 다시 시작"
+          }
+        }
+      }
+    },
+    "drinkWaterComebackDescriptionFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "쉬었던 날은 괜찮아요. 아래 ‘%@’ 버튼으로 오늘 한 잔을 남겨보세요."
+          }
+        }
+      }
+    },
+    "drinkWaterComebackDismissTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 시작 안내 닫기"
+          }
+        }
+      }
+    },
     "commonApplyTitle" : {
       "extractionState" : "manual",
       "localizations" : {

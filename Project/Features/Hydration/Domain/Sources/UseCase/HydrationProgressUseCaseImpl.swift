@@ -28,11 +28,20 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
 
         let elapsedWeekInterval = elapsedInterval(from: weekInterval, upTo: referenceDate, calendar: calendar)
         let elapsedMonthInterval = elapsedInterval(from: monthInterval, upTo: referenceDate, calendar: calendar)
+        let recentStart = calendar.date(byAdding: .day, value: -7, to: calendar.startOfDay(for: referenceDate))
+            ?? referenceDate
 
         async let weeklyEvents = drinkWaterRepository.hydrationEvents(in: elapsedWeekInterval)
         async let monthlyEvents = drinkWaterRepository.hydrationEvents(in: elapsedMonthInterval)
+        async let recentEvents = drinkWaterRepository.hydrationEvents(
+            in: DateInterval(start: recentStart, end: referenceDate)
+        )
 
         let (resolvedWeeklyEvents, resolvedMonthlyEvents) = await (weeklyEvents, monthlyEvents)
+        let recentRecordDate = await recentEvents
+            .filter { $0.volumeML > 0 && $0.consumedAt <= referenceDate }
+            .map(\.consumedAt)
+            .max()
         let weeklyTotals = dailyTotals(from: resolvedWeeklyEvents, calendar: calendar)
         let monthlyTotals = dailyTotals(from: resolvedMonthlyEvents, calendar: calendar)
 
@@ -64,6 +73,7 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
             monthlyElapsedDays: monthlyElapsedDays,
             currentStreak: streakProgress.count,
             currentStreakStartDate: streakProgress.startDate,
+            recentRecordDate: recentRecordDate,
             isEmpty: resolvedWeeklyEvents.isEmpty && resolvedMonthlyEvents.isEmpty
         )
     }
