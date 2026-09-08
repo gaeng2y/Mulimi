@@ -133,7 +133,7 @@
 
 ## Comeback Experiment (#323)
 
-- 일반 빌드는 컴백 이벤트를 보내지 않는다. 비교군/카드 빌드 구분과 판정 기준은 [Challenge and Insight](challenge-insight.md#comeback-experiment-323)를 따른다.
+- Release는 컴백 카드를 기본 활성화하며, 기본 Debug와 컴백 조건을 모두 제거한 빌드는 컴백 이벤트를 보내지 않는다. 비교군/카드 빌드 구분과 판정 기준은 [Challenge and Insight](challenge-insight.md#comeback-experiment-323)를 따른다.
 - 공통 `source`는 `drink_water_main`, `context`는 `comeback_baseline` 또는 `comeback_card`다. 마지막 건강 기록 시각, 자유 입력, 별도 사용자 식별자는 추가하지 않는다.
 - 즉시 기록률은 두 군 모두 `hydration_comeback_eligible` 이후 같은 PostHog `distinct_id` + SDK `$session_id`의 `water_logged` 성공으로 계산한다. 카드 노출 대비 기록률은 실험군에서 별도로 계산한다. 기존 `water_logged`를 재발행하지 않는다.
 - CTA 성공률은 `hydration_comeback_record_result.status = success / hydration_comeback_cta_tapped`다. 실패 후 재시도는 별도 시도이며, 저장 중 중복 탭은 집계하지 않는다.

@@ -1,3 +1,4 @@
 #include "Secrets.xcconfig"
 
-// Add other release-specific settings here
+// Include #322 Control Widget and #323 comeback card in Release archives.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) MULIMI_CONTROL_WIDGET_EXPERIMENT MULIMI_COMEBACK_EXPERIMENT

@@ -47,7 +47,7 @@
 
 ### Scope And Eligibility
 
-[이슈 #323](https://github.com/gaeng2y/Mulimi/issues/323)의 검증용 구현이다. 일반 빌드에는 노출하지 않으며, 실험 성공이나 정식 출시를 뜻하지 않는다.
+[이슈 #323](https://github.com/gaeng2y/Mulimi/issues/323)의 검증용 구현이다. Release에서는 기본 활성화하고 Debug에서는 기본 비활성이다. Release 포함 자체가 실험 성공이나 실제 배포 완료를 뜻하지 않는다.
 
 - 공백은 **마지막 양수 수분 기록일과 복귀일 사이의 완전히 비어 있는 날짜 수**다. 예를 들어 9월 1일 마지막 기록 후 9월 4일 복귀는 2일 공백이다. 목표 미달이나 끊어진 목표 달성 streak로 판정하지 않는다.
 - `HydrationProgress`가 HealthKit의 최근 7일과 오늘을 조회한다. 2~6일 공백, 오늘 기록 0, 기본 한 잔을 기록할 목표 여유가 있을 때만 후보가 된다. 월/주 경계도 조회하며, 기록 이력 없음·오늘 기록 있음·1일 이하·7일 이상 공백은 제외한다. 기존 이력 정책대로 다른 앱/건강 앱의 양수 기록도 기록일로 센다.
@@ -60,25 +60,27 @@
 
 ### Build Variants
 
-같은 커밋으로 아래 두 Release 빌드를 만들고 서로 다른 build number를 부여한다. 프로젝트 설정의 영구 기본값은 바꾸지 않는다. 두 플래그를 동시에 넣으면 컴파일 오류가 난다.
+공통 `XCConfig/Release.xcconfig`가 #322 Control과 컴백 카드 플래그를 함께 켠다. App 프로젝트와 실제 모드를 조립하는 DependencyInjection 프로젝트가 이 설정을 공유하므로 추가 명령행 플래그 없이 일반 Release/Archive에서 둘 다 확인할 수 있다. Debug의 기본값은 바꾸지 않는다.
+
+단독 효과 비교는 같은 커밋으로 아래 두 Release 빌드를 만들고 서로 다른 build number를 부여한다. `$(inherited)` 없이 조건을 덮어써 Control을 두 군에서 모두 제외한다. 컴백 카드와 baseline 플래그를 동시에 넣으면 컴파일 오류가 난다.
 
 ```sh
 # 비교군: 기존 안내 유지 + 같은 eligibility 이벤트
 xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
   -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) MULIMI_COMEBACK_BASELINE'
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS=MULIMI_COMEBACK_BASELINE
 
 # 실험군: 같은 대상 판정 + 컴백 카드
 xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
   -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) MULIMI_COMEBACK_EXPERIMENT'
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS=MULIMI_COMEBACK_EXPERIMENT
 ```
 
-서명 없는 로컬 빌드는 컴파일 검증용이다. TestFlight 배포는 운영자가 정상 서명/archive 절차로 별도 진행한다. 어느 플래그도 없으면 기존 동작이며 컴백 이벤트도 없다. PostHog 설정이 없으면 기존 NoOp 분석 구현이므로 측정 빌드로 사용하지 않는다.
+서명 없는 로컬 빌드는 컴파일 검증용이다. TestFlight와 App Store archive는 같은 Release 기본값을 쓰며 배포는 운영자가 정상 서명/archive 절차로 별도 진행한다. 두 기능을 끄는 Release 빌드는 `SWIFT_ACTIVE_COMPILATION_CONDITIONS=''`로 덮어쓴다. PostHog 설정이 없으면 기존 NoOp 분석 구현이므로 측정 빌드로 사용하지 않는다.
 
 ### Measurement Protocol
 
-1. 모집 전에 두 군의 빌드 번호, 동시 관찰 기간, 참여 조건을 고정한다. 기존 사용자를 두 빌드에 무작위 배정하고 같은 설치 안내를 제공한다. 다른 전환 실험 플래그는 끈다. 군 변경/재설치는 별도 이탈로 기록한다.
+1. 모집 전에 두 군의 빌드 번호, 동시 관찰 기간, 참여 조건을 고정한다. 기존 사용자를 두 빌드에 무작위 배정하고 같은 설치 안내를 제공한다. 다른 전환 실험 플래그는 끈다. 두 기능이 함께 켜진 일반 Release 결과를 컴백 카드만의 효과로 해석하지 않는다. 군 변경/재설치는 별도 이탈로 기록한다.
 2. 각 군의 첫 `hydration_comeback_eligible`을 코호트 진입으로 삼는다. 사용자별 첫 복귀만 주 분석에 사용한다. 14일 모집 후 유효 표본이 각 군 30명 미만이면 최대 28일까지 연장하고, 마지막 진입자의 D7까지 기다린다.
 3. 즉시 기록률은 `eligible` 이후 같은 `distinct_id`와 SDK `$session_id`에서 `water_logged`가 발생한 사용자 / eligible 사용자다. 실험군의 `viewed` 대비 성공률과 CTA 시도 대비 `record_result.success`도 별도로 낸다. raw 이벤트 수를 사용자 전환율로 쓰지 않는다.
 4. D0는 복귀일이다. D1~D7의 완전한 KST 날짜에 양수 HealthKit 기록이 있는 고유 날짜 수(0~7), 그중 하루 이상 기록한 비율을 비교한다. 각 군에서 같은 동의·확인 절차로 기기 내 이력을 확인한다. 오늘 기록·목표 달성일을 대신 사용하지 않는다.
