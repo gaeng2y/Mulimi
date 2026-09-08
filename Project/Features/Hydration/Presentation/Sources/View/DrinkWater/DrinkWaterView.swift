@@ -45,7 +45,7 @@ public struct DrinkWaterView: View {
                         nextActionSummary
                             .padding(.top, 8)
                             .padding(.horizontal, 24)
-                            .accessibilityElement(children: .combine)
+                            .accessibilityElement(children: viewModel.isComebackCardVisible ? .contain : .combine)
 
                         Spacer(minLength: 0)
 
@@ -71,6 +71,12 @@ public struct DrinkWaterView: View {
         .task {
             // Refresh data when view appears to catch any Widget changes.
             await viewModel.loadInitialState()
+        }
+        .task(id: scenePhase == .active ? viewModel.comebackOpportunityDate : nil) {
+            guard scenePhase == .active else {
+                return
+            }
+            viewModel.trackComebackPresentation()
         }
         .task(id: viewModel.recordSuccessFeedbackMessage) {
             guard viewModel.recordSuccessFeedbackMessage != nil else {
@@ -143,6 +149,7 @@ public struct DrinkWaterView: View {
         }
         .onDisappear {
             viewModel.cancelPendingAppReviewRequest()
+            viewModel.endComebackPresentation()
         }
     }
 
@@ -293,12 +300,26 @@ public struct DrinkWaterView: View {
 
     private var nextActionSummary: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label(
-                viewModel.nextActionBadgeText,
-                systemImage: "drop.circle.fill"
-            )
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(Color.accent)
+            HStack {
+                Label(
+                    viewModel.nextActionBadgeText,
+                    systemImage: "drop.circle.fill"
+                )
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accent)
+
+                if viewModel.isComebackCardVisible {
+                    Spacer()
+                    Button {
+                        viewModel.dismissComeback()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .frame(minWidth: 44, minHeight: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(L10n.tr("drinkWaterComebackDismissTitle"))
+                }
+            }
 
             Text(viewModel.nextActionHeadline)
                 .font(.subheadline.weight(.semibold))

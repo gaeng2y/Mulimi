@@ -46,6 +46,12 @@ struct HydrationRecordFailureAlertModel: Equatable {
     let showsOpenSettingsAction: Bool
 }
 
+public enum HydrationComebackMode: String, Sendable {
+    case disabled
+    case baseline
+    case card
+}
+
 @MainActor
 @Observable
 public final class DrinkWaterViewModel {
@@ -59,10 +65,15 @@ public final class DrinkWaterViewModel {
     private(set) var recordSuccessFeedbackMessage: String?
     private(set) var pendingAppReviewRequestID: UUID?
     private(set) var isRecording = false
+    private(set) var comebackOpportunityDate: Date?
+    private var hasTrackedComebackPresentation = false
 
     private let waterUseCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let nextActionGuideUseCase: HydrationNextActionGuideUseCase
+    private let progressUseCase: HydrationProgressUseCase?
+    private let comebackRepository: HydrationComebackRepository?
+    private let comebackMode: HydrationComebackMode
     private let widgetTimelineReloader: any WidgetTimelineReloading
     private let analyticsUseCase: AnalyticsUseCase
     private let appReviewRequestUseCase: AppReviewRequestUseCase
@@ -106,7 +117,11 @@ public final class DrinkWaterViewModel {
     }
 
     var nextActionBadgeText: String {
-        L10n.tr("drinkWaterNextActionBadge")
+        L10n.tr(isComebackCardVisible ? "drinkWaterComebackBadge" : "drinkWaterNextActionBadge")
+    }
+
+    var isComebackCardVisible: Bool {
+        comebackMode == .card && comebackOpportunityDate != nil
     }
 
     var isFirstRecordGuideActive: Bool {
@@ -114,6 +129,10 @@ public final class DrinkWaterViewModel {
     }
 
     var nextActionHeadline: String {
+        if isComebackCardVisible {
+            return L10n.tr("drinkWaterComebackHeadline")
+        }
+
         switch nextActionGuide.state {
         case .readyToDrink:
             return isFirstRecordGuideActive
@@ -136,6 +155,10 @@ public final class DrinkWaterViewModel {
     }
 
     var nextActionDescription: String {
+        if isComebackCardVisible {
+            return L10n.tr("drinkWaterComebackDescriptionFormat", L10n.tr("drinkWaterButtonTitle"))
+        }
+
         switch nextActionGuide.state {
         case .goalReached:
             return L10n.tr("drinkWaterNextActionGoalReachedDescription")
@@ -181,12 +204,18 @@ public final class DrinkWaterViewModel {
             appVersion: "-",
             appBuildNumber: "-"
         ),
+        progressUseCase: HydrationProgressUseCase? = nil,
+        comebackRepository: HydrationComebackRepository? = nil,
+        comebackMode: HydrationComebackMode = .disabled,
         calendar: Calendar = .current,
         nowProvider: @escaping @Sendable () -> Date = { .now }
     ) {
         self.waterUseCase = waterUseCase
         self.userPreferencesUseCase = userPreferencesUseCase
         self.nextActionGuideUseCase = nextActionGuideUseCase
+        self.progressUseCase = progressUseCase
+        self.comebackRepository = comebackRepository
+        self.comebackMode = comebackMode
         self.widgetTimelineReloader = widgetTimelineReloader
         self.analyticsUseCase = analyticsUseCase
         self.appReviewRequestUseCase = appReviewRequestUseCase
@@ -239,13 +268,92 @@ public final class DrinkWaterViewModel {
         await refreshState()
     }
 
+    public func prepareComebackIfNeeded() async -> Bool {
+        guard comebackMode != .disabled, let progressUseCase, let comebackRepository,
+              comebackOpportunityDate == nil, !isRecording else {
+            return false
+        }
+
+        let referenceDate = nowProvider()
+        let snapshot = await progressUseCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
+        let currentIntake = await waterUseCase.currentWaterIntakeML
+        guard !Task.isCancelled, !isRecording, comebackOpportunityDate == nil,
+              calendar.isDate(referenceDate, inSameDayAs: nowProvider()),
+              currentIntake == 0, snapshot.dailyGoalML >= Double(HydrationServing.defaultGlassVolumeML),
+              snapshot.comebackGapDays(referenceDate: referenceDate, calendar: calendar) != nil,
+              let recentRecordDate = snapshot.recentRecordDate,
+              (comebackRepository.fetchLastHandledDate() ?? .distantPast) < recentRecordDate else {
+            return false
+        }
+
+        currentWaterIntakeML = currentIntake
+        updateDailyLimit()
+        comebackOpportunityDate = referenceDate
+        return true
+    }
+
+    func trackComebackPresentation() {
+        guard let comebackOpportunityDate, !hasTrackedComebackPresentation else {
+            return
+        }
+        guard calendar.isDate(comebackOpportunityDate, inSameDayAs: nowProvider()),
+              currentWaterIntakeML == 0, !isRecording else {
+            endComebackPresentation()
+            return
+        }
+
+        comebackRepository?.saveLastHandledDate(comebackOpportunityDate)
+        hasTrackedComebackPresentation = true
+        trackComebackEvent("hydration_comeback_eligible")
+        if isComebackCardVisible {
+            trackComebackEvent("hydration_comeback_viewed")
+        }
+    }
+
+    public func endComebackPresentation() {
+        comebackOpportunityDate = nil
+        hasTrackedComebackPresentation = false
+    }
+
+    func dismissComeback() {
+        trackComebackPresentation()
+        if isComebackCardVisible && hasTrackedComebackPresentation {
+            trackComebackEvent("hydration_comeback_dismissed")
+        }
+        endComebackPresentation()
+    }
+
+    private func trackComebackEvent(_ name: String, status: String? = nil) {
+        var parameters: [String: AnalyticsParameterValue] = [
+            "source": .string("drink_water_main"),
+            "context": .string("comeback_\(comebackMode.rawValue)")
+        ]
+        if let status {
+            parameters["status"] = .string(status)
+        }
+        analyticsUseCase.track(ProductAnalyticsEvent(name: name, parameters: parameters))
+    }
+
     @discardableResult
     func drinkWater() async -> Bool {
-        await recordWater(
+        guard !isRecording else {
+            return false
+        }
+        // A button interaction also confirms exposure if the view task has not run yet.
+        trackComebackPresentation()
+        let isComebackAttempt = isComebackCardVisible && hasTrackedComebackPresentation
+        if isComebackAttempt {
+            trackComebackEvent("hydration_comeback_cta_tapped")
+        }
+        let didRecord = await recordWater(
             volumeML: HydrationServing.defaultGlassVolumeML,
             servingType: "default_glass",
             preset: nil
         )
+        if isComebackAttempt {
+            trackComebackEvent("hydration_comeback_record_result", status: didRecord ? "success" : "failed")
+        }
+        return didRecord
     }
 
     @discardableResult
@@ -463,6 +571,9 @@ public final class DrinkWaterViewModel {
         await updateCurrentIntake()
         updateDailyLimit()
         await updateNextActionGuide()
+        if currentWaterIntakeML > 0 {
+            endComebackPresentation()
+        }
     }
 
     private var remainingRecordableVolumeML: Int {

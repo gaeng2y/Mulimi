@@ -21,7 +21,7 @@ let project = Project(
         ],
         configurations: [
             .debug(name: "Debug"),
-            .release(name: "Release")
+            .release(name: "Release", xcconfig: .relativeToRoot("XCConfig/Release.xcconfig"))
         ]
     ),
     targets: [

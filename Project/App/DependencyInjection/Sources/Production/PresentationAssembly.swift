@@ -51,6 +51,17 @@ public final class PresentationAssembly: Assembly {
             let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
             let appReviewRequestUseCase = resolver.resolve(AppReviewRequestUseCase.self)!
             let appInfoProvider = resolver.resolve((any AppInfoProviding).self)!
+            let progressUseCase = resolver.resolve(HydrationProgressUseCase.self)!
+            let comebackRepository = resolver.resolve(HydrationComebackRepository.self)!
+            #if MULIMI_COMEBACK_EXPERIMENT && MULIMI_COMEBACK_BASELINE
+            #error("Select only one comeback experiment variant")
+            #elseif MULIMI_COMEBACK_EXPERIMENT
+            let comebackMode = HydrationComebackMode.card
+            #elseif MULIMI_COMEBACK_BASELINE
+            let comebackMode = HydrationComebackMode.baseline
+            #else
+            let comebackMode = HydrationComebackMode.disabled
+            #endif
 
             return MainActor.assumeIsolated {
                 DrinkWaterViewModel(
@@ -60,7 +71,10 @@ public final class PresentationAssembly: Assembly {
                     widgetTimelineReloader: widgetTimelineReloader,
                     analyticsUseCase: analyticsUseCase,
                     appReviewRequestUseCase: appReviewRequestUseCase,
-                    appInfoProvider: appInfoProvider
+                    appInfoProvider: appInfoProvider,
+                    progressUseCase: progressUseCase,
+                    comebackRepository: comebackRepository,
+                    comebackMode: comebackMode
                 )
             }
         }

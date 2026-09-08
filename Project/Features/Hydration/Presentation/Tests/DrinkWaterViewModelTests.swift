@@ -829,6 +829,151 @@ struct DrinkWaterViewModelTests {
         #expect(appReviewRequestUseCase.recordAttemptCallCount == 0)
     }
 
+    @MainActor
+    @Test("실험 군별 실제 노출만 집계하고 동일 공백에서 재노출하지 않는다",
+          arguments: [HydrationComebackMode.disabled, .baseline, .card])
+    func comebackExposure(mode: HydrationComebackMode) async {
+        let repository = StubHydrationComebackRepository()
+        let analytics = MockAnalyticsUseCase()
+        let viewModel = makeComebackViewModel(mode: mode, repository: repository, analytics: analytics)
+
+        #expect(await viewModel.prepareComebackIfNeeded() == (mode != .disabled))
+        #expect(analytics.trackedEvents.isEmpty)
+        #expect(repository.lastHandledDate == nil)
+        viewModel.trackComebackPresentation()
+        viewModel.trackComebackPresentation()
+
+        #expect(viewModel.isComebackCardVisible == (mode == .card))
+        let expectedNames = mode == .disabled ? [] : mode == .baseline
+            ? ["hydration_comeback_eligible"] : ["hydration_comeback_eligible", "hydration_comeback_viewed"]
+        #expect(analytics.trackedEvents.map(\.name) == expectedNames)
+        #expect(analytics.trackedEvents.allSatisfy { $0.parameters["context"] == .string("comeback_\(mode.rawValue)") })
+
+        viewModel.endComebackPresentation()
+        #expect(await viewModel.prepareComebackIfNeeded() == false)
+        let restarted = makeComebackViewModel(mode: mode, repository: repository, analytics: analytics)
+        #expect(await restarted.prepareComebackIfNeeded() == false)
+    }
+
+    @MainActor
+    @Test("닫은 공백은 다시 보여주지 않고 새 기록 이후의 새 공백은 다시 판정한다")
+    func comebackDismissalAndNewGap() async {
+        let repository = StubHydrationComebackRepository()
+        let analytics = MockAnalyticsUseCase()
+        let viewModel = makeComebackViewModel(repository: repository, analytics: analytics)
+        #expect(await viewModel.prepareComebackIfNeeded())
+
+        viewModel.dismissComeback()
+        viewModel.dismissComeback()
+
+        #expect(viewModel.isComebackCardVisible == false)
+        #expect(analytics.trackedEvents.filter { $0.name == "hydration_comeback_dismissed" }.count == 1)
+        #expect(await viewModel.prepareComebackIfNeeded() == false)
+        let later = makeComebackViewModel(
+            repository: repository,
+            analytics: analytics,
+            referenceDate: Date(timeIntervalSince1970: 1_780_000_000 + 864_000)
+        )
+        #expect(await later.prepareComebackIfNeeded())
+    }
+
+    @MainActor
+    @Test("컴백 CTA도 기존 저장/오류 경로를 사용하고 중복 탭을 집계하지 않는다", arguments: [true, false])
+    func comebackRecording(succeeds: Bool) async {
+        let water = MockDrinkWaterUseCase()
+        water.shouldSuspendNextDrinkWater = true
+        water.drinkWaterResult = succeeds ? .success : .failure(.systemError)
+        let analytics = MockAnalyticsUseCase()
+        let viewModel = makeComebackViewModel(water: water, analytics: analytics)
+        #expect(await viewModel.prepareComebackIfNeeded())
+
+        let recording = Task { await viewModel.drinkWater() }
+        while !water.hasPendingDrinkWater {
+            await Task.yield()
+        }
+        #expect(await viewModel.drinkWater() == false)
+        water.resumeDrinkWater()
+        #expect(await recording.value == succeeds)
+
+        #expect(water.recordedVolumesML == [HydrationServing.defaultGlassVolumeML])
+        #expect(analytics.trackedEvents.filter { $0.name == "hydration_comeback_viewed" }.count == 1)
+        #expect(analytics.trackedEvents.filter { $0.name == "hydration_comeback_cta_tapped" }.count == 1)
+        let results = analytics.trackedEvents.filter { $0.name == "hydration_comeback_record_result" }
+        #expect(results.count == 1)
+        #expect(results.first?.parameters["status"] == .string(succeeds ? "success" : "failed"))
+        #expect(analytics.trackedEvents.filter { $0.name == "water_logged" }.count == (succeeds ? 1 : 0))
+        #expect(viewModel.isComebackCardVisible == !succeeds)
+        #expect((viewModel.recordFailureAlert == nil) == succeeds)
+    }
+
+    @MainActor
+    @Test("오늘 외부 기록이나 취소된 진입은 노출과 처리 시각을 남기지 않는다")
+    func comebackSuppressedBeforePresentation() async {
+        let water = MockDrinkWaterUseCase()
+        water.currentWaterIntakeMLValue = Double(HydrationServing.defaultGlassVolumeML)
+        let repository = StubHydrationComebackRepository()
+        let analytics = MockAnalyticsUseCase()
+        let viewModel = makeComebackViewModel(repository: repository, water: water, analytics: analytics)
+        #expect(await viewModel.prepareComebackIfNeeded() == false)
+
+        water.currentWaterIntakeMLValue = 0
+        let cancelled = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return await viewModel.prepareComebackIfNeeded()
+        }
+        #expect(await cancelled.value == false)
+        #expect(await viewModel.prepareComebackIfNeeded())
+        viewModel.endComebackPresentation()
+        viewModel.trackComebackPresentation()
+        #expect(repository.lastHandledDate == nil)
+        #expect(analytics.trackedEvents.isEmpty)
+    }
+
+    @MainActor
+    private func makeComebackViewModel(
+        mode: HydrationComebackMode = .card,
+        repository: StubHydrationComebackRepository = StubHydrationComebackRepository(),
+        water: MockDrinkWaterUseCase = MockDrinkWaterUseCase(),
+        analytics: MockAnalyticsUseCase,
+        referenceDate: Date = Date(timeIntervalSince1970: 1_780_000_000)
+    ) -> DrinkWaterViewModel {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Seoul")!
+        let progress = MockHydrationProgressUseCase()
+        progress.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000,
+            weeklyAverageML: 0,
+            monthlyAverageML: 0,
+            weeklyAchievementRate: 0,
+            monthlyAchievementRate: 0,
+            weeklyAchievedDays: 0,
+            monthlyAchievedDays: 0,
+            weeklyElapsedDays: 1,
+            monthlyElapsedDays: 1,
+            currentStreak: 0,
+            recentRecordDate: calendar.date(byAdding: .day, value: -3, to: referenceDate),
+            isEmpty: false
+        )
+        return DrinkWaterViewModel(
+            waterUseCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            analyticsUseCase: analytics,
+            progressUseCase: progress,
+            comebackRepository: repository,
+            comebackMode: mode,
+            calendar: calendar,
+            nowProvider: { referenceDate }
+        )
+    }
+}
+
+private final class StubHydrationComebackRepository: HydrationComebackRepository, @unchecked Sendable {
+    var lastHandledDate: Date?
+
+    func fetchLastHandledDate() -> Date? { lastHandledDate }
+    func saveLastHandledDate(_ date: Date) { lastHandledDate = date }
 }
 
 private final class SpyWidgetTimelineReloader: WidgetTimelineReloading, @unchecked Sendable {

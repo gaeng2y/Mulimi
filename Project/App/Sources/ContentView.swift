@@ -133,7 +133,22 @@ struct ContentView: View {
         .task(id: selectedTab) {
             await refreshSelectedTab()
         }
+        .task(id: scenePhase == .active && appCoordinator.path.isEmpty) {
+            guard scenePhase == .active, appCoordinator.path.isEmpty else {
+                return
+            }
+            if await drinkWaterViewModel.prepareComebackIfNeeded() {
+                guard !Task.isCancelled, scenePhase == .active, appCoordinator.path.isEmpty else {
+                    drinkWaterViewModel.endComebackPresentation()
+                    return
+                }
+                selectedTab = .drink
+            }
+        }
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                drinkWaterViewModel.endComebackPresentation()
+            }
             guard newPhase == .active else {
                 return
             }

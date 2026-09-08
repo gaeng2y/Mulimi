@@ -16,6 +16,7 @@
 - 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 최근 앱 생성 기록 1건 되돌리기, 오늘 물리미 기록 초기화만 노출한다
 - 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 제공한다
 - 오늘 기록이 0이고 다음 한 잔 안내가 기본 상태(`readyToDrink`)면, 같은 안내 카드의 문구를 첫 기록 유도로 바꿔 기본 1잔 기록 CTA와 건강 앱 저장을 안내한다. 별도 배너나 레이아웃 요소를 추가하지 않으며, 루틴 임박/목표 미설정 안내가 우선한다. 온보딩 전환 실험 H4 기준(`Docs/product-specs/onboarding-healthkit-conversion-experiments.md`)과 정렬된다
+- #323의 카드 실험 빌드에서만 2~6일 기록 공백 복귀자의 상단 안내를 컴백 문구로 우선 표시한다. 목표 미설정은 제외하고 기존 하단 한 잔 CTA를 재사용한다. 노출·비교군·재노출 방지·측정 기준은 [Challenge and Insight](challenge-insight.md#comeback-experiment-323)를 따른다
 - 기록 단위 사용자 기본값 설정은 아직 구현하지 않았다. 기본 액션, 위젯, Watch는 기본 1잔을 유지하고, Siri/Shortcuts는 실행 시 선택한 단위를 1회 기록한다
 - 기록 후 오늘 목표를 초과하는 단위는 앱과 AppIntent에서 기록하지 않는다
 - 메인 화면의 오늘 기록 초기화는 확인 후 물리미가 오늘 만든 HealthKit 샘플만 삭제한다
@@ -88,20 +89,20 @@
 ### Build And Installation
 
 - 기존 Widget 번들에 `LogWaterControl` 하나를 조건부 등록한다. `LogWaterAppIntent()`의 기본 한 잔, 권한·목표 초과·실패 처리, 저장 성공 후 timeline 갱신을 그대로 사용한다.
-- `MULIMI_CONTROL_WIDGET_EXPERIMENT` 컴파일 조건을 켠 내부 실험 빌드에만 Control을 포함한다. 기본 Debug/Release 빌드에는 포함하지 않는다. 새 AppIntent, 용량 설정, 저장소는 추가하지 않는다.
+- `MULIMI_CONTROL_WIDGET_EXPERIMENT` 컴파일 조건은 공통 `XCConfig/Release.xcconfig`에서 기본 활성화한다. Release에는 #323 컴백 카드와 함께 포함하고 Debug에서는 기본 비활성이다. 새 AppIntent, 용량 설정, 저장소는 추가하지 않는다.
 - 검증 범위는 iOS 26.0 이상 iPhone의 제어 센터와 잠금 화면, 액션 버튼이 있는 iPhone의 액션 버튼이다. 실제 지원 판정은 아래 실기기 QA를 통과한 모델·OS 조합별로 남긴다.
 - 앱에서 온보딩, HealthKit 권한, 일일 목표 설정을 먼저 완료한다. 제어 센터의 제어 항목 추가에서 물리미의 `물 한 잔 기록`을 선택한다. 잠금 화면은 사용자화의 하단 제어 항목, 액션 버튼은 설정의 제어 항목에서 같은 Control을 선택한다.
-- 아래 컴파일 조건은 실험 archive에만 적용한다. 이 archive는 TestFlight 내부 테스트용으로 배포하고 App Store 출시 빌드로 승격하지 않는다. 정식 출시 archive는 조건을 제거하고 새로 만든다.
+- 일반 Release archive는 추가 플래그 없이 두 기능을 함께 포함한다. TestFlight와 App Store는 같은 Release 설정을 사용하므로 배포 전 실기기 QA를 확인한다. 아래는 컴백 카드 영향을 제외하고 Control만 측정하는 별도 빌드다.
 
 ```bash
 tuist generate --no-open
 xcodebuild archive -workspace Mulimi.xcworkspace -scheme Mulimi \
   -configuration Release -destination 'generic/platform=iOS' \
   -archivePath /tmp/Mulimi-Control-322.xcarchive \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) MULIMI_CONTROL_WIDGET_EXPERIMENT'
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS=MULIMI_CONTROL_WIDGET_EXPERIMENT
 ```
 
-Archive에는 기존 서명·배포 설정이 필요하다. 로컬 컴파일 검증은 같은 조건으로 `build`와 `CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`를 사용한다. 조건을 끈 기본 빌드도 함께 검증한다.
+Archive에는 기존 서명·배포 설정이 필요하다. 로컬 컴파일 검증은 같은 조건으로 `build`와 `CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`를 사용한다. 두 실험을 모두 끄는 별도 Release 빌드는 `SWIFT_ACTIVE_COMPILATION_CONDITIONS=''`로 기본값을 덮어쓴다. 단독 실험에서는 `$(inherited)`를 붙이지 않아 다른 실험의 기본 플래그가 섞이지 않게 한다.
 
 ### Measurement Protocol
 
