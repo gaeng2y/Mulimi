@@ -37,6 +37,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Domain And Architecture Docs
 
+- [Project Architecture And Dependencies (전체 구조도·타깃 의존성)](project-architecture-and-dependencies.md)
 - [Feature Discovery (검증 후보와 선정 근거)](feature-discovery.md)
 - [Profile Information Architecture](profile-information-architecture.md)
 - [Personalized Challenge Strategy](personalized-challenge-strategy.md)

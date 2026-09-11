@@ -2,221 +2,466 @@
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "Mulimi 프로젝트 아키텍처",
+    "title": "Mulimi 전체 구조와 의존성",
     "output": "mulimi-project-architecture.html",
     "quality_profile": "showcase",
     "repository": {
-      "url": "https://github.com/gaeng2y/Mulimi.git",
-      "revision": "5b67208a285fc21f972a087617968b3aa7a8615d"
+      "url": "https://github.com/gaeng2y/Mulimi",
+      "revision": "c997f8659189ce5602d58a6311d5927199481d8c"
     },
-    "viewBox": [1320, 720]
+    "viewBox": [
+      1395,
+      835
+    ],
+    "legend": {
+      "entries": {
+        "frontend": {
+          "label": "앱·화면"
+        },
+        "backend": {
+          "label": "모듈·조립"
+        },
+        "external": {
+          "label": "시스템·외부 SDK"
+        }
+      }
+    }
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      40,
+      45
+    ],
+    "cols": 4,
+    "cellW": 260,
+    "cellH": 96,
+    "gapX": 105,
+    "gapY": 114
   },
   "components": [
     {
-      "id": "ios-app",
+      "id": "mulimi-shell",
       "type": "frontend",
-      "label": "Mulimi iOS App",
+      "label": "Mulimi iOS 앱",
       "sublabel": "RootView · ContentView",
-      "tag": "iOS 26+",
-      "pos": [60, 40],
-      "size": [220, 80],
+      "tag": "iOS 26+ · MulimiNavigation",
+      "row": 1,
+      "col": 0,
       "sources": [
-        { "path": "Project/App/Sources/DrinkWaterApp.swift", "line": 49, "label": "앱 진입점" },
-        { "path": "Project/App/Sources/RootView.swift", "line": 43, "label": "루트 게이트" },
-        { "path": "Project/App/Sources/ContentView.swift", "line": 52, "label": "탭·전역 라우팅" }
+        {
+          "path": "Project/App/Sources/DrinkWaterApp.swift",
+          "line": 15,
+          "label": "앱 진입·의존성 주입"
+        },
+        {
+          "path": "Project/App/Sources/RootView.swift",
+          "line": 40,
+          "label": "인증·온보딩·권한 게이트"
+        },
+        {
+          "path": "Project/App/Sources/ContentView.swift",
+          "line": 60,
+          "label": "탭·전역 내비게이션"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     },
     {
-      "id": "widget-extension",
+      "id": "widget-client",
       "type": "frontend",
       "label": "WidgetExtension",
       "sublabel": "WidgetKit · AppIntent",
-      "tag": "홈·잠금 화면",
-      "pos": [360, 40],
-      "size": [220, 80],
+      "tag": "홈·잠금 화면·컨트롤",
+      "row": 0,
+      "col": 1,
       "sources": [
-        { "path": "Project/App/Project.swift", "line": 101, "label": "위젯 타깃" },
-        { "path": "Project/Widget/Sources/DrinkWaterWidgetShared.swift", "line": 8, "label": "타임라인" },
-        { "path": "Project/App/Sources/AppIntents/LogWaterAppIntent.swift", "line": 65, "label": "수분 기록 Intent" }
+        {
+          "path": "Project/App/Project.swift",
+          "line": 100,
+          "label": "타깃·직접 의존성"
+        },
+        {
+          "path": "Project/App/Sources/AppIntents/LogWaterAppIntent.swift",
+          "line": 98,
+          "label": "앱과 공유하는 기록 Intent"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     },
     {
-      "id": "watch-app",
+      "id": "ios-composition",
+      "type": "backend",
+      "label": "iOS 조립 루트",
+      "sublabel": "DependencyInjection · Swinject",
+      "tag": "Domain·Data·Presentation 조립",
+      "row": 1,
+      "col": 1,
+      "sources": [
+        {
+          "path": "Project/App/DependencyInjection/Project.swift",
+          "line": 29,
+          "label": "제품·미리보기·테스트 DI"
+        },
+        {
+          "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift",
+          "line": 24,
+          "label": "Repository 구현 등록"
+        },
+        {
+          "path": "Project/App/DependencyInjection/Sources/Production/PresentationAssembly.swift",
+          "line": 22,
+          "label": "화면 상태와 ViewModel 조립"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "ios-presentation",
+      "type": "frontend",
+      "label": "Presentation",
+      "sublabel": "View · ViewModel · 화면 상태",
+      "tag": "AppSession은 Account 소속",
+      "row": 1,
+      "col": 2,
+      "sources": [
+        {
+          "path": "Project/Features/Account/Presentation/Sources/State/AppSession.swift",
+          "line": 4,
+          "label": "전역 세션 상태의 실제 소속"
+        },
+        {
+          "path": "Project/Features/Account/Project.swift",
+          "line": 43,
+          "label": "설정 화면의 기능 간 조합"
+        },
+        {
+          "path": "Project/Features/Hydration/Project.swift",
+          "line": 42,
+          "label": "화면 레이어 의존성"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "ios-domain",
+      "type": "backend",
+      "label": "Domain",
+      "sublabel": "Entity · UseCase · Repository 계약",
+      "tag": "SwiftUI·Localization 비의존",
+      "row": 1,
+      "col": 3,
+      "sources": [
+        {
+          "path": "Project/Features/Hydration/Project.swift",
+          "line": 18,
+          "label": "Hydration → Account"
+        },
+        {
+          "path": "Project/Features/Routine/Project.swift",
+          "line": 18,
+          "label": "Routine → Hydration·Account"
+        },
+        {
+          "path": "Project/Features/Challenge/Project.swift",
+          "line": 18,
+          "label": "Challenge → Routine·Hydration"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "ios-data",
+      "type": "backend",
+      "label": "Data",
+      "sublabel": "Repository 구현 · DataSource",
+      "tag": "저장·인증·알림·목표 추천",
+      "row": 2,
+      "col": 3,
+      "sources": [
+        {
+          "path": "Project/Features/Account/Project.swift",
+          "line": 26,
+          "label": "KVS·Keychain 어댑터 사용"
+        },
+        {
+          "path": "Project/Features/Hydration/Project.swift",
+          "line": 29,
+          "label": "HealthKit 어댑터 사용"
+        },
+        {
+          "path": "Project/Features/HydrationReminder/Project.swift",
+          "line": 29,
+          "label": "알림·설정 구현"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "watch-shell",
       "type": "frontend",
       "label": "MulimiWatch",
-      "sublabel": "watch app + extension",
-      "tag": "watchOS 26+",
-      "pos": [1030, 40],
-      "size": [220, 80],
+      "sublabel": "MulimiWatchExtension",
+      "tag": "watchOS 26+ · 별도 실행 경계",
+      "row": 2,
+      "col": 0,
       "sources": [
-        { "path": "Project/App/Project.swift", "line": 142, "label": "Watch 타깃" },
-        { "path": "Project/App/Watch/Sources/App/MulimiWatchApp.swift", "line": 4, "label": "Watch 진입점" }
+        {
+          "path": "Project/App/Project.swift",
+          "line": 185,
+          "label": "Watch 앱·확장 타깃"
+        },
+        {
+          "path": "Project/App/Watch/Sources/App/MulimiWatchApp.swift",
+          "line": 7,
+          "label": "Watch 조립 루트 호출"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     },
     {
-      "id": "dependency-injection",
-      "type": "backend",
-      "label": "DependencyInjection",
-      "sublabel": "Swinject 조립",
-      "tag": "Production · Preview · Testing",
-      "pos": [60, 170],
-      "size": [220, 80],
-      "sources": [
-        { "path": "Project/App/DependencyInjection/Sources/Production/PresentationAssembly.swift", "line": 22, "label": "Presentation 조립" },
-        { "path": "Project/App/DependencyInjection/Sources/Production/DomainAssembly.swift", "line": 16, "label": "Domain 조립" },
-        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 22, "label": "Data 조립" }
-      ]
-    },
-    {
-      "id": "feature-presentation",
-      "type": "frontend",
-      "label": "Feature Presentation",
-      "sublabel": "View · ViewModel · Coordinator",
-      "tag": "화면 상태와 조합",
-      "pos": [50, 310],
-      "size": [240, 96],
-      "sources": [
-        { "path": "Project/Features/Account/Presentation/Sources/State/AppSession.swift", "line": 4, "label": "전역 세션" },
-        { "path": "Project/App/Navigation/Sources/AppCoordinator.swift", "line": 5, "label": "전역 push" },
-        { "path": "Project/App/Sources/ContentView.swift", "line": 31, "label": "화면 조합" }
-      ]
-    },
-    {
-      "id": "feature-domain",
-      "type": "backend",
-      "label": "Feature Domain",
-      "sublabel": "Entity · UseCase · Repository",
-      "tag": "UI 비의존 비즈니스 규칙",
-      "pos": [380, 310],
-      "size": [240, 96],
-      "sources": [
-        { "path": "Project/Features/Hydration/Project.swift", "line": 18, "label": "HydrationDomain" },
-        { "path": "Project/Features/Routine/Project.swift", "line": 18, "label": "RoutineDomain" },
-        { "path": "Project/Features/Challenge/Project.swift", "line": 18, "label": "ChallengeDomain" }
-      ]
-    },
-    {
-      "id": "feature-data",
-      "type": "backend",
-      "label": "Feature Data",
-      "sublabel": "Repository 구현 · DataSource",
-      "tag": "시스템 연동",
-      "pos": [710, 310],
-      "size": [240, 96],
-      "sources": [
-        { "path": "Project/Features/Account/Project.swift", "line": 26, "label": "AccountData" },
-        { "path": "Project/Features/Hydration/Project.swift", "line": 29, "label": "HydrationData" },
-        { "path": "Project/Features/HydrationReminder/Project.swift", "line": 29, "label": "ReminderData" }
-      ]
-    },
-    {
-      "id": "watch-hydration",
+      "id": "watch-feature-stack",
       "type": "backend",
       "label": "WatchHydration",
-      "sublabel": "Presentation · Domain · Data",
-      "tag": "공용 수분 규칙 컴파일",
-      "pos": [1030, 310],
-      "size": [220, 96],
+      "sublabel": "WatchDependencyInjection",
+      "tag": "전용 Domain·Data·Presentation",
+      "row": 2,
+      "col": 1,
       "sources": [
-        { "path": "Project/Features/WatchHydration/Project.swift", "line": 18, "label": "Watch 레이어" },
-        { "path": "Project/App/DependencyInjection/Sources/Watch/WatchDIContainer.swift", "line": 6, "label": "Watch 조립" }
+        {
+          "path": "Project/Features/WatchHydration/Project.swift",
+          "line": 18,
+          "label": "3개 레이어·공용 소스 컴파일"
+        },
+        {
+          "path": "Project/App/DependencyInjection/Project.swift",
+          "line": 72,
+          "label": "Watch DI 타깃"
+        },
+        {
+          "path": "Project/App/DependencyInjection/Sources/Watch/WatchDIContainer.swift",
+          "line": 10,
+          "label": "Swinject 없이 직접 조립"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     },
     {
-      "id": "shared-modules",
+      "id": "shared-foundations",
       "type": "backend",
-      "label": "Shared Modules",
-      "sublabel": "Localization · DesignSystem",
-      "tag": "Utils · Persistence",
-      "pos": [50, 530],
-      "size": [240, 88],
+      "label": "Shared 공용 모듈",
+      "sublabel": "Localization · DesignSystem · Utils",
+      "tag": "Persistence 2종은 현재 미참조",
+      "row": 0,
+      "col": 2,
       "sources": [
-        { "path": "Project/Shared/Localization/Project.swift", "line": 7, "label": "Localization" },
-        { "path": "Project/Shared/DesignSystem/Project.swift", "line": 14, "label": "DesignSystem" },
-        { "path": "Project/Shared/Utils/Project.swift", "line": 14, "label": "Utils" }
+        {
+          "path": "Project/Shared/Localization/Project.swift",
+          "line": 22,
+          "label": "한국어 기준 문자열·리소스"
+        },
+        {
+          "path": "Project/Shared/DesignSystem/Project.swift",
+          "line": 28,
+          "label": "공용 UI·리소스"
+        },
+        {
+          "path": "Project/Shared/Persistence/Project.swift",
+          "line": 28,
+          "label": "선언은 있으나 소비 타깃 없음"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     },
     {
-      "id": "platform-services",
+      "id": "core-adapters",
+      "type": "backend",
+      "label": "Core 시스템 모듈",
+      "sublabel": "Mulimi* 계약·시스템 어댑터",
+      "tag": "Analytics·Platform·저장 인프라",
+      "row": 2,
+      "col": 2,
+      "sources": [
+        {
+          "path": "Project/Core/Analytics/Project.swift",
+          "line": 18,
+          "label": "분석 계약·PostHog 구현 분리"
+        },
+        {
+          "path": "Project/Core/HealthKit/Project.swift",
+          "line": 18,
+          "label": "iOS·Watch 공용 HealthKit"
+        },
+        {
+          "path": "Project/Core/CloudKit/Project.swift",
+          "line": 18,
+          "label": "iOS·Watch 공용 KVS mirror"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "system-integrations",
       "type": "external",
-      "label": "Platform Services",
-      "sublabel": "Apple Sign In · Notifications",
-      "tag": "Foundation Models · PostHog",
-      "pos": [380, 530],
-      "size": [240, 88],
+      "label": "시스템·분석 연동",
+      "sublabel": "HealthKit · iCloud KVS",
+      "tag": "UserDefaults · Keychain · PostHog",
+      "row": 3,
+      "col": 2,
       "sources": [
-        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 76, "label": "추천·알림·인증" },
-        { "path": "Project/App/Sources/DrinkWaterApp.swift", "line": 25, "label": "PostHog" }
-      ]
-    },
-    {
-      "id": "preferences-store",
-      "type": "database",
-      "label": "Preferences Store",
-      "sublabel": "iCloud KVS + App Group mirror",
-      "tag": "UserDefaults JSON",
-      "pos": [710, 530],
-      "size": [240, 88],
-      "sources": [
-        { "path": "Project/Features/Account/Data/Sources/DataSource/UserPreferencesDataSource.swift", "line": 25, "label": "목표량 동기화" },
-        { "path": "Project/App/DependencyInjection/Sources/Production/DataAssembly.swift", "line": 65, "label": "App Group 저장" },
-        { "path": "Project/Features/WatchHydration/Data/Sources/DataSource/WatchDailyGoalLocalDataSource.swift", "line": 7, "label": "Watch 목표 mirror" }
-      ]
-    },
-    {
-      "id": "healthkit",
-      "type": "database",
-      "label": "HealthKit",
-      "sublabel": "수분 기록 · 신체 정보",
-      "tag": "Source of Truth",
-      "pos": [1030, 530],
-      "size": [220, 88],
-      "sources": [
-        { "path": "Project/Features/Hydration/Data/Sources/DataSource/DrinkWaterHealthKitDataSource.swift", "line": 28, "label": "iOS 수분 기록" },
-        { "path": "Project/Features/Hydration/Data/Sources/DataSource/HealthKitDataSource.swift", "line": 32, "label": "HealthKit 연동" },
-        { "path": "Project/Features/WatchHydration/Data/Sources/DataSource/WatchHydrationLocalDataSource.swift", "line": 13, "label": "Watch 수분 기록" }
+        {
+          "path": "Project/Core/HealthKit/Sources/HealthKitQuantityStore.swift",
+          "line": 63,
+          "label": "수분·신체 정보 원본"
+        },
+        {
+          "path": "Project/Core/CloudKit/Sources/UbiquitousMirroredStore.swift",
+          "line": 10,
+          "label": "iCloud KVS·로컬 mirror"
+        },
+        {
+          "path": "Project/Core/Analytics/Data/Sources/PostHogAnalyticsRepository.swift",
+          "line": 3,
+          "label": "외부 분석 SDK 경계"
+        }
+      ],
+      "size": [
+        260,
+        96
       ]
     }
   ],
   "connections": [
-    { "id": "app-to-di", "from": "ios-app", "to": "dependency-injection", "label": "root resolve", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [170, 140] },
-    { "id": "di-to-presentation", "from": "dependency-injection", "to": "feature-presentation", "label": "ViewModel 주입", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [170, 275] },
-    { "id": "presentation-to-domain", "from": "feature-presentation", "to": "feature-domain", "label": "UseCase 계약", "variant": "emphasis" },
-    { "id": "data-to-domain", "from": "feature-data", "to": "feature-domain", "label": "Repository 구현", "variant": "emphasis" },
-    { "id": "widget-to-domain", "from": "widget-extension", "to": "feature-domain", "label": "UseCase·Entity 재사용", "fromSide": "bottom", "toSide": "top" },
-    { "id": "watch-to-stack", "from": "watch-app", "to": "watch-hydration", "label": "root view", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [1140, 170] },
-    { "id": "presentation-to-shared", "from": "feature-presentation", "to": "shared-modules", "label": "UI 공용", "fromSide": "bottom", "toSide": "top", "labelAt": [170, 450] },
-    { "id": "data-to-platform", "from": "feature-data", "to": "platform-services", "label": "인증·알림·추천" },
-    { "id": "data-to-preferences", "from": "feature-data", "to": "preferences-store", "label": "설정·JSON 저장", "fromSide": "bottom", "toSide": "top", "labelAt": [830, 450] },
-    { "id": "data-to-healthkit", "from": "feature-data", "to": "healthkit", "label": "수분·신체 정보" },
-    { "id": "watch-to-healthkit", "from": "watch-hydration", "to": "healthkit", "label": "수분 기록", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [1140, 450] }
+    {
+      "id": "shell-resolves-di",
+      "from": "mulimi-shell",
+      "to": "ios-composition",
+      "label": "주입",
+      "variant": "emphasis"
+    },
+    {
+      "id": "widget-reuses-di",
+      "from": "widget-client",
+      "to": "ios-composition",
+      "label": "공용 DI",
+      "labelAt": [
+        535,
+        155
+      ]
+    },
+    {
+      "id": "di-builds-presentation",
+      "from": "ios-composition",
+      "to": "ios-presentation",
+      "label": "조립",
+      "variant": "emphasis"
+    },
+    {
+      "id": "presentation-uses-domain",
+      "from": "ios-presentation",
+      "to": "ios-domain",
+      "label": "계약 사용",
+      "variant": "emphasis"
+    },
+    {
+      "id": "data-implements-domain",
+      "from": "ios-data",
+      "to": "ios-domain",
+      "label": "계약 구현",
+      "variant": "emphasis"
+    },
+    {
+      "id": "presentation-uses-shared",
+      "from": "ios-presentation",
+      "to": "shared-foundations",
+      "label": "공용 UI"
+    },
+    {
+      "id": "data-uses-core",
+      "from": "ios-data",
+      "to": "core-adapters",
+      "label": "어댑터"
+    },
+    {
+      "id": "watch-composes-feature",
+      "from": "watch-shell",
+      "to": "watch-feature-stack",
+      "label": "직접 조립",
+      "variant": "emphasis"
+    },
+    {
+      "id": "watch-reuses-core",
+      "from": "watch-feature-stack",
+      "to": "core-adapters",
+      "label": "HK·KVS"
+    },
+    {
+      "id": "core-wraps-systems",
+      "from": "core-adapters",
+      "to": "system-integrations",
+      "label": "시스템 API·SDK",
+      "labelAt": [
+        900,
+        575
+      ]
+    }
   ],
   "cards": [
     {
       "dot": "cyan",
-      "title": "기능 모듈",
+      "title": "6개 기능 · MVVM",
       "items": [
-        "Account · Hydration · Routine · Challenge · HydrationReminder는 Domain/Data/Presentation 수직 분리",
-        "Core는 분석 계약, AppSession, AppCoordinator와 공용 UI만 소유",
-        "WatchHydration은 watchOS 전용 3개 레이어"
+        "iOS: Account · Hydration · Routine · Challenge · HydrationReminder",
+        "WatchHydration은 공용 수분 규칙 3개 파일을 별도 컴파일하며 iOS Domain 타깃에는 의존하지 않음",
+        "AppSession은 AccountPresentation, 전역 push는 ContentView + MulimiNavigation"
       ]
     },
     {
       "dot": "violet",
-      "title": "의존 규칙",
+      "title": "화살표는 주요 의존 방향",
       "items": [
-        "Presentation/Data → Domain; Domain은 SwiftUI·Localization 비의존",
-        "ChallengeDomain → RoutineDomain → HydrationDomain → AccountDomain",
-        "앱 전역 push는 ContentView + AppCoordinator에서 처리"
+        "2.5.0 (33) · 17개 프로젝트 · 53개 타깃 중 테스트 15개",
+        "DI는 3개 레이어를 모두 조립; 위젯은 Account·Hydration·Routine Domain도 직접 참조",
+        "Shared·Core의 추가 참조와 테스트를 포함한 직접 의존 선언은 상세 문서에 169개 전부 기록"
       ]
     },
     {
       "dot": "emerald",
-      "title": "원본 저장소",
+      "title": "저장 경계 · 수분 원본은 HealthKit",
       "items": [
-        "수분 기록과 신체 정보는 HealthKit",
-        "목표량은 iCloud KVS + App Group UserDefaults mirror",
-        "루틴·챌린지는 App Group UserDefaults JSON"
+        "목표량: iCloud KVS + App Group UserDefaults mirror",
+        "루틴·챌린지·알림 설정: App Group UserDefaults; 수분 SwiftData 원장 없음",
+        "Foundation Models·Apple 인증·알림은 기능 Data에서 연동; PostHog는 분석 Data에 격리"
       ]
     }
   ]
