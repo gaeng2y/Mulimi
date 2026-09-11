@@ -16,7 +16,10 @@ CLAUDE.md          -> AGENTS.md symlink 진입 포인터
 GEMINI.md          -> AGENTS.md symlink 진입 포인터
 README.md          -> 제품 개요와 개발 시작점
 ARCHITECTURE.md    -> 구조 SSOT
+Project/**/Project.swift -> 실제 타깃·직접 의존 선언
 Docs/index.md      -> 문서 허브
+Docs/project-architecture-and-dependencies.md -> 코드 기준 구조·의존성 스냅샷
+Docs/diagrams      -> 구조도 원본·HTML·화면 검증 산출물
 Docs/product-specs -> 사용자 흐름 요구사항
 Docs/skills        -> 구현 전 체크리스트
 Docs/exec-plans    -> 실행 계획과 기술 부채
@@ -66,6 +69,13 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 - 데이터 source of truth
 - 전역 구조 규칙의 SSOT
 
+### `Docs/project-architecture-and-dependencies.md`, `Docs/diagrams/`
+
+- 실제 `Project.swift`와 구현을 확인한 구조·직접 의존성 스냅샷, 소스 위치와 검토 기준 커밋
+- 구조도는 주요 관계를 묶은 개요이며 모든 타깃 간선을 대신하지 않음
+- 규칙은 `ARCHITECTURE.md`, 실제 선언은 `Project.swift`를 우선하고 스냅샷은 코드 변경에 맞춰 갱신
+- README와 문서 허브에서 같은 문서·구조도를 연결하고 전체 타깃 표를 복제하지 않음
+
 ### `Docs/index.md`
 - 문서 허브
 - 어떤 상황에 어떤 문서를 읽어야 하는지 연결
@@ -112,6 +122,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | --- | --- | --- |
 | Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
 | Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 아래 격리 절차로 공유 산출물을 갱신한다. |
+| Local (수동) | `Docs/diagrams/`, 로컬 archify 스킬 | 구조도 원본에서 HTML을 생성하고 품질·화면 검증 결과를 함께 남긴다. |
 | Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
 | GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
 | GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 기능별 `Domain`, `Data`, `Presentation` 테스트를 실행한다. |
@@ -120,10 +131,12 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
 
+문서 링크 검사와 구조도 검증은 현재 `make verify`, pre-commit, GitHub Actions에 자동으로 포함되지 않는다. 작성자가 [문서·구조도 품질 게이트](quality-gates.md#architecture-artifact-gate)를 별도로 확인한다.
+
 ### Graphify Artifacts
 
 - `graphify-out/graph.json`, `GRAPH_REPORT.md`와 라벨·서명 파일은 공유 산출물로 함께 갱신한다. `.graphify_labels.json.sig`는 커뮤니티 구성이 바뀌었을 때 오래된 라벨을 재사용하지 않게 하는 정보다.
-- HTML, `manifest.json`, 비용·캐시·어휘·학습 상태, 날짜별 백업, `memory/`, `reflections/`는 `.gitignore`로 제외하고 로컬에 보존한다. 세션에서 얻은 장기적인 결정은 `Docs/`에 정리한다.
+- `graphify-out/`의 HTML, `manifest.json`, 비용·캐시·어휘·학습 상태, 날짜별 백업, `memory/`, `reflections/`는 `.gitignore`로 제외하고 로컬에 보존한다. 세션에서 얻은 장기적인 결정은 `Docs/`에 정리한다.
 - `.graphifyignore`는 `graphify-out/` 전체를 분석 입력에서 제외한다. 이미 저장된 그래프 조회에는 영향을 주지 않는다.
 
 Graphify는 `memory/`를 ignore와 무관하게 읽고 학습 요약을 보고서에 붙일 수 있다. 공유용 갱신은 저장소 루트에서 아래처럼 임시 출력 경로를 사용한다. 기존 그래프와 라벨만 복사하므로 코드·문서 관계는 보존하면서 세션 기록은 읽지 않는다.
@@ -149,10 +162,21 @@ jq -e 'all(.. | objects | .source_file? | strings; startswith("graphify-out/") |
 ! rg -n '^## Work-memory lessons' graphify-out/GRAPH_REPORT.md
 ```
 
+AST-only 갱신을 문서의 의미적 재분석으로 보고하지 않는다. 문구·링크만 바뀐 경우 원문을 확인하며, 이를 이유로 전체 그래프를 재생성하지 않는다.
+
+### Architecture Artifacts
+
+- [구조·의존성 문서](project-architecture-and-dependencies.md)는 실제 타깃 목록·소스 공유·실행 경계를 설명한다. 타깃 수와 검토 기준 커밋도 이 문서에서 관리한다.
+- 작성 원본은 `Docs/diagrams/mulimi-project-architecture.json`이다. `meta.repository.revision`과 `sources`에는 실제 확인한 커밋·파일 위치를 기록한다.
+- 같은 이름의 HTML, `*.visual-check.json`, 라이트·다크 PNG 4장, `*.visual-check.html`은 배포·검증 산출물로 Git에 함께 보관한다. 로컬 상태인 `graphify-out/graph.html`과 구분한다.
+- 원본을 수정하면 archify의 `validate → deliver → visual-check → 캡처 직접 확인` 순서로 다시 검증한다. HTML을 직접 편집하거나 원본과 다른 HTML의 해시·화면 검증 결과를 재사용하지 않는다.
+- 명령은 [구조도 검증·재생성 절차](project-architecture-and-dependencies.md#검증과-갱신), 합격 기준은 [품질 게이트](quality-gates.md#architecture-artifact-gate)를 따른다. README 링크·설명만 변경했다면 기존 구조도를 불필요하게 재생성하지 않는다.
+
 ## Update Rules
 
 - 제품 요구 변경: `Docs/product-specs/` 우선 갱신
 - 구조 규칙 변경: `ARCHITECTURE.md`와 관련 `Docs/skills/` 갱신
+- 타깃·의존성·소스 공유·실행 경계 변경: `Project.swift` 및 구현을 기준으로 구조·의존성 문서와 관련 구조도 갱신
 - 검증 기준 변경: `Docs/quality-gates.md`와 관련 `Docs/skills/` 갱신
 - 이슈/PR 운영 기준 변경: `Docs/delivery-workflow.md`와 필요한 템플릿 갱신
 - 보안/개인정보 경계 변경: `Docs/security-privacy.md` 갱신
@@ -168,7 +192,7 @@ jq -e 'all(.. | objects | .source_file? | strings; startswith("graphify-out/") |
 현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
 
 - Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
-- GitHub Actions는 `macos-15` runner와 `latest-stable` Xcode를 사용한다.
+- GitHub Actions의 iOS 유닛 테스트는 `macos-15` runner와 `latest-stable` Xcode를 사용한다. AI 리뷰는 별도 `ubuntu-latest` job이다.
 - CI 시뮬레이터 destination은 hosted runner에서 안정적으로 찾을 수 있는 이름 기반 값을 사용한다.
 - 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.
 
@@ -178,8 +202,8 @@ jq -e 'all(.. | objects | .source_file? | strings; startswith("graphify-out/") |
 
 - `DESIGN.md`, `FRONTEND.md`, `SECURITY.md`, `RELIABILITY.md` 같은 루트 대형 운영 문서는 아직 만들지 않았다.
 - 이유는 현재 Mulimi 규모에서 유지비가 더 크기 때문이다.
-- 보안/개인정보 운영 기준은 `Docs/security-privacy.md`로 분리한다.
-- 신뢰성, 디자인 운영 규칙이 실제로 복잡해질 때 별도 SSOT로 분리한다.
+- 보안/개인정보 운영 기준은 `Docs/security-privacy.md`, 복구·신뢰성 기준은 `Docs/reliability-recovery.md`에 둔다.
+- 추가 운영 규칙은 기존 문서로 다루기 어려워질 때만 별도 SSOT로 분리한다.
 
 ## Maintenance Principle
 

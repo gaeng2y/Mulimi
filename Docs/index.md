@@ -68,6 +68,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 - 제품 요구가 바뀌면 `Docs/product-specs/`를 우선 갱신한다.
 - 구조 규칙이 바뀌면 `ARCHITECTURE.md`와 필요한 `Docs/skills/`를 갱신한다.
+- 타깃·의존성·소스 공유 경계가 바뀌면 [구조·의존성 스냅샷](project-architecture-and-dependencies.md)과 관련 구조도를 갱신한다.
 - 검증 기준이 바뀌면 `Docs/quality-gates.md`와 필요한 `Docs/skills/`를 갱신한다.
 - 이슈/PR 운영 흐름이 바뀌면 `Docs/delivery-workflow.md`를 갱신한다.
 - 문서 구조가 바뀌면 `Docs/documentation-maintenance.md`와 이 인덱스를 갱신한다.

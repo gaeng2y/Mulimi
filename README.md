@@ -27,7 +27,7 @@
 ## ✨ 주요 기능
 
 - `HealthKit` 기반 수분 기록 및 오늘 섭취량 집계
-- 로그인 후 `온보딩 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
+- 로그인 후 `온보딩 -> 수분 알림 권한 게이트 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
 - 일일 목표량 설정 및 AI 기반 목표량 추천
 - 수분 기록 히스토리, 주간 리포트, 루틴 수행률 인사이트, 루틴 액션으로 연결되는 챌린지, 루틴 관리
 - 홈 화면/잠금화면 위젯과 Apple Watch 앱 지원
@@ -37,8 +37,9 @@
 - `Swift 6.0`, `SwiftUI`, `Swift Concurrency`
 - `Tuist` 기반 모듈형 프로젝트
 - `HealthKit`, `WidgetKit`, `AppIntents`
+- 루틴 알림은 `AlarmKit`, 수분 리마인더는 `UserNotifications`
 - `PostHog Analytics`, `PostHog Error Tracking`
-- `Swinject` 기반 의존성 주입
+- iOS는 `Swinject` 기반 의존성 주입, Watch는 별도 조립 루트에서 직접 주입
 
 ## 🏗️ 아키텍처
 
@@ -57,12 +58,25 @@
 - `Data`
   - Repository 구현체, HealthKit/UserDefaults/iCloud KVS 연동
 - `Features`
-  - 기능별 `Domain / Data / Presentation` 수직 모듈
-  - 신규 전환은 `HydrationReminder`부터 적용
+  - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`의 `Domain / Data / Presentation` 수직 모듈
+  - `WatchHydration`은 watchOS 전용 3개 레이어
+- `Core`
+  - `Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain` 시스템 인프라
+  - 기능·UI를 소유하지 않는 `Mulimi*` 계약과 어댑터
 - `Shared`
-  - `Localization`, `DesignSystem`, `Persistence`, `Utils`
+  - `Localization`, `DesignSystem`, `Utils`
+  - `Persistence`·`PersistenceWatch`는 선언만 남은 미참조 타깃이며 현재 수분 기록 경로에서 사용하지 않음
 - `Widget`
   - 홈 화면/잠금화면 위젯과 AppIntent
+
+### 전체 구조도와 타깃 의존성
+
+![Mulimi 앱·위젯·Watch와 기능 레이어의 주요 의존 방향](Docs/diagrams/mulimi-project-architecture.visual-check.2048x1320.light.png)
+
+- [전체 구조 및 직접 의존성 목록](Docs/project-architecture-and-dependencies.md): 타깃별 의존성, 소스 위치, 검토 기준 커밋
+- [인터랙티브 구조도 HTML](Docs/diagrams/mulimi-project-architecture.html): 내려받아 브라우저에서 열면 검색·확대·라이트/다크 전환 가능
+
+그림은 주요 관계를 묶은 개요입니다. 실제 타깃 선언은 각 `Project.swift`, 구조 규칙은 [ARCHITECTURE.md](ARCHITECTURE.md)를 기준으로 합니다.
 
 ### 앱 흐름
 
@@ -76,7 +90,7 @@ SignIn
 
 - 루트 내비게이션은 `ContentView`의 단일 `NavigationStack`에서 관리합니다.
 - 탭 간 공용 이동은 `AppCoordinator`와 `AppRoute`로 처리합니다.
-- 인증 상태는 `AppSession`으로 관리하고, ViewModel 간 직접 결합을 줄였습니다.
+- 인증 상태는 `AccountPresentation`의 `AppSession`, 전역 라우팅은 `MulimiNavigation`의 `AppCoordinator`가 담당합니다.
 
 ## 💾 데이터/저장소 전략
 
@@ -100,17 +114,23 @@ Mulimi/
 ├── Project/
 │   ├── App/
 │   │   ├── Sources/
+│   │   ├── Navigation/
 │   │   ├── Watch/
 │   │   └── DependencyInjection/
 │   ├── Core/
+│   │   ├── Analytics/
+│   │   ├── Platform/
+│   │   ├── CloudKit/
+│   │   ├── HealthKit/
+│   │   └── Keychain/
 │   ├── Features/
 │   │   ├── Account/
 │   │   ├── Challenge/
 │   │   ├── Hydration/
 │   │   ├── HydrationReminder/
 │   │   ├── Routine/
-│   │   └── WatchHydration/
-│   │       └── 각 기능의 Domain / Data / Presentation
+│   │   ├── WatchHydration/
+│   │   └── TestSupport/         # 공용 Mock 소스, 독립 타깃 아님
 │   ├── Widget/
 │   │   ├── Sources/
 │   │   └── Resources/
@@ -121,6 +141,8 @@ Mulimi/
 │       └── Utils/
 ├── Docs/
 │   ├── index.md
+│   ├── project-architecture-and-dependencies.md
+│   ├── diagrams/              # 구조도 JSON·HTML·검증 캡처
 │   ├── harness-engineering.md
 │   ├── quality-gates.md
 │   ├── documentation-maintenance.md
@@ -148,9 +170,9 @@ Mulimi/
   - 각 기능의 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation`
 - `Project/Features/WatchHydration`
   - `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`
-  - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유
+  - `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide` 소스를 앱 수분 기능과 공유해 별도 컴파일하며 `HydrationDomain` 타깃에는 의존하지 않음
 - `Project/App/DependencyInjection`
-  - `DependencyInjection`, `WatchDependencyInjection`
+  - `DependencyInjection`, `DependencyInjectionPreview`, `DependencyInjectionTesting`, `WatchDependencyInjection`
 
 ## 🚀 시작하기
 
@@ -216,12 +238,14 @@ make verify
 
 ```bash
 uv tool install graphifyy
-graphify query "수분 기록은 앱과 위젯 사이에서 어떻게 연결되는가?"
+graphify query "LogWaterAppIntent DrinkWaterUseCase"
 ```
 
 Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습니다. 분석 범위는 `.graphifyignore`, 공유 산출물은 `graphify-out/`에서 관리합니다.
 
-공유 그래프와 라벨 정보는 Git으로 관리하고, HTML·캐시·날짜별 백업·세션 기록은 로컬에만 둡니다. 자세한 구분은 [Graphify 산출물 관리](Docs/harness-engineering.md#graphify-artifacts)를 따릅니다.
+CLI 조회에는 실제 심볼·문서 이름을 사용합니다. Codex 스킬은 질문을 그래프에 있는 어휘로 확장해 조회합니다.
+
+공유 그래프와 라벨 정보는 Git으로 관리하고, `graphify-out/`의 HTML·캐시·날짜별 백업·세션 기록은 로컬에만 둡니다. 배포용 구조도인 `Docs/diagrams/`와는 관리 범위가 다릅니다. 자세한 구분은 [Graphify 산출물 관리](Docs/harness-engineering.md#graphify-artifacts)와 [구조도 산출물 관리](Docs/harness-engineering.md#architecture-artifacts)를 따릅니다.
 
 ## 📖 문서 읽기 순서
 
@@ -252,6 +276,7 @@ Codex에서는 `$graphify`로 그래프를 생성하거나 조회할 수 있습�
 - [보안/개인정보 운영 기준](Docs/security-privacy.md)
 - [이슈/PR 전달 흐름](Docs/delivery-workflow.md)
 - [아키텍처 SSOT](ARCHITECTURE.md)
+- [전체 구조도·타깃 의존성](Docs/project-architecture-and-dependencies.md)
 - [제품 스펙 인덱스](Docs/product-specs/index.md)
 - [실행 계획 템플릿](Docs/exec-plans/template.md)
 - [실행 계획 / 기술 부채](Docs/exec-plans/tech-debt-tracker.md)

@@ -10,6 +10,8 @@ Mulimi의 구조 SSOT다. 제품 설명은 `README.md`, 작업 규칙은 `AGENTS
 
 ## System Map
 
+전체 타깃의 직접 의존성과 소스 위치는 [프로젝트 구조·의존성 스냅샷](Docs/project-architecture-and-dependencies.md), 주요 관계는 [인터랙티브 구조도](Docs/diagrams/mulimi-project-architecture.html)를 참고한다. 이 문서는 구조 규칙의 SSOT이며, 실제 선언은 각 `Project.swift`를 우선 확인한다.
+
 ```text
 Project/
 ├── App
@@ -28,25 +30,30 @@ Project/
 ## Layer Responsibilities
 
 ### App
+
 - 앱 타깃, 엔트리포인트, 루트 조립
 - 조립 루트 `DependencyInjection`(`Project/App/DependencyInjection`) 소유 — 소비자는 실행 타깃뿐이다
 - `ContentView`와 앱 수준 흐름 연결
 - 전역 내비게이션 소유: `MulimiNavigation` 타깃(`AppCoordinator`, `AppRoute`). feature는 coordinator를 직접 알지 않고 feature 소유 라우트 값 또는 클로저로 의도만 전달한다.
 
 ### Feature Presentation
+
 - `View`, `ViewModel`, `Coordinator`
 - 화면 상태, 포맷된 프레젠테이션 모델, 라우팅 조합
 - 시스템 API 직접 호출은 지양하고 필요한 경우 추상화 뒤에서 사용
 
 ### Feature Domain
+
 - 엔티티, 유스케이스, 저장소 인터페이스
 - UI 문구, 로컬라이제이션, 심볼 이름에 의존하지 않는 비즈니스 규칙
 
 ### Feature Data
+
 - `Repository` 구현
 - `HealthKit`, `UserDefaults`, `iCloud KVS`, 알림 등 외부 시스템 연동
 
 ### Core
+
 - `Project/Core`는 시스템 인프라 서비스 레이어로, 비즈니스 기능·UI를 소유하지 않고 feature나 Localization에 역방향 의존하지 않는다.
 - `Project/Core/Analytics`: `MulimiAnalytics`(분석 계약)와 `MulimiAnalyticsData`(PostHog 구현). 분석 소비자는 `MulimiAnalytics`만 의존하고, `MulimiAnalyticsData`는 DI 조립(`DataAssembly`)에서만 사용한다.
 - `Project/Core/Platform`: `MulimiPlatform`. `Bundle`·`WidgetCenter` 등 시스템 API를 프레젠테이션이 직접 만지지 않게 하는 어댑터(`AppInfoProviding`, `WidgetTimelineReloading`)를 가진다.
@@ -55,14 +62,18 @@ Project/
 - `Project/Core/HealthKit`: `MulimiHealthKit`(iOS+watchOS). HealthKit quantity 샘플의 범용 저장소(`HealthQuantityStoring`). 권한 정책·도메인 매핑은 Hydration Data와 WatchHydration Data 어댑터가 담당한다.
 
 ### Features
+
 - `Account`, `Hydration`, `Routine`, `Challenge`, `HydrationReminder`는 각각 `Domain`, `Data`, `Presentation` 타깃을 가진다.
 - `WatchHydration`도 Watch 전용 `Domain`, `Data`, `Presentation` 타깃을 가진다.
 
 ### Widget
+
 - `WidgetKit`, `AppIntent`, 위젯별 표현 조합
 
 ### Shared
-- `Localization`, `DesignSystem`, `Persistence`, `Utils`
+
+- `Localization`, `DesignSystem`, `Utils`
+- `Persistence`·`PersistenceWatch`는 선언과 소스만 남아 있고 현재 소비 타깃은 없다. 수분 기록 경로에 다시 연결하지 않는다.
 
 ## Dependency Direction
 
@@ -71,11 +82,14 @@ App -> Feature Presentation
 App / DependencyInjection -> Feature Presentation + Feature Data + Feature Domain
 Feature Presentation -> Feature Domain
 Feature Data -> Feature Domain
-Widget -> AccountDomain + HydrationDomain + RoutineDomain
+Widget -> DependencyInjection + AccountDomain + HydrationDomain + RoutineDomain
 ChallengeDomain -> RoutineDomain -> HydrationDomain -> AccountDomain
+Watch extension -> WatchDependencyInjection -> WatchHydration Presentation / Data / Domain
 Feature Presentation / Data -> Shared as needed
 Feature Domain -> no UI dependency
 ```
+
+위 흐름은 주요 의존 방향의 요약이다. `ChallengeDomain -> HydrationDomain`, `RoutineDomain -> AccountDomain` 직접 참조와 기능 간 Presentation 조합 등 전체 선언은 구조·의존성 스냅샷에서 확인한다. Watch의 공용 수분 규칙 재사용은 소스 공유이며, `WatchHydrationDomain -> HydrationDomain` 타깃 의존성은 아니다.
 
 ## Core User Flow
 
@@ -87,8 +101,8 @@ SignIn
   -> ContentView
 ```
 
-- 루트 세션 상태는 `AppSession`
-- 전역 push 내비게이션은 `ContentView + AppCoordinator`
+- 루트 세션 상태는 `AccountPresentation`의 `AppSession`
+- 전역 push 내비게이션은 `ContentView`와 `MulimiNavigation`의 `AppCoordinator`가 담당
 - 탭 내부에 새 전역 `NavigationStack`을 추가하지 않는다
 
 ## Source of Truth
@@ -115,6 +129,8 @@ SignIn
 
 ## Documentation Map
 
+- 실제 타깃·의존성 스냅샷과 구조도: [Docs/project-architecture-and-dependencies.md](Docs/project-architecture-and-dependencies.md)
+- 구조도 원본·산출물 관리: [Docs/harness-engineering.md](Docs/harness-engineering.md#architecture-artifacts)
 - 제품/기능 요구: `Docs/product-specs/`
 - 깊은 설계 배경: `Docs/*.md`
 - 작업 계획/결정 기록: `Docs/exec-plans/`

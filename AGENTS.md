@@ -29,10 +29,10 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 공용 라우팅: `Project/App/Navigation/Sources/AppCoordinator.swift`
 - 모듈 구조:
   - `App`: 앱 조립과 타깃, DI 조립 루트, 전역 내비게이션(`MulimiNavigation`)
-  - `Core`: 시스템 인프라 모듈(`Analytics`, `Platform`)
+  - `Core`: 시스템 인프라 모듈(`Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain`)
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
   - `Widget`: WidgetKit / AppIntent
-  - `Shared`: Localization / DesignSystem / Persistence / Utils
+  - `Shared`: Localization / DesignSystem / Utils (`Persistence`·`PersistenceWatch`는 현재 미참조)
 
 ## Constitution
 
@@ -52,6 +52,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 ## Do
 
 - 변경 전에 관련 모듈의 `Project.swift`와 의존성을 확인한다.
+- 타깃·의존성·소스 공유 경계가 바뀌면 `Docs/project-architecture-and-dependencies.md`와 관련 구조도를 함께 갱신한다. 산출물 절차는 `Docs/harness-engineering.md#architecture-artifacts`를 따른다.
 - 비즈니스 규칙은 `Domain`, 시스템 연동은 `Data`, 화면 조합은 `Presentation`에 둔다.
 - 기능 추가 시 테스트 가능 단위를 먼저 찾고, 해당 기능의 `Domain` 또는 `Presentation` 테스트를 갱신한다.
 - 설정/세션/라우팅은 기존 `AppSession`, `AppCoordinator`, DI 조립 흐름을 재사용한다.
@@ -110,6 +111,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 문서 허브: `Docs/index.md`
 - 하네스 엔지니어링 구조: `Docs/harness-engineering.md`
 - 구조 SSOT: `ARCHITECTURE.md`
+- 전체 구조도/직접 의존성 스냅샷: `Docs/project-architecture-and-dependencies.md` (실제 선언은 `Project.swift` 우선)
 - 제품 스펙 인덱스: `Docs/product-specs/index.md`
 - 실행 계획/기술 부채: `Docs/exec-plans/`
 - 실행 계획 템플릿: `Docs/exec-plans/template.md`

@@ -72,7 +72,8 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 | 루틴·챌린지·수분 알림 설정 | 각 기능 Data의 App Group UserDefaults 저장 |
 | Apple 로그인·인증 정보 | AccountData의 AuthenticationServices 연동 + MulimiKeychain |
 | 목표 추천 | HydrationData의 Foundation Models 연동 |
-| 루틴·수분 알림 | RoutineData·HydrationReminderData의 UserNotifications 연동 |
+| 루틴 알림 | RoutineData의 AlarmKit 연동 |
+| 수분 리마인더 | HydrationReminderData의 UserNotifications 연동 |
 | 분석 | MulimiAnalytics 계약 ← MulimiAnalyticsData 구현 → PostHog |
 | UI 시스템 동작 | MulimiPlatform의 AppInfoProviding·WidgetTimelineReloading 경계 |
 

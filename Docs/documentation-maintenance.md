@@ -10,6 +10,8 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 | 작업 규칙과 금지 규칙 | `AGENTS.md` | 에이전트/개발자 공통 작업 규칙이 바뀔 때 |
 | 에이전트별 진입 파일 | `CLAUDE.md`, `GEMINI.md` | `AGENTS.md` symlink로 유지한다. 도구 전용 예외가 필요해도 공통 규칙을 복제하지 않는다 |
 | 구조 규칙 | `ARCHITECTURE.md` | 레이어 책임, Source of Truth, 전역 흐름이 바뀔 때 |
+| 실제 타깃·직접 의존 선언 | `Project/**/Project.swift` | 타깃, 플랫폼, 의존성, 공유 소스 경계가 바뀔 때 |
+| 구조·의존성 스냅샷과 구조도 | `Docs/project-architecture-and-dependencies.md`, `Docs/diagrams/` | 실제 선언·구현이 바뀌면 검토 기준 커밋, 직접 의존성 목록, 영향받는 그림을 함께 맞출 때 |
 | 문서 허브 | `Docs/index.md` | 새 문서가 생기거나 읽기 경로가 바뀔 때 |
 | 하네스 구조 | `Docs/harness-engineering.md` | 문서/검증/실행계획 운영 구조가 바뀔 때 |
 | 이슈/PR 전달 흐름 | `Docs/delivery-workflow.md` | 브랜치 전략, PR 템플릿 작성, 이슈 종료 기준이 바뀔 때 |
@@ -18,6 +20,8 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 | 구현 체크리스트 | `Docs/skills/` | 특정 기술 영역의 작업 절차가 바뀔 때 |
 | 검증 기준 | `Docs/quality-gates.md` | 변경 유형별 필수 검증 기준이 바뀔 때 |
 | 실행 계획 | `Docs/exec-plans/` | 긴 작업의 계획, 결정, 후속 작업을 남길 때 |
+
+구조·의존성 문서와 그림은 코드를 설명하는 스냅샷이지 새로운 구조 규칙이 아니다. 원본·산출물의 보관과 재생성은 [하네스 산출물 관리](harness-engineering.md#architecture-artifacts), 검증 기준은 [품질 게이트](quality-gates.md#architecture-artifact-gate)를 따른다.
 
 ## When To Create A New Doc
 
@@ -42,10 +46,14 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 - 코드와 문서가 충돌하지 않는가?
 - 새 문서가 `Docs/index.md`에 연결되어 있는가?
 - README에 노출할 만큼 대표 문서인가?
+- 변경한 상대 링크·이미지·문서 앵커가 실제 파일과 제목으로 연결되는가?
 - 구조 규칙 변경이면 `ARCHITECTURE.md` 또는 `AGENTS.md`도 갱신했는가?
+- 타깃·직접 의존성·공유 소스가 바뀌었다면 구조·의존성 목록과 관련 그림을 실제 `Project.swift`에 맞췄는가?
+- 구조도를 바꿨다면 원본 JSON, 생성 HTML, 검증 해시, 화면 캡처가 같은 결과를 가리키는가?
 - 에이전트 공통 규칙을 도구별 파일에 복제하지 않았는가?
 - 긴 작업이면 `Docs/exec-plans/active/` 또는 `completed/`에 기록했는가?
 - 과거 문서가 현재 구조를 오도하지 않는가?
+- 참고 문서의 수치·커밋·검증 결과를 새로 확인하지 않고 최신 결과처럼 옮기지 않았는가?
 
 ## Naming
 
