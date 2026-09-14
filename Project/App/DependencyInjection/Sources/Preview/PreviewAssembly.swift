@@ -101,6 +101,19 @@ public final class PreviewAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HydrationStarterPlanViewModel.self) { resolver in
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            return MainActor.assumeIsolated {
+                HydrationStarterPlanViewModel(
+                    repository: PreviewStarterPlanRepository(),
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    routineUseCase: routineUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(
                 useCase: resolver.resolve(DrinkWaterUseCase.self)!,
@@ -218,5 +231,15 @@ public final class PreviewAssembly: Assembly {
                 appInfoProvider: resolver.resolve((any AppInfoProviding).self)!
             )
         }
+    }
+}
+
+private final class PreviewStarterPlanRepository: HydrationStarterPlanRepository, @unchecked Sendable {
+    private var plan: HydrationStarterPlan?
+
+    func fetchPlan() -> HydrationStarterPlan? { plan }
+
+    func savePlan(_ plan: HydrationStarterPlan) {
+        self.plan = plan
     }
 }

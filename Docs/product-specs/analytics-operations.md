@@ -132,6 +132,15 @@ QA는 PostHog가 설정된 검증 빌드의 Activity에서 이벤트명과 허�
 - 추천 챌린지 CTA 탭 시 `challenge_cta_tapped`가 발생하고 `challenge_kind`, `action`이 채워진다.
 - 목표 수분량 변경 시 `daily_goal_changed`가 발생하고 이전/새 목표 값이 정수 ml로 들어간다.
 
+### Starter Plan (#320)
+
+- toolbar 버튼만 보인 상태에서는 `starter_plan_viewed`를 보내지 않는다. 체크리스트 진입 후 같은 ViewModel 생존 기간에 다시 들어와도 1회만 발생한다.
+- 기록/루틴 이동은 `starter_plan_action_tapped`, 방법을 바꿔 선택하면 `starter_plan_method_selected`를 보낸다. 둘 다 실제 기록/루틴 저장/설치 성공으로 세지 않는다.
+- 저장된 루틴 없이 편집기를 취소하거나 남은 수분 기록을 삭제하면 ‘준비 완료’가 막힌다. 실제 세 조건을 충족한 CTA만 `starter_plan_completed`를 보낸다.
+- 다시 보지 않기는 `starter_plan_dismissed`를 1회 보낸다. 재실행·뒤로 가기·백그라운드는 새 완료/닫기 이벤트를 만들지 않는다.
+- 파라미터는 `source = starter_plan`과 문서화한 `action`만 허용한다. 시작 시각·HealthKit 값·루틴 제목/UUID가 들어오면 실패다.
+- 노출→방법 선택→준비 완료를 제품 이용 퍼널로 볼 수 있지만, 위젯/Watch 설치율이나 D7 개선 검증으로 보고하지 않는다. 기존 PostHog SDK/설정만 사용하며 새 권한·식별자·전송 목적지는 추가하지 않는다.
+
 ## Decision Rules
 
 - HealthKit request rate가 낮으면 권한 게이트 카피와 CTA 우선순위를 점검한다.
