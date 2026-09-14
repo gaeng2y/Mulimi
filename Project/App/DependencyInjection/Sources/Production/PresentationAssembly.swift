@@ -80,6 +80,22 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HydrationStarterPlanViewModel.self) { resolver in
+            let repository = resolver.resolve(HydrationStarterPlanRepository.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+            return MainActor.assumeIsolated {
+                HydrationStarterPlanViewModel(
+                    repository: repository,
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    routineUseCase: routineUseCase,
+                    analyticsUseCase: analyticsUseCase
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: - HealthKit
         container.register(HydrationRecordListViewModel.self) { resolver in
             HydrationRecordListViewModel(

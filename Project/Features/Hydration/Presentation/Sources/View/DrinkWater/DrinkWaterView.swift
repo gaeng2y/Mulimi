@@ -22,6 +22,7 @@ public struct DrinkWaterView: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(\.scenePhase) private var scenePhase
     private var viewModel: DrinkWaterViewModel
+    private let onRecordAttemptFinished: () async -> Void
     @State private var isResetConfirmationPresented = false
 
     private struct AppReviewRequestTaskID: Equatable {
@@ -30,8 +31,12 @@ public struct DrinkWaterView: View {
         let isBlocked: Bool
     }
 
-    public init(viewModel: DrinkWaterViewModel) {
+    public init(
+        viewModel: DrinkWaterViewModel,
+        onRecordAttemptFinished: @escaping () async -> Void = {}
+    ) {
         self.viewModel = viewModel
+        self.onRecordAttemptFinished = onRecordAttemptFinished
     }
 
     public var body: some View {
@@ -354,6 +359,7 @@ public struct DrinkWaterView: View {
         Button {
             Task {
                 await viewModel.drinkWater()
+                await onRecordAttemptFinished()
             }
         } label: {
             defaultDrinkButtonContent
