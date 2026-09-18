@@ -58,6 +58,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 - [Exec Plans Active](exec-plans/active/README.md)
 - [Exec Plans Completed](exec-plans/completed/README.md)
+- [#321 수분 알림 바로 기록](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md)
 - [Exec Plan Template](exec-plans/template.md)
 - [Tech Debt Tracker](exec-plans/tech-debt-tracker.md)
 - [Delivery Workflow](delivery-workflow.md)

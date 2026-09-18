@@ -39,6 +39,7 @@
 | 앱 직접 입력 | 없음 | - | 메인 화면에는 노출하지 않는다. 사용자 기본값으로 저장하지 않는다. |
 | Widget button | `HydrationServing.defaultGlassVolumeML` = 250ml | `LogWaterAppIntent`의 기본 `amount = .glass` | 목표 초과 시 HealthKit에 쓰지 않고 결과 메시지를 반환한다. |
 | Control Widget 실험 (#322) | `HydrationServing.defaultGlassVolumeML` | 같은 `LogWaterAppIntent()` | 실험 빌드에서만 제어 센터·잠금 화면·액션 버튼에 노출한다. |
+| 수분 리마인더 액션 (#321) | `HydrationServing.defaultGlassVolumeML` | `DrinkWaterUseCase.drinkWaterFromReminder` | 잠금 해제 후 목표·조회·저장 결과 확인, 전달별 중복 방지. [정책과 측정](hydration-reminder-priming.md#notification-quick-logging-321). |
 | Watch | `HydrationServing.defaultGlassVolumeML` = 250ml | `WatchHydrationUseCaseImpl.defaultDrinkVolumeML` | Watch 전용 단위 규칙을 만들지 않는다. |
 | Siri/Shortcuts | 250ml, 330ml, 500ml, 직접 입력 ml | `LogWaterAppIntent.amount`, `customAmountML`, `LogWaterAppShortcuts` | App Shortcut phrase로 노출하고, 성공/목표 초과/권한 필요 결과 메시지를 반환한다. |
 

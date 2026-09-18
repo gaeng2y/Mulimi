@@ -45,6 +45,9 @@
 | `healthkit_permission_denied` | `source`, `status` | 권한 거부 또는 설정 복구 필요 상태 확인 |
 | `healthkit_permission_settings_tapped` | `status` | 설정 이동 CTA 탭 |
 | `healthkit_permission_refresh_tapped` | `status` | 설정 복귀 후 상태 재확인 CTA 탭 |
+| `hydration_reminder_action_selected` | `source`, `within_attribution_window` | 잠금 해제 후 delegate가 받은 중복 제외 기록 액션 |
+| `hydration_reminder_action_result` | `source`, `status`, `within_attribution_window` | 액션 저장·실패·차단 결과. 전달/노출 분모가 아님 |
+| `hydration_reminder_opened` | 없음 | 알림 본문 탭. 저장 성공과 별개 |
 | `water_logged` | `source`, `serving_type`, `volume_ml`, `daily_goal_ml` | 물 기록 성공 |
 | `water_log_failed` | `source`, `serving_type`, `failure_reason` | 물 기록 권한/입력/목표 초과 차단 또는 HealthKit 저장 실패 |
 | `water_preset_logged` | `source`, `preset`, `volume_ml` | 330ml/500ml 프리셋 기록 성공 |
@@ -70,6 +73,7 @@
 - `healthkit_permission_gate`
 - `drink_water_main`
 - `app_intent`
+- `notification_action`
 - `insight_recovery`
 - `insight_weekly_coaching`
 - `insight_empty`
@@ -175,3 +179,9 @@ PostHog iOS SDK가 기본으로 추가하는 아래 속성은 제품 event param
 - `Docs/product-specs/analytics-operations.md`
 - `Docs/product-specs/growth-scorecard.md`
 - `Docs/security-privacy.md`
+
+## Notification Action Measurement (#321)
+
+`hydration_reminder_action_result.status`는 `saved`, `failed`, `permissionRequired`, `goalExceeded`, `protectedDataUnavailable`, `signInRequired`다. HealthKit 저장 API 성공 시에만 `water_logged.source = notification_action`을 추가한다. 전달 후 0~600초 안의 응답은 `within_attribution_window = true`이며, 오래된 알림도 명시적으로 기록할 수 있다. 알림 식별자·전달 시각·HealthKit 샘플 ID는 전송하지 않는다.
+
+예약 수를 전달·노출 분모로 사용하지 않는다. 기준선은 현재 미측정이며 유효 전달 분모가 없으면 전환 개선 판정을 보류한다. 선택 대비 결과율, 이벤트 미수신과 영수증 기록 전 종료의 측정 한계, 기기 QA는 [수분 리마인더 정책](hydration-reminder-priming.md#measurement-and-decision)을 따른다.

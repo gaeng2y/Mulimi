@@ -12,6 +12,7 @@ import OSLog
 
 public protocol DrinkWaterDataSource: Sendable {
     var currentWaterIntakeML: Double { get async }
+    func waterIntakeForLogging() async throws -> Double
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
@@ -19,7 +20,7 @@ public protocol DrinkWaterDataSource: Sendable {
     @discardableResult
     func drinkWater() async -> HydrationWriteResult
     @discardableResult
-    func drinkWater(volumeML: Int) async -> HydrationWriteResult
+    func drinkWater(volumeML: Int, idempotencyKey: String?) async -> HydrationWriteResult
     func deleteHydrationEvent(id: UUID) async -> Bool
     @discardableResult
     func reset() async -> HydrationWriteResult
@@ -43,21 +44,20 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
 
     public var currentWaterIntakeML: Double {
         get async {
-            let dayInterval = dayInterval(for: .now)
-
             do {
-                let samples = try await healthKitDataSource.readWaterSamples(
-                    from: dayInterval.start,
-                    to: dayInterval.end
-                )
-                return samples.reduce(0.0) { partialResult, event in
-                    partialResult + Double(event.volumeML)
-                }
+                return try await waterIntakeForLogging()
             } catch {
                 logger.error("Failed to fetch current hydration samples: \(String(describing: error))")
                 return 0
             }
         }
+    }
+
+    // Writes must distinguish an unavailable HealthKit query from a real zero.
+    public func waterIntakeForLogging() async throws -> Double {
+        let interval = dayInterval(for: .now)
+        let samples = try await healthKitDataSource.readWaterSamples(from: interval.start, to: interval.end)
+        return samples.reduce(0) { $0 + Double($1.volumeML) }
     }
 
     public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
@@ -85,9 +85,9 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
     }
 
     @discardableResult
-    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+    public func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
         do {
-            try await healthKitDataSource.setWaterIntake(volumeML: volumeML)
+            try await healthKitDataSource.setWaterIntake(volumeML: volumeML, idempotencyKey: idempotencyKey)
             return .success
         } catch {
             logger.error("Failed to save hydration sample to HealthKit: \(String(describing: error))")
@@ -146,5 +146,12 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
         let end = calendar.date(byAdding: .day, value: 1, to: start)
             ?? start.addingTimeInterval(86_400)
         return DateInterval(start: start, end: end)
+    }
+}
+
+public extension DrinkWaterDataSource {
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+        await drinkWater(volumeML: volumeML, idempotencyKey: nil)
     }
 }

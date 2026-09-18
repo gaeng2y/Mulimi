@@ -47,7 +47,8 @@ public protocol HealthQuantityStoring: Sendable {
         _ value: Double,
         unit: HKUnit,
         of identifier: HKQuantityTypeIdentifier,
-        at date: Date
+        at date: Date,
+        syncIdentifier: String?
     ) async throws
     func deleteOwnedSample(id: UUID, of identifier: HKQuantityTypeIdentifier) async throws -> Bool
     func deleteOwnedSamples(
@@ -215,11 +216,17 @@ public final class HealthKitQuantityStore: HealthQuantityStoring, @unchecked Sen
         _ value: Double,
         unit: HKUnit,
         of identifier: HKQuantityTypeIdentifier,
-        at date: Date
+        at date: Date,
+        syncIdentifier: String? = nil
     ) async throws {
         let quantityType = try Self.quantityType(for: identifier)
         let quantity = HKQuantity(unit: unit, doubleValue: value)
-        let sample = HKQuantitySample(type: quantityType, quantity: quantity, start: date, end: date)
+        let metadata: [String: Any]? = syncIdentifier.map {
+            [HKMetadataKeySyncIdentifier: $0, HKMetadataKeySyncVersion: 1]
+        }
+        let sample = HKQuantitySample(
+            type: quantityType, quantity: quantity, start: date, end: date, metadata: metadata
+        )
 
         try await healthStore.save(sample)
     }
@@ -311,5 +318,16 @@ public final class HealthKitQuantityStore: HealthQuantityStoring, @unchecked Sen
         }
 
         return quantityType
+    }
+}
+
+public extension HealthQuantityStoring {
+    func save(
+        _ value: Double,
+        unit: HKUnit,
+        of identifier: HKQuantityTypeIdentifier,
+        at date: Date
+    ) async throws {
+        try await save(value, unit: unit, of: identifier, at: date, syncIdentifier: nil)
     }
 }
