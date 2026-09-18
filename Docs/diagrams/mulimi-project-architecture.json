@@ -7,7 +7,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/gaeng2y/Mulimi",
-      "revision": "c997f8659189ce5602d58a6311d5927199481d8c"
+      "revision": "b150df1fabf3c16bc0488ecd9094fe56f27f0bb0"
     },
     "viewBox": [
       1395,
@@ -50,11 +50,6 @@
       "col": 0,
       "sources": [
         {
-          "path": "Project/App/Sources/DrinkWaterApp.swift",
-          "line": 15,
-          "label": "앱 진입·의존성 주입"
-        },
-        {
           "path": "Project/App/Sources/RootView.swift",
           "line": 40,
           "label": "인증·온보딩·권한 게이트"
@@ -63,6 +58,11 @@
           "path": "Project/App/Sources/ContentView.swift",
           "line": 60,
           "label": "탭·전역 내비게이션"
+        },
+        {
+          "path": "Project/App/Sources/AppDelegate.swift",
+          "line": 11,
+          "label": "알림 액션·HydrationReminderData 직접 연결"
         }
       ],
       "size": [
@@ -81,7 +81,7 @@
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 100,
+          "line": 104,
           "label": "타깃·직접 의존성"
         },
         {
@@ -226,7 +226,7 @@
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 185,
+          "line": 189,
           "label": "Watch 앱·확장 타깃"
         },
         {
@@ -452,7 +452,7 @@
       "items": [
         "2.5.0 (33) · 17개 프로젝트 · 53개 타깃 중 테스트 15개",
         "DI는 3개 레이어를 모두 조립; 위젯은 Account·Hydration·Routine Domain도 직접 참조",
-        "Shared·Core의 추가 참조와 테스트를 포함한 직접 의존 선언은 상세 문서에 169개 전부 기록"
+        "전체 직접 의존 170개; AppDelegate는 HydrationReminderData의 알림 카테고리·결과 안내 사용"
       ]
     },
     {
