@@ -26,6 +26,10 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
         }
     }
 
+    public func waterIntakeForLogging() async throws -> Double {
+        await currentWaterIntakeML
+    }
+
     public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
     }
@@ -42,7 +46,7 @@ public final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable
     }
 
     @discardableResult
-    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+    public func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
         guard drinkWaterResult.isSuccess else {
             return drinkWaterResult
         }

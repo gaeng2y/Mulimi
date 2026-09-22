@@ -42,6 +42,22 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HydrationReminderActionHandler.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let preferences = resolver.resolve(UserPreferencesUseCase.self)!
+            let analytics = resolver.resolve(AnalyticsUseCase.self)!
+            let widgetReloader = resolver.resolve((any WidgetTimelineReloading).self)!
+            return MainActor.assumeIsolated {
+                HydrationReminderActionHandler(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: preferences,
+                    analytics: analytics,
+                    widgetReloader: widgetReloader
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!

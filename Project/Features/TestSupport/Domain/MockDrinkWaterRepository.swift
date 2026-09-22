@@ -10,6 +10,9 @@ import HydrationDomain
 import Foundation
 
 final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
+    var loggingReadError: Error?
+    var recordedIdempotencyKeys: [String?] = []
+
     private var currentWaterIntakeMLValue = 0.0
     private var _events: [HydrationEvent] = []
 
@@ -29,6 +32,11 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
         get async {
             currentWaterIntakeMLValue
         }
+    }
+
+    func waterIntakeForLogging() async throws -> Double {
+        if let loggingReadError { throw loggingReadError }
+        return await currentWaterIntakeML
     }
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent] {
@@ -53,9 +61,10 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     }
 
     @discardableResult
-    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+    func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        recordedIdempotencyKeys.append(idempotencyKey)
         guard drinkWaterResult.isSuccess else {
             return drinkWaterResult
         }

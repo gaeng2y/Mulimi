@@ -1,12 +1,12 @@
 # 프로젝트 전체 구조와 의존성
 
-기준: `main`의 `c997f8659189ce5602d58a6311d5927199481d8c`, Mulimi **2.5.0 (33)**. 실제 `Project.swift` 17개와 진입점·DI·저장 구현을 확인한 스냅샷이다.
+기준: #321 구현 커밋 `b150df1fabf3c16bc0488ecd9094fe56f27f0bb0`, Mulimi **2.5.0 (33)**. 실제 `Project.swift` 17개와 진입점·DI·저장 구현을 확인한 스냅샷이다.
 
 [전체 구조도 열기](diagrams/mulimi-project-architecture.html) · [다이어그램 원본 JSON](diagrams/mulimi-project-architecture.json) · [라이트·다크 화면 검증](diagrams/mulimi-project-architecture.visual-check.html)
 
 ## 읽는 방법
 
-구조도는 11개 묶음으로 주요 의존 방향을 보여준다. 모든 간선을 그린 타깃 그래프는 아니며, 아래 표가 **선언된 53개 타깃과 직접 의존 선언 169개 전체**를 담는다. 이 중 15개는 테스트 타깃이고, 의존 선언은 내부 타깃 165개와 외부 제품 참조 4개다. Apple SDK의 암시적 링크와 전이 의존성은 이 개수에 포함하지 않는다.
+구조도는 11개 묶음으로 주요 의존 방향을 보여준다. 모든 간선을 그린 타깃 그래프는 아니며, 아래 표가 **선언된 53개 타깃과 직접 의존 선언 170개 전체**를 담는다. 이 중 15개는 테스트 타깃이고, 의존 선언은 내부 타깃 166개와 외부 제품 참조 4개다. Apple SDK의 암시적 링크와 전이 의존성은 이 개수에 포함하지 않는다.
 
 화살표 `A → B`는 A가 B를 참조한다는 뜻이다. DI의 객체 조립, 프레임워크 링크, 앱의 확장 포함은 같은 실행 호출 흐름이 아니다. 특히 `Data → Domain`은 Repository 계약 구현에 필요한 **컴파일 의존 방향**이다. 실행 시에는 ViewModel이 UseCase를 호출하고, 주입된 Repository 구현이 시스템에 접근한다.
 
@@ -73,7 +73,7 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 | Apple 로그인·인증 정보 | AccountData의 AuthenticationServices 연동 + MulimiKeychain |
 | 목표 추천 | HydrationData의 Foundation Models 연동 |
 | 루틴 알림 | RoutineData의 AlarmKit 연동 |
-| 수분 리마인더 | HydrationReminderData의 UserNotifications 연동 |
+| 수분 리마인더 | AppDelegate → HydrationReminderData의 카테고리·실패 안내, HydrationPresentation의 액션 상태 → DrinkWaterUseCase → HealthKit |
 | 분석 | MulimiAnalytics 계약 ← MulimiAnalyticsData 구현 → PostHog |
 | UI 시스템 동작 | MulimiPlatform의 AppInfoProviding·WidgetTimelineReloading 경계 |
 
@@ -93,11 +93,11 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 | [WatchDependencyInjection](../Project/App/DependencyInjection/Project.swift#L72) | `WatchHydrationData`, `WatchHydrationDomain`, `WatchHydrationPresentation` |
 | [DependencyInjectionPreview](../Project/App/DependencyInjection/Project.swift#L96) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `AccountPresentation`, `ChallengeDomain`, `ChallengePresentation`, `MulimiAnalytics`, `MulimiNavigation`, `MulimiPlatform`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderDomain`, `HydrationReminderPresentation`, `RoutineDomain`, `RoutinePresentation` |
 | [DependencyInjectionTesting](../Project/App/DependencyInjection/Project.swift#L129) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `ChallengeDomain`, `MulimiAnalytics`, `HydrationDomain`, `HydrationReminderDomain`, `RoutineDomain` |
-| [Mulimi](../Project/App/Project.swift#L35) | `MulimiWatch`, `WidgetExtension`, `MulimiNavigation`, `DependencyInjection`, `AccountDomain`, `AccountPresentation`, `ChallengePresentation`, `MulimiAnalytics`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderPresentation`, `RoutinePresentation`, `Localization`, `Utils` |
-| [WidgetExtension](../Project/App/Project.swift#L100) | `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Utils`, `DependencyInjection` |
-| [MulimiNavigation](../Project/App/Project.swift#L141) | `RoutineDomain` |
-| [MulimiWatch](../Project/App/Project.swift#L185) | `MulimiWatchExtension` |
-| [MulimiWatchExtension](../Project/App/Project.swift#L213) | `WatchDependencyInjection` |
+| [Mulimi](../Project/App/Project.swift#L35) | `MulimiWatch`, `WidgetExtension`, `MulimiNavigation`, `DependencyInjection`, `AccountDomain`, `AccountPresentation`, `ChallengePresentation`, `MulimiAnalytics`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderData`, `HydrationReminderPresentation`, `RoutinePresentation`, `Localization`, `Utils` |
+| [WidgetExtension](../Project/App/Project.swift#L104) | `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Utils`, `DependencyInjection` |
+| [MulimiNavigation](../Project/App/Project.swift#L145) | `RoutineDomain` |
+| [MulimiWatch](../Project/App/Project.swift#L189) | `MulimiWatchExtension` |
+| [MulimiWatchExtension](../Project/App/Project.swift#L217) | `WatchDependencyInjection` |
 
 ### Features — 18개
 
@@ -147,7 +147,7 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [MulimiNavigationTests](../Project/App/Project.swift#L163) | `MulimiNavigation` |
+| [MulimiNavigationTests](../Project/App/Project.swift#L167) | `MulimiNavigation` |
 | [AccountDomainTests](../Project/Features/Account/Project.swift#L64) | `AccountDomain` |
 | [AccountPresentationTests](../Project/Features/Account/Project.swift#L77) | `AccountPresentation`, `MulimiAnalytics`, `MulimiPlatform`, `HydrationReminderDomain` |
 | [ChallengeDomainTests](../Project/Features/Challenge/Project.swift#L59) | `ChallengeDomain`, `HydrationDomain`, `RoutineDomain` |
@@ -186,16 +186,18 @@ archify로 실제 소스 참조 31개를 검증하고 HTML을 생성했다. 아�
 
 ```text
 diagram_type: architecture
-output: /Users/gaeng2y/Documents/github/Mulimi/Docs/diagrams/mulimi-project-architecture.html
-specification_sha256: cd2de1e4a4041062b3abadb08865c2032d3711d322e4c6d81bfdb2b291463697
-specification_bytes: 12167
-artifact_sha256: 357bb138ec030191c76d0b38d8d851a00ecf31876030f9d0f611b311c84aa1fa
-artifact_bytes: 721381
+output: Docs/diagrams/mulimi-project-architecture.html
+specification_sha256: 92f406d8c60370d2b761a82521a98661959c7a8417c2d390156a55f873321a29
+specification_bytes: 12180
+artifact_sha256: 4ca97aad666b28f11652305c38bcaf0655912954a959e6e2cef83b8a3abd0fd6
+artifact_bytes: 721392
 validation: 9/9 showcase, 0 errors, 0 warnings
 visual_review: passed
-correction_rounds: 1
+correction_rounds: 0
 ```
 
-화면 검증: 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침 없음. 1440×900과 2048×1320의 라이트·다크 캡처 4장을 직접 확인했다. READ·정지 화면 기준이며, 첫 검증의 12px 세로 넘침은 중복된 카드 제목을 줄여 해결했다.
+화면 검증: 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침 없음. 1440×900과 2048×1320의 라이트·다크 캡처 4장을 직접 확인했다. READ·정지 화면 기준이다. 자동 검증 receipt의 `visualReview: pending`과 별도로 캡처를 직접 확인했다.
 
-저장소 검증: `make lint`는 301개 파일에서 위반 0개, `make arch-check` 통과. 문서·다이어그램만 변경했으므로 프로젝트 재생성·앱 빌드·기능 테스트는 실행하지 않았다.
+저장소 검증: `make lint`는 307개 파일에서 위반 0개, `make arch-check`와 7개 스킴의 198개 테스트 정의 통과. 제품용 iOS 모듈 Release 컴파일과 AppDelegate 타입 검사는 통과했으나, 전체 Mulimi Release 빌드는 Xcode 27의 기존 WatchKit 확장 형식 미지원으로 차단됐다. 상세 조건은 [#321 실행 기록](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md)을 따른다.
+
+#321에서는 AppDelegate가 HydrationReminderData의 카테고리·전달 영수증·실패 안내를 직접 호출한다. 영수증은 `UserDefaults.standard`에 요청별 마지막 성공 전달 시각만 보관하고, 실제 수분 기록과 중복 방지 sync metadata는 HealthKit에 둔다.

@@ -1,6 +1,108 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "hydrationReminderDrinkAction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I drank water"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마셨어요"
+          }
+        }
+      }
+    },
+    "hydrationReminderRecordFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Water was not saved. Unlock your device and try again in Mulimi."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물이 저장되지 않았어요. 잠금을 해제하고 물리미에서 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReminderRecordFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Water was not recorded"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물을 기록하지 못했어요"
+          }
+        }
+      }
+    },
+    "hydrationReminderRecordGoalExceeded" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One glass would exceed today’s goal, so it was not recorded."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 잔을 더하면 오늘 목표를 넘어서 기록하지 않았어요."
+          }
+        }
+      }
+    },
+    "hydrationReminderRecordPermissionRequired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Mulimi and allow access to save water in Health."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미를 열어 건강 앱의 물 기록 권한을 확인해 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReminderRecordSignInRequired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Mulimi and sign in to record water."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미를 열고 로그인한 뒤 물을 기록해 주세요."
+          }
+        }
+      }
+    },
     "starterPlanEntry": {
       "extractionState": "manual",
       "localizations": {
