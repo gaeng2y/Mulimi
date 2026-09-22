@@ -20,4 +20,3 @@ PNG 3장은 모두 **1024 × 1024, 실제 알파 투명 배경**이며 동일한
 내장 이미지 생성 도구로 제작했으며 전체 프롬프트는 [GENERATION.md](GENERATION.md)에 기록했습니다. 광택과 그림자는 원본 PNG에 굽지 않고 Composer 문서에서 적용했습니다.
 
 [Apple Icon Composer 제작 가이드](https://developer.apple.com/documentation/xcode/creating-your-app-icon-using-icon-composer)
-

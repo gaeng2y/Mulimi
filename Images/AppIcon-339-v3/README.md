@@ -4,6 +4,12 @@
 
 **`Mulimi-Drop.icon`을 Icon Composer로 열면 됩니다.** 크기·배치·외관별 색이 이미 설정돼 있습니다.
 
+## 앱 적용
+
+iOS 앱의 기본 아이콘으로 v3를 사용합니다. `Project/App/Project.swift`에서 이 폴더의 `Mulimi-Drop.icon`을 앱 리소스로 직접 참조하고, Debug·Release 공통 `ASSETCATALOG_COMPILER_APPICON_NAME`을 `Mulimi-Drop`으로 지정합니다. 아이콘을 수정할 때는 이 원본을 편집하고 `tuist generate`로 프로젝트를 갱신하세요.
+
+적용 검증 환경은 Xcode 27.0 (`27A266a`), Tuist 4.205.0입니다. 프로젝트 생성과 `actool`의 iPhone·iPad 아이콘 컴파일을 통과했고, 생성된 `CFBundleIconName`이 `Mulimi-Drop`인지 확인했습니다. 전체 Release 앱 빌드는 기존 `MulimiWatchExtension`의 `watchkit2-extension` 제품 형식을 Xcode 27이 지원하지 않아 완료하지 못했습니다.
+
 ## 레이어
 
 두 원본 PNG는 모두 **1024 × 1024, 알파 투명 배경**입니다.

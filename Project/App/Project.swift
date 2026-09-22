@@ -40,7 +40,10 @@ let project = Project(
             deploymentTargets: .iOS("26.0"),
             infoPlist: .file(path: .path("Supports/Info.plist")),
             sources: ["Sources/**"],
-            resources: ["Resources/**"],
+            resources: .resources([
+                .glob(pattern: "Resources/**"),
+                .glob(pattern: .relativeToRoot("Images/AppIcon-339-v3/Mulimi-Drop.icon"))
+            ]),
             entitlements: .file(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")
             ),
@@ -93,6 +96,7 @@ let project = Project(
             ],
             settings: .settings(
                 base: [
+                    "ASSETCATALOG_COMPILER_APPICON_NAME": .string("Mulimi-Drop"),
                     "OTHER_LDFLAGS": .string("$(inherited) -ObjC")
                 ]
             )
