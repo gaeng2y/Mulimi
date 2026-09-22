@@ -24,6 +24,7 @@ Mulimi의 보안/개인정보 운영 기준이다. 이 문서는 법률 검토 �
 | Daily goal | `dailyWaterLimit` | iCloud KVS + App Group UserDefaults mirror | 앱/위젯/워치가 같은 목표량을 보기 위한 설정값이다. 인증 정보나 HealthKit 원본을 섞지 않는다. |
 | Main icon | `mainIcon` | App Group UserDefaults | 앱/위젯 표시 설정이다. `mainAppearance`는 legacy migration 용도만 유지한다. |
 | Onboarding state | `hasCompletedOnboarding` | App Group UserDefaults | 로컬 플로우 상태다. 사용자 식별자와 결합하지 않는다. |
+| Starter plan state | `hydrationStarterPlan.v1` | 기기 로컬 UserDefaults | 안내 시작 시각·빠른 기록 방법·완료/닫기만 저장한다. HealthKit 기록·루틴 사본·사용자 식별자는 저장하지 않으며 로그아웃으로 초기화하지 않는다. |
 | Routine schedules | `hydrationRoutines` JSON | App Group UserDefaults | 로컬 알림/루틴 표시용이다. Analytics에는 루틴 제목이나 UUID를 보내지 않는다. |
 | Challenge badge history | `hydrationChallengeBadgeHistories` JSON | App Group UserDefaults | 로컬 표시용 완료 이력이다. 서버 동기화 대상이 아니다. |
 | Apple account credential | Apple user identifier, optional email/name | Keychain | 로그인 상태 판단용이다. identity token, authorization code는 현재 저장하지 않는다. |

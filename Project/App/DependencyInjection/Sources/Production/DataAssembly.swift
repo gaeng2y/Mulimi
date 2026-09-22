@@ -64,6 +64,10 @@ public final class DataAssembly: Assembly {
             HydrationComebackRepositoryImpl(userDefaults: .standard)
         }
 
+        container.register(HydrationStarterPlanRepository.self) { _ in
+            HydrationStarterPlanRepositoryImpl(userDefaults: .standard)
+        }
+
         // MARK: - Analytics
         container.register(AnalyticsRepository.self) { _ in
             Self.makeAnalyticsRepository()

@@ -42,6 +42,22 @@ public final class PresentationAssembly: Assembly {
         }
         .inObjectScope(.container)
 
+        container.register(HydrationReminderActionHandler.self) { resolver in
+            let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let preferences = resolver.resolve(UserPreferencesUseCase.self)!
+            let analytics = resolver.resolve(AnalyticsUseCase.self)!
+            let widgetReloader = resolver.resolve((any WidgetTimelineReloading).self)!
+            return MainActor.assumeIsolated {
+                HydrationReminderActionHandler(
+                    waterUseCase: waterUseCase,
+                    userPreferencesUseCase: preferences,
+                    analytics: analytics,
+                    widgetReloader: widgetReloader
+                )
+            }
+        }
+        .inObjectScope(.container)
+
         // MARK: - DrinkWater
         container.register(DrinkWaterViewModel.self) { resolver in
             let waterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
@@ -75,6 +91,22 @@ public final class PresentationAssembly: Assembly {
                     progressUseCase: progressUseCase,
                     comebackRepository: comebackRepository,
                     comebackMode: comebackMode
+                )
+            }
+        }
+        .inObjectScope(.container)
+
+        container.register(HydrationStarterPlanViewModel.self) { resolver in
+            let repository = resolver.resolve(HydrationStarterPlanRepository.self)!
+            let drinkWaterUseCase = resolver.resolve(DrinkWaterUseCase.self)!
+            let routineUseCase = resolver.resolve(RoutineUseCase.self)!
+            let analyticsUseCase = resolver.resolve(AnalyticsUseCase.self)!
+            return MainActor.assumeIsolated {
+                HydrationStarterPlanViewModel(
+                    repository: repository,
+                    drinkWaterUseCase: drinkWaterUseCase,
+                    routineUseCase: routineUseCase,
+                    analyticsUseCase: analyticsUseCase
                 )
             }
         }

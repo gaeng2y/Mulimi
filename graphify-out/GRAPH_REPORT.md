@@ -1,208 +1,212 @@
-# Graph Report - mulimi-339-index-snapshot  (2026-09-22)
+# Graph Report - Mulimi  (2026-09-22)
 
 ## Corpus Check
-- 377 files · ~170,025 words
+- 393 files · ~176,279 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 23 file(s) not represented in the graph (top: .entitlements 6, .plist 6, (none) 3)
 
 ## Summary
-- 3654 nodes · 9665 edges · 181 communities (165 shown, 16 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 1428 edges (avg confidence: 0.83)
+- 3849 nodes · 10161 edges · 179 communities (166 shown, 13 thin omitted)
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 1481 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
+## Graph Freshness
+- Built from commit: `2a5baf56`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
+
 ## Community Hubs (Navigation)
-- HydrationRoutineAdherenceInsight
+- Sendable
 - HydrationRecord
-- FoundationModelsHydrationGoalRecommendationDataSource.swift
+- WatchHydrationLocalDataSource.swift
 - ProfileRoutineViewModel
 - RoutineRepositoryImpl
-- HydrationServingPreset
+- Equatable
 - MockHealthKitRepository
 - MockUserPreferencesUseCase
-- DrinkWaterView
-- DrinkWaterUseCase
-- .assemble
-- Docs Index
-- HydrationEvent
-- Layer Responsibilities
+- .tr
+- HydrationChallengeBadgeHistory
+- SettingsViewModel
+- Hydration Logging
+- HydrationPresentation
+- AnalyticsUseCase
 - DrinkWaterViewModel
 - HydrationDomain
 - HydrationChallengeKind
 - HealthKitPermissionViewModel
-- Color
+- RoutineActionIntent
 - MockDrinkWaterUseCase
-- HydrationWriteResult
+- HydrationEvent
 - BodyProfile
 - DrinkWaterRepository
 - MockDrinkWaterRepository
 - .tr
-- MockSignInUseCase
+- AccountDomain
 - SpyRoutineUseCase
 - MockRoutineRepository
 - LiquidGlassSegmentedControl
-- AnalyticsRepository
-- SwiftUI
+- PostHogAnalyticsRepository
+- Localization
 - HydrationReminderPermissionViewModel
-- TokenProperty
-- HydrationChallenge
-- RecordCalendarView
-- DrinkWaterHealthKitDataSource
-- HydrationProgressSnapshot
+- UserCredential
 - ChallengeViewModel
-- AppCoordinator
+- RecordCalendarView
+- HealthKitSource
+- .loadInsights
+- PersonalizedHydrationChallenge
+- AnyObject
 - String
 - HydrationGoalRecommendationViewModel
-- RoutineWeekday
-- HKQuantityTypeIdentifier
-- MockHydrationReminderRepository
-- .body
 - RoutineRecommendationUseCaseImpl
+- HealthKitDataSourceImpl
+- MockHydrationReminderRepository
+- RoutineUseCase
+- MockChallengeUseCaseForTesting
 - ProfileRoutineView
 - DIContainer
 - UserDefaults
 - HydrationReminderAuthorizationStatus
-- HealthKitDataSourceImpl
+- SpyDrinkWaterUseCase
 - HydrationReminderRepositoryImpl
-- View
+- HydrationInsightView
 - HydrationInsightViewModel
-- TestControl
+- StartTimerIntent
 - BodyProfileViewModel
-- UserPreferencesUseCaseImpl
-- Foundation
-- HydrationChallengeBadgeHistory
+- DrinkWaterHealthKitDataSource
+- DrinkWaterUseCase
+- ChallengeUseCaseImpl
 - HydrationReminderSlot
 - DrinkWaterEntry
-- .tr
-- .makeRootView
-- SignInUseCaseImpl
+- .makeUseCase
+- 실행·공유 경계
+- AppReviewRequestUseCaseImpl
 - LogWaterAppIntent
 - ProjectDescription
-- Hashable
-- UserPreferencesUseCase
+- HydrationStarterPlanViewModel
+- ContentView
 - Top 5
 - MainIcon
 - Test.swift
-- UUID
+- ChallengeStorageDataSourceImpl
 - HydrationRoutine
 - HydrationRecordListViewModel
-- HydrationGoalRecommendation
+- Hashable
 - OnboardingView
-- HydrationGoalRecommendationCard
+- View
 - .assemble
 - HydrationGoalRecommendationUseCaseImpl
 - AppReviewRequestState
-- SharedHydrationStoreError
-- .makeViewModel
+- UUID
+- UserPreferencesUseCaseImpl
 - WatchHydrationSnapshot
 - OnboardingViewModel
 - .loadChallenges
-- HydrationGoalRecommendationUnavailableReason
+- Color
 - AppReviewRequestUseCase
-- AGENTS.md Onboarding Map
+- Mulimi Drop — v3
 - Growth Scorecard
-- Sendable
-- Equatable
-- WaterWaveView
-- AnalyticsUseCase
-- MockHydrationReminderUseCase
+- AppleSignInCredential
+- AppDelegate
+- MockUserPreferencesUseCase
+- 프로젝트 전체 구조와 의존성
+- HydrationGoalRecommendationAvailability
 - HydrationProgressUseCaseImpl
-- .fetchChallenges
-- Data Boundary
-- HydrationPresentation
+- AuthTokens
+- Security And Privacy Operations
+- Foundation
 - FoundationModelsHydrationGoalRecommendationDataSource
 - PersonalizedChallengeUseCaseImpl
 - LogWaterAmountOption
-- Reliability Recovery
-- SettingsViewModel
+- AGENTS.md Onboarding Map
+- .assemble
 - HealthKitAuthorizationStatus
-- WatchHydrationViewModel
+- HydrationProgressSnapshot
 - HydrationReminderPermissionGateView
-- HealthKitDataSource
-- HydrationReminderNotificationDataSource
-- WatchHydrationLocalDataSource.swift
+- WaterDropView
+- HydrationServingPreset
+- Generation prompts
 - ConfigurationAppIntent
 - SettingsViewModelTests
 - DrinkWaterRepositoryImpl
-- .weeklyInsightCalculatesRoutineRatesAndMissPattern
+- HydrationRoutineSchedule
 - WatchHydrationUseCaseImpl
+- AppRoute
 - MockUserPreferencesRepository
 - AI PR Review Workflow
-- Mulimi
 - UserPreferencesDataSourceImpl
-- HydrationGoalRecommendationAvailability
-- HydrationComebackRepositoryImpl
+- TokenProperty
+- .makeViewModel
 - DIEnvironment
-- WatchHydrationHealthKitDataSource
-- .body
-- DrinkWaterWidgetProvider
+- MockHydrationReminderUseCase
+- .handle
+- KeychainStoring
 - ContentState
-- BodyProfileSettingView
+- HealthKitUseCase
 - Error
-- Mulimi Drop — v3
+- HydrationWriteResult
 - LogWaterAppShortcuts
 - WaterDropShaders.metal
 - .resolve
 - HydrationNextActionGuide
-- MockUserPreferencesUseCase
-- Challenge State Model
-- MockUserPreferencesUseCaseForTesting
+- #320 — 7일 스타터 플랜 제품 적용
+- Docs Index
+- RoutineWeekday
 - UserPreferencesRepositoryImpl
 - WatchDailyGoalLocalDataSource
-- UserPreferencesDataSource
+- HealthKitDataSource
 - Accessibility and Dynamic Type Audit
-- UserPreferencesRepository
+- WatchHydrationMutationResult
 - RoutineNotificationDataSourceImpl
 - ci_post_clone.sh
 - pre-commit
-- MockAppReviewRequestUseCase
-- ChallengeStorageDataSourceImpl
-- HydrationInsightCategory
-- Generation prompts
+- Test
+- DrinkWaterLockScreenWidgetEntryView
+- WatchRootView.swift
+- ProfileView
 - check-architecture.sh
-- Profile Information Architecture
+- MockAppReviewRequestUseCase
 - lint.sh
 - lint-fix.sh
 - .progressSnapshot
 - .makeComebackViewModel
-- HealthKitError
-- Test
-- RoutineEditorDraft
-- .assemble
+- L10n
+- LogWaterControl
+- Challenge State Model
+- BundleAppInfoProvider
 - AuthProvider
 - Mulimi Pull Request Template
-- HydrationReminderRepository
+- Personalized Challenge Strategy
 - Generation — Mulimi Water Glass v2
-- State
-- RoutineActionIntent
-- ChallengeCategory
-- MockAuthenticationRepository
-- WatchHydrationMutationResult
-- AuthenticationRepository
-- WatchDataConstants.swift
-- AppTab
-- StartTimerIntent
-- WatchHydrationRepositoryImpl
-- Completed Plan Archive
-- HealthQuantityStoreError
 - .hasCompletedOnboarding
-- CustomHydrationAmountValidation
-- RoutinePermissionPrompt
-- MockSignInError
-- .hydrationEvents
-- Bool
+- RoutineRecoveryReminderAction
 - .setDailyWaterLimit
+- WatchHydrationViewModel
+- #321 수분 알림 바로 기록
+- WatchDataConstants.swift
+- MockUserPreferencesUseCaseForTesting
+- UserPreferencesRepository
+- Reliability Recovery
+- HydrationReminderNotification
+- WaterWaveView
+- HydrationInsightCategory
+- Layer Responsibilities
+- SettingMenu
+- .drinkWater
+- HydrationReminderActionResult
+- BodyProfileAvailability
+- .deleteHydrationEvent
 
 ## God Nodes (most connected - your core abstractions)
-1. `HydrationDomain` - 108 edges
-2. `AccountDomain` - 97 edges
-3. `HydrationInsightViewModel` - 95 edges
-4. `HydrationRoutine` - 92 edges
+1. `HydrationDomain` - 118 edges
+2. `AccountDomain` - 100 edges
+3. `HydrationRoutine` - 96 edges
+4. `HydrationInsightViewModel` - 95 edges
 5. `DrinkWaterViewModel` - 85 edges
-6. `ProfileRoutineViewModel` - 74 edges
-7. `RoutineDomain` - 73 edges
-8. `HydrationEvent` - 71 edges
-9. `MulimiAnalytics` - 69 edges
-10. `MockUserPreferencesUseCase` - 63 edges
+6. `RoutineDomain` - 75 edges
+7. `ProfileRoutineViewModel` - 74 edges
+8. `MulimiAnalytics` - 73 edges
+9. `HydrationEvent` - 73 edges
+10. `MockUserPreferencesUseCase` - 64 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `4. 제어 센터·액션 버튼 기록` --references--> `LogWaterAppIntent`  [INFERRED]
@@ -211,10 +215,10 @@
   Docs/feature-discovery.md → Project/App/Sources/AppIntents/LogWaterAppIntent.swift
 - `Opportunity` --references--> `HydrationServing`  [INFERRED]
   Docs/feature-discovery.md → Project/Features/Hydration/Domain/Sources/Entity/HydrationServing.swift
+- `디렉터리와 소유권` --references--> `AppCoordinator`  [INFERRED]
+  Docs/project-architecture-and-dependencies.md → Project/App/Navigation/Sources/AppCoordinator.swift
 - `Release Filter` --references--> `NoOpAnalyticsRepository`  [INFERRED]
   Docs/product-specs/growth-scorecard.md → Project/Core/Analytics/Domain/Sources/Repository/AnalyticsRepository.swift
-- `디렉터리와 소유권` --references--> `AppSession`  [INFERRED]
-  Docs/project-architecture-and-dependencies.md → Project/Features/Account/Presentation/Sources/State/AppSession.swift
 
 ## Import Cycles
 - None detected.
@@ -230,255 +234,259 @@
 - **Cross-Target Hydration Policy** — docs_reliability_recovery_shared_hydration_rules, docs_skills_widget_watch_integration_cross_target_hydration_consistency, docs_skills_healthkit_flow_storage_policy, readme_current_storage_strategy [INFERRED 0.95]
 - **Documentation Harness and Execution Lifecycle** — docs_harness_engineering_documentation_ssot_map, docs_index_document_maintenance_rule, docs_product_specs_index_spec_update_rule, docs_exec_plans_template_exec_plan_lifecycle, docs_exec_plans_tech_debt_tracker_documentation_role_debt [INFERRED 0.95]
 
-## Communities (181 total, 16 thin omitted)
+## Communities (179 total, 13 thin omitted)
 
-### Community 0 - "HydrationRoutineAdherenceInsight"
-Cohesion: 0.13
-Nodes (26): MockHydrationRoutineAdherenceUseCase, Calendar, Date, CandidateMatch, Constants, HydrationRoutineAdherenceEvent, HydrationRoutineAdherenceInsight, .adherenceRate (+18 more)
+### Community 0 - "Sendable"
+Cohesion: 0.09
+Nodes (37): MockHydrationRoutineAdherenceUseCase, Calendar, Date, MockHydrationRoutineAdherenceUseCaseForTesting, Calendar, Date, CandidateMatch, Constants (+29 more)
 
 ### Community 1 - "HydrationRecord"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (12): Date, MockHealthKitUseCaseForTesting, Bool, Date, HydrationRecord, Date, Double, Date (+4 more)
 
+### Community 2 - "WatchHydrationLocalDataSource.swift"
+Cohesion: 0.16
+Nodes (6): HealthKit, MulimiHealthKit, OSLog, WatchHydrationData, WatchHydrationDomain, WatchHydrationPresentation
+
 ### Community 3 - "ProfileRoutineViewModel"
-Cohesion: 0.09
-Nodes (24): ProfileRoutineViewModel, .activeRoutineCount, .canSaveDraft, .displayedRoutines, .editorPermissionGuidance, .guidanceSummary, .hasConfiguredRoutine, .isEditingDraft (+16 more)
+Cohesion: 0.07
+Nodes (30): RoutineRecommendationUseCase, Calendar, Date, .body, .weekdayGrid, ProfileRoutineViewModel, .activeRoutineCount, .canSaveDraft (+22 more)
 
 ### Community 4 - "RoutineRepositoryImpl"
-Cohesion: 0.16
+Cohesion: 0.20
 Nodes (9): RoutineNotificationDataSource, RoutineStorageDataSource, RoutineRepositoryImpl, Bool, RoutineRepositoryImplTests, SpyRoutineNotificationDataSource, SpyRoutineStorageDataSource, Result (+1 more)
 
-### Community 5 - "HydrationServingPreset"
-Cohesion: 0.15
-Nodes (14): CaseIterable, HydrationServing, .additionalPresets, HydrationServingPreset, bottle, .id, tumbler, .volumeML (+6 more)
+### Community 5 - "Equatable"
+Cohesion: 0.13
+Nodes (26): Equatable, Identifiable, HydrationServingOptionModel, .volumeText, HydrationInsightEmptyCTAModel, HydrationInsightMetric, HydrationWeeklyReportMetric, RoutineAdherenceInsightMetric (+18 more)
 
 ### Community 6 - "MockHealthKitRepository"
 Cohesion: 0.13
 Nodes (6): HealthKitUseCaseImpl, .authorisationStatus, Date, HealthKitUseCaseTests, MockHealthKitRepository, .authorisationStatus
 
 ### Community 7 - "MockUserPreferencesUseCase"
-Cohesion: 0.20
-Nodes (6): NoOpWidgetTimelineReloader, DrinkWaterViewModelTests, SpyWidgetTimelineReloader, StubHydrationNextActionGuideUseCase, MockUserPreferencesUseCase, Double
+Cohesion: 0.17
+Nodes (8): NoOpWidgetTimelineReloader, DrinkWaterViewModelTests, SpyWidgetTimelineReloader, StubHydrationNextActionGuideUseCase, Bool, MockUserPreferencesUseCase, Bool, Double
 
-### Community 8 - "DrinkWaterView"
-Cohesion: 0.10
-Nodes (23): AppReviewRequestTaskID, DrinkWaterView, .actionButtons, .appReviewRequestTaskID, .completionText, .defaultDrinkButton, .defaultDrinkButtonAccessibilityLabel, .defaultDrinkButtonBackground (+15 more)
+### Community 8 - ".tr"
+Cohesion: 0.08
+Nodes (34): .drinkWaterView, .body, .body, HealthKitPermissionGateView, .accessCard, .descriptionText, .footnoteText, .headerColor (+26 more)
 
-### Community 9 - "DrinkWaterUseCase"
+### Community 9 - "HydrationChallengeBadgeHistory"
+Cohesion: 0.17
+Nodes (9): MockChallengeUseCase, Calendar, Date, HydrationChallengeBadgeHistory, Date, ChallengeUseCaseTests, Calendar, Int (+1 more)
+
+### Community 10 - "SettingsViewModel"
+Cohesion: 0.06
+Nodes (33): Container, Container, AppInfoProviding, StaticAppInfoProvider, SignInUseCase, AppSession, Bool, SignInView (+25 more)
+
+### Community 11 - "Hydration Logging"
 Cohesion: 0.12
-Nodes (10): DrinkWaterUseCase, Bool, Date, DateInterval, HydrationRecordEventRow, .body, .sourceText, .timeText (+2 more)
+Nodes (32): PostHog Analytics Consolidation, Analytics Architecture Boundary, Analytics Events, Analytics Event Catalog, Product Analytics Event Contract, PostHog Activity QA, Analytics Operations, PostHog Core Product Funnel (+24 more)
 
-### Community 10 - ".assemble"
-Cohesion: 0.11
-Nodes (15): Container, Container, RootView, .body, Content, AppSession, Bool, SignInView (+7 more)
+### Community 12 - "HydrationPresentation"
+Cohesion: 0.19
+Nodes (9): AccountPresentation, ChallengePresentation, DependencyInjection, HydrationPresentation, HydrationReminderPresentation, MulimiNavigation, MulimiPlatform, RoutinePresentation (+1 more)
 
-### Community 11 - "Docs Index"
+### Community 13 - "AnalyticsUseCase"
 Cohesion: 0.10
-Nodes (40): PostHog Analytics Consolidation, Documentation SSOT Map, Docs Index, Document Maintenance Rule, Personalized Challenge Strategy, Personalized Challenge Recommendation Candidates, Challenge Recommendation Tier Rules, Analytics Architecture Boundary (+32 more)
-
-### Community 12 - "HydrationEvent"
-Cohesion: 0.09
-Nodes (18): MockDrinkWaterUseCase, .currentWaterIntakeML, Bool, Date, DateInterval, Double, Int, MockDrinkWaterUseCaseForTesting (+10 more)
-
-### Community 13 - "Layer Responsibilities"
-Cohesion: 0.18
-Nodes (11): CI Lint and Architecture Gate, Lint Workflow, Domain Data Presentation Test Matrix, PR Unit Tests Workflow, SwiftPM Cache Retry, Selected SwiftLint Rule Set, SwiftLint Configuration, Default Validation Sequence (+3 more)
+Nodes (14): AnalyticsUseCase, NoOpAnalyticsUseCase, SystemWidgetTimelineReloader, WidgetTimelineReloading, Double, UserPreferencesUseCase, HydrationReminderActionHandler, Bool (+6 more)
 
 ### Community 14 - "DrinkWaterViewModel"
-Cohesion: 0.10
-Nodes (22): HydrationWriteFailureReason, invalidObjectType, permissionDenied, systemError, DrinkWaterViewModel, .dailyLimit, .isComebackCardVisible, .isFirstRecordGuideActive (+14 more)
+Cohesion: 0.07
+Nodes (29): HydrationWriteFailureReason, invalidObjectType, permissionDenied, systemError, .body, .overflowMenu, CustomHydrationAmountValidation, empty (+21 more)
 
 ### Community 15 - "HydrationDomain"
-Cohesion: 0.10
-Nodes (4): ChallengeDomain, HydrationDomain, MulimiAnalytics, RoutineDomain
+Cohesion: 0.09
+Nodes (6): ChallengeDomain, CoreGraphics, HydrationDomain, MulimiAnalytics, Observation, RoutineDomain
 
 ### Community 16 - "HydrationChallengeKind"
-Cohesion: 0.10
-Nodes (33): Codable, HydrationChallengeKind, goalAchievement30, .id, .resetPolicy, .stateType, streak7, weeklyAchievement80 (+25 more)
+Cohesion: 0.09
+Nodes (35): Codable, HydrationChallengeKind, goalAchievement30, .id, .resetPolicy, .stateType, streak7, weeklyAchievement80 (+27 more)
 
 ### Community 17 - "HealthKitPermissionViewModel"
-Cohesion: 0.14
-Nodes (11): .body, .permissionView, HealthKitPermissionViewModel, .defaultErrorMessage, .deniedMessage, Bool, HealthKitPermissionViewModelTests, MockHealthKitUseCase (+3 more)
+Cohesion: 0.13
+Nodes (11): ProductAnalyticsEvent, .body, HealthKitPermissionViewModel, .defaultErrorMessage, .deniedMessage, Bool, HealthKitPermissionViewModelTests, MockHealthKitUseCase (+3 more)
 
-### Community 18 - "Color"
-Cohesion: 0.09
-Nodes (30): ChallengeBadge, .body, ChallengeCard, .accentColor, .body, .cardBackground, ChallengeHistoryCard, .accentColor (+22 more)
+### Community 18 - "RoutineActionIntent"
+Cohesion: 0.12
+Nodes (19): .id, ChallengeSectionHeader, .body, ChallengeView, .body, .challengeContent, .completedCategorySection, .emptyCardBackground (+11 more)
 
 ### Community 19 - "MockDrinkWaterUseCase"
-Cohesion: 0.11
-Nodes (13): Never, HydrationRecordListViewModelTests, RecordSpyWidgetTimelineReloader, MockDrinkWaterUseCase, .currentWaterIntakeML, .hasPendingDrinkWater, Bool, CheckedContinuation (+5 more)
+Cohesion: 0.10
+Nodes (14): Never, HydrationRecordListViewModelTests, RecordSpyWidgetTimelineReloader, MockDrinkWaterUseCase, .currentWaterIntakeML, .hasPendingDrinkWater, Bool, CheckedContinuation (+6 more)
 
-### Community 20 - "HydrationWriteResult"
-Cohesion: 0.13
-Nodes (10): .analyticsFailureReason, HydrationWriteResult, failure, .failureReason, .isSuccess, success, Bool, Int (+2 more)
+### Community 20 - "HydrationEvent"
+Cohesion: 0.09
+Nodes (16): MockDrinkWaterUseCase, .currentWaterIntakeML, Bool, Date, DateInterval, Double, Int, HydrationEvent (+8 more)
 
 ### Community 21 - "BodyProfile"
 Cohesion: 0.12
-Nodes (10): MockHealthKitUseCase, BodyProfile, .isComplete, .isEmpty, BodyProfileSource, healthKit, manual, BodyProfileValue (+2 more)
+Nodes (12): MockHealthKitUseCase, BodyProfile, .isComplete, .isEmpty, BodyProfileSource, healthKit, manual, BodyProfileValue (+4 more)
 
 ### Community 22 - "DrinkWaterRepository"
-Cohesion: 0.09
-Nodes (12): DrinkWaterRepository, Int, HydrationNextActionGuideUseCaseImpl, Calendar, Date, HydrationRoutineAdherenceUseCaseImpl, Calendar, Date (+4 more)
+Cohesion: 0.11
+Nodes (8): DrinkWaterRepository, Bool, Double, HydrationNextActionGuideUseCaseImpl, Calendar, Date, HydrationNextActionGuideUseCaseTests, Calendar
 
 ### Community 23 - "MockDrinkWaterRepository"
-Cohesion: 0.16
-Nodes (10): DrinkWaterUseCaseImpl, .currentWaterIntakeML, Double, DrinkWaterUseCaseTests, MockDrinkWaterRepository, .currentWaterIntakeML, Date, DateInterval (+2 more)
+Cohesion: 0.14
+Nodes (10): DrinkWaterUseCaseImpl, .currentWaterIntakeML, Double, DrinkWaterUseCaseTests, ReminderLoggingTests, MockDrinkWaterRepository, .currentWaterIntakeML, Double (+2 more)
 
 ### Community 24 - ".tr"
-Cohesion: 0.14
-Nodes (19): CVarArg, WatchL10n, Double, Int, WatchMetricRow, .body, WatchNavigationCard, .body (+11 more)
+Cohesion: 0.17
+Nodes (12): CVarArg, WatchL10n, Int, WatchRootView, .backgroundGradient, .body, .heroCard, .nextActionText (+4 more)
 
-### Community 25 - "MockSignInUseCase"
-Cohesion: 0.10
-Nodes (9): MockSignInUseCase, Bool, UserCredential, SignInUseCase, MockSignInUseCase, .isAuthenticated, Bool, Error (+1 more)
+### Community 25 - "AccountDomain"
+Cohesion: 0.07
+Nodes (3): AccountDomain, MulimiKeychain, Testing
 
 ### Community 26 - "SpyRoutineUseCase"
-Cohesion: 0.11
-Nodes (14): ProfileRoutineViewModelTests, SpyDrinkWaterUseCase, .currentWaterIntakeML, SpyRoutineRecommendationUseCase, SpyRoutineUseCase, SpyUserPreferencesUseCase, Bool, Calendar (+6 more)
+Cohesion: 0.22
+Nodes (7): ProfileRoutineViewModelTests, SpyRoutineRecommendationUseCase, SpyRoutineUseCase, Calendar, Date, Error, Result
 
 ### Community 27 - "MockRoutineRepository"
-Cohesion: 0.15
+Cohesion: 0.13
 Nodes (9): RoutineUseCaseImpl, RoutineRecommendationUseCaseTests, Calendar, Date, Int, RoutineUseCaseTests, MockRoutineRepository, Error (+1 more)
 
 ### Community 28 - "LiquidGlassSegmentedControl"
-Cohesion: 0.18
-Nodes (14): Binding, Value, .categoryPicker, .categoryPicker, LiquidGlassSegment, .id, LiquidGlassSegmentedControl, .activeSegmentBackground (+6 more)
+Cohesion: 0.11
+Nodes (22): Binding, Value, ChallengeCategory, completed, .id, inProgress, recommended, .systemImage (+14 more)
 
-### Community 29 - "AnalyticsRepository"
-Cohesion: 0.14
-Nodes (6): Release Filter, AnalyticsRepository, NoOpAnalyticsRepository, ProductAnalyticsEvent, AnalyticsUseCaseImpl, ProductAnalyticsEvent
-
-### Community 30 - "SwiftUI"
-Cohesion: 0.08
-Nodes (14): ActivityKit, AlarmKit, AppIntents, Charts, CoreGraphics, CryptoKit, DesignSystem, Localization (+6 more)
+### Community 30 - "Localization"
+Cohesion: 0.10
+Nodes (12): ActivityKit, AlarmKit, AppIntents, Charts, CryptoKit, DesignSystem, Localization, HydrationPresentationShaderBundleToken (+4 more)
 
 ### Community 31 - "HydrationReminderPermissionViewModel"
 Cohesion: 0.10
 Nodes (11): HydrationReminderUseCase, Bool, .primingView, Constant, HydrationReminderPermissionViewModel, Bool, HydrationReminderPermissionViewModelTests, MockHydrationReminderUseCase (+3 more)
 
-### Community 32 - "TokenProperty"
-Cohesion: 0.05
-Nodes (33): ASAuthorization, ASAuthorizationController, ASAuthorizationControllerDelegate, AuthenticationServices, NSObject, AppDelegate, Any, Bool (+25 more)
+### Community 32 - "UserCredential"
+Cohesion: 0.07
+Nodes (12): MockSignInUseCase, Bool, UserCredential, AuthenticationRepository, SignInUseCaseImpl, .isAuthenticated, Bool, SignInUseCaseTests (+4 more)
 
-### Community 33 - "HydrationChallenge"
-Cohesion: 0.08
-Nodes (16): MockChallengeUseCase, Calendar, Date, MockChallengeUseCaseForTesting, Calendar, Date, HydrationChallenge, .id (+8 more)
+### Community 33 - "ChallengeViewModel"
+Cohesion: 0.12
+Nodes (14): HydrationChallenge, .id, ChallengeUseCase, Calendar, Date, ChallengeCardModel, ChallengeHistoryCardModel, ChallengeViewModel (+6 more)
 
 ### Community 34 - "RecordCalendarView"
-Cohesion: 0.08
-Nodes (34): GridItem, CalendarDayView, .accessibilityLabel, .backgroundColor, .body, .borderColor, .dayNumber, .progressPercentage (+26 more)
-
-### Community 35 - "DrinkWaterHealthKitDataSource"
-Cohesion: 0.15
-Nodes (9): DrinkWaterHealthKitDataSource, .currentWaterIntakeML, Calendar, Date, DateInterval, Double, Error, Int (+1 more)
-
-### Community 36 - "HydrationProgressSnapshot"
-Cohesion: 0.14
-Nodes (18): HydrationProgressSnapshot, Bool, Calendar, Date, Double, Int, HydrationInsightViewModelTests, SpyRoutineUseCase (+10 more)
-
-### Community 37 - "ChallengeViewModel"
 Cohesion: 0.06
-Nodes (30): MockPersonalizedChallengeUseCase, Calendar, Date, MockPersonalizedChallengeUseCaseForTesting, Calendar, Date, HydrationChallengeRecommendationSource, recentRecords (+22 more)
+Nodes (45): GridItem, CalendarDayView, .accessibilityLabel, .backgroundColor, .body, .borderColor, .dayNumber, .progressPercentage (+37 more)
 
-### Community 38 - "AppCoordinator"
-Cohesion: 0.05
-Nodes (27): AnyObject, App · 조립 루트 — 9개, Core — 6개, Features — 18개, Shared — 5개, Tests — 15개, 검증과 갱신, 기능 간 직접 의존에서 주의할 점 (+19 more)
+### Community 35 - "HealthKitSource"
+Cohesion: 0.15
+Nodes (7): HealthKitSource, ReminderHealthKitWriteTests, Bool, Date, Double, Error, Int
+
+### Community 36 - ".loadInsights"
+Cohesion: 0.24
+Nodes (9): HydrationInsightViewModelTests, SpyRoutineUseCase, Calendar, Date, Int, MockDrinkWaterUseCase, MockHydrationRoutineAdherenceUseCase, Calendar (+1 more)
+
+### Community 37 - "PersonalizedHydrationChallenge"
+Cohesion: 0.08
+Nodes (21): MockPersonalizedChallengeUseCase, Calendar, Date, MockPersonalizedChallengeUseCaseForTesting, Calendar, Date, HydrationChallengeRecommendationSource, recentRecords (+13 more)
+
+### Community 38 - "AnyObject"
+Cohesion: 0.13
+Nodes (7): AnyObject, FullScreenRoute, DeepLinkHandling, URL, FullScreenRouting, SheetRouting, SheetRoute
 
 ### Community 39 - "String"
-Cohesion: 0.07
-Nodes (20): .postHogValue, Any, AnalyticsParameterName, AnalyticsParameterValue, bool, double, int, string (+12 more)
+Cohesion: 0.13
+Nodes (14): .postHogValue, Any, AnalyticsParameterName, AnalyticsParameterValue, bool, double, int, string (+6 more)
 
 ### Community 40 - "HydrationGoalRecommendationViewModel"
-Cohesion: 0.06
-Nodes (34): ContentView, .body, AccountRoute, profileRoutine, setting, SettingMenu, bodyProfile, dailyLimit (+26 more)
+Cohesion: 0.11
+Nodes (17): DailyLimitSettingView, .body, HydrationGoalRecommendationUseCase, Date, EntryDestination, bodyProfileSetting, dailyLimitSetting, GoalAlignment (+9 more)
 
-### Community 41 - "RoutineWeekday"
-Cohesion: 0.07
-Nodes (30): MockRoutineRecommendationUseCase, Calendar, Date, Calendar, Date, .localeWeekday, Locale, .nextActionSchedule (+22 more)
-
-### Community 42 - "HKQuantityTypeIdentifier"
-Cohesion: 0.17
-Nodes (11): HKHealthStore, HKQuantityType, HKQuantityTypeIdentifier, HKUnit, HealthKitQuantityStore, .isHealthDataAvailable, HealthQuantitySample, HealthQuantityStoring (+3 more)
-
-### Community 43 - "MockHydrationReminderRepository"
-Cohesion: 0.13
-Nodes (7): HydrationReminderUseCaseImpl, Bool, HydrationReminderUseCaseTests, MockHydrationReminderRepository, Bool, Error, Result
-
-### Community 44 - ".body"
-Cohesion: 0.14
-Nodes (5): Calendar, Date, .body, RoutineEditorView, .body
-
-### Community 45 - "RoutineRecommendationUseCaseImpl"
+### Community 41 - "RoutineRecommendationUseCaseImpl"
 Cohesion: 0.27
 Nodes (8): DaySummary, RoutineRecommendationUseCaseImpl, Bool, Calendar, Date, DateInterval, Double, Int
 
+### Community 42 - "HealthKitDataSourceImpl"
+Cohesion: 0.06
+Nodes (34): HKAuthorizationStatus, HKHealthStore, HKQuantityType, HKQuantityTypeIdentifier, HKUnit, HealthKitQuantityStore, .isHealthDataAvailable, HealthQuantitySample (+26 more)
+
+### Community 43 - "MockHydrationReminderRepository"
+Cohesion: 0.10
+Nodes (9): HydrationReminderRepository, Bool, HydrationReminderUseCaseImpl, Bool, HydrationReminderUseCaseTests, MockHydrationReminderRepository, Bool, Error (+1 more)
+
+### Community 44 - "RoutineUseCase"
+Cohesion: 0.15
+Nodes (3): RoutineUseCase, RoutineEditorView, .body
+
+### Community 45 - "MockChallengeUseCaseForTesting"
+Cohesion: 0.33
+Nodes (3): MockChallengeUseCaseForTesting, Calendar, Date
+
 ### Community 46 - "ProfileRoutineView"
-Cohesion: 0.19
-Nodes (7): ProfileRoutineView, .guidanceCard, .permissionSection, RoutineGuidanceSlotStatus, elapsed, next, upcoming
+Cohesion: 0.27
+Nodes (3): ProfileRoutineView, .guidanceCard, .permissionSection
 
 ### Community 47 - "DIContainer"
 Cohesion: 0.12
-Nodes (12): Assembler, Assembly, DependencyInjection, DIContainer, .resolver, Assembly, DomainAssembly, PresentationAssembly (+4 more)
+Nodes (11): Assembler, Assembly, DIContainer, .resolver, Assembly, PreviewAssembly, DomainAssembly, PresentationAssembly (+3 more)
 
 ### Community 48 - "UserDefaults"
-Cohesion: 0.12
-Nodes (12): RoutineStorageDataSourceImpl, Bool, Double, Int, UserDefaults, .appGroup, .dailyLimit, .glassesOfToday (+4 more)
+Cohesion: 0.10
+Nodes (15): HydrationComebackRepositoryImpl, Date, HydrationComebackRepositoryTests, RoutineStorageDataSourceImpl, Bool, Double, Int, UserDefaults (+7 more)
 
 ### Community 49 - "HydrationReminderAuthorizationStatus"
-Cohesion: 0.09
-Nodes (9): MockHydrationReminderUseCaseForTesting, Bool, HydrationReminderAuthorizationStatus, authorized, denied, notDetermined, HydrationReminderAnalyticsParameterName, .analyticsValue (+1 more)
+Cohesion: 0.08
+Nodes (9): MockHydrationReminderUseCaseForTesting, Bool, HydrationReminderNotificationDataSource, HydrationReminderAuthorizationStatus, authorized, denied, notDetermined, .analyticsValue (+1 more)
 
-### Community 50 - "HealthKitDataSourceImpl"
-Cohesion: 0.16
-Nodes (9): HKAuthorizationStatus, HealthKitDataSourceImpl, .healthKitAuthorizationStatus, .isWaterSharingAuthorized, Bool, Date, Double, Error (+1 more)
+### Community 50 - "SpyDrinkWaterUseCase"
+Cohesion: 0.13
+Nodes (7): SpyDrinkWaterUseCase, .currentWaterIntakeML, SpyUserPreferencesUseCase, Bool, DateInterval, Double, Int
 
 ### Community 51 - "HydrationReminderRepositoryImpl"
-Cohesion: 0.23
-Nodes (7): HydrationReminderRepositoryImpl, Bool, HydrationReminderRepositoryImplTests, SpyHydrationReminderNotificationDataSource, SpyHydrationReminderStorageDataSource, Bool, Result
+Cohesion: 0.14
+Nodes (10): HydrationReminderStorageDataSource, HydrationReminderStorageDataSourceImpl, Bool, HydrationReminderRepositoryImpl, Bool, HydrationReminderRepositoryImplTests, SpyHydrationReminderNotificationDataSource, SpyHydrationReminderStorageDataSource (+2 more)
 
-### Community 52 - "View"
-Cohesion: 0.07
-Nodes (28): CGPoint, BadgeView, .body, HydrationInsightView, .emptyStateCTAButtons, .insightContent, .overviewCard, .routineAdherenceCard (+20 more)
+### Community 52 - "HydrationInsightView"
+Cohesion: 0.08
+Nodes (23): BadgeView, .body, HydrationInsightView, .emptyState, .emptyStateCTAButtons, .insightContent, .overviewCard, .routineAdherenceCard (+15 more)
 
 ### Community 53 - "HydrationInsightViewModel"
 Cohesion: 0.08
-Nodes (35): HydrationInsightEmptyCTAModel, HydrationInsightMetric, HydrationInsightViewModel, .canRecordRecoveryDrink, .chartUpperBound, .dailyGoalText, .emptyStateCTAs, .metrics (+27 more)
+Nodes (36): .body, HydrationInsightViewModel, .canRecordRecoveryDrink, .chartUpperBound, .dailyGoalText, .emptyStateCTAs, .metrics, .routineAdherenceInsightText (+28 more)
 
-### Community 54 - "TestControl"
-Cohesion: 0.24
-Nodes (8): AppIntentControlValueProvider, ControlConfigurationIntent, Provider, ControlWidgetConfiguration, LocalizedStringResource, TestControl, .body, TimerConfiguration
+### Community 54 - "StartTimerIntent"
+Cohesion: 0.15
+Nodes (12): AppIntentControlValueProvider, ControlConfigurationIntent, Provider, StartTimerIntent, Bool, ControlWidgetConfiguration, IntentResult, LocalizedStringResource (+4 more)
 
 ### Community 55 - "BodyProfileViewModel"
-Cohesion: 0.08
-Nodes (22): MockBodyProfileUseCase, BodyProfileAvailability, incomplete, needsPermission, noData, permissionDenied, ready, BodyProfileSnapshot (+14 more)
+Cohesion: 0.10
+Nodes (14): MockBodyProfileUseCase, BodyProfileSnapshot, Bool, BodyProfileUseCase, MockBodyProfileUseCaseForDomain, BodyProfileViewModel, .availabilityState, .heightSourceText (+6 more)
 
-### Community 57 - "Foundation"
-Cohesion: 0.06
-Nodes (12): AccountData, AccountDomain, ChallengeData, Foundation, HydrationData, HydrationReminderData, HydrationReminderDomain, MulimiAnalyticsData (+4 more)
+### Community 56 - "DrinkWaterHealthKitDataSource"
+Cohesion: 0.18
+Nodes (7): DrinkWaterDataSource, DrinkWaterHealthKitDataSource, .currentWaterIntakeML, Calendar, Date, DateInterval, Double
 
-### Community 58 - "HydrationChallengeBadgeHistory"
-Cohesion: 0.11
-Nodes (13): ChallengeStorageDataSource, ChallengeRepositoryImpl, HydrationChallengeBadgeHistory, Date, ChallengeRepository, ChallengeEvaluation, ChallengeMergeResult, ChallengeUseCaseImpl (+5 more)
+### Community 57 - "DrinkWaterUseCase"
+Cohesion: 0.14
+Nodes (10): DrinkWaterUseCase, HydrationReminderLogResult, failed, goalExceeded, saved, Bool, Date, DateInterval (+2 more)
+
+### Community 58 - "ChallengeUseCaseImpl"
+Cohesion: 0.19
+Nodes (9): ChallengeRepository, ChallengeEvaluation, ChallengeMergeResult, ChallengeUseCaseImpl, Bool, Calendar, Date, Double (+1 more)
 
 ### Community 59 - "HydrationReminderSlot"
 Cohesion: 0.11
 Nodes (14): Constant, HydrationReminderNotificationDataSourceImpl, .notificationCenter, Int, Set, UNUserNotificationCenter, HydrationReminderSlot, afternoon (+6 more)
 
 ### Community 60 - "DrinkWaterEntry"
-Cohesion: 0.13
-Nodes (19): DrinkWaterLockScreenWidgetEntryView, .accentColor, .body, .circularView, .inlineView, .rectangularView, DrinkWaterWidgetEntryView, .accentColor (+11 more)
-
-### Community 61 - ".tr"
-Cohesion: 0.09
-Nodes (25): Bundle, HealthKitPermissionGateView, .accessCard, .descriptionText, .footnoteText, .headerColor, .headerSection, .headerSystemImage (+17 more)
-
-### Community 62 - ".makeRootView"
 Cohesion: 0.14
-Nodes (11): AnyView, App, 실행·공유 경계, WatchDIContainer, DrinkWaterApp, .body, Scene, MulimiWatchApp (+3 more)
+Nodes (16): .body, DrinkWaterWidgetEntryView, .accentColor, .body, DrinkWaterEntry, .dailyLimitText, .isLimitReached, .mililiters (+8 more)
 
-### Community 63 - "SignInUseCaseImpl"
-Cohesion: 0.21
-Nodes (4): SignInUseCaseImpl, .isAuthenticated, Bool, SignInUseCaseTests
+### Community 61 - ".makeUseCase"
+Cohesion: 0.24
+Nodes (8): AppReviewRequestUseCaseTests, .calendar, .referenceDate, Bool, Calendar, Date, Double, Int
+
+### Community 62 - "실행·공유 경계"
+Cohesion: 0.17
+Nodes (10): App, 실행·공유 경계, WatchDIContainer, DrinkWaterApp, .body, Scene, MulimiWatchApp, .body (+2 more)
+
+### Community 63 - "AppReviewRequestUseCaseImpl"
+Cohesion: 0.22
+Nodes (9): AppReviewRequestRepository, AppReviewRequestUseCaseImpl, Policy, Bool, Calendar, Date, DateInterval, Double (+1 more)
 
 ### Community 64 - "LogWaterAppIntent"
 Cohesion: 0.16
@@ -488,177 +496,173 @@ Nodes (13): AppIntent, IntentDialog, IntentModes, Constant, FailureReason, LogWa
 Cohesion: 0.12
 Nodes (5): PackageDescription, Plist, ProjectDescription, ProjectDescriptionHelpers, AppVersion
 
-### Community 66 - "Hashable"
-Cohesion: 0.13
-Nodes (14): Hashable, AppRoute, hydrationLogging, .id, .presentationStyle, profileRoutineAction, NavigationPresentationStyle, fullScreenCover (+6 more)
+### Community 66 - "HydrationStarterPlanViewModel"
+Cohesion: 0.05
+Nodes (35): CaseIterable, PreviewStarterPlanRepository, HydrationStarterPlanRepositoryImpl, HydrationStarterPlanRepositoryTests, Bool, HydrationQuickRecordingMethod, shortcuts, watch (+27 more)
 
-### Community 67 - "UserPreferencesUseCase"
-Cohesion: 0.21
-Nodes (5): SystemWidgetTimelineReloader, WidgetTimelineReloading, Double, UserPreferencesUseCase, Calendar
+### Community 67 - "ContentView"
+Cohesion: 0.11
+Nodes (15): AppCoordinator, URL, StackRouting, .hasPath, Bool, Hashable, AppCoordinatorTests, AppTab (+7 more)
 
 ### Community 68 - "Top 5"
 Cohesion: 0.14
 Nodes (13): 1. 로그인 없이 시작, 2. 7일 스타터 플랜, 3. 알림 바로 기록, 4. 제어 센터·액션 버튼 기록, 5. 컴백 모드, Candidate Ideas, Decision, Engineer (+5 more)
 
 ### Community 69 - "MainIcon"
-Cohesion: 0.11
+Cohesion: 0.10
 Nodes (13): MainIcon, cloud, .`default`, drop, heart, .id, Self, .description (+5 more)
 
 ### Community 70 - "Test.swift"
 Cohesion: 0.19
-Nodes (13): ConfigurationAppIntent, .smiley, .starEyes, Provider, SimpleEntry, ConfigurationAppIntent, Context, Date (+5 more)
+Nodes (13): AppIntentTimelineProvider, ConfigurationAppIntent, .smiley, .starEyes, Provider, SimpleEntry, ConfigurationAppIntent, Context (+5 more)
 
-### Community 71 - "UUID"
-Cohesion: 0.13
-Nodes (8): Bool, Bool, Bool, UUID, Bool, HydrationEventModel, Date, Int
+### Community 71 - "ChallengeStorageDataSourceImpl"
+Cohesion: 0.24
+Nodes (4): ChallengeStorageDataSource, ChallengeStorageDataSourceImpl, ChallengeRepositoryImpl, ChallengeStorageDataSourceTests
 
 ### Community 72 - "HydrationRoutine"
-Cohesion: 0.06
-Nodes (14): Int, MockRoutineUseCase, Error, Result, MockRoutineUseCaseForTesting, HydrationRoutine, Bool, RoutineNotificationAuthorizationStatus (+6 more)
+Cohesion: 0.05
+Nodes (15): Int, MockRoutineUseCase, Error, Result, MockRoutineUseCaseForTesting, StarterPlanRoutineStub, HydrationRoutine, Bool (+7 more)
 
 ### Community 73 - "HydrationRecordListViewModel"
 Cohesion: 0.09
-Nodes (31): HydrationRecordListView, .body, RowListView, .body, Void, .body, .yearMonthPickerSheet, HydrationRecordDaySummary (+23 more)
+Nodes (31): HydrationRecordListView, .body, RowListView, .body, Void, HydrationRecordDaySummary, .glassCount, .id (+23 more)
 
-### Community 74 - "HydrationGoalRecommendation"
-Cohesion: 0.40
-Nodes (3): HydrationGoalRecommendation, HydrationGoalRecommendationInput, Int
+### Community 74 - "Hashable"
+Cohesion: 0.10
+Nodes (18): Hashable, HydrationGoalRecommendationDataSource, HydrationGoalRecommendationRepositoryImpl, HydrationGoalRecommendation, HydrationGoalRecommendationError, bodyProfileRequired, modelUnavailable, HydrationGoalRecommendationInput (+10 more)
 
 ### Community 75 - "OnboardingView"
 Cohesion: 0.14
 Nodes (15): OnboardingPage, OnboardingView, .backgroundGradient, .body, .footer, .footerActions, .header, .nextButton (+7 more)
 
-### Community 76 - "HydrationGoalRecommendationCard"
-Cohesion: 0.29
-Nodes (4): HydrationGoalRecommendationCard, .body, .content, Bool
+### Community 76 - "View"
+Cohesion: 0.12
+Nodes (15): CGPoint, BodyProfileSettingView, .healthSyncCard, .summaryCard, HydrationGoalRecommendationCard, .content, Bool, Void (+7 more)
 
 ### Community 77 - ".assemble"
 Cohesion: 0.14
 Nodes (5): Container, HealthKitRepository, BodyProfileUseCaseImpl, Bool, BodyProfileUseCaseTests
 
 ### Community 78 - "HydrationGoalRecommendationUseCaseImpl"
-Cohesion: 0.23
+Cohesion: 0.24
 Nodes (7): Constants, HydrationGoalRecommendationUseCaseImpl, Calendar, Date, DateInterval, Int, HydrationGoalRecommendationUseCaseTests
 
 ### Community 79 - "AppReviewRequestState"
-Cohesion: 0.07
-Nodes (25): AppReviewRequestStorageDataSource, AppReviewRequestStorageDataSourceImpl, AppReviewRequestRepositoryImpl, AppReviewRequestStorageDataSourceTests, AppReviewRequestState, Date, Set, AppReviewRequestRepository (+17 more)
+Cohesion: 0.21
+Nodes (6): AppReviewRequestStorageDataSourceImpl, AppReviewRequestStorageDataSourceTests, AppReviewRequestState, Date, Set, MockAppReviewRequestRepository
 
-### Community 80 - "SharedHydrationStoreError"
-Cohesion: 0.19
-Nodes (10): ModelConfiguration, ModelContainer, SharedHydrationStore, .isICloudAccountAvailable, SharedHydrationStoreError, .errorDescription, failedToCreateContainer, missingAppGroupContainer (+2 more)
-
-### Community 81 - ".makeViewModel"
-Cohesion: 0.23
-Nodes (5): MockHydrationGoalRecommendationUseCase, MockHydrationProgressUseCase, HydrationGoalRecommendationViewModelTests, Double, Int
+### Community 80 - "UUID"
+Cohesion: 0.20
+Nodes (7): AlarmMetadata, Bool, RoutineAlarmMetadata, UUID, HydrationEventModel, Date, Int
 
 ### Community 82 - "WatchHydrationSnapshot"
-Cohesion: 0.13
-Nodes (14): Date, Int, WatchHydrationEvent, Bool, Date, Double, Int, Self (+6 more)
+Cohesion: 0.16
+Nodes (11): Bool, Date, Double, Int, Self, WatchHydrationSnapshot, .eventCount, .isGoalReached (+3 more)
 
 ### Community 83 - "OnboardingViewModel"
-Cohesion: 0.19
-Nodes (6): Bool, OnboardingViewModel, .canGoBack, .isLastPage, Bool, OnboardingViewModelTests
+Cohesion: 0.17
+Nodes (9): RootView, .body, Content, Bool, OnboardingViewModel, .canGoBack, .isLastPage, Bool (+1 more)
 
 ### Community 84 - ".loadChallenges"
 Cohesion: 0.28
 Nodes (8): ChallengeViewModelTests, Calendar, MockChallengeUseCase, Calendar, Date, MockPersonalizedChallengeUseCase, Calendar, Date
 
-### Community 85 - "HydrationGoalRecommendationUnavailableReason"
-Cohesion: 0.13
-Nodes (11): HydrationGoalRecommendationDataSource, HydrationGoalRecommendationRepositoryImpl, HydrationGoalRecommendationUnavailableReason, appleIntelligenceNotEnabled, deviceNotEligible, modelNotReady, unknown, unsupportedLocale (+3 more)
+### Community 85 - "Color"
+Cohesion: 0.15
+Nodes (16): ChallengeBadge, .body, ChallengeCard, .accentColor, .body, .cardBackground, ChallengeHistoryCard, .accentColor (+8 more)
 
 ### Community 86 - "AppReviewRequestUseCase"
 Cohesion: 0.30
 Nodes (6): AppReviewRequestUseCase, NoOpAppReviewRequestUseCase, Bool, Calendar, Date, Double
 
-### Community 87 - "AGENTS.md Onboarding Map"
-Cohesion: 0.11
-Nodes (23): Quality Gates, Truthful Validation Reporting, Validation Baseline, Validation Matrix, architecture-boundary, Clean Architecture and MVVM, Domain Purity, ViewModel Side Effect Boundary (+15 more)
+### Community 87 - "Mulimi Drop — v3"
+Cohesion: 0.17
+Nodes (10): Generation and editing — Mulimi Drop v3, Original body layer prompt, Original face layer prompt, Original master prompt, Mulimi Drop — v3, 레이어, 배경과 외관, 앱 적용 (+2 more)
 
 ### Community 88 - "Growth Scorecard"
-Cohesion: 0.12
-Nodes (16): 72-Hour Audit, Before Release, Cadence And Ownership, Decision Rule, Deferred Scope, Experiment Record, Goal, Growth Scorecard (+8 more)
+Cohesion: 0.07
+Nodes (22): 72-Hour Audit, Before Release, Cadence And Ownership, Decision Rule, Deferred Scope, Experiment Record, Goal, Growth Scorecard (+14 more)
 
-### Community 89 - "Sendable"
-Cohesion: 0.05
-Nodes (31): MockHydrationNextActionGuideUseCase, Calendar, Date, MockHydrationProgressUseCase, Calendar, Date, MockHydrationNextActionGuideUseCaseForTesting, Calendar (+23 more)
+### Community 89 - "AppleSignInCredential"
+Cohesion: 0.18
+Nodes (10): ASAuthorization, ASAuthorizationController, ASAuthorizationControllerDelegate, AuthenticationServices, NSObject, AppleSignInCredential, AppleSignInDataSourceImpl, AppleSignInDelegate (+2 more)
 
-### Community 90 - "Equatable"
+### Community 90 - "AppDelegate"
+Cohesion: 0.20
+Nodes (10): AppDelegate, Any, Bool, UNUserNotificationCenter, UIApplication, UIApplicationDelegate, UNNotification, UNNotificationPresentationOptions (+2 more)
+
+### Community 91 - "MockUserPreferencesUseCase"
 Cohesion: 0.21
-Nodes (15): Equatable, Identifiable, PersonalizedChallengeCardModel, HydrationServingOptionModel, RoutineAdherenceDisplayRow, HydrationRoutineAdherenceStatus, inactive, needsAttention (+7 more)
+Nodes (3): MockUserPreferencesUseCase, Bool, Double
 
-### Community 91 - "WaterWaveView"
-Cohesion: 0.28
-Nodes (6): CGRect, Path, CGFloat, WaterWaveView, .animatableData, Shape
+### Community 92 - "프로젝트 전체 구조와 의존성"
+Cohesion: 0.15
+Nodes (13): App · 조립 루트 — 9개, Core — 6개, Features — 18개, Shared — 5개, Tests — 15개, 검증과 갱신, 기능 간 직접 의존에서 주의할 점, 디렉터리와 소유권 (+5 more)
 
-### Community 92 - "AnalyticsUseCase"
-Cohesion: 0.12
-Nodes (5): AnalyticsUseCase, NoOpAnalyticsUseCase, ProductAnalyticsEvent, HealthKitUseCase, Date
-
-### Community 93 - "MockHydrationReminderUseCase"
-Cohesion: 0.22
-Nodes (4): MockHydrationReminderUseCase, Bool, Error, Result
+### Community 93 - "HydrationGoalRecommendationAvailability"
+Cohesion: 0.16
+Nodes (10): MockHydrationGoalRecommendationUseCase, Date, Error, HydrationGoalRecommendationAvailability, bodyProfileRequired, modelUnavailable, ready, MockHydrationGoalRecommendationUseCase (+2 more)
 
 ### Community 94 - "HydrationProgressUseCaseImpl"
 Cohesion: 0.30
 Nodes (9): Date, DateInterval, HydrationProgressUseCaseImpl, StreakProgress, Calendar, Date, DateInterval, Double (+1 more)
 
-### Community 95 - ".fetchChallenges"
-Cohesion: 0.35
-Nodes (5): Calendar, ChallengeUseCaseTests, Calendar, Int, MockChallengeRepository
+### Community 95 - "AuthTokens"
+Cohesion: 0.26
+Nodes (4): AuthenticationNetworkDataSource, AuthenticationNetworkDataSourceImpl, AuthTokens, Int
 
-### Community 96 - "Data Boundary"
+### Community 96 - "Security And Privacy Operations"
 Cohesion: 0.12
 Nodes (17): Analytics Allowlist, App Group and iCloud KVS Boundary, Apple Account Deletion Guidance, Apple App Privacy Details, Apple Credential Handling, Data Boundary, Health Data Minimization, PostHog Privacy Controls (+9 more)
 
-### Community 97 - "HydrationPresentation"
-Cohesion: 0.12
-Nodes (9): AccountPresentation, ChallengePresentation, HydrationPresentation, HydrationReminderPresentation, MulimiNavigation, MulimiPlatform, PreviewAssembly, RoutinePresentation (+1 more)
+### Community 97 - "Foundation"
+Cohesion: 0.06
+Nodes (13): AccountData, ChallengeData, Foundation, FoundationModels, HydrationData, HydrationReminderData, HydrationReminderDomain, MulimiAnalyticsData (+5 more)
 
 ### Community 98 - "FoundationModelsHydrationGoalRecommendationDataSource"
-Cohesion: 0.24
+Cohesion: 0.27
 Nodes (6): Constants, FoundationModelsHydrationGoalRecommendationDataSource, GeneratedHydrationGoalRecommendation, Int, Locale, SystemLanguageModel
 
 ### Community 99 - "PersonalizedChallengeUseCaseImpl"
-Cohesion: 0.18
-Nodes (10): Constants, PersonalizedChallengeUseCaseImpl, Calendar, Date, Int, PersonalizedChallengeUseCaseTests, Calendar, Date (+2 more)
+Cohesion: 0.15
+Nodes (14): HydrationChallengeTier, beginner, steady, stretch, Constants, PersonalizedChallengeUseCaseImpl, Calendar, Date (+6 more)
 
 ### Community 100 - "LogWaterAmountOption"
 Cohesion: 0.18
 Nodes (11): AppEnum, DisplayRepresentation, LogWaterAmountOption, bottle, custom, glass, .presetID, .servingType (+3 more)
 
-### Community 101 - "Reliability Recovery"
-Cohesion: 0.22
-Nodes (11): Goal Mirror Recovery Policy, HealthKit Source of Truth, Recovery Principles, Reliability Recovery, Routine Schedule Recovery, Shared Hydration Rules, HealthKit Data Flow, healthkit-flow (+3 more)
-
-### Community 102 - "SettingsViewModel"
+### Community 101 - "AGENTS.md Onboarding Map"
 Cohesion: 0.10
-Nodes (18): AppInfoProviding, BundleAppInfoProvider, .appBuildNumber, .appVersion, StaticAppInfoProvider, MainIconSettingView, .body, .body (+10 more)
+Nodes (27): Goal Recommendation Entry Rules, Profile Information Architecture, Profile Root, Settings Screen, Quality Gates, Truthful Validation Reporting, Validation Baseline, Validation Matrix (+19 more)
+
+### Community 102 - ".assemble"
+Cohesion: 0.20
+Nodes (4): DataAssembly, Container, AppReviewRequestStorageDataSource, AppReviewRequestRepositoryImpl
 
 ### Community 103 - "HealthKitAuthorizationStatus"
 Cohesion: 0.26
 Nodes (6): HealthKitAuthorizationStatus, notDetermined, sharingAuthorized, sharingDenied, .analyticsValue, ProductAnalyticsEvent
 
-### Community 104 - "WatchHydrationViewModel"
-Cohesion: 0.18
-Nodes (8): MutationAction, record, reset, Bool, Date, Sendable, WatchHydrationViewModel, .canDrinkWater
+### Community 104 - "HydrationProgressSnapshot"
+Cohesion: 0.09
+Nodes (21): MockHydrationProgressUseCase, Calendar, Date, MockHydrationProgressUseCaseForTesting, Calendar, Date, HydrationProgressSnapshot, Bool (+13 more)
 
 ### Community 105 - "HydrationReminderPermissionGateView"
 Cohesion: 0.32
 Nodes (6): HydrationReminderPermissionGateView, .allowButtonLabel, .benefitCard, .body, .headerSection, Content
 
-### Community 106 - "HealthKitDataSource"
-Cohesion: 0.19
-Nodes (4): HealthKitDataSource, HealthKitRepositoryImpl, .authorisationStatus, Date
+### Community 106 - "WaterDropView"
+Cohesion: 0.25
+Nodes (8): CGFloat, CGSize, TimeInterval, WaterDropView, .body, .dropBackground, .dropHighlights, .dropSymbol
 
-### Community 107 - "HydrationReminderNotificationDataSource"
-Cohesion: 0.18
-Nodes (4): HydrationReminderNotificationDataSource, HydrationReminderStorageDataSource, HydrationReminderStorageDataSourceImpl, Bool
+### Community 107 - "HydrationServingPreset"
+Cohesion: 0.16
+Nodes (13): HydrationServing, .additionalPresets, HydrationServingPreset, bottle, .id, tumbler, .volumeML, Double (+5 more)
 
-### Community 108 - "WatchHydrationLocalDataSource.swift"
+### Community 108 - "Generation prompts"
 Cohesion: 0.18
-Nodes (6): HealthKit, MulimiHealthKit, OSLog, WatchHydrationData, WatchHydrationDomain, WatchHydrationPresentation
+Nodes (9): body, cheeks, face, Generation prompts, Master, Mulimi Liquid Glass 아이콘 — #339, v1, 미리보기와 확인, 사용 (+1 more)
 
 ### Community 109 - "ConfigurationAppIntent"
 Cohesion: 0.18
@@ -669,72 +673,64 @@ Cohesion: 0.20
 Nodes (10): LocalizedError, MockError, .errorDescription, signInFailed, MockError, deleteFailed, .errorDescription, MockError (+2 more)
 
 ### Community 111 - "DrinkWaterRepositoryImpl"
-Cohesion: 0.13
-Nodes (8): DrinkWaterDataSource, DrinkWaterRepositoryImpl, .currentWaterIntakeML, Bool, Date, DateInterval, Double, Int
+Cohesion: 0.17
+Nodes (7): DrinkWaterRepositoryImpl, .currentWaterIntakeML, Bool, Date, DateInterval, Double, Int
 
-### Community 112 - ".weeklyInsightCalculatesRoutineRatesAndMissPattern"
-Cohesion: 0.47
-Nodes (4): HydrationRoutineAdherenceUseCaseTests, Calendar, Date, Int
+### Community 112 - "HydrationRoutineSchedule"
+Cohesion: 0.18
+Nodes (11): HydrationRoutineSchedule, Bool, Set, HydrationRoutineAdherenceUseCaseImpl, Calendar, Date, DateInterval, HydrationRoutineAdherenceUseCaseTests (+3 more)
 
 ### Community 113 - "WatchHydrationUseCaseImpl"
 Cohesion: 0.16
 Nodes (9): Int, WatchDailyGoalRepository, Date, Int, WatchHydrationRepository, Date, Double, Int (+1 more)
 
-### Community 114 - "MockUserPreferencesRepository"
+### Community 114 - "AppRoute"
+Cohesion: 0.15
+Nodes (11): AppRoute, hydrationLogging, hydrationStarterPlan, .id, .presentationStyle, profileRoutineAction, NavigationPresentationStyle, fullScreenCover (+3 more)
+
+### Community 115 - "MockUserPreferencesRepository"
 Cohesion: 0.23
 Nodes (3): MockUserPreferencesRepository, Bool, Double
 
-### Community 115 - "AI PR Review Workflow"
+### Community 116 - "AI PR Review Workflow"
 Cohesion: 0.18
 Nodes (12): AI PR Review Workflow, Architecture Review Policy, Bounded AI Review Diff, Git Flow PR Filter, Textual Diff Selection, Clean Architecture and MVVM Discipline, Domain Purity, Hydration Source of Truth (+4 more)
 
-### Community 116 - "Mulimi"
-Cohesion: 0.16
-Nodes (20): Agent Onboarding Guide, Graphify-Assisted Code Navigation, Mulimi Architecture SSOT, Core User Flow, Claude Agent Entrypoint, Delivery Workflow, Git Flow Delivery Strategy, Issue Closure Policy (+12 more)
-
 ### Community 117 - "UserPreferencesDataSourceImpl"
-Cohesion: 0.16
-Nodes (7): Double, NSUbiquitousKeyValueStore, SyncedValueStoring, UbiquitousMirroredStore, Constants, NSUbiquitousKeyValueStore, UserPreferencesDataSourceImpl
+Cohesion: 0.10
+Nodes (10): Double, NSUbiquitousKeyValueStore, SyncedValueStoring, UbiquitousMirroredStore, Constants, Bool, Double, NSUbiquitousKeyValueStore (+2 more)
 
-### Community 118 - "HydrationGoalRecommendationAvailability"
-Cohesion: 0.14
-Nodes (12): MockHydrationGoalRecommendationUseCase, Date, Error, HydrationGoalRecommendationAvailability, bodyProfileRequired, modelUnavailable, ready, HydrationGoalRecommendationUseCase (+4 more)
+### Community 118 - "TokenProperty"
+Cohesion: 0.11
+Nodes (13): AppleSignInDataSource, KeyChainDataSource, KeyChainDataSourceImpl, Bool, AuthenticationRepositoryImpl, .isAuthenticated, Bool, TokenProperty (+5 more)
 
-### Community 119 - "HydrationComebackRepositoryImpl"
-Cohesion: 0.43
-Nodes (3): HydrationComebackRepositoryImpl, Date, HydrationComebackRepositoryTests
+### Community 119 - ".makeViewModel"
+Cohesion: 0.23
+Nodes (5): MockHydrationGoalRecommendationUseCase, MockHydrationProgressUseCase, HydrationGoalRecommendationViewModelTests, Double, Int
 
 ### Community 120 - "DIEnvironment"
 Cohesion: 0.33
 Nodes (5): DIEnvironment, .current, preview, production, testing
 
-### Community 121 - "WatchHydrationHealthKitDataSource"
-Cohesion: 0.20
-Nodes (8): Bool, Calendar, Date, DateInterval, Error, Int, WatchHydrationHealthKitDataSource, WatchHydrationLocalDataSource
+### Community 121 - "MockHydrationReminderUseCase"
+Cohesion: 0.22
+Nodes (4): MockHydrationReminderUseCase, Bool, Error, Result
 
-### Community 122 - ".body"
-Cohesion: 0.13
-Nodes (4): .body, .overflowMenu, Calendar, Date
-
-### Community 123 - "DrinkWaterWidgetProvider"
-Cohesion: 0.27
-Nodes (6): AppIntentTimelineProvider, DrinkWaterWidgetProvider, ConfigurationAppIntent, Context, Date, Timeline
+### Community 122 - ".handle"
+Cohesion: 0.29
+Nodes (6): HydrationReminderActionHandlerTests, Bool, Date, Double, MockDrinkWaterUseCase, WidgetReloader
 
 ### Community 124 - "ContentState"
 Cohesion: 0.38
 Nodes (7): ActivityAttributes, ContentState, TestAttributes, TestAttributes.ContentState, .smiley, .starEyes, .preview
 
-### Community 125 - "BodyProfileSettingView"
-Cohesion: 0.31
-Nodes (5): BodyProfileSettingView, .body, .healthSyncCard, .summaryCard, Void
-
 ### Community 126 - "Error"
-Cohesion: 0.11
-Nodes (16): Error, AuthenticationError, cancelled, invalidCredential, networkFailed, serverError, unknown, TestError (+8 more)
+Cohesion: 0.05
+Nodes (39): Error, ModelConfiguration, ModelContainer, HealthQuantityStoreError, incompleteQuery, internalError, invalidObjectType, permissionDenied (+31 more)
 
-### Community 127 - "Mulimi Drop — v3"
-Cohesion: 0.17
-Nodes (10): Generation and editing — Mulimi Drop v3, Original body layer prompt, Original face layer prompt, Original master prompt, Mulimi Drop — v3, 레이어, 배경과 외관, 앱 적용 (+2 more)
+### Community 127 - "HydrationWriteResult"
+Cohesion: 0.08
+Nodes (17): MockDrinkWaterUseCaseForTesting, .currentWaterIntakeML, Bool, Date, DateInterval, Double, Int, .analyticsFailureReason (+9 more)
 
 ### Community 128 - "LogWaterAppShortcuts"
 Cohesion: 0.29
@@ -745,24 +741,24 @@ Cohesion: 0.43
 Nodes (6): float2, half4, metal_stdlib, mulimiWaterDistortion(), mulimiWaterLighting(), mulimiWaveNoise()
 
 ### Community 130 - ".resolve"
-Cohesion: 0.43
+Cohesion: 0.36
 Nodes (6): PreviewViews, .challenge, .drinkWater, .hydrationList, .profile, Service
 
 ### Community 131 - "HydrationNextActionGuide"
-Cohesion: 0.17
-Nodes (17): Constants, HydrationNextActionGuide, .progress, HydrationNextActionGuideState, approachingRoutine, goalReached, needsGoal, readyToDrink (+9 more)
+Cohesion: 0.09
+Nodes (24): MockHydrationNextActionGuideUseCase, Calendar, Date, MockHydrationNextActionGuideUseCaseForTesting, Calendar, Date, Constants, HydrationNextActionGuide (+16 more)
 
-### Community 132 - "MockUserPreferencesUseCase"
-Cohesion: 0.21
-Nodes (3): MockUserPreferencesUseCase, Bool, Double
+### Community 132 - "#320 — 7일 스타터 플랜 제품 적용"
+Cohesion: 0.20
+Nodes (9): #320 — 7일 스타터 플랜 제품 적용, Constraints And Decisions, Context, Goal, Implementation Notes (2026-09-14), Non-Goals, Plan, Rollback (+1 more)
 
-### Community 133 - "Challenge State Model"
-Cohesion: 0.50
-Nodes (5): Challenge Recalculation and Merge Cycle, Challenge State Model, Cumulative Challenge State, Legacy Challenge State Migration, Recurring Challenge State
+### Community 133 - "Docs Index"
+Cohesion: 0.12
+Nodes (29): Agent Onboarding Guide, Graphify-Assisted Code Navigation, Mulimi Architecture SSOT, Core User Flow, Claude Agent Entrypoint, Delivery Workflow, Git Flow Delivery Strategy, Issue Closure Policy (+21 more)
 
-### Community 134 - "MockUserPreferencesUseCaseForTesting"
-Cohesion: 0.21
-Nodes (3): MockUserPreferencesUseCaseForTesting, Bool, Double
+### Community 134 - "RoutineWeekday"
+Cohesion: 0.06
+Nodes (32): MockRoutineRecommendationUseCase, Calendar, Date, MockRoutineRecommendationUseCaseForTesting, Calendar, Date, Container, .localeWeekday (+24 more)
 
 ### Community 135 - "UserPreferencesRepositoryImpl"
 Cohesion: 0.28
@@ -772,61 +768,65 @@ Nodes (3): Bool, Double, UserPreferencesRepositoryImpl
 Cohesion: 0.21
 Nodes (7): MulimiCloudKit, Int, NSUbiquitousKeyValueStore, WatchDailyGoalLocalDataSource, WatchDailyGoalUserDefaultsDataSource, Int, WatchDailyGoalRepositoryImpl
 
-### Community 137 - "UserPreferencesDataSource"
-Cohesion: 0.20
-Nodes (3): Bool, Double, UserPreferencesDataSource
+### Community 137 - "HealthKitDataSource"
+Cohesion: 0.18
+Nodes (4): HealthKitDataSource, HealthKitRepositoryImpl, .authorisationStatus, Date
 
 ### Community 138 - "Accessibility and Dynamic Type Audit"
 Cohesion: 0.50
 Nodes (4): Accessibility and Dynamic Type Audit, Dynamic Type Adaptation, Reduce Motion and Transparency Support, VoiceOver Semantics
 
-### Community 139 - "UserPreferencesRepository"
-Cohesion: 0.20
-Nodes (3): Bool, Double, UserPreferencesRepository
+### Community 139 - "WatchHydrationMutationResult"
+Cohesion: 0.27
+Nodes (3): WatchHydrationMutationResult, Date, WatchHydrationUseCase
 
 ### Community 140 - "RoutineNotificationDataSourceImpl"
-Cohesion: 0.18
-Nodes (8): Alarm, AlarmManager, AlarmMetadata, AlarmPresentation, Constant, RoutineAlarmMetadata, RoutineNotificationDataSourceImpl, LocalizedStringResource
+Cohesion: 0.21
+Nodes (6): Alarm, AlarmManager, AlarmPresentation, Constant, RoutineNotificationDataSourceImpl, LocalizedStringResource
 
-### Community 143 - "MockAppReviewRequestUseCase"
+### Community 143 - "Test"
+Cohesion: 0.25
+Nodes (9): WidgetConfiguration, Test, .body, WidgetConfiguration, TestLiveActivity, .body, DrinkWaterWidget, WidgetConfiguration (+1 more)
+
+### Community 144 - "DrinkWaterLockScreenWidgetEntryView"
+Cohesion: 0.22
+Nodes (9): DrinkWaterLockScreenWidget, .body, DrinkWaterLockScreenWidgetEntryView, .accentColor, .body, .circularView, .inlineView, .rectangularView (+1 more)
+
+### Community 145 - "WatchRootView.swift"
+Cohesion: 0.25
+Nodes (7): Double, WatchMetricRow, .body, WatchNavigationCard, .body, WatchProgressBar, .body
+
+### Community 146 - "ProfileView"
+Cohesion: 0.19
+Nodes (9): AccountRoute, profileRoutine, setting, ProfileView, .body, .goalRecommendationCard, .goalRecommendationRoute, .routineCard (+1 more)
+
+### Community 148 - "MockAppReviewRequestUseCase"
 Cohesion: 0.48
 Nodes (5): MockAppReviewRequestUseCase, Bool, Calendar, Date, Double
-
-### Community 145 - "HydrationInsightCategory"
-Cohesion: 0.22
-Nodes (9): HydrationInsightCategory, .id, overview, pattern, report, routine, .systemImage, .title (+1 more)
-
-### Community 146 - "Generation prompts"
-Cohesion: 0.18
-Nodes (9): body, cheeks, face, Generation prompts, Master, Mulimi Liquid Glass 아이콘 — #339, v1, 미리보기와 확인, 사용 (+1 more)
-
-### Community 148 - "Profile Information Architecture"
-Cohesion: 0.67
-Nodes (4): Goal Recommendation Entry Rules, Profile Information Architecture, Profile Root, Settings Screen
 
 ### Community 151 - ".progressSnapshot"
 Cohesion: 0.40
 Nodes (4): HydrationProgressUseCaseTests, Calendar, Date, Int
 
 ### Community 152 - ".makeComebackViewModel"
-Cohesion: 0.12
-Nodes (12): HydrationComebackRepository, Date, .nextActionSummary, HydrationComebackMode, baseline, card, disabled, StubHydrationComebackRepository (+4 more)
+Cohesion: 0.15
+Nodes (10): HydrationComebackRepository, Date, .nextActionSummary, HydrationComebackMode, baseline, card, disabled, StubHydrationComebackRepository (+2 more)
 
-### Community 153 - "HealthKitError"
-Cohesion: 0.33
-Nodes (5): HealthKitError, healthKitInternalError, incompleteExecuteQuery, invalidObjectType, permissionDenied
+### Community 153 - "L10n"
+Cohesion: 0.40
+Nodes (3): Bundle, BundleToken, L10n
 
-### Community 154 - "Test"
-Cohesion: 0.10
-Nodes (23): ControlWidget, WidgetConfiguration, Test, Widget, TestBundle, .body, WidgetConfiguration, TestLiveActivity (+15 more)
+### Community 154 - "LogWaterControl"
+Cohesion: 0.20
+Nodes (10): ControlWidget, Widget, TestBundle, DrinkWaterWidgetBundle, .body, LogWaterControl, .body, ControlWidgetConfiguration (+2 more)
 
-### Community 155 - "RoutineEditorDraft"
-Cohesion: 0.31
-Nodes (7): .weekdayGrid, RoutineEditorDraft, .canSave, .isEditing, Bool, Date, Set
+### Community 155 - "Challenge State Model"
+Cohesion: 0.50
+Nodes (5): Challenge Recalculation and Merge Cycle, Challenge State Model, Cumulative Challenge State, Legacy Challenge State Migration, Recurring Challenge State
 
-### Community 156 - ".assemble"
-Cohesion: 0.22
-Nodes (4): DataAssembly, Container, PostHogAnalyticsRepository, ProductAnalyticsEvent
+### Community 156 - "BundleAppInfoProvider"
+Cohesion: 0.60
+Nodes (3): BundleAppInfoProvider, .appBuildNumber, .appVersion
 
 ### Community 157 - "AuthProvider"
 Cohesion: 0.40
@@ -836,61 +836,69 @@ Nodes (4): AuthProvider, apple, google, kakao
 Cohesion: 0.50
 Nodes (4): Local Validation Reporting, Mulimi Pull Request Template, PR Review Checklist, Truthful Validation Reporting
 
+### Community 159 - "Personalized Challenge Strategy"
+Cohesion: 0.50
+Nodes (4): Personalized Challenge Strategy, Personalized Challenge Recommendation Candidates, Challenge Recommendation Tier Rules, Challenge and Insight Information Architecture
+
 ### Community 160 - "Generation — Mulimi Water Glass v2"
 Cohesion: 0.25
 Nodes (6): droplet, Generation — Mulimi Water Glass v2, glass, Master, water, Mulimi — Water Glass v2
 
-### Community 161 - "State"
+### Community 162 - "RoutineRecoveryReminderAction"
+Cohesion: 0.15
+Nodes (12): HydrationInsightEmptyAction, dailyGoal, record, routine, HydrationWeeklyCoachingAction, dailyGoal, none, routine (+4 more)
+
+### Community 164 - "WatchHydrationViewModel"
+Cohesion: 0.18
+Nodes (9): AnyView, MutationAction, record, reset, Bool, Date, Sendable, WatchHydrationViewModel (+1 more)
+
+### Community 166 - "#321 수분 알림 바로 기록"
+Cohesion: 0.18
+Nodes (11): #321 수분 알림 바로 기록, Completion Notes, Constraints, Context, Goal, Non-Goals, Open Questions, Plan (+3 more)
+
+### Community 168 - "MockUserPreferencesUseCaseForTesting"
+Cohesion: 0.21
+Nodes (3): MockUserPreferencesUseCaseForTesting, Bool, Double
+
+### Community 170 - "UserPreferencesRepository"
+Cohesion: 0.20
+Nodes (3): Bool, Double, UserPreferencesRepository
+
+### Community 172 - "Reliability Recovery"
+Cohesion: 0.22
+Nodes (11): Goal Mirror Recovery Policy, HealthKit Source of Truth, Recovery Principles, Reliability Recovery, Routine Schedule Recovery, Shared Hydration Rules, HealthKit Data Flow, healthkit-flow (+3 more)
+
+### Community 173 - "HydrationReminderNotification"
+Cohesion: 0.22
+Nodes (6): HydrationReminderNotification, .category, Bool, Date, HydrationReminderNotificationTests, UNNotificationCategory
+
+### Community 174 - "WaterWaveView"
+Cohesion: 0.28
+Nodes (6): CGRect, Path, CGFloat, WaterWaveView, .animatableData, Shape
+
+### Community 175 - "HydrationInsightCategory"
+Cohesion: 0.22
+Nodes (9): HydrationInsightCategory, .id, overview, pattern, report, routine, .systemImage, .title (+1 more)
+
+### Community 177 - "Layer Responsibilities"
+Cohesion: 0.18
+Nodes (11): CI Lint and Architecture Gate, Lint Workflow, Domain Data Presentation Test Matrix, PR Unit Tests Workflow, SwiftPM Cache Retry, Selected SwiftLint Rule Set, SwiftLint Configuration, Default Validation Sequence (+3 more)
+
+### Community 178 - "SettingMenu"
+Cohesion: 0.22
+Nodes (8): SettingMenu, bodyProfile, dailyLimit, .id, mainIcon, withdrawal, Self, SettingDetailView
+
+### Community 179 - ".drinkWater"
+Cohesion: 0.29
+Nodes (3): Error, Int, Int
+
+### Community 180 - "HydrationReminderActionResult"
 Cohesion: 0.25
-Nodes (6): State, bodyProfileRequired, idle, loading, modelUnavailable, ready
+Nodes (8): HydrationReminderActionResult, duplicate, failed, goalExceeded, permissionRequired, protectedDataUnavailable, saved, signInRequired
 
-### Community 162 - "RoutineActionIntent"
-Cohesion: 0.11
-Nodes (17): .id, Bool, HydrationInsightEmptyAction, dailyGoal, record, routine, HydrationWeeklyCoachingAction, dailyGoal (+9 more)
-
-### Community 163 - "ChallengeCategory"
-Cohesion: 0.25
-Nodes (8): ChallengeCategory, completed, .id, inProgress, recommended, .systemImage, .title, Self
-
-### Community 164 - "MockAuthenticationRepository"
-Cohesion: 0.25
-Nodes (4): MockAuthenticationRepository, .isAuthenticated, Bool, Error
-
-### Community 165 - "WatchHydrationMutationResult"
-Cohesion: 0.36
-Nodes (3): WatchHydrationMutationResult, Date, WatchHydrationUseCase
-
-### Community 168 - "AppTab"
-Cohesion: 0.33
-Nodes (6): AppTab, challenge, drink, history, insight, profile
-
-### Community 169 - "StartTimerIntent"
-Cohesion: 0.33
-Nodes (4): StartTimerIntent, Bool, IntentResult, SetValueIntent
-
-### Community 170 - "WatchHydrationRepositoryImpl"
-Cohesion: 0.47
-Nodes (3): Date, Int, WatchHydrationRepositoryImpl
-
-### Community 171 - "Completed Plan Archive"
-Cohesion: 0.40
-Nodes (5): Stale Document Handling, Active Exec Plans, Active Plan Lifecycle, Completed Exec Plans, Completed Plan Archive
-
-### Community 172 - "HealthQuantityStoreError"
-Cohesion: 0.40
-Nodes (5): HealthQuantityStoreError, incompleteQuery, internalError, invalidObjectType, permissionDenied
-
-### Community 174 - "CustomHydrationAmountValidation"
-Cohesion: 0.40
-Nodes (5): CustomHydrationAmountValidation, empty, invalid, overLimit, valid
-
-### Community 175 - "RoutinePermissionPrompt"
-Cohesion: 0.40
-Nodes (5): RoutinePermissionPrompt, .id, openSettings, requestAuthorization, scheduleFailure
-
-### Community 176 - "MockSignInError"
-Cohesion: 0.67
-Nodes (3): MockSignInError, deleteAccountFailed, signInFailed
+### Community 183 - "BodyProfileAvailability"
+Cohesion: 0.13
+Nodes (12): BodyProfileAvailability, incomplete, needsPermission, noData, permissionDenied, ready, State, bodyProfileRequired (+4 more)
 
 ## Ambiguous Edges - Review These
 - `HealthKit Source of Truth` → `CloudKit-Backed Hydration Store`  [AMBIGUOUS]
@@ -899,9 +907,9 @@ Nodes (3): MockSignInError, deleteAccountFailed, signInFailed
   README.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **493 isolated node(s):** `.resolver`, `production`, `preview`, `testing`, `.current` (+488 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 928 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **525 isolated node(s):** `.resolver`, `production`, `preview`, `testing`, `.current` (+520 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 985 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -910,13 +918,13 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `CloudKit-Backed Hydration Store` and `Current Storage Strategy`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `String` connect `String` to `HydrationRoutineAdherenceInsight`, `HydrationRecord`, `ProfileRoutineViewModel`, `HydrationServingPreset`, `DrinkWaterView`, `DrinkWaterUseCase`, `.assemble`, `DrinkWaterViewModel`, `HydrationChallengeKind`, `HealthKitPermissionViewModel`, `Color`, `MockDrinkWaterUseCase`, `HydrationWriteResult`, `BodyProfile`, `.tr`, `MockSignInUseCase`, `LiquidGlassSegmentedControl`, `AnalyticsRepository`, `HydrationReminderPermissionViewModel`, `TokenProperty`, `HydrationChallenge`, `RecordCalendarView`, `ChallengeViewModel`, `HydrationGoalRecommendationViewModel`, `RoutineWeekday`, `HKQuantityTypeIdentifier`, `ProfileRoutineView`, `UserDefaults`, `HydrationReminderAuthorizationStatus`, `View`, `HydrationInsightViewModel`, `TestControl`, `BodyProfileViewModel`, `HydrationChallengeBadgeHistory`, `HydrationReminderSlot`, `DrinkWaterEntry`, `.tr`, `LogWaterAppIntent`, `ProjectDescription`, `Hashable`, `MainIcon`, `UUID`, `HydrationRoutine`, `HydrationRecordListViewModel`, `HydrationGoalRecommendation`, `OnboardingView`, `HydrationGoalRecommendationCard`, `AppReviewRequestState`, `SharedHydrationStoreError`, `AppReviewRequestUseCase`, `Equatable`, `.fetchChallenges`, `FoundationModelsHydrationGoalRecommendationDataSource`, `LogWaterAmountOption`, `SettingsViewModel`, `HealthKitAuthorizationStatus`, `WatchHydrationViewModel`, `HydrationReminderPermissionGateView`, `ConfigurationAppIntent`, `SettingsViewModelTests`, `UserPreferencesDataSourceImpl`, `ContentState`, `BodyProfileSettingView`, `Error`, `HydrationNextActionGuide`, `MockUserPreferencesUseCase`, `MockUserPreferencesUseCaseForTesting`, `RoutineNotificationDataSourceImpl`, `MockAppReviewRequestUseCase`, `ChallengeStorageDataSourceImpl`, `HydrationInsightCategory`, `.progressSnapshot`, `.makeComebackViewModel`, `Test`, `RoutineEditorDraft`, `.assemble`, `RoutineActionIntent`, `ChallengeCategory`, `StartTimerIntent`, `RoutinePermissionPrompt`?**
-  _High betweenness centrality (0.316) - this node is a cross-community bridge._
-- **Why does `프로젝트 전체 구조와 의존성` connect `AppCoordinator` to `Mulimi`, `.makeRootView`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
-- **Why does `실행·공유 경계` connect `.makeRootView` to `HydrationNextActionGuide`, `HydrationWriteResult`, `HydrationServingPreset`, `AppCoordinator`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
+- **Why does `String` connect `String` to `Sendable`, `HydrationRecord`, `ProfileRoutineViewModel`, `Equatable`, `.tr`, `HydrationChallengeBadgeHistory`, `SettingsViewModel`, `AnalyticsUseCase`, `DrinkWaterViewModel`, `HydrationChallengeKind`, `HealthKitPermissionViewModel`, `RoutineActionIntent`, `MockDrinkWaterUseCase`, `HydrationEvent`, `BodyProfile`, `MockDrinkWaterRepository`, `.tr`, `LiquidGlassSegmentedControl`, `PostHogAnalyticsRepository`, `HydrationReminderPermissionViewModel`, `UserCredential`, `ChallengeViewModel`, `RecordCalendarView`, `HealthKitSource`, `PersonalizedHydrationChallenge`, `HydrationGoalRecommendationViewModel`, `HealthKitDataSourceImpl`, `ProfileRoutineView`, `UserDefaults`, `HydrationReminderAuthorizationStatus`, `SpyDrinkWaterUseCase`, `HydrationInsightView`, `HydrationInsightViewModel`, `StartTimerIntent`, `BodyProfileViewModel`, `DrinkWaterUseCase`, `ChallengeUseCaseImpl`, `HydrationReminderSlot`, `DrinkWaterEntry`, `AppReviewRequestUseCaseImpl`, `LogWaterAppIntent`, `ProjectDescription`, `HydrationStarterPlanViewModel`, `MainIcon`, `ChallengeStorageDataSourceImpl`, `HydrationRoutine`, `HydrationRecordListViewModel`, `Hashable`, `OnboardingView`, `View`, `AppReviewRequestState`, `UUID`, `Color`, `AppReviewRequestUseCase`, `Growth Scorecard`, `AppleSignInCredential`, `MockUserPreferencesUseCase`, `AuthTokens`, `FoundationModelsHydrationGoalRecommendationDataSource`, `PersonalizedChallengeUseCaseImpl`, `LogWaterAmountOption`, `HealthKitAuthorizationStatus`, `HydrationReminderPermissionGateView`, `HydrationServingPreset`, `ConfigurationAppIntent`, `SettingsViewModelTests`, `DrinkWaterRepositoryImpl`, `HydrationRoutineSchedule`, `AppRoute`, `UserPreferencesDataSourceImpl`, `TokenProperty`, `KeychainStoring`, `ContentState`, `Error`, `HydrationWriteResult`, `HydrationNextActionGuide`, `RoutineWeekday`, `RoutineNotificationDataSourceImpl`, `Test`, `WatchRootView.swift`, `ProfileView`, `MockAppReviewRequestUseCase`, `.progressSnapshot`, `.makeComebackViewModel`, `L10n`, `BundleAppInfoProvider`, `RoutineRecoveryReminderAction`, `WatchHydrationViewModel`, `MockUserPreferencesUseCaseForTesting`, `HydrationReminderNotification`, `HydrationInsightCategory`, `SettingMenu`, `.drinkWater`, `HydrationReminderActionResult`?**
+  _High betweenness centrality (0.301) - this node is a cross-community bridge._
+- **Why does `Foundation` connect `Foundation` to `Sendable`, `HydrationRecord`, `WatchHydrationLocalDataSource.swift`, `HydrationNextActionGuide`, `ProfileRoutineViewModel`, `Equatable`, `RoutineWeekday`, `WatchDailyGoalLocalDataSource`, `HydrationChallengeBadgeHistory`, `SettingsViewModel`, `WatchHydrationMutationResult`, `HydrationPresentation`, `AnalyticsUseCase`, `DrinkWaterViewModel`, `HydrationDomain`, `HydrationChallengeKind`, `RoutineActionIntent`, `HydrationEvent`, `BodyProfile`, `DrinkWaterRepository`, `.makeComebackViewModel`, `AccountDomain`, `.tr`, `L10n`, `AuthProvider`, `Localization`, `HydrationReminderPermissionViewModel`, `UserCredential`, `ChallengeViewModel`, `AnyObject`, `String`, `HydrationGoalRecommendationViewModel`, `UserPreferencesRepository`, `MockHydrationReminderRepository`, `RoutineUseCase`, `HealthKitDataSourceImpl`, `UserDefaults`, `HydrationReminderAuthorizationStatus`, `BodyProfileAvailability`, `BodyProfileViewModel`, `DrinkWaterUseCase`, `ChallengeUseCaseImpl`, `HydrationReminderSlot`, `HydrationStarterPlanViewModel`, `MainIcon`, `HydrationRoutine`, `Hashable`, `.assemble`, `AppReviewRequestState`, `WatchHydrationSnapshot`, `AppReviewRequestUseCase`, `AppleSignInCredential`, `AuthTokens`, `HealthKitAuthorizationStatus`, `HydrationProgressSnapshot`, `HydrationServingPreset`, `WatchHydrationUseCaseImpl`, `UserPreferencesDataSourceImpl`, `TokenProperty`, `DIEnvironment`, `KeychainStoring`, `HealthKitUseCase`, `Error`?**
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+- **Why does `프로젝트 전체 구조와 의존성` connect `프로젝트 전체 구조와 의존성` to `Docs Index`, `실행·공유 경계`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
 - **What connects `.resolver`, `production`, `preview` to the rest of the system?**
-  _493 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `HydrationRoutineAdherenceInsight` be split into smaller, more focused modules?**
-  _Cohesion score 0.12513842746400886 - nodes in this community are weakly interconnected._
+  _525 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Sendable` be split into smaller, more focused modules?**
+  _Cohesion score 0.08771929824561403 - nodes in this community are weakly interconnected._

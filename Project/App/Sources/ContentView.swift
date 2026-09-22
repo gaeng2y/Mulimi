@@ -29,6 +29,7 @@ struct ContentView: View {
     @State private var appCoordinator: AppCoordinator
     @State private var selectedTab: AppTab = .drink
     @State private var drinkWaterViewModel: DrinkWaterViewModel
+    @State private var starterPlanViewModel: HydrationStarterPlanViewModel
     @State private var hydrationRecordListViewModel: HydrationRecordListViewModel
     @State private var hydrationInsightViewModel: HydrationInsightViewModel
     @State private var challengeViewModel: ChallengeViewModel
@@ -40,6 +41,7 @@ struct ContentView: View {
     init(container: DIContainer = .shared) {
         _appCoordinator = State(initialValue: container.resolve(AppCoordinator.self))
         _drinkWaterViewModel = State(initialValue: container.resolve(DrinkWaterViewModel.self))
+        _starterPlanViewModel = State(initialValue: container.resolve(HydrationStarterPlanViewModel.self))
         _hydrationRecordListViewModel = State(
             initialValue: container.resolve(HydrationRecordListViewModel.self)
         )
@@ -63,7 +65,7 @@ struct ContentView: View {
             )
         ) {
             TabView(selection: $selectedTab) {
-                DrinkWaterView(viewModel: drinkWaterViewModel)
+                drinkWaterView
                     .tag(AppTab.drink)
                     .tabItem {
                         Label(L10n.tr("drinkTitle"), systemImage: "waterbottle")
@@ -119,6 +121,15 @@ struct ContentView: View {
                     Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")
                 }
             }
+            .toolbar {
+                if selectedTab == .drink, starterPlanViewModel.isAvailable {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(L10n.tr("starterPlanEntry"), systemImage: "checklist") {
+                            appCoordinator.push(.hydrationStarterPlan)
+                        }
+                    }
+                }
+            }
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
@@ -159,11 +170,28 @@ struct ContentView: View {
         }
     }
 
+    private var drinkWaterView: some View {
+        DrinkWaterView(viewModel: drinkWaterViewModel) {
+            await starterPlanViewModel.refresh()
+        }
+    }
+
     @ViewBuilder
     private func destinationView(for route: AppRoute) -> some View {
         switch route {
         case .hydrationLogging:
-            DrinkWaterView(viewModel: drinkWaterViewModel)
+            drinkWaterView
+        case .hydrationStarterPlan:
+            HydrationStarterPlanView(
+                viewModel: starterPlanViewModel,
+                onRecordAction: {
+                    selectedTab = .drink
+                    appCoordinator.resetPath()
+                },
+                onRoutineAction: {
+                    appCoordinator.push(.profileRoutineAction(.create))
+                }
+            )
         case let .profileRoutineAction(action):
             ProfileRoutineView(
                 viewModel: routineViewModel,
@@ -205,6 +233,7 @@ struct ContentView: View {
         switch selectedTab {
         case .drink:
             await drinkWaterViewModel.refreshState()
+            await starterPlanViewModel.refresh()
         case .history:
             await hydrationRecordListViewModel.refresh()
         case .insight:

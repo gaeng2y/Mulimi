@@ -13,7 +13,6 @@ public protocol HydrationReminderNotificationDataSource: Sendable {
 public final class HydrationReminderNotificationDataSourceImpl: HydrationReminderNotificationDataSource,
                                                                 @unchecked Sendable {
     private enum Constant {
-        static let identifierPrefix = "hydrationReminder"
         static let scheduledWeekdays = 1...7
         // 본문 3종을 7일에 단순 나머지로 배치하면 토요일(7)과 일요일(1)이 같은
         // 인덱스가 되어 주 경계에서 같은 문구가 이틀 연속 반복된다. 주 경계를
@@ -48,6 +47,7 @@ public final class HydrationReminderNotificationDataSourceImpl: HydrationReminde
                 content.title = notificationTitle(for: slot)
                 content.body = notificationBody(for: slot, weekday: weekday)
                 content.sound = .default
+                content.categoryIdentifier = HydrationReminderNotification.categoryIdentifier
 
                 var dateComponents = DateComponents()
                 dateComponents.weekday = weekday
@@ -76,7 +76,7 @@ public final class HydrationReminderNotificationDataSourceImpl: HydrationReminde
     private func cancelReminders(excluding scheduledIdentifiers: Set<String>) async {
         let reminderIdentifiers = await notificationCenter.pendingNotificationRequests()
             .map(\.identifier)
-            .filter { $0.hasPrefix(Constant.identifierPrefix) && !scheduledIdentifiers.contains($0) }
+            .filter { $0.hasPrefix(HydrationReminderNotification.identifierPrefix) && !scheduledIdentifiers.contains($0) }
 
         guard !reminderIdentifiers.isEmpty else {
             return
@@ -86,7 +86,7 @@ public final class HydrationReminderNotificationDataSourceImpl: HydrationReminde
     }
 
     private func reminderIdentifier(for slot: HydrationReminderSlot, weekday: Int) -> String {
-        "\(Constant.identifierPrefix).\(slot.rawValue).\(weekday)"
+        "\(HydrationReminderNotification.identifierPrefix)\(slot.rawValue).\(weekday)"
     }
 
     private func notificationTitle(for slot: HydrationReminderSlot) -> String {

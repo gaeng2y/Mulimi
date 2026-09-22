@@ -10,6 +10,7 @@ import Foundation
 
 public protocol DrinkWaterUseCase: Sendable {
     var currentWaterIntakeML: Double { get async }
+    func waterIntakeForLogging() async throws -> Double
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
@@ -17,8 +18,41 @@ public protocol DrinkWaterUseCase: Sendable {
     @discardableResult
     func drinkWater() async -> HydrationWriteResult
     @discardableResult
-    func drinkWater(volumeML: Int) async -> HydrationWriteResult
+    func drinkWater(volumeML: Int, idempotencyKey: String?) async -> HydrationWriteResult
     func deleteHydrationEvent(id: UUID) async -> Bool
     @discardableResult
     func reset() async -> HydrationWriteResult
+}
+
+public extension DrinkWaterUseCase {
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+        await drinkWater(volumeML: volumeML, idempotencyKey: nil)
+    }
+
+    func drinkWaterFromReminder(idempotencyKey: String, dailyGoalML: Double) async -> HydrationReminderLogResult {
+        guard !idempotencyKey.isEmpty else {
+            return .failed(.invalidObjectType)
+        }
+        do {
+            let intake = try await waterIntakeForLogging()
+            let volume = HydrationServing.defaultGlassVolumeML
+            guard dailyGoalML.isFinite, intake.isFinite, intake >= 0,
+                  intake + Double(volume) <= dailyGoalML else {
+                return .goalExceeded
+            }
+            switch await drinkWater(volumeML: volume, idempotencyKey: idempotencyKey) {
+            case .success: return .saved
+            case let .failure(reason): return .failed(reason)
+            }
+        } catch {
+            return .failed(.systemError)
+        }
+    }
+}
+
+public enum HydrationReminderLogResult: Equatable, Sendable {
+    case saved
+    case goalExceeded
+    case failed(HydrationWriteFailureReason)
 }

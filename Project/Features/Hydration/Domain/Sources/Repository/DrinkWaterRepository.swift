@@ -10,6 +10,7 @@ import Foundation
 
 public protocol DrinkWaterRepository: Sendable {
     var currentWaterIntakeML: Double { get async }
+    func waterIntakeForLogging() async throws -> Double
 
     func hydrationEvents(on date: Date) async -> [HydrationEvent]
     func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
@@ -17,8 +18,15 @@ public protocol DrinkWaterRepository: Sendable {
     @discardableResult
     func drinkWater() async -> HydrationWriteResult
     @discardableResult
-    func drinkWater(volumeML: Int) async -> HydrationWriteResult
+    func drinkWater(volumeML: Int, idempotencyKey: String?) async -> HydrationWriteResult
     func deleteHydrationEvent(id: UUID) async -> Bool
     @discardableResult
     func reset() async -> HydrationWriteResult
+}
+
+public extension DrinkWaterRepository {
+    @discardableResult
+    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+        await drinkWater(volumeML: volumeML, idempotencyKey: nil)
+    }
 }

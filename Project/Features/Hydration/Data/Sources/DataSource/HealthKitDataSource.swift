@@ -19,7 +19,7 @@ public protocol HealthKitDataSource: Sendable {
     func readWaterSamples(from startDate: Date, to endDate: Date) async throws -> [HydrationEvent]
     func readBodyProfile() async throws -> BodyProfile
     func setAGlassOfWater() async throws
-    func setWaterIntake(volumeML: Int) async throws
+    func setWaterIntake(volumeML: Int, idempotencyKey: String?) async throws
     func deleteWaterSample(id: UUID) async throws -> Bool
     func resetWaterInTakeInToday() async throws
 }
@@ -124,7 +124,7 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
         try await setWaterIntake(volumeML: HydrationServing.defaultGlassVolumeML)
     }
 
-    public func setWaterIntake(volumeML: Int) async throws {
+    public func setWaterIntake(volumeML: Int, idempotencyKey: String? = nil) async throws {
         guard volumeML > 0 else {
             throw HealthKitError.healthKitInternalError
         }
@@ -138,7 +138,8 @@ public final class HealthKitDataSourceImpl: HealthKitDataSource, @unchecked Send
                 Double(volumeML),
                 unit: .literUnit(with: .milli),
                 of: .dietaryWater,
-                at: .now
+                at: .now,
+                syncIdentifier: idempotencyKey
             )
         } catch HealthQuantityStoreError.invalidObjectType {
             throw HealthKitError.invalidObjectType
