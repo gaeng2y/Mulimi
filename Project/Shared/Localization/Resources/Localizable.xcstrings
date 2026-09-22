@@ -1,6 +1,292 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "starterPlanEntry": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7일 시작 가이드"
+          }
+        }
+      }
+    },
+    "starterPlanTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7일 스타터 플랜"
+          }
+        }
+      }
+    },
+    "starterPlanProgressFormat": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d일 차 · 준비 %d/3 완료"
+          }
+        }
+      }
+    },
+    "starterPlanDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 한 번의 기록을 꾸준한 습관으로 이어가세요. 안내가 시작된 날부터 7일 동안 나에게 맞는 기록 방법을 준비할 수 있어요."
+          }
+        }
+      }
+    },
+    "starterPlanRecordTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 물 한 번 기록하기"
+          }
+        }
+      }
+    },
+    "starterPlanRecordAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "물 기록하러 가기"
+          }
+        }
+      }
+    },
+    "starterPlanRecordDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안내 시작일 이후 물리미로 저장한 수분 기록을 확인해요. 저장되지 않았거나 남아 있는 기록이 없으면 완료로 표시하지 않아요."
+          }
+        }
+      }
+    },
+    "starterPlanRoutineTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. 루틴 하나 저장하기"
+          }
+        }
+      }
+    },
+    "starterPlanRoutineAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "루틴 만들기"
+          }
+        }
+      }
+    },
+    "starterPlanRoutineDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기존 루틴이 있다면 바로 완료돼요. 알림을 허용하지 않아도 루틴을 저장할 수 있어요. 이 단계는 알림 활성화가 아닌 루틴 저장을 확인해요."
+          }
+        }
+      }
+    },
+    "starterPlanMethodTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. 빠른 기록 방법 고르기"
+          }
+        }
+      }
+    },
+    "starterPlanMethodDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "방법을 펼쳐 안내를 읽고 하나를 골라주세요. 선택은 설치 완료를 뜻하지 않으며, 위젯이나 앱은 직접 추가해야 해요."
+          }
+        }
+      }
+    },
+    "starterPlanMethodName_widget": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "홈 화면 위젯"
+          }
+        }
+      }
+    },
+    "starterPlanMethodName_watch": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch"
+          }
+        }
+      }
+    },
+    "starterPlanMethodName_shortcuts": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siri · 단축어"
+          }
+        }
+      }
+    },
+    "starterPlanMethodGuide_widget": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone 홈 화면의 빈 곳을 길게 누른 뒤 편집 → 위젯 추가에서 물리미를 찾아 추가하세요. 위젯의 기록 버튼으로 물을 기록할 수 있어요."
+          }
+        }
+      }
+    },
+    "starterPlanMethodGuide_watch": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch가 있다면 iPhone의 Watch 앱 → 나의 시계에서 물리미가 설치되어 있는지 확인하세요. 사용 가능한 앱에 있다면 설치한 뒤 워치의 물리미 앱에서 기록하세요."
+          }
+        }
+      }
+    },
+    "starterPlanMethodGuide_shortcuts": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone의 단축어 앱에서 물리미의 ‘물 기록’을 찾거나, Siri에게 ‘물리미에서 물 기록’이라고 말해보세요. 실행 중 권한이나 기록량을 묻는 안내가 나오면 확인해주세요."
+          }
+        }
+      }
+    },
+    "starterPlanMethodSelect": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 방법으로 시작하기"
+          }
+        }
+      }
+    },
+    "starterPlanMethodSelected": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택됨"
+          }
+        }
+      }
+    },
+    "starterPlanStepComplete": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료"
+          }
+        }
+      }
+    },
+    "starterPlanCompleteAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비 완료"
+          }
+        }
+      }
+    },
+    "starterPlanDismissAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 안내 다시 보지 않기"
+          }
+        }
+      }
+    },
+    "starterPlanDismissDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "뒤로 가면 나중에 이어서 볼 수 있어요. 준비를 완료하거나 다시 보지 않기를 선택하면 이 기기에서 더 이상 안내하지 않아요."
+          }
+        }
+      }
+    },
+    "starterPlanUnavailableTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 진행할 스타터 플랜이 없어요"
+          }
+        }
+      }
+    },
+    "starterPlanUnavailableDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비를 마쳤거나 안내를 닫았거나 7일이 지났어요. 물 기록과 루틴은 계속 이용할 수 있어요."
+          }
+        }
+      }
+    },
     "drinkWaterComebackBadge" : {
       "extractionState" : "manual",
       "localizations" : {
