@@ -25,6 +25,20 @@ SignIn
 - 한 번 거부한 권한은 앱 내에서 재요청할 수 없으므로 설정 이동 경로를 안내한다.
 - 권한 문구는 시스템 팝업과 앱 내부 화면에서 톤이 어긋나지 않게 유지한다.
 
+## Seven-day Starter Plan (#320)
+
+- 실험 플래그 없이 Debug/Release 모두 제공한다. 기존 온보딩과 권한 게이트는 바꾸지 않는다.
+- 기능 도입 뒤 오늘의 양수인 물리미 소유 HealthKit 기록이 처음 조회되면 이 기기에서 안내를 시작한다. 신규·기존 사용자 모두 대상이며, 앱 생애 최초 기록일로 해석하지 않는다. 저장 실패·조회 가능한 기록 없음·다른 앱 기록만 있는 경우는 시작하지 않는다.
+- 시작일 포함 기기 달력 기준 7일 동안 메인 기록 탭 상단의 ‘7일 시작 가이드’로 진입한다. 메인 WaterDrop 본문에 카드나 강제 팝업을 추가하지 않는다.
+- 1단계는 시작일 이후 실제 남아 있는 물리미 수분 기록, 2단계는 실제 저장된 루틴 하나를 조회해 확인한다. 버튼 탭·편집 취소·저장 실패는 완료가 아니다. 알림 권한 없이 저장한 비활성 루틴도 ‘루틴 저장’에는 해당하며 알림 활성화를 의미하지 않는다.
+- 미완료 기록 CTA는 기존 메인 기록 탭으로, 루틴 CTA는 기존 루틴 생성 편집기로 연결한다. 루틴 화면에서 돌아오거나 앱이 다시 활성화되면 상태를 갱신한다.
+- 3단계는 홈 화면 위젯 / Apple Watch / Siri·단축어 안내를 읽고 사용할 방법 하나를 선택하는 것이다. 설치·권한 허용·실제 사용을 검증한 상태가 아니다. 위젯과 Watch 앱은 사용자가 직접 추가한다. Watch가 없어도 다른 방법을 선택할 수 있다.
+- ‘준비 완료’는 세 단계를 다시 조회해 확인한 뒤 안내를 종료한다. 뒤로 가기는 진행을 유지하고, ‘이 안내 다시 보지 않기’는 영구 닫기다. 완료·닫기·7일 만료 후 새 기록이 생겨도 안내를 다시 시작하지 않는다.
+- `hydrationStarterPlan.v1`에는 시작 시각·선택한 방법·완료/닫기 상태만 기기 로컬 UserDefaults에 저장한다. 기록·루틴 사본은 저장하지 않는다. 로그아웃으로 초기화하지 않으며 재설치·다른 기기 동기화는 지원 범위 밖이다.
+- 기간 경계·저장소 재생성·실제 데이터 삭제·조회 취소·이벤트 중복은 자동 테스트로 검증한다. D7 리텐션 개선이나 설치 전환 효과는 이번 제품 적용만으로 입증하지 않는다.
+
+수동 설치 안내는 Apple의 [iPhone 위젯 추가](https://support.apple.com/ko-kr/118610), [Apple Watch 앱 설치](https://support.apple.com/ko-kr/109023)를 기준으로 한다. Siri 문구는 기존 `LogWaterAppShortcuts`의 실제 phrase를 사용한다.
+
 ## State Expectations
 
 - `signedOut`: 로그인 화면
@@ -60,6 +74,8 @@ SignIn
 ## Related Code
 
 - `Project/App/Sources/ContentView.swift`
+- `Project/Features/Hydration/Presentation/Sources/View/DrinkWater/HydrationStarterPlanView.swift`
+- `Project/Features/Hydration/Presentation/Sources/ViewModel/HydrationStarterPlanViewModel.swift`
 - `Project/App/Sources/RootView.swift`
 - `Project/Features/Account/Presentation/Sources/View/Authentication/OnboardingView.swift`
 - `Project/Features/HydrationReminder/Presentation/Sources/View/HydrationReminderPermissionGateView.swift`

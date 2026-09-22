@@ -63,6 +63,11 @@
 | `insight_cta_tapped` | `source`, `context`, `action` | 인사이트 루틴 복구/주간 코칭/empty state CTA 탭 |
 | `challenge_cta_tapped` | `source`, `challenge_kind`, `action` | 추천 챌린지 CTA 탭 |
 | `daily_goal_changed` | `source`, `previous_goal_ml`, `new_goal_ml` | 목표 수분량 변경 |
+| `starter_plan_viewed` | `source` | 진행 가능한 스타터 체크리스트 노출. ViewModel 생존 기간당 1회 |
+| `starter_plan_action_tapped` | `source`, `action` | 기존 기록/루틴 생성 화면으로 이동 |
+| `starter_plan_method_selected` | `source`, `action` | 안내를 읽고 빠른 기록 방법 선택 변경. 설치 성공이 아님 |
+| `starter_plan_completed` | `source` | 세 단계 재확인 후 준비 완료 저장 |
+| `starter_plan_dismissed` | `source` | 다시 보지 않기 저장. 뒤로 가기/백그라운드는 제외 |
 
 ## Parameter Values
 
@@ -81,6 +86,7 @@
 - `profile_routine`
 - `settings`
 - `recommendation`
+- `starter_plan`
 
 ### `serving_type`
 
@@ -120,6 +126,9 @@
 - `open_settings`
 - `daily_goal`
 - `none`
+- `widget` (스타터 플랜 방법 선택)
+- `watch` (스타터 플랜 방법 선택)
+- `shortcuts` (스타터 플랜 방법 선택)
 
 ### `challenge_kind`
 
@@ -143,6 +152,15 @@
 - CTA 성공률은 `hydration_comeback_record_result.status = success / hydration_comeback_cta_tapped`다. 실패 후 재시도는 별도 시도이며, 저장 중 중복 탭은 집계하지 않는다.
 - 동일 공백의 앱 재진입/재시작에는 재노출하지 않는다. 반복 노출 QA는 같은 공백에 두 번째 `viewed`가 없는지 확인하며, 거부감은 `dismissed / viewed`와 참여자 피드백으로 본다.
 - iPhone 이벤트만으로 Widget/Watch/다른 HealthKit 출처를 포함한 7일 기록 일수를 확정하지 않는다. 실제 HealthKit 이력 확인과 결측 처리 기준은 실험 문서를 따른다.
+
+## Starter Plan (#320)
+
+- 항상 활성화된 제품 안내이며 비교군이나 실험 context를 추가하지 않는다.
+- `source = starter_plan`, 이동 `action = go_record | create_routine`, 방법 선택 `action = widget | watch | shortcuts`만 사용한다.
+- `viewed`는 체크리스트에서만 발생한다. toolbar 진입 버튼 노출과 구분하며, 현재 DI 컨테이너의 ViewModel 생존 기간 동안 뒤로 갔다 돌아와도 중복 발행하지 않는다.
+- `completed`는 남아 있는 HealthKit 기록·저장된 루틴·방법 선택을 다시 확인한 사용자 CTA의 결과다. 7일 연속 기록, 알림 활성화, 위젯/Watch 설치, 단축어 실행 성공을 의미하지 않는다.
+- 기존 `water_logged`, `routine_created`를 재발행하지 않는다. 건강 기록 시각·양·ID, 루틴 제목, 안내 시작 시각을 새 이벤트에 싣지 않는다.
+- 완료/닫기는 영속 상태로 재발행을 막는다. D7 효과 분석과 참여자 모집은 이번 구현과 별도다.
 
 ## SDK Properties
 
