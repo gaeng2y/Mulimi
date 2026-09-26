@@ -5,9 +5,9 @@
   "status": "pass",
   "visualReview": "pending",
   "artifact": {
-    "path": "/private/tmp/mulimi-321/Docs/diagrams/mulimi-project-architecture.html",
-    "sha256": "4ca97aad666b28f11652305c38bcaf0655912954a959e6e2cef83b8a3abd0fd6",
-    "bytes": 721392
+    "path": "/Users/gaeng2y/Documents/github/Mulimi/Docs/diagrams/mulimi-project-architecture.html",
+    "sha256": "a06ff1829c45ff34ef6ef62a28e372434b6fd345b197fee89926f5f70bdc61c5",
+    "bytes": 721424
   },
   "state": {
     "detail": "read",

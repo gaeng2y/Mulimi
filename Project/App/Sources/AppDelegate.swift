@@ -35,15 +35,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         didReceive response: UNNotificationResponse
     ) async {
         let notification = response.notification
-        if isHydrationReminder(notification),
+        let isReminder = isHydrationReminder(notification)
+        if isReminder,
            response.actionIdentifier == HydrationReminderNotification.drinkActionIdentifier,
            notification.request.content.categoryIdentifier == HydrationReminderNotification.categoryIdentifier {
-            await recordWater(from: notification)
+            await recordWater(requestIdentifier: notification.request.identifier, deliveredAt: notification.date)
         } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  isHydrationReminder(notification)
+                  isReminder
                     || notification.request.identifier == HydrationReminderNotification.failureIdentifier {
             await MainActor.run {
-                if isHydrationReminder(notification) {
+                if isReminder {
                     DIContainer.shared.resolve(AnalyticsUseCase.self).track(
                         ProductAnalyticsEvent(name: "hydration_reminder_opened")
                     )
@@ -56,15 +57,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
     }
 
     @MainActor
-    private func recordWater(from notification: UNNotification) async {
-        let requestID = notification.request.identifier
-        let deliveredAt = notification.date
+    private func recordWater(requestIdentifier requestID: String, deliveredAt: Date) async {
         guard !HydrationReminderNotification.wasRecorded(requestIdentifier: requestID, deliveredAt: deliveredAt) else {
             return
         }
         let result = await DIContainer.shared.resolve(HydrationReminderActionHandler.self).handle(
-            requestIdentifier: notification.request.identifier,
-            deliveredAt: notification.date,
+            requestIdentifier: requestID,
+            deliveredAt: deliveredAt,
             isProtectedDataAvailable: UIApplication.shared.isProtectedDataAvailable,
             isAuthenticated: DIContainer.shared.resolve(SignInUseCase.self).isAuthenticated
         )

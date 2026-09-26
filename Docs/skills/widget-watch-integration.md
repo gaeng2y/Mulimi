@@ -13,6 +13,7 @@
 
 ## Rules
 
+- Watch는 `MulimiWatch` 단일 `.app` 타깃으로 코드·리소스·HealthKit/App Group 권한을 소유한다. WatchKit 확장은 사용하지 않는다
 - 수분 기록 원본은 `HealthKit`
 - 표시 계산은 `HydrationServing`
 - 다음 한 잔 계산은 `HydrationNextActionGuide`
@@ -39,7 +40,11 @@ make arch-check
 xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 ```
 
-범위가 watch면 watch 빌드도 추가한다.
+범위가 watch면 다음 watchOS Simulator 빌드도 추가한다.
+
+```bash
+xcodebuild build -workspace Mulimi.xcworkspace -scheme MulimiWatch -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+```
 
 ## Related Docs
 
