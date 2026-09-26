@@ -1,5 +1,10 @@
+import AccountDomain
 import DependencyInjection
+import HydrationPresentation
+import HydrationReminderData
+import MulimiAnalytics
 import MulimiNavigation
+import OSLog
 import UIKit
 import UserNotifications
 
@@ -8,7 +13,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.setNotificationCategories([HydrationReminderNotification.category])
         return true
     }
 
@@ -16,10 +23,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        guard isHydrationReminder(notification) else {
+        guard isHydrationReminder(notification)
+                || notification.request.identifier == HydrationReminderNotification.failureIdentifier else {
             return []
         }
-
         return [.banner, .sound]
     }
 
@@ -27,17 +34,59 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
-        guard isHydrationReminder(response.notification),
-              let url = URL(string: "mulimi://hydration/record") else {
+        let notification = response.notification
+        let isReminder = isHydrationReminder(notification)
+        if isReminder,
+           response.actionIdentifier == HydrationReminderNotification.drinkActionIdentifier,
+           notification.request.content.categoryIdentifier == HydrationReminderNotification.categoryIdentifier {
+            await recordWater(requestIdentifier: notification.request.identifier, deliveredAt: notification.date)
+        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  isReminder
+                    || notification.request.identifier == HydrationReminderNotification.failureIdentifier {
+            await MainActor.run {
+                if isReminder {
+                    DIContainer.shared.resolve(AnalyticsUseCase.self).track(
+                        ProductAnalyticsEvent(name: "hydration_reminder_opened")
+                    )
+                }
+                if let url = URL(string: "mulimi://hydration/record") {
+                    DIContainer.shared.resolve(AppCoordinator.self).handleDeepLink(url)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func recordWater(requestIdentifier requestID: String, deliveredAt: Date) async {
+        guard !HydrationReminderNotification.wasRecorded(requestIdentifier: requestID, deliveredAt: deliveredAt) else {
             return
         }
-
-        await MainActor.run {
-            DIContainer.shared.resolve(AppCoordinator.self).handleDeepLink(url)
+        let result = await DIContainer.shared.resolve(HydrationReminderActionHandler.self).handle(
+            requestIdentifier: requestID,
+            deliveredAt: deliveredAt,
+            isProtectedDataAvailable: UIApplication.shared.isProtectedDataAvailable,
+            isAuthenticated: DIContainer.shared.resolve(SignInUseCase.self).isAuthenticated
+        )
+        let messageKey: String
+        switch result {
+        case .saved:
+            HydrationReminderNotification.markRecorded(requestIdentifier: requestID, deliveredAt: deliveredAt)
+            return
+        case .duplicate: return
+        case .permissionRequired: messageKey = "hydrationReminderRecordPermissionRequired"
+        case .goalExceeded: messageKey = "hydrationReminderRecordGoalExceeded"
+        case .signInRequired: messageKey = "hydrationReminderRecordSignInRequired"
+        case .failed, .protectedDataUnavailable: messageKey = "hydrationReminderRecordFailed"
+        }
+        do {
+            try await HydrationReminderNotification.showFailure(messageKey: messageKey)
+        } catch {
+            Logger(subsystem: "gaeng2y.DrinkWater", category: "HydrationReminderAction")
+                .error("Failed to present reminder recording failure: \(String(describing: error))")
         }
     }
 
     nonisolated private func isHydrationReminder(_ notification: UNNotification) -> Bool {
-        notification.request.identifier.hasPrefix("hydrationReminder.")
+        notification.request.identifier.hasPrefix(HydrationReminderNotification.identifierPrefix)
     }
 }

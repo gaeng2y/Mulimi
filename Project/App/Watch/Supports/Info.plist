@@ -18,9 +18,13 @@
 	<string>$(APP_BUILD_NUMBER)</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.healthcare-fitness</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>물 섭취 기록과 신체 정보를 보여주기 위해 건강 앱 접근 권한이 필요합니다.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>마신 물을 건강 앱에 기록하기 위해 건강 앱 쓰기 권한이 필요합니다.</string>
+	<key>WKApplication</key>
+	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
 	<string>gaeng2y.DrinkWater</string>
-	<key>WKWatchKitApp</key>
-	<true/>
 </dict>
 </plist>

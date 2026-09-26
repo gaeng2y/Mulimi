@@ -9,12 +9,11 @@
 - 수분 기록의 원본 저장소는 `HealthKit`
 - 로컬에 별도 hydration 원장을 다시 두지 않는다
 - `250ml = 1잔` 규칙은 `HydrationServing`으로만 다룬다
-- 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 되돌리기/초기화를 담은 더보기(ellipsis) 메뉴만 노출한다
+- 메인 화면 본문은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 되돌리기/초기화를 담은 더보기(ellipsis) 메뉴만 노출한다
+- 진행 가능한 [7일 스타터 플랜](sign-in-onboarding-healthkit.md#seven-day-starter-plan-320)이 있으면 루트 toolbar에 진입 버튼을 둔다. 별도 체크리스트에서 기존 기록·루틴 화면으로 이동하며 본문에 카드를 추가하지 않는다
 - 다음 한 잔 안내는 화면 상단, `WaterDrop`과 오늘 섭취 요약은 화면 중앙, 기본 기록 CTA는 하단에 둔다. `WaterDrop`은 고정 시각 anchor로, 되돌리기나 기록 성공 피드백 상태 변화로 밀리지 않는다
 - 되돌리기(최근 앱 생성 기록 1건)와 초기화는 기본 기록 CTA 옆 더보기 메뉴에서 Label 형태로 제공한다. 되돌리기는 최근 기록이 있을 때만 메뉴에 나타나고, 초기화는 destructive action으로 구분한다
 - 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 primary CTA 상태 변화로 제공한다
-- 메인 화면은 Metal shader 기반 `WaterDrop`, 오늘 섭취 잔 수/용량 요약, 다음 한 잔 안내, 기본 1잔 기록, 최근 앱 생성 기록 1건 되돌리기, 오늘 물리미 기록 초기화만 노출한다
-- 기본 1잔 기록은 HealthKit 쓰기 중 중복 탭을 막고, 성공 후 사용자가 즉시 인지할 수 있는 짧은 완료 피드백을 제공한다
 - 오늘 기록이 0이고 다음 한 잔 안내가 기본 상태(`readyToDrink`)면, 같은 안내 카드의 문구를 첫 기록 유도로 바꿔 기본 1잔 기록 CTA와 건강 앱 저장을 안내한다. 별도 배너나 레이아웃 요소를 추가하지 않으며, 루틴 임박/목표 미설정 안내가 우선한다. 온보딩 전환 실험 H4 기준(`Docs/product-specs/onboarding-healthkit-conversion-experiments.md`)과 정렬된다
 - #323의 카드 실험 빌드에서만 2~6일 기록 공백 복귀자의 상단 안내를 컴백 문구로 우선 표시한다. 목표 미설정은 제외하고 기존 하단 한 잔 CTA를 재사용한다. 노출·비교군·재노출 방지·측정 기준은 [Challenge and Insight](challenge-insight.md#comeback-experiment-323)를 따른다
 - 기록 단위 사용자 기본값 설정은 아직 구현하지 않았다. 기본 액션, 위젯, Watch는 기본 1잔을 유지하고, Siri/Shortcuts는 실행 시 선택한 단위를 1회 기록한다
@@ -39,6 +38,7 @@
 | 앱 직접 입력 | 없음 | - | 메인 화면에는 노출하지 않는다. 사용자 기본값으로 저장하지 않는다. |
 | Widget button | `HydrationServing.defaultGlassVolumeML` = 250ml | `LogWaterAppIntent`의 기본 `amount = .glass` | 목표 초과 시 HealthKit에 쓰지 않고 결과 메시지를 반환한다. |
 | Control Widget 실험 (#322) | `HydrationServing.defaultGlassVolumeML` | 같은 `LogWaterAppIntent()` | 실험 빌드에서만 제어 센터·잠금 화면·액션 버튼에 노출한다. |
+| 수분 리마인더 액션 (#321) | `HydrationServing.defaultGlassVolumeML` | `DrinkWaterUseCase.drinkWaterFromReminder` | 잠금 해제 후 목표·조회·저장 결과 확인, 전달별 중복 방지. [정책과 측정](hydration-reminder-priming.md#notification-quick-logging-321). |
 | Watch | `HydrationServing.defaultGlassVolumeML` = 250ml | `WatchHydrationUseCaseImpl.defaultDrinkVolumeML` | Watch 전용 단위 규칙을 만들지 않는다. |
 | Siri/Shortcuts | 250ml, 330ml, 500ml, 직접 입력 ml | `LogWaterAppIntent.amount`, `customAmountML`, `LogWaterAppShortcuts` | App Shortcut phrase로 노출하고, 성공/목표 초과/권한 필요 결과 메시지를 반환한다. |
 

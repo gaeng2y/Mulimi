@@ -84,7 +84,7 @@ Feature Presentation -> Feature Domain
 Feature Data -> Feature Domain
 Widget -> DependencyInjection + AccountDomain + HydrationDomain + RoutineDomain
 ChallengeDomain -> RoutineDomain -> HydrationDomain -> AccountDomain
-Watch extension -> WatchDependencyInjection -> WatchHydration Presentation / Data / Domain
+MulimiWatch (single-target app) -> WatchDependencyInjection -> WatchHydration Presentation / Data / Domain
 Feature Presentation / Data -> Shared as needed
 Feature Domain -> no UI dependency
 ```

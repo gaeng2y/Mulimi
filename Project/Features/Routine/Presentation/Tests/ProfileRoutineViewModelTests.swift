@@ -66,6 +66,10 @@ struct ProfileRoutineViewModelTests {
             }
         }
 
+        func waterIntakeForLogging() async throws -> Double {
+            await currentWaterIntakeML
+        }
+
         func hydrationEvents(on date: Date) async -> [HydrationEvent] {
             []
         }
@@ -80,7 +84,7 @@ struct ProfileRoutineViewModelTests {
             .success
         }
 
-        func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+        func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
             .success
         }
 

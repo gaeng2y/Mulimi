@@ -22,6 +22,10 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         }
     }
 
+    public func waterIntakeForLogging() async throws -> Double {
+        try await dataSource.waterIntakeForLogging()
+    }
+
     public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         await dataSource.hydrationEvents(on: date)
     }
@@ -40,8 +44,8 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     }
 
     @discardableResult
-    public func drinkWater(volumeML: Int) async -> HydrationWriteResult {
-        await dataSource.drinkWater(volumeML: volumeML)
+    public func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
+        await dataSource.drinkWater(volumeML: volumeML, idempotencyKey: idempotencyKey)
     }
 
     public func deleteHydrationEvent(id: UUID) async -> Bool {

@@ -2,6 +2,9 @@ import HydrationDomain
 import Foundation
 
 final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
+    var loggingReadError: Error?
+    var recordedIdempotencyKeys: [String?] = []
+
     var currentWaterIntakeMLValue: Double = 0
 
     var migrateLegacyDataIfNeededCallCount: Int = 0
@@ -33,6 +36,11 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
         }
     }
 
+    func waterIntakeForLogging() async throws -> Double {
+        if let loggingReadError { throw loggingReadError }
+        return await currentWaterIntakeML
+    }
+
     func hydrationEvents(on date: Date) async -> [HydrationEvent] {
         hydrationEventsByDay[dayKey(for: date)] ?? []
     }
@@ -54,9 +62,10 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     }
 
     @discardableResult
-    func drinkWater(volumeML: Int) async -> HydrationWriteResult {
+    func drinkWater(volumeML: Int, idempotencyKey: String? = nil) async -> HydrationWriteResult {
         drinkWaterCallCount += 1
         recordedVolumesML.append(volumeML)
+        recordedIdempotencyKeys.append(idempotencyKey)
         if shouldSuspendNextDrinkWater {
             shouldSuspendNextDrinkWater = false
             await withCheckedContinuation { continuation in

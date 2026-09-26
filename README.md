@@ -28,6 +28,7 @@
 
 - `HealthKit` 기반 수분 기록 및 오늘 섭취량 집계
 - 로그인 후 `온보딩 -> 수분 알림 권한 게이트 -> HealthKit 권한 게이트 -> 메인 화면` 흐름
+- 첫 안내일부터 7일간 기록 확인·루틴 저장·빠른 기록 방법 선택을 돕는 [스타터 플랜](Docs/product-specs/sign-in-onboarding-healthkit.md#seven-day-starter-plan-320)
 - 일일 목표량 설정 및 AI 기반 목표량 추천
 - 수분 기록 히스토리, 주간 리포트, 루틴 수행률 인사이트, 루틴 액션으로 연결되는 챌린지, 루틴 관리
 - 홈 화면/잠금화면 위젯과 Apple Watch 앱 지원
@@ -159,7 +160,7 @@ Mulimi/
 ### 대표 모듈
 
 - `Project/App`
-  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`, `MulimiNavigation`(전역 내비게이션)
+  - `Mulimi`, `WidgetExtension`, `MulimiWatch`(단일 watchOS 앱), `MulimiNavigation`(전역 내비게이션)
 - `Project/Core`
   - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
   - `Platform`: `MulimiPlatform`(`Bundle`·`WidgetCenter` 어댑터)

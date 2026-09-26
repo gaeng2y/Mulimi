@@ -43,6 +43,10 @@
 - `Project/Features/Routine/Domain/Sources/UseCase/HydrationRoutineAdherenceUseCaseImpl.swift`
 - `Project/Features/Routine/Data/Sources/DataSource/RoutineNotificationDataSource.swift`
 
+## 수분 리마인더 바로 기록 (#321)
+
+일일 UserNotifications 리마인더의 “마셨어요” 액션은 [수분 리마인더 정책](hydration-reminder-priming.md#notification-quick-logging-321)을 따른다. 이 문서의 AlarmKit 루틴과 권한·스케줄은 별도로 유지한다.
+
 ## Related Docs
 
 - `ARCHITECTURE.md`
