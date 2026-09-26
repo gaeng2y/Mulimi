@@ -56,8 +56,10 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Delivery And Operations
 
+- [빠른 물 기록 가이드 (발행 전 초안)](marketing/quick-recording-guide.md)
 - [Exec Plans Active](exec-plans/active/README.md)
 - [Exec Plans Completed](exec-plans/completed/README.md)
+- [#329 빠른 물 기록 가이드 제작·발행](exec-plans/active/2026-09-25-issue-329-quick-recording-guide.md)
 - [#321 수분 알림 바로 기록](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md)
 - [#320 7일 스타터 플랜 제품 적용 (PR 전달)](exec-plans/active/2026-09-13-issue-320-starter-plan.md)
 - [Exec Plan Template](exec-plans/template.md)
