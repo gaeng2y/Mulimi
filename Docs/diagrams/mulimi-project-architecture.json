@@ -7,7 +7,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/gaeng2y/Mulimi",
-      "revision": "b150df1fabf3c16bc0488ecd9094fe56f27f0bb0"
+      "revision": "3f30fce80efffa134036b0532db92d6f4f6fc67d"
     },
     "viewBox": [
       1395,
@@ -81,7 +81,7 @@
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 104,
+          "line": 109,
           "label": "타깃·직접 의존성"
         },
         {
@@ -219,15 +219,15 @@
       "id": "watch-shell",
       "type": "frontend",
       "label": "MulimiWatch",
-      "sublabel": "MulimiWatchExtension",
+      "sublabel": "단일 watchOS 앱 타깃",
       "tag": "watchOS 26+ · 별도 실행 경계",
       "row": 2,
       "col": 0,
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 189,
-          "label": "Watch 앱·확장 타깃"
+          "line": 194,
+          "label": "Watch 앱·코드·리소스·권한"
         },
         {
           "path": "Project/App/Watch/Sources/App/MulimiWatchApp.swift",
@@ -450,9 +450,9 @@
       "dot": "violet",
       "title": "화살표는 주요 의존 방향",
       "items": [
-        "2.5.0 (33) · 17개 프로젝트 · 53개 타깃 중 테스트 15개",
+        "2.5.0 (33) · 17개 프로젝트 · 52개 타깃 중 테스트 15개",
         "DI는 3개 레이어를 모두 조립; 위젯은 Account·Hydration·Routine Domain도 직접 참조",
-        "전체 직접 의존 170개; AppDelegate는 HydrationReminderData의 알림 카테고리·결과 안내 사용"
+        "전체 직접 의존 169개; AppDelegate는 HydrationReminderData의 알림 카테고리·결과 안내 사용"
       ]
     },
     {

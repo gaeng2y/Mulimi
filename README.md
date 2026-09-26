@@ -160,7 +160,7 @@ Mulimi/
 ### 대표 모듈
 
 - `Project/App`
-  - `Mulimi`, `WidgetExtension`, `MulimiWatch`, `MulimiWatchExtension`, `MulimiNavigation`(전역 내비게이션)
+  - `Mulimi`, `WidgetExtension`, `MulimiWatch`(단일 watchOS 앱), `MulimiNavigation`(전역 내비게이션)
 - `Project/Core`
   - `Analytics`: `MulimiAnalytics`(분석 계약), `MulimiAnalyticsData`(PostHog 구현)
   - `Platform`: `MulimiPlatform`(`Bundle`·`WidgetCenter` 어댑터)
