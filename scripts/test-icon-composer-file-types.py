@@ -1,8 +1,11 @@
-"""Run with python3 scripts/test-icon-composer-file-types.py on macOS."""
+"""Run on macOS; optionally pass the generated app project.pbxproj to verify target membership."""
 
+import json
 from pathlib import Path
 import plistlib
 import runpy
+import subprocess
+import sys
 import tempfile
 
 
@@ -48,3 +51,19 @@ with tempfile.TemporaryDirectory() as directory:
         raise AssertionError("A missing icon resource must fail before archiving")
     assert project_path.read_bytes() == first
 print("Icon Composer file type regression checks passed")
+
+if len(sys.argv) > 1:
+    project = json.loads(subprocess.check_output([
+        "plutil", "-convert", "json", "-o", "-", sys.argv[1]
+    ]))
+    objects = project["objects"]
+    app = next(item for item in objects.values()
+               if item.get("isa") == "PBXNativeTarget" and item.get("name") == "Mulimi")
+    resources = [objects[objects[file_id]["fileRef"]]
+                 for phase_id in app["buildPhases"]
+                 if objects[phase_id]["isa"] == "PBXResourcesBuildPhase"
+                 for file_id in objects[phase_id]["files"]]
+    icons = [item for item in resources if item.get("path", "").endswith("Mulimi-Drop.icon")]
+    assert len(icons) == 1, "Mulimi must compile exactly one Mulimi-Drop.icon package as a resource"
+    assert icons[0].get("explicitFileType", icons[0].get("lastKnownFileType")) == "folder.iconcomposer.icon"
+    print("Generated Mulimi target contains the Icon Composer package in Resources")

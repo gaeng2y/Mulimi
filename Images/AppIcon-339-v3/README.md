@@ -6,7 +6,7 @@
 
 ## 앱 적용
 
-iOS 앱의 기본 아이콘으로 v3를 사용합니다. `Project/App/Project.swift`에서 이 폴더의 `Mulimi-Drop.icon`을 앱 리소스로 직접 참조하고, Debug·Release 공통 `ASSETCATALOG_COMPILER_APPICON_NAME`을 `Mulimi-Drop`으로 지정합니다. 아이콘을 수정할 때는 이 원본을 편집하고 `tuist generate`로 프로젝트를 갱신하세요.
+iOS 앱의 기본 아이콘으로 v3를 사용합니다. `Project/App/Project.swift`에서 `Mulimi-Drop.icon/**`로 내부 파일을 검색하면 Tuist가 하나의 `.icon` 앱 리소스 참조로 묶습니다. 패키지 유형이 등록되지 않은 CI에서도 참조가 생성되도록 디렉터리 자체만 glob하지 않습니다. Debug·Release 공통 `ASSETCATALOG_COMPILER_APPICON_NAME`은 `Mulimi-Drop`입니다. 아이콘을 수정할 때는 이 원본을 편집하고 `tuist generate`로 프로젝트를 갱신하세요.
 
 Xcode Cloud에서는 프로젝트 생성 직후 `.icon` 참조의 유형을 `folder.iconcomposer.icon`으로 명시해 에셋 컴파일러 입력에 포함시킵니다. 원본 이름과 Liquid Glass 레이어를 유지합니다. [Cloud 아이콘 설정과 검증 절차](../../Docs/xcode-cloud-release-build.md#icon-composer-아이콘)를 참고하세요.
 
