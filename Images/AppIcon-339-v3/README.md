@@ -8,7 +8,9 @@
 
 iOS 앱의 기본 아이콘으로 v3를 사용합니다. `Project/App/Project.swift`에서 이 폴더의 `Mulimi-Drop.icon`을 앱 리소스로 직접 참조하고, Debug·Release 공통 `ASSETCATALOG_COMPILER_APPICON_NAME`을 `Mulimi-Drop`으로 지정합니다. 아이콘을 수정할 때는 이 원본을 편집하고 `tuist generate`로 프로젝트를 갱신하세요.
 
-적용 검증 환경은 Xcode 27.0 (`27A266a`), Tuist 4.205.0입니다. 프로젝트 생성과 `actool`의 iPhone·iPad 아이콘 컴파일을 통과했고, 생성된 `CFBundleIconName`이 `Mulimi-Drop`인지 확인했습니다. 전체 Release 앱 빌드는 기존 `MulimiWatchExtension`의 `watchkit2-extension` 제품 형식을 Xcode 27이 지원하지 않아 완료하지 못했습니다.
+Xcode Cloud에서는 프로젝트 생성 직후 `.icon` 참조의 유형을 `folder.iconcomposer.icon`으로 명시해 에셋 컴파일러 입력에 포함시킵니다. 원본 이름과 Liquid Glass 레이어를 유지합니다. [Cloud 아이콘 설정과 검증 절차](../../Docs/xcode-cloud-release-build.md#icon-composer-아이콘)를 참고하세요.
+
+초기 적용 검증 환경은 Xcode 27.0 (`27A266a`), Tuist 4.205.0입니다. 프로젝트 생성과 `actool`의 iPhone·iPad 아이콘 컴파일을 통과했고, 생성된 `CFBundleIconName`이 `Mulimi-Drop`인지 확인했습니다. 당시 전체 Release 빌드를 막던 WatchKit 확장 형식은 이후 단일 watchOS 앱으로 전환했습니다.
 
 ## 레이어
 

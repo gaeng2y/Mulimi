@@ -9,7 +9,24 @@ Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR
 - 스크립트에서 수행:
   - `mise` 설치/활성화
   - `tuist install`
-  - `tuist generate`
+  - `tuist generate --no-open`
+  - 생성된 앱 프로젝트의 Icon Composer 파일 유형 보정
+
+### Icon Composer 아이콘
+
+앱 아이콘은 `Images/AppIcon-339-v3/Mulimi-Drop.icon`이고, `ASSETCATALOG_COMPILER_APPICON_NAME`은 `Mulimi-Drop`이다. `AppIcon`이라는 이름이 필수인 것은 아니며, [Apple 지침](https://developer.apple.com/documentation/xcode/creating-your-app-icon-using-icon-composer)처럼 설정값과 `.icon` 파일명이 일치해야 한다.
+
+Tuist 4.205.0이 생성한 `.icon` 참조에는 파일 유형이 생략된다. 이 파일이 일반 폴더로 분류되면 에셋 컴파일러 입력에서 빠져 `None of the input catalogs contained ... Mulimi-Drop` 오류가 발생한다. `ci_post_clone.sh`는 생성 직후 `scripts/fix-icon-composer-file-types.py`로 `folder.iconcomposer.icon` 유형을 명시한다. 이미 올바른 유형이면 변경하지 않고, 아이콘 참조가 없으면 archive 전에 실패시킨다. 아이콘 이름과 원본 이미지는 유지한다.
+
+로컬에서 Cloud의 생성 후 처리를 확인하는 명령:
+
+```sh
+tuist generate --no-open
+python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
+python3 scripts/test-icon-composer-file-types.py
+```
+
+로컬 확인(2026-09-27, Xcode 27.0 `27A266a`, Tuist 4.205.0): `.icon`을 일반 폴더로 강제 분류했을 때 동일 오류를 재현했고, 보정 후 Release 빌드와 서명 없는 `xcodebuild archive`가 통과했다. 생성 프로젝트는 아이콘 파일 유형 외의 데이터가 같고, archive의 iPhone·iPad 기본 아이콘 이름은 모두 `Mulimi-Drop`이다. 유형 누락·잘못된 유형·기존 올바른 유형·반복 실행·아이콘 참조 누락을 회귀 검사했다. `make lint`(315개 파일, 위반 0개), `make arch-check`, 셸 구문 검사도 통과했다. 실제 Xcode Cloud 로그의 입력 목록 확인과 Cloud 재실행·서명·업로드는 미검증이다.
 
 ## 2) Xcode Cloud 워크플로 생성
 Xcode > Report navigator > Cloud 또는 App Store Connect > Xcode Cloud에서 워크플로 생성:
