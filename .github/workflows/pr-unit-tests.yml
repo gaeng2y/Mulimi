@@ -71,7 +71,13 @@ jobs:
             tuist install
           fi
 
-          tuist generate
+          tuist generate --no-open
+
+      - name: Verify Icon Composer resources
+        run: |
+          set -euo pipefail
+          python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
+          python3 scripts/test-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 
       - name: Log Xcode SDKs
         run: |

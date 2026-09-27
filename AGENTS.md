@@ -48,6 +48,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 - 새 framework 타깃 이름은 Apple 시스템·프라이빗 프레임워크와 겹치지 않게 한다(`CoreAnalytics`, `CoreNavigation` 등 금지). 겹치면 시뮬레이터 dyld가 시스템 의존성을 우리 프레임워크로 잘못 로드해 테스트 번들이 깨진다. Core 모듈은 `Mulimi*` 접두사를 쓴다.
 - 신체 정보는 `HealthKit` 기준이다. 직접 입력 플로우를 새로 되살리지 않는다.
 - Watch 실행 타깃은 `MulimiWatch` 단일 `.app`이다. WatchKit 확장 타깃을 다시 도입하지 않는다.
+- Icon Composer `.icon`은 루트 디렉터리만 glob하지 않는다. 내부 파일까지 glob하고 생성된 앱의 Resources 연결을 검증한다.
 - 구조를 바꾸면 `README.md` 또는 관련 `Docs/`를 함께 갱신한다.
 
 ## Do

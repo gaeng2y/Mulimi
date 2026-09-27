@@ -42,7 +42,8 @@ let project = Project(
             sources: ["Sources/**"],
             resources: .resources([
                 .glob(pattern: "Resources/**"),
-                .glob(pattern: .relativeToRoot("Images/AppIcon-339-v3/Mulimi-Drop.icon"))
+                // Match contents so Tuist includes the package even without a registered .icon UTI on CI.
+                .glob(pattern: .relativeToRoot("Images/AppIcon-339-v3/Mulimi-Drop.icon/**"))
             ]),
             entitlements: .file(
                 path: .relativeToCurrentFile("Supports/Mulimi.entitlements")

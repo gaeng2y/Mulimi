@@ -16,17 +16,21 @@ Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR
 
 앱 아이콘은 `Images/AppIcon-339-v3/Mulimi-Drop.icon`이고, `ASSETCATALOG_COMPILER_APPICON_NAME`은 `Mulimi-Drop`이다. `AppIcon`이라는 이름이 필수인 것은 아니며, [Apple 지침](https://developer.apple.com/documentation/xcode/creating-your-app-icon-using-icon-composer)처럼 설정값과 `.icon` 파일명이 일치해야 한다.
 
-Tuist 4.205.0이 생성한 `.icon` 참조에는 파일 유형이 생략된다. 이 파일이 일반 폴더로 분류되면 에셋 컴파일러 입력에서 빠져 `None of the input catalogs contained ... Mulimi-Drop` 오류가 발생한다. `ci_post_clone.sh`는 생성 직후 `scripts/fix-icon-composer-file-types.py`로 `folder.iconcomposer.icon` 유형을 명시한다. 이미 올바른 유형이면 변경하지 않고, 아이콘 참조가 없으면 archive 전에 실패시킨다. 아이콘 이름과 원본 이미지는 유지한다.
+`Project/App/Project.swift`는 `Mulimi-Drop.icon/**`로 내부 파일까지 검색한다. Tuist 4.205.0의 [리소스 필터](https://github.com/tuist/tuist/blob/4.205.0/cli/Sources/TuistCore/Graph/ModelExtensions/Target%2BCore.swift)는 `.icon` 디렉터리를 macOS가 패키지로 인식하지 않으면 제외한다. 디렉터리 자체만 glob하면 Cloud에서 참조가 누락되어 `No Icon Composer resource found`로 실패할 수 있다. 내부 파일은 이 필터를 통과한 뒤 [리소스 매퍼](https://github.com/tuist/tuist/blob/4.205.0/cli/Sources/TuistLoader/Models%2BManifestMappers/ResourceFileElement%2BManifestMapper.swift)가 하나의 `.icon` 패키지 참조로 묶으므로 시스템의 파일 유형 등록에 의존하지 않는다.
+
+생성된 참조의 파일 유형 보정도 필요하다. 일반 폴더로 분류되면 에셋 컴파일러 입력에서 빠져 `None of the input catalogs contained ... Mulimi-Drop` 오류가 발생한다. `ci_post_clone.sh`는 생성 직후 `scripts/fix-icon-composer-file-types.py`로 `folder.iconcomposer.icon` 유형을 명시한다. 이미 올바른 유형이면 변경하지 않고, 참조 누락 검사는 유지한다. 아이콘 이름과 원본 이미지는 유지한다. Cloud 로그에는 실제 Tuist·Xcode 버전을 출력한다.
 
 로컬에서 Cloud의 생성 후 처리를 확인하는 명령:
 
 ```sh
 tuist generate --no-open
 python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
-python3 scripts/test-icon-composer-file-types.py
+python3 scripts/test-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 ```
 
-로컬 확인(2026-09-27, Xcode 27.0 `27A266a`, Tuist 4.205.0): `.icon`을 일반 폴더로 강제 분류했을 때 동일 오류를 재현했고, 보정 후 Release 빌드와 서명 없는 `xcodebuild archive`가 통과했다. 생성 프로젝트는 아이콘 파일 유형 외의 데이터가 같고, archive의 iPhone·iPad 기본 아이콘 이름은 모두 `Mulimi-Drop`이다. 유형 누락·잘못된 유형·기존 올바른 유형·반복 실행·아이콘 참조 누락을 회귀 검사했다. `make lint`(315개 파일, 위반 0개), `make arch-check`, 셸 구문 검사도 통과했다. 실제 Xcode Cloud 로그의 입력 목록 확인과 Cloud 재실행·서명·업로드는 미검증이다.
+PR 유닛 테스트 워크플로에서도 생성 직후 같은 보정과 회귀 검사를 실행한다. 프로젝트 경로를 전달하면 실제 `Mulimi` 타깃의 Resources 빌드 단계에 올바른 유형의 `Mulimi-Drop.icon`이 정확히 한 번 연결되어 있는지도 검사한다. 경로를 생략하면 파일 유형 보정의 회귀 검사만 실행한다.
+
+로컬 확인(2026-09-27, Xcode 27.0 `27A266a`, Tuist 4.205.0): 프로젝트 재생성 후 아이콘 보정과 앱 Resources 연결 검사가 통과했다. 서명 없는 Release archive가 성공했고, iPhone·iPad 기본 아이콘 이름이 모두 `Mulimi-Drop`이며 컴파일된 아이콘과 Watch 앱이 포함됨을 확인했다. Resources 연결을 제거한 프로젝트는 새 검사가 실패하는 것도 확인했다. 유형 누락·잘못된 유형·기존 올바른 유형·반복 실행·아이콘 참조 누락 회귀 검사, `make lint`(315개 파일, 위반 0개), `make arch-check`, 셸·워크플로 YAML 구문 검사도 통과했다. 실제 Cloud의 UTI 등록 상태 확인과 후속 Cloud 재실행·서명·업로드는 미검증이다.
 
 ## 2) Xcode Cloud 워크플로 생성
 Xcode > Report navigator > Cloud 또는 App Store Connect > Xcode Cloud에서 워크플로 생성:

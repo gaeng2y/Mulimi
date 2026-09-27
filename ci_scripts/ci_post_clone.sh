@@ -45,6 +45,8 @@ fi
 echo "❗️mise doctor"
 mise doctor # verify the output of mise is correct on CI
 echo "❗️tuist install"
+tuist version
+xcodebuild -version
 tuist install
 echo "❗️tuist generate"
 tuist generate --no-open
