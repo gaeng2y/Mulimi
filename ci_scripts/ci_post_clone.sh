@@ -47,4 +47,6 @@ mise doctor # verify the output of mise is correct on CI
 echo "❗️tuist install"
 tuist install
 echo "❗️tuist generate"
-tuist generate # Generate the Xcode Project using Tuist
+tuist generate --no-open
+# Tuist may omit the .icon file type; Cloud must pass it to the asset catalog compiler.
+python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
