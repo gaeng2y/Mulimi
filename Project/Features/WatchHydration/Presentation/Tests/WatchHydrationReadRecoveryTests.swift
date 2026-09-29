@@ -56,6 +56,7 @@ struct WatchHydrationReadRecoveryTests {
         await model.drinkWater()
         #expect(model.hasReadError)
         #expect(model.mutationErrorMessage == nil)
+        #expect(model.undoableEvent == repository.events.first)
         #expect(repository.writeCount == 1)
         await model.drinkWater()
         await model.load()
@@ -65,6 +66,51 @@ struct WatchHydrationReadRecoveryTests {
         #expect(!model.hasReadError)
         #expect(model.snapshot.todayIntakeML == HydrationServing.defaultGlassVolumeML)
         #expect(repository.writeCount == 1)
+    }
+
+    @Test("취소 성공 후 조회 실패도 같은 기록을 다시 삭제하지 않는다")
+    func successfulUndoFailedRefresh() async throws {
+        let repository = ReadRecoveryRepository()
+        repository.failAfterWrite = true
+        let model = makeModel(repository)
+        await model.load()
+        await model.drinkWater()
+        let event = try #require(model.undoableEvent)
+
+        await model.undoLastDrink(id: event.id)
+        #expect(model.hasReadError)
+        #expect(model.mutationErrorMessage == nil)
+        #expect(model.didUndoLastDrink)
+        #expect(model.undoableEvent == nil)
+        #expect(repository.deleteCount == 1)
+
+        await model.undoLastDrink(id: event.id)
+        repository.readError = nil
+        await model.load()
+        #expect(!model.hasReadError)
+        #expect(model.snapshot.events.isEmpty)
+        #expect(repository.deleteCount == 1)
+        #expect(repository.writeCount == 1)
+        #expect(repository.resetCount == 0)
+    }
+
+    @Test("취소와 조회가 함께 실패하면 취소 대상을 유지하고 두 실패를 구분한다")
+    func failedUndoAndRefreshPreserveReceipt() async throws {
+        let repository = ReadRecoveryRepository()
+        let model = makeModel(repository)
+        await model.load()
+        await model.drinkWater()
+        let event = try #require(model.undoableEvent)
+        repository.deleteResult = .failure(.permissionDenied)
+        repository.readError = CocoaError(.fileReadUnknown)
+
+        await model.undoLastDrink(id: event.id)
+        #expect(model.hasReadError)
+        #expect(model.mutationErrorMessage != nil)
+        #expect(!model.didUndoLastDrink)
+        #expect(model.undoableEvent == event)
+        #expect(repository.events == [event])
+        #expect(repository.resetCount == 0)
     }
 
     @Test("초기화 성공 후 조회 실패도 초기화를 다시 실행하지 않는다")
@@ -121,15 +167,27 @@ private final class ReadRecoveryRepository: WatchHydrationRepository, @unchecked
     var failAfterWrite = false
     var writeCount = 0
     var resetCount = 0
+    var deleteCount = 0
+    var deleteResult: HydrationWriteResult = .success
 
     func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent] {
         if let readError { throw readError }
         return events
     }
 
-    func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult {
+    func addDrink(volumeML: Int, consumedAt: Date) async -> Result<WatchHydrationEvent, HydrationWriteFailureReason> {
         writeCount += 1
-        events.append(WatchHydrationEvent(id: UUID(), consumedAt: consumedAt, volumeML: volumeML))
+        let event = WatchHydrationEvent(id: UUID(), consumedAt: consumedAt, volumeML: volumeML)
+        events.append(event)
+        if failAfterWrite { readError = CocoaError(.fileReadUnknown) }
+        return .success(event)
+    }
+
+    func deleteDrink(id: UUID) async -> HydrationWriteResult {
+        deleteCount += 1
+        guard deleteResult.isSuccess else { return deleteResult }
+        guard let index = events.firstIndex(where: { $0.id == id }) else { return .failure(.systemError) }
+        events.remove(at: index)
         if failAfterWrite { readError = CocoaError(.fileReadUnknown) }
         return .success
     }
@@ -155,7 +213,7 @@ private struct UnavailableHealthStore: HealthQuantityStoring {
     func latestValue(of identifier: HKQuantityTypeIdentifier, unit: HKUnit) async throws -> Double? { nil }
     func save(
         _ value: Double, unit: HKUnit, of identifier: HKQuantityTypeIdentifier, at date: Date, syncIdentifier: String?
-    ) async throws {}
+    ) async throws -> UUID { throw CocoaError(.fileWriteUnknown) }
     func deleteOwnedSample(id: UUID, of identifier: HKQuantityTypeIdentifier) async throws -> Bool { false }
     func deleteOwnedSamples(of identifier: HKQuantityTypeIdentifier, from startDate: Date, to endDate: Date) async throws {}
 }

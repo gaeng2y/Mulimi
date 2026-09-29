@@ -1,10 +1,12 @@
 import SwiftUI
+import WatchHydrationDomain
 
 public struct WatchRootView: View {
     private let accentColor = Color.teal
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: WatchHydrationViewModel
+    @State private var isUndoConfirmationPresented = false
 
     public init(viewModel: WatchHydrationViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -154,6 +156,14 @@ public struct WatchRootView: View {
                 .disabled(viewModel.isMutating || viewModel.isLoading || viewModel.hasReadError || viewModel.snapshot.events.isEmpty)
             }
 
+            if let event = viewModel.undoableEvent {
+                undoButton(for: event)
+            } else if viewModel.didUndoLastDrink {
+                Text(WatchL10n.tr("watchHydrationUndoSuccess"))
+                    .font(.caption)
+                    .foregroundStyle(accentColor)
+            }
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(
                     WatchL10n.tr(
@@ -189,6 +199,43 @@ public struct WatchRootView: View {
         .frame(maxWidth: .infinity)
         .padding(14)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+    }
+
+    private func undoButton(for event: WatchHydrationEvent) -> some View {
+        let detail = WatchL10n.tr(
+            "watchHydrationUndoRecordFormat",
+            mlText(event.volumeML),
+            event.consumedAt.formatted(.dateTime.month().day().hour().minute())
+        )
+
+        return VStack(alignment: .leading, spacing: 6) {
+            Text(detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button {
+                isUndoConfirmationPresented = true
+            } label: {
+                Label(WatchL10n.tr("watchHydrationUndoButton"), systemImage: "arrow.uturn.backward")
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .buttonStyle(.bordered)
+            .disabled(viewModel.isMutating || viewModel.isLoading)
+            .accessibilityHint(detail)
+            .confirmationDialog(
+                WatchL10n.tr("watchHydrationUndoConfirmationTitle"),
+                isPresented: $isUndoConfirmationPresented,
+                titleVisibility: .visible
+            ) {
+                Button(WatchL10n.tr("watchHydrationUndoButton"), role: .destructive) {
+                    Task { await viewModel.undoLastDrink(id: event.id) }
+                }
+                Button(WatchL10n.tr("watchHydrationKeepRecordButton"), role: .cancel) {}
+            } message: {
+                Text(detail)
+            }
+        }
     }
 
     private var backgroundGradient: some View {

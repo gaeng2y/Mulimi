@@ -43,13 +43,14 @@ public protocol HealthQuantityStoring: Sendable {
         to endDate: Date
     ) async throws -> [HealthQuantitySample]
     func latestValue(of identifier: HKQuantityTypeIdentifier, unit: HKUnit) async throws -> Double?
+    @discardableResult
     func save(
         _ value: Double,
         unit: HKUnit,
         of identifier: HKQuantityTypeIdentifier,
         at date: Date,
         syncIdentifier: String?
-    ) async throws
+    ) async throws -> UUID
     func deleteOwnedSample(id: UUID, of identifier: HKQuantityTypeIdentifier) async throws -> Bool
     func deleteOwnedSamples(
         of identifier: HKQuantityTypeIdentifier,
@@ -212,13 +213,14 @@ public final class HealthKitQuantityStore: HealthQuantityStoring, @unchecked Sen
         }
     }
 
+    @discardableResult
     public func save(
         _ value: Double,
         unit: HKUnit,
         of identifier: HKQuantityTypeIdentifier,
         at date: Date,
         syncIdentifier: String? = nil
-    ) async throws {
+    ) async throws -> UUID {
         let quantityType = try Self.quantityType(for: identifier)
         let quantity = HKQuantity(unit: unit, doubleValue: value)
         let metadata: [String: Any]? = syncIdentifier.map {
@@ -229,41 +231,19 @@ public final class HealthKitQuantityStore: HealthQuantityStoring, @unchecked Sen
         )
 
         try await healthStore.save(sample)
+        return sample.uuid
     }
 
     public func deleteOwnedSample(id: UUID, of identifier: HKQuantityTypeIdentifier) async throws -> Bool {
         let quantityType = try Self.quantityType(for: identifier)
 
-        return try await withCheckedThrowingContinuation { continuation in
-            let predicate = HKQuery.predicateForObject(with: id)
-            let query = HKSampleQuery(
-                sampleType: quantityType,
-                predicate: predicate,
-                limit: 1,
-                sortDescriptors: nil
-            ) { _, samples, error in
-                if error != nil {
-                    continuation.resume(throwing: HealthQuantityStoreError.internalError)
-                    return
-                }
-
-                guard let sample = (samples as? [HKQuantitySample])?.first,
-                      sample.sourceRevision.source.bundleIdentifier.hasPrefix(self.ownedSourcePrefix) else {
-                    continuation.resume(returning: false)
-                    return
-                }
-
-                self.healthStore.delete([sample]) { didDelete, deleteError in
-                    if deleteError != nil {
-                        continuation.resume(throwing: HealthQuantityStoreError.internalError)
-                    } else {
-                        continuation.resume(returning: didDelete)
-                    }
-                }
-            }
-
-            healthStore.execute(query)
-        }
+        // HealthKit enforces ownership and sharing authorization. Count the exact UUID
+        // atomically so an already-deleted object is not reported as a successful undo.
+        let deletedCount = try await healthStore.deleteObjects(
+            of: quantityType,
+            predicate: HKQuery.predicateForObject(with: id)
+        )
+        return deletedCount == 1
     }
 
     public func deleteOwnedSamples(
@@ -322,12 +302,13 @@ public final class HealthKitQuantityStore: HealthQuantityStoring, @unchecked Sen
 }
 
 public extension HealthQuantityStoring {
+    @discardableResult
     func save(
         _ value: Double,
         unit: HKUnit,
         of identifier: HKQuantityTypeIdentifier,
         at date: Date
-    ) async throws {
+    ) async throws -> UUID {
         try await save(value, unit: unit, of: identifier, at: date, syncIdentifier: nil)
     }
 }

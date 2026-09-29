@@ -1,6 +1,6 @@
 import Foundation
 
-public enum HydrationWriteFailureReason: Equatable, Sendable {
+public enum HydrationWriteFailureReason: Error, Equatable, Sendable {
     case permissionDenied
     case invalidObjectType
     case systemError

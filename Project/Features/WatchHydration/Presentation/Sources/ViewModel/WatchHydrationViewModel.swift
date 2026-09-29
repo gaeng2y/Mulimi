@@ -18,6 +18,8 @@ public final class WatchHydrationViewModel {
         lastLoadedDate.map { Calendar.current.isDate($0, inSameDayAs: now()) } ?? false
     }
     var mutationErrorMessage: String?
+    private(set) var undoableEvent: WatchHydrationEvent?
+    private(set) var didUndoLastDrink = false
 
     var canDrinkWater: Bool {
         hasCurrentSnapshot && !hasReadError && !isLoading && (
@@ -62,15 +64,35 @@ public final class WatchHydrationViewModel {
         }
 
         isMutating = true
+        didUndoLastDrink = false
         defer { isMutating = false }
         let referenceDate = now()
         do {
             let result = try await useCase.drinkWater(referenceDate: referenceDate)
             apply(result, referenceDate: referenceDate)
+            if result.writeResult.isSuccess, let recordedEvent = result.recordedEvent {
+                undoableEvent = recordedEvent
+            }
             mutationErrorMessage = errorMessage(for: result.writeResult, action: .record)
         } catch {
             hasReadError = true
         }
+    }
+
+    func undoLastDrink(id: UUID) async {
+        guard !isMutating, !isLoading, undoableEvent?.id == id else { return }
+
+        isMutating = true
+        didUndoLastDrink = false
+        defer { isMutating = false }
+        let referenceDate = now()
+        let result = await useCase.undoDrink(id: id, referenceDate: referenceDate)
+        apply(result, referenceDate: referenceDate)
+        if result.writeResult.isSuccess {
+            undoableEvent = nil
+            didUndoLastDrink = true
+        }
+        mutationErrorMessage = errorMessage(for: result.writeResult, action: .undo)
     }
 
     func resetToday() async {
@@ -79,11 +101,15 @@ public final class WatchHydrationViewModel {
         }
 
         isMutating = true
+        didUndoLastDrink = false
         defer { isMutating = false }
         let referenceDate = now()
         do {
             let result = try await useCase.reset(referenceDate: referenceDate)
             apply(result, referenceDate: referenceDate)
+            if result.writeResult.isSuccess {
+                undoableEvent = nil
+            }
             mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
         } catch {
             hasReadError = true
@@ -121,11 +147,16 @@ public final class WatchHydrationViewModel {
             return WatchL10n.tr("watchHydrationResetPermissionFailure")
         case (.reset, .invalidObjectType), (.reset, .systemError):
             return WatchL10n.tr("watchHydrationResetFailure")
+        case (.undo, .permissionDenied):
+            return WatchL10n.tr("watchHydrationUndoPermissionFailure")
+        case (.undo, .invalidObjectType), (.undo, .systemError):
+            return WatchL10n.tr("watchHydrationUndoFailure")
         }
     }
 
     private enum MutationAction {
         case record
         case reset
+        case undo
     }
 }

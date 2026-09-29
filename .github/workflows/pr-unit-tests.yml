@@ -106,3 +106,26 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO
           done
+
+      - name: Run Watch undo regression tests
+        run: |
+          python3 - <<'PY'
+          import json
+          import subprocess
+
+          devices = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"]))
+          runtimes = sorted(
+              (runtime for runtime in devices["devices"]
+               if "watchOS-" in runtime and int(runtime.split("watchOS-")[1].split("-")[0]) >= 26),
+              reverse=True,
+          )
+          watch = next((device for runtime in runtimes for device in devices["devices"][runtime]), None)
+          if watch is None:
+              raise SystemExit("An available watchOS 26+ simulator is required for WatchHydrationTests.")
+          subprocess.run([
+              "xcodebuild", "test", "-workspace", "Mulimi.xcworkspace", "-scheme", "WatchHydrationTests",
+              "-sdk", "watchsimulator", "-destination", "platform=watchOS Simulator,id=" + watch["udid"],
+              "-destination-timeout", "180", "-parallel-testing-enabled", "NO",
+              "CODE_SIGNING_ALLOWED=NO", "CODE_SIGNING_REQUIRED=NO",
+          ], check=True)
+          PY

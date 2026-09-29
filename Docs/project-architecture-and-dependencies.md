@@ -1,6 +1,6 @@
 # 프로젝트 전체 구조와 의존성
 
-기준: 검토 커밋 `d575ffbf878f260448a5b99a438f473fb3280357`와 #350 조회 실패 복구·Watch 테스트 타깃을 반영한 작업 트리, Mulimi **2.5.0 (33)**. 실제 `Project.swift` 17개와 진입점·DI·저장 구현을 확인한 스냅샷이다. 구조도 `meta.repository.revision`은 변경 전 검토 커밋을 가리킨다.
+기준: 검토 커밋 `221c44489b3ec4567f37334675830b63461dd51d`와 #336 Watch 단건 취소를 반영한 작업 트리, Mulimi **2.5.1 (37)**. #350 조회 실패 복구와 함께 실제 `Project.swift` 17개 및 진입점·DI·저장 구현을 확인한 스냅샷이다. 구조도 `meta.repository.revision`은 변경 전 검토 커밋을 가리킨다.
 
 [전체 구조도 열기](diagrams/mulimi-project-architecture.html) · [다이어그램 원본 JSON](diagrams/mulimi-project-architecture.json) · [라이트·다크 화면 검증](diagrams/mulimi-project-architecture.visual-check.html)
 
@@ -56,6 +56,7 @@ Project/
 - Watch: `MulimiWatch → WatchDependencyInjection`. 단일 `.app` 타깃이 진입 코드·전체 리소스·HealthKit/App Group/iCloud 권한을 소유하며, `WKApplication`을 선언한다. 앱 번들 ID `gaeng2y.DrinkWater.watchkitapp`과 iOS 앱의 Watch 포함 관계는 유지한다. `WatchDIContainer`는 Swinject 없이 Repository·UseCase·ViewModel을 직접 조립한다.
 - Watch의 `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide`는 iOS Hydration의 **동일 소스 파일을 별도 컴파일**한다. `WatchHydrationDomain → HydrationDomain`이라는 타깃 의존성은 없다.
 - `MulimiCloudKit`과 `MulimiHealthKit`은 iOS·watchOS 공용 타깃이다. `MulimiCloudKit`의 현재 구현은 CloudKit 레코드 DB가 아니라 `NSUbiquitousKeyValueStore`와 UserDefaults mirror다.
+- `WatchHydrationTests`는 watchOS 전용 테스트 번들이다. Watch Presentation·Domain·Data와 공용 HealthKit 어댑터의 기록 영수증·단건 취소를 함께 검증하며 제품 앱에는 포함하지 않는다.
 
 ## 기능 간 직접 의존에서 주의할 점
 
@@ -188,10 +189,10 @@ archify로 실제 소스 참조 31개를 검증하고 HTML을 생성했다. 아�
 ```text
 diagram_type: architecture
 output: Docs/diagrams/mulimi-project-architecture.html
-specification_sha256: a79812edfd64ac40f8457af5659395926aeefae2dfd65e6697a550d54d320d71
-specification_bytes: 12193
-artifact_sha256: 0e95b8e5bf1c1551e176ebf46b972656bbeda0fa417e207c0291a8dedb5e8c59
-artifact_bytes: 721418
+specification_sha256: 8ef46657a0ff6b3a3c8401316ee685a5c7fd119819a57d41bdd08ba0901378b8
+specification_bytes: 12197
+artifact_sha256: f808f9ec2790eea54f581bb96ea8d718588bfe8ce7f7be741091b173f3ac2363
+artifact_bytes: 721438
 validation: 9/9 showcase, 0 errors, 0 warnings
 visual_review: passed
 correction_rounds: 0
@@ -199,7 +200,9 @@ correction_rounds: 0
 
 화면 검증: 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침 없음. 1440×900과 2048×1320의 라이트·다크 캡처 4장을 직접 확인했다. READ·정지 화면 기준이다. 자동 검증 receipt의 `visualReview: pending`과 별도로 캡처를 직접 확인했다.
 
-저장소 검증(2026-09-26): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 다음을 직접 확인했다.
+저장소 검증(2026-09-29, #336): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 `make lint`(316개 파일, 위반 0), `make arch-check`, `tuist generate --no-open`을 통과했다. Watch SE 3 40mm/watchOS 27의 `WatchHydrationTests`는 정의 6개·매개변수 포함 12건, iPhone 17e/iOS 27의 `HydrationDomain` 65개·`HydrationData` 6개·`HydrationPresentation` 91개가 통과했다. Watch Debug Simulator 및 워치를 포함한 iOS Release 서명 없는 빌드도 통과했다. 실기기 HealthKit 동기화·권한 검증은 별도다.
+
+이전 저장소 검증(2026-09-26): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 다음을 직접 확인했다.
 
 - `make lint`: 315개 파일에서 위반 0개. `make arch-check`, `tuist generate --no-open`, `git diff --check` 통과.
 - `xcodebuild build -workspace Mulimi.xcworkspace -scheme MulimiWatch -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`: Debug/watchOS Simulator 27 SDK 빌드 통과. 첫 실행은 샌드박스의 CoreSimulator 접근 차단으로 실패했으며, 시스템 접근을 허용한 재실행에서 통과했다.

@@ -37,7 +37,7 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 | Domain Entity/UseCase 변경 | `make lint`, `make arch-check`, 해당 기능 `Domain` 테스트 | Presentation 모델 변환 영향이 있으면 해당 기능 `Presentation` 테스트 |
 | Data/HealthKit 변경 | `make lint`, `make arch-check`, 관련 Unit Test, 앱 빌드 | 권한/동기화 흐름은 실제 시뮬레이터 또는 기기에서 수동 확인 |
 | Widget 변경 | `make lint`, `make arch-check`, 앱 빌드 | 위젯 타깃 빌드와 App Group 데이터 확인 |
-| Watch 변경 | `make lint`, `make arch-check`, 앱 빌드 | Watch 타깃 빌드와 앱/워치 수분 규칙 일치 확인 |
+| Watch 변경 | `make lint`, `make arch-check`, `WatchHydrationTests`, 앱 빌드 | watchOS 26+ Simulator 테스트·Watch 타깃 빌드와 앱/워치 수분 규칙 일치 확인 |
 | Localization 변경 | `jq empty Project/Shared/Localization/Resources/Localizable.xcstrings`, 앱 빌드 | 문구가 권한/알림이면 관련 화면 수동 확인 |
 | Tuist/Project.swift 변경 | `tuist generate`, `make lint`, `make arch-check`, 앱 빌드 | 변경된 scheme 테스트 |
 | Feature 모듈 변경 | `make lint`, `make arch-check`, 변경 feature의 `Domain/Data/Presentation` 테스트 | 앱 조립이 바뀌면 앱 빌드 |
