@@ -108,9 +108,13 @@ public final class HydrationGoalRecommendationViewModel {
             calendar: calendar
         )
 
-        let (resolvedAvailability, resolvedSnapshot) = await (availability, snapshot)
-        state = map(resolvedAvailability)
-        goalAlignment = makeGoalAlignment(from: resolvedSnapshot)
+        state = map(await availability)
+        do {
+            goalAlignment = makeGoalAlignment(from: try await snapshot)
+        } catch {
+            goalAlignment = .unknown
+            errorMessage = L10n.tr("hydrationReadFailureDescription")
+        }
     }
 
     public func generateRecommendation() async {

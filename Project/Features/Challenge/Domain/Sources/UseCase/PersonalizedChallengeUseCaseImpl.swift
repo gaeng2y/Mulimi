@@ -26,7 +26,7 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
         snapshot: HydrationProgressSnapshot,
         referenceDate: Date,
         calendar: Calendar
-    ) async -> [PersonalizedHydrationChallenge] {
+    ) async throws -> [PersonalizedHydrationChallenge] {
         guard snapshot.isEmpty == false else {
             return []
         }
@@ -42,11 +42,12 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
             )
         }
 
-        if let recordBasedChallenge = await makeRecordBasedChallenge(
+        let recordBasedChallenge = try await makeRecordBasedChallenge(
             snapshot: snapshot,
             referenceDate: referenceDate,
             calendar: calendar
-        ) {
+        )
+        if let recordBasedChallenge {
             challenges.append(recordBasedChallenge)
         }
 
@@ -86,8 +87,8 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
         snapshot: HydrationProgressSnapshot,
         referenceDate: Date,
         calendar: Calendar
-    ) async -> PersonalizedHydrationChallenge? {
-        let morningHydrationDays = await recentMorningHydrationDays(
+    ) async throws -> PersonalizedHydrationChallenge? {
+        let morningHydrationDays = try await recentMorningHydrationDays(
             referenceDate: referenceDate,
             calendar: calendar
         )
@@ -151,7 +152,7 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
     private func recentMorningHydrationDays(
         referenceDate: Date,
         calendar: Calendar
-    ) async -> Int {
+    ) async throws -> Int {
         let startOfReferenceDay = calendar.startOfDay(for: referenceDate)
         let intervalStart = calendar.date(
             byAdding: .day,
@@ -159,7 +160,7 @@ public struct PersonalizedChallengeUseCaseImpl: PersonalizedChallengeUseCase {
             to: startOfReferenceDay
         ) ?? startOfReferenceDay
         let intervalEnd = calendar.date(byAdding: .day, value: 1, to: startOfReferenceDay) ?? referenceDate
-        let events = await drinkWaterRepository.hydrationEvents(
+        let events = try await drinkWaterRepository.hydrationEvents(
             in: DateInterval(start: intervalStart, end: intervalEnd)
         )
 

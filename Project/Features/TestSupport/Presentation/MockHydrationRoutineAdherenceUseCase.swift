@@ -9,7 +9,7 @@ final class MockHydrationRoutineAdherenceUseCase: HydrationRoutineAdherenceUseCa
     func weeklyInsight(
         referenceDate: Date,
         calendar: Calendar
-    ) async -> HydrationRoutineAdherenceInsight {
+    ) async throws -> HydrationRoutineAdherenceInsight {
         requestedReferenceDate = referenceDate
         requestedCalendar = calendar
         return insight

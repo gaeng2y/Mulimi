@@ -1,6 +1,108 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "hydrationReadFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load your records"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 불러오지 못했어요"
+          }
+        }
+      }
+    },
+    "hydrationReadFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try loading your records again in a moment."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠시 후 다시 불러와 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReadStaleDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Showing the last loaded records. Reload to see updates."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막으로 확인한 기록이에요. 최신 기록을 다시 불러와 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReadRetryTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reload records"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 불러오기"
+          }
+        }
+      }
+    },
+    "hydrationReadOpenAppTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Mulimi to reload"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미를 열어 다시 확인"
+          }
+        }
+      }
+    },
+    "hydrationReadOpenAppDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't check your records. Open Mulimi to reload them."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 확인하지 못했어요. 물리미에서 다시 불러와 주세요."
+          }
+        }
+      }
+    },
     "hydrationReminderDrinkAction" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -49,6 +49,20 @@ let project = Project(
             deploymentTargets: .watchOS("26.0"),
             sources: ["Presentation/Sources/**"],
             dependencies: [.target(name: "WatchHydrationDomain")]
+        ),
+        .target(
+            name: "WatchHydrationTests",
+            destinations: [.appleWatch],
+            product: .unitTests,
+            bundleId: "\(bundleId).Tests",
+            deploymentTargets: .watchOS("26.0"),
+            sources: ["Presentation/Tests/**"],
+            dependencies: [
+                .target(name: "WatchHydrationDomain"),
+                .target(name: "WatchHydrationData"),
+                .target(name: "WatchHydrationPresentation"),
+                .project(target: "MulimiHealthKit", path: .relativeToRoot("Project/Core/HealthKit"))
+            ]
         )
     ]
 )

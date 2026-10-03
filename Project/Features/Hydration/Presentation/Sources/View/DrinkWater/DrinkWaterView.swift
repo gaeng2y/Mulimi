@@ -47,23 +47,38 @@ public struct DrinkWaterView: View {
             GeometryReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 28) {
-                        nextActionSummary
-                            .padding(.top, 8)
+                        if viewModel.hasReadError {
+                            HydrationReadFailureView(
+                                showsPreviousData: viewModel.hasCurrentIntake,
+                                isLoading: viewModel.isRefreshing,
+                                retry: { await viewModel.refreshState() }
+                            )
                             .padding(.horizontal, 24)
-                            .accessibilityElement(children: viewModel.isComebackCardVisible ? .contain : .combine)
+                        }
+                        if viewModel.hasCurrentIntake, !viewModel.hasReadError {
+                            nextActionSummary
+                                .padding(.top, 8)
+                                .padding(.horizontal, 24)
+                                .accessibilityElement(children: viewModel.isComebackCardVisible ? .contain : .combine)
+                        }
 
                         Spacer(minLength: 0)
 
-                        waterDropArea(in: proxy.size)
+                        if viewModel.hasCurrentIntake {
+                            waterDropArea(in: proxy.size)
 
-                        progressSummary
-                            .padding(.horizontal, 24)
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityLabel(progressAccessibilityLabel)
+                            progressSummary
+                                .padding(.horizontal, 24)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityLabel(progressAccessibilityLabel)
+                        } else if !viewModel.hasReadError {
+                            ProgressView()
+                        }
 
                         Spacer(minLength: 0)
 
                         actionButtons
+                            .disabled(!viewModel.hasCurrentIntake || viewModel.hasReadError || viewModel.isRefreshing)
                             .padding(.horizontal, 24)
                             .padding(.bottom, 24)
                     }
@@ -404,7 +419,7 @@ public struct DrinkWaterView: View {
             return .green
         }
 
-        if viewModel.isLimitReached {
+        if viewModel.isLimitReached || viewModel.hasReadError || !viewModel.hasCurrentIntake {
             return .gray
         }
 

@@ -17,8 +17,8 @@ public struct HydrationNextActionGuideUseCaseImpl: HydrationNextActionGuideUseCa
         self.routineUseCase = routineUseCase
     }
 
-    public func guide(referenceDate: Date, calendar: Calendar) async -> HydrationNextActionGuide {
-        let currentIntakeML = await drinkWaterRepository.currentWaterIntakeML
+    public func guide(referenceDate: Date, calendar: Calendar) async throws -> HydrationNextActionGuide {
+        let currentIntakeML = try await drinkWaterRepository.currentWaterIntakeML
         let dailyGoalML = userPreferencesRepository.getDailyWaterLimit()
         let routineSchedules = routineUseCase.fetchRoutines().map(\.nextActionSchedule)
 

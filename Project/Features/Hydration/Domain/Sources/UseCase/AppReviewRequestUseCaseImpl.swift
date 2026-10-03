@@ -62,8 +62,10 @@ public struct AppReviewRequestUseCaseImpl: AppReviewRequestUseCase {
             return false
         }
 
-        let ownedEvents = await drinkWaterRepository.hydrationEvents(in: historyInterval)
-            .filter(\.isOwnedByCurrentApp)
+        guard let events = try? await drinkWaterRepository.hydrationEvents(in: historyInterval) else {
+            return false
+        }
+        let ownedEvents = events.filter(\.isOwnedByCurrentApp)
         let distinctOwnedRecordDays = Set(
             ownedEvents.map { calendar.startOfDay(for: $0.consumedAt) }
         )

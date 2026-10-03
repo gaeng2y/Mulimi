@@ -58,23 +58,25 @@ struct ProfileRoutineViewModelTests {
     }
 
     private final class SpyDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
+        var readError: Error?
         var currentWaterIntakeMLValue = 0.0
 
         var currentWaterIntakeML: Double {
-            get async {
-                currentWaterIntakeMLValue
+            get async throws {
+                if let readError { throw readError }
+                return currentWaterIntakeMLValue
             }
         }
 
         func waterIntakeForLogging() async throws -> Double {
-            await currentWaterIntakeML
+            try await currentWaterIntakeML
         }
 
-        func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+        func hydrationEvents(on date: Date) async throws -> [HydrationEvent] {
             []
         }
 
-        func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+        func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent] {
             []
         }
 
@@ -104,7 +106,7 @@ struct ProfileRoutineViewModelTests {
         func fetchRecommendations(
             referenceDate: Date,
             calendar: Calendar
-        ) async -> [HydrationRoutineRecommendation] {
+        ) async throws -> [HydrationRoutineRecommendation] {
             fetchCallCount += 1
             return recommendations
         }
@@ -572,5 +574,26 @@ struct ProfileRoutineViewModelTests {
         #expect(viewModel.guidanceSummary.nextRoutineValueText == L10n.tr("profileRoutineGuidanceNextRoutineDoneValue"))
         #expect(viewModel.guidanceSummary.remainingRoutineValueText == L10n.tr("profileRoutineGuidanceRemainingCountFormat", 0))
         #expect(viewModel.guidanceSummary.slots.map(\.status) == [.elapsed, .elapsed])
+    }
+}
+
+extension ProfileRoutineViewModelTests {
+    @MainActor
+    @Test("수분 조회 실패에도 저장된 루틴은 유지하고 재시도로 안내를 복구한다")
+    func readFailurePreservesLocalRoutines() async {
+        let water = SpyDrinkWaterUseCase()
+        let routine = SpyRoutineUseCase()
+        routine.routines = [HydrationRoutine(title: "아침", hour: 9, minute: 0, weekdays: [.monday], isEnabled: true)]
+        let model = makeViewModel(routineUseCase: routine, drinkWaterUseCase: water)
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.load()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedHydration)
+        #expect(model.displayedRoutines.count == 1)
+        #expect(model.recommendationCards.isEmpty)
+        water.readError = nil
+        await model.load()
+        #expect(!model.hasReadError)
+        #expect(model.hasLoadedHydration)
     }
 }

@@ -2,6 +2,9 @@ import HydrationDomain
 import Foundation
 
 final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
+    var readError: Error?
+    var readErrorAfterWrite: Error?
+    var failingEventDate: Date?
     var loggingReadError: Error?
     var recordedIdempotencyKeys: [String?] = []
 
@@ -31,22 +34,28 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
     }
 
     var currentWaterIntakeML: Double {
-        get async {
-            currentWaterIntakeMLValue
+        get async throws {
+            if let readError { throw readError }
+            return currentWaterIntakeMLValue
         }
     }
 
     func waterIntakeForLogging() async throws -> Double {
         if let loggingReadError { throw loggingReadError }
-        return await currentWaterIntakeML
+        return try await currentWaterIntakeML
     }
 
-    func hydrationEvents(on date: Date) async -> [HydrationEvent] {
-        hydrationEventsByDay[dayKey(for: date)] ?? []
+    func hydrationEvents(on date: Date) async throws -> [HydrationEvent] {
+        if let readError { throw readError }
+        if let failingEventDate, Calendar.current.isDate(date, inSameDayAs: failingEventDate) {
+            throw CocoaError(.fileReadUnknown)
+        }
+        return hydrationEventsByDay[dayKey(for: date)] ?? []
     }
 
-    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
-        hydrationEventsByDay.values
+    func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent] {
+        if let readError { throw readError }
+        return hydrationEventsByDay.values
             .flatMap { $0 }
             .filter { interval.contains($0.consumedAt) }
             .sorted { $0.consumedAt < $1.consumedAt }
@@ -86,6 +95,7 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
                 volumeML: volumeML
             )
         )
+        readError = readErrorAfterWrite
         return drinkWaterResult
     }
 
@@ -98,6 +108,7 @@ final class MockDrinkWaterUseCase: DrinkWaterUseCase, @unchecked Sendable {
 
         currentWaterIntakeMLValue = 0
         hydrationEventsByDay.removeAll()
+        readError = readErrorAfterWrite
         return resetResult
     }
 

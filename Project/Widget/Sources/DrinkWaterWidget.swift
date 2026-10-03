@@ -1,5 +1,6 @@
 import AccountDomain
 import HydrationDomain
+import Localization
 import SwiftUI
 import Utils
 import WidgetKit
@@ -12,6 +13,23 @@ struct DrinkWaterWidgetEntryView: View {
     }
 
     var body: some View {
+        Group {
+            if entry.hasReadError {
+                VStack(alignment: .leading, spacing: 12) {
+                    Label(L10n.tr("hydrationReadFailureTitle"), systemImage: "exclamationmark.triangle")
+                        .font(.headline)
+                    Text(L10n.tr("hydrationReadOpenAppTitle"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                hydrationContent
+            }
+        }
+        .widgetURL(URL(string: "mulimi://hydration/record"))
+    }
+
+    private var hydrationContent: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: entry.mainIconSymbol)

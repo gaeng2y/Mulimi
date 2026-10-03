@@ -15,14 +15,14 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         self.defaultDrinkVolumeML = defaultDrinkVolumeML
     }
 
-    public func loadSnapshot(referenceDate: Date) async -> WatchHydrationSnapshot {
+    public func loadSnapshot(referenceDate: Date) async throws -> WatchHydrationSnapshot {
         let dailyGoalML = await dailyGoalRepository.currentGoalML()
-        let events = await hydrationRepository.hydrationEvents(on: referenceDate)
+        let events = try await hydrationRepository.hydrationEvents(on: referenceDate)
         return makeSnapshot(dailyGoalML: dailyGoalML, events: events)
     }
 
-    public func drinkWater(referenceDate: Date) async -> WatchHydrationMutationResult {
-        let currentSnapshot = await loadSnapshot(referenceDate: referenceDate)
+    public func drinkWater(referenceDate: Date) async throws -> WatchHydrationMutationResult {
+        let currentSnapshot = try await loadSnapshot(referenceDate: referenceDate)
         let drinkVolumeML = Int(defaultDrinkVolumeML)
 
         guard !currentSnapshot.isGoalReached,
@@ -39,9 +39,10 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
             consumedAt: referenceDate
         )
 
-        let snapshot: WatchHydrationSnapshot
+        let snapshot: WatchHydrationSnapshot?
         if writeResult.isSuccess {
-            snapshot = await loadSnapshot(referenceDate: referenceDate)
+            // A completed write is never retried because its refresh failed.
+            snapshot = try? await loadSnapshot(referenceDate: referenceDate)
         } else {
             snapshot = currentSnapshot
         }
@@ -52,12 +53,13 @@ public struct WatchHydrationUseCaseImpl: WatchHydrationUseCase {
         )
     }
 
-    public func reset(referenceDate: Date) async -> WatchHydrationMutationResult {
-        let currentSnapshot = await loadSnapshot(referenceDate: referenceDate)
+    public func reset(referenceDate: Date) async throws -> WatchHydrationMutationResult {
+        let currentSnapshot = try await loadSnapshot(referenceDate: referenceDate)
         let writeResult = await hydrationRepository.resetEvents(on: referenceDate)
-        let snapshot: WatchHydrationSnapshot
+        let snapshot: WatchHydrationSnapshot?
         if writeResult.isSuccess {
-            snapshot = await loadSnapshot(referenceDate: referenceDate)
+            // A completed write is never retried because its refresh failed.
+            snapshot = try? await loadSnapshot(referenceDate: referenceDate)
         } else {
             snapshot = currentSnapshot
         }

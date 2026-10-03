@@ -10,7 +10,7 @@ final class MockPersonalizedChallengeUseCase: PersonalizedChallengeUseCase, @unc
         snapshot: HydrationProgressSnapshot,
         referenceDate: Date,
         calendar: Calendar
-    ) async -> [PersonalizedHydrationChallenge] {
+    ) async throws -> [PersonalizedHydrationChallenge] {
         requestedReferenceDate = referenceDate
         return challenges
     }

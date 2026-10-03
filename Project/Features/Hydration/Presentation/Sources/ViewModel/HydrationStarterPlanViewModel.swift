@@ -12,6 +12,7 @@ public final class HydrationStarterPlanViewModel {
     public private(set) var hasSavedRoutine = false
     public private(set) var dayNumber: Int?
     public private(set) var isRefreshing = false
+    public private(set) var hasReadError = false
 
     private let repository: HydrationStarterPlanRepository
     private let drinkWaterUseCase: DrinkWaterUseCase
@@ -59,7 +60,14 @@ public final class HydrationStarterPlanViewModel {
         }
 
         let start = calendar.startOfDay(for: plan?.startedAt ?? now)
-        let events = await drinkWaterUseCase.hydrationEvents(in: DateInterval(start: start, end: now))
+        let events: [HydrationEvent]
+        do {
+            events = try await drinkWaterUseCase.hydrationEvents(in: DateInterval(start: start, end: now))
+            hasReadError = false
+        } catch {
+            hasReadError = true
+            return
+        }
         guard !Task.isCancelled else { return }
         // Re-read after suspension so a dismissal cannot be overwritten by a refresh.
         plan = repository.fetchPlan()
@@ -96,7 +104,7 @@ public final class HydrationStarterPlanViewModel {
     public func complete() async -> Bool {
         // Navigation taps and method selection alone must not certify saved data.
         await refresh()
-        guard !Task.isCancelled, !isRefreshing, isAvailable, completedStepCount == 3 else { return false }
+        guard !Task.isCancelled, !isRefreshing, !hasReadError, isAvailable, completedStepCount == 3 else { return false }
         plan?.isCompleted = true
         persist()
         track("starter_plan_completed")

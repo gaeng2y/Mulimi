@@ -2,6 +2,7 @@ import HydrationDomain
 import Foundation
 
 final class MockHydrationProgressUseCase: HydrationProgressUseCase, @unchecked Sendable {
+    var readError: Error?
     var snapshot = HydrationProgressSnapshot(
         dailyGoalML: 2000,
         weeklyAverageML: 0,
@@ -19,7 +20,8 @@ final class MockHydrationProgressUseCase: HydrationProgressUseCase, @unchecked S
     private(set) var requestedReferenceDate: Date?
     private(set) var requestedCalendar: Calendar?
 
-    func progressSnapshot(referenceDate: Date, calendar: Calendar) async -> HydrationProgressSnapshot {
+    func progressSnapshot(referenceDate: Date, calendar: Calendar) async throws -> HydrationProgressSnapshot {
+        if let readError { throw readError }
         requestedReferenceDate = referenceDate
         requestedCalendar = calendar
         return snapshot

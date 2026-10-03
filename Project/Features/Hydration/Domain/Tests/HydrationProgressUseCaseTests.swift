@@ -8,7 +8,7 @@ import Testing
 @Suite("HydrationProgressUseCase Tests")
 struct HydrationProgressUseCaseTests {
     @Test("주간/월간 진행 스냅샷과 streak를 계산한다")
-    func progressSnapshot() async {
+    func progressSnapshot() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let drinkWaterRepository = MockDrinkWaterRepository()
@@ -30,7 +30,7 @@ struct HydrationProgressUseCaseTests {
             userPreferencesRepository: userPreferencesRepository
         )
 
-        let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
+        let snapshot = try await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         #expect(snapshot.dailyGoalML == 2000)
         #expect(snapshot.todayIntakeML == 1000)
@@ -49,7 +49,7 @@ struct HydrationProgressUseCaseTests {
     }
 
     @Test("최근 기록이 없으면 empty 스냅샷을 반환한다")
-    func progressSnapshotEmptyState() async {
+    func progressSnapshotEmptyState() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let useCase = HydrationProgressUseCaseImpl(
@@ -57,7 +57,7 @@ struct HydrationProgressUseCaseTests {
             userPreferencesRepository: MockUserPreferencesRepository()
         )
 
-        let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
+        let snapshot = try await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         #expect(snapshot.isEmpty == true)
         #expect(snapshot.todayIntakeML == 0)
@@ -72,7 +72,7 @@ struct HydrationProgressUseCaseTests {
 
     @Test("목표 달성과 무관하게 완전히 비어 있는 2~6일만 복귀 대상으로 계산한다",
           arguments: [0, 1, 2, 3, 4, 7, 8], ["Asia/Seoul", "America/Los_Angeles"])
-    func comebackGap(daysAgo: Int, timeZone: String) async {
+    func comebackGap(daysAgo: Int, timeZone: String) async throws {
         var calendar = makeCalendar()
         calendar.timeZone = TimeZone(identifier: timeZone)!
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 9))!
@@ -86,7 +86,7 @@ struct HydrationProgressUseCaseTests {
             userPreferencesRepository: MockUserPreferencesRepository()
         )
 
-        let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
+        let snapshot = try await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         let expectedGap = (3...7).contains(daysAgo) ? daysAgo - 1 : nil
         #expect(snapshot.comebackGapDays(referenceDate: referenceDate, calendar: calendar) == expectedGap)
@@ -94,7 +94,7 @@ struct HydrationProgressUseCaseTests {
     }
 
     @Test("월 경계의 지난주 기록을 찾고 0ml와 미래 기록은 최근 기록에서 제외한다")
-    func recentRecordAcrossMonthBoundary() async {
+    func recentRecordAcrossMonthBoundary() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 6, day: 1, hour: 9))!
         let recordDate = calendar.date(byAdding: .day, value: -7, to: referenceDate)!
@@ -113,7 +113,7 @@ struct HydrationProgressUseCaseTests {
             userPreferencesRepository: MockUserPreferencesRepository()
         )
 
-        let snapshot = await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
+        let snapshot = try await useCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
 
         #expect(snapshot.recentRecordDate == recordDate)
         #expect(snapshot.comebackGapDays(referenceDate: referenceDate, calendar: calendar) == 6)
@@ -132,5 +132,21 @@ struct HydrationProgressUseCaseTests {
         calendar.firstWeekday = 2
         calendar.minimumDaysInFirstWeek = 4
         return calendar
+    }
+}
+
+extension HydrationProgressUseCaseTests {
+    @Test("기간 조회가 성공해도 하루 조회가 실패하면 불완전한 진행률을 반환하지 않는다")
+    func partialReadFailsWholeSnapshot() async {
+        let water = MockDrinkWaterRepository()
+        let now = Date.now
+        water.failingEventDate = now
+        let useCase = HydrationProgressUseCaseImpl(
+            drinkWaterRepository: water,
+            userPreferencesRepository: MockUserPreferencesRepository()
+        )
+        await #expect(throws: CocoaError.self) {
+            try await useCase.progressSnapshot(referenceDate: now, calendar: .current)
+        }
     }
 }

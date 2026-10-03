@@ -62,8 +62,10 @@ public struct HydrationInsightView: View {
                 .offset(x: 140, y: 180)
 
             Group {
-                if viewModel.isLoading {
+                if viewModel.isLoading || (!viewModel.hasLoadedInsights && !viewModel.hasReadError) {
                     ProgressView(L10n.tr("insightLoadingTitle"))
+                } else if viewModel.hasReadError, !viewModel.hasLoadedInsights {
+                    HydrationReadFailureView(retry: { await viewModel.loadInsights() })
                 } else if viewModel.isEmpty {
                     emptyState
                 } else {
@@ -77,6 +79,16 @@ public struct HydrationInsightView: View {
         }
         .refreshable {
             await viewModel.loadInsights()
+        }
+        .safeAreaInset(edge: .top) {
+            if viewModel.hasReadError, viewModel.hasLoadedInsights {
+                HydrationReadFailureView(
+                    showsPreviousData: true,
+                    isLoading: viewModel.isLoading,
+                    retry: { await viewModel.loadInsights() }
+                )
+                .padding(.horizontal, 20)
+            }
         }
     }
 
@@ -197,7 +209,7 @@ public struct HydrationInsightView: View {
                     }
                 }
 
-                ForEach(viewModel.weeklyCoachingCards) { card in
+                ForEach(viewModel.hasReadError ? [] : viewModel.weeklyCoachingCards) { card in
                     weeklyCoachingCard(card)
                 }
             }
@@ -237,7 +249,7 @@ public struct HydrationInsightView: View {
                     }
                 }
 
-                if let recoveryCard = viewModel.routineRecoveryCard {
+                if !viewModel.hasReadError, let recoveryCard = viewModel.routineRecoveryCard {
                     routineRecoveryCard(recoveryCard)
                 }
             }

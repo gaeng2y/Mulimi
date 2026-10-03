@@ -1,5 +1,6 @@
 import AccountDomain
 import HydrationDomain
+import Localization
 import SwiftUI
 import WidgetKit
 
@@ -13,6 +14,26 @@ struct DrinkWaterLockScreenWidgetEntryView: View {
     }
 
     var body: some View {
+        Group {
+            if entry.hasReadError {
+                if widgetFamily == .accessoryCircular {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.title2)
+                        .accessibilityLabel(L10n.tr("hydrationReadFailureTitle"))
+                        .accessibilityHint(L10n.tr("hydrationReadOpenAppTitle"))
+                } else {
+                    Label(L10n.tr("hydrationReadFailureTitle"), systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                }
+            } else {
+                hydrationContent
+            }
+        }
+        .widgetURL(URL(string: "mulimi://hydration/record"))
+    }
+
+    @ViewBuilder
+    private var hydrationContent: some View {
         switch widgetFamily {
         case .accessoryInline:
             inlineView
