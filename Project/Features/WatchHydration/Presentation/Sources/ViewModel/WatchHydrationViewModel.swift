@@ -20,6 +20,11 @@ public final class WatchHydrationViewModel {
     var mutationErrorMessage: String?
     private(set) var undoableEvent: WatchHydrationEvent?
     private(set) var didUndoLastDrink = false
+    private(set) var resetConfirmation: WatchHydrationResetConfirmation?
+
+    var canRequestReset: Bool {
+        hasCurrentSnapshot && !hasReadError && !isLoading && !isMutating && !snapshot.events.isEmpty
+    }
 
     var canDrinkWater: Bool {
         hasCurrentSnapshot && !hasReadError && !isLoading && (
@@ -59,7 +64,7 @@ public final class WatchHydrationViewModel {
     }
 
     func drinkWater() async {
-        guard !isMutating, canDrinkWater else {
+        guard !isMutating, resetConfirmation == nil, canDrinkWater else {
             return
         }
 
@@ -80,7 +85,7 @@ public final class WatchHydrationViewModel {
     }
 
     func undoLastDrink(id: UUID) async {
-        guard !isMutating, !isLoading, undoableEvent?.id == id else { return }
+        guard !isMutating, !isLoading, resetConfirmation == nil, undoableEvent?.id == id else { return }
 
         isMutating = true
         didUndoLastDrink = false
@@ -95,20 +100,34 @@ public final class WatchHydrationViewModel {
         mutationErrorMessage = errorMessage(for: result.writeResult, action: .undo)
     }
 
-    func resetToday() async {
-        guard !isMutating, !isLoading else {
+    func requestResetConfirmation() {
+        guard canRequestReset, resetConfirmation == nil else { return }
+        resetConfirmation = WatchHydrationResetConfirmation(date: now())
+    }
+
+    func cancelResetConfirmation() {
+        resetConfirmation = nil
+    }
+
+    func confirmReset(id: UUID) async {
+        guard !isMutating, !isLoading, let confirmation = resetConfirmation, confirmation.id == id else { return }
+        let currentDate = now()
+        guard Calendar.current.isDate(confirmation.date, inSameDayAs: currentDate) else {
+            resetConfirmation = WatchHydrationResetConfirmation(date: currentDate, dateChanged: true)
+            await load()
             return
         }
 
+        // Consume this confirmation before suspending so repeated taps cannot repeat the deletion.
+        resetConfirmation = nil
         isMutating = true
-        didUndoLastDrink = false
         defer { isMutating = false }
-        let referenceDate = now()
         do {
-            let result = try await useCase.reset(referenceDate: referenceDate)
-            apply(result, referenceDate: referenceDate)
+            let result = try await useCase.reset(referenceDate: confirmation.date)
             if result.writeResult.isSuccess {
+                apply(result, referenceDate: confirmation.date)
                 undoableEvent = nil
+                didUndoLastDrink = false
             }
             mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
         } catch {

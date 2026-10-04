@@ -108,11 +108,40 @@ struct WatchHydrationUndoTests {
         await relaunchedModel.load()
         #expect(relaunchedModel.undoableEvent == nil)
         store.state.withLock { $0.authorization = .sharingDenied }
-        await model.resetToday()
+        model.requestResetConfirmation()
+        let denied = try #require(model.resetConfirmation)
+        await model.confirmReset(id: denied.id)
         #expect(model.undoableEvent == second)
         store.state.withLock { $0.authorization = .sharingAuthorized }
-        await model.resetToday()
+        model.requestResetConfirmation()
+        let confirmed = try #require(model.resetConfirmation)
+        await model.confirmReset(id: confirmed.id)
         #expect(model.undoableEvent == nil)
+    }
+
+    @Test("전체 삭제 확인 후에도 해당 날짜의 앱 소유 기록만 지우고 외부·다른 날짜 기록은 보존한다")
+    func confirmedResetPreservesExternalAndOtherDays() async throws {
+        let store = UndoQuantityStore()
+        let external = sample(owned: false)
+        let phone = sample(owned: true)
+        let yesterday = sample(owned: true, offset: -86_400)
+        let tomorrow = sample(owned: true, offset: 86_400)
+        store.state.withLock { $0.samples = [external, phone, yesterday, tomorrow] }
+        let model = await makeModel(store: store)
+        await model.drinkWater()
+        #expect(model.undoableEvent != nil)
+
+        model.requestResetConfirmation()
+        let confirmation = try #require(model.resetConfirmation)
+        #expect(store.state.withLock { $0.resetCount } == 0)
+        await model.confirmReset(id: confirmation.id)
+
+        #expect(store.state.withLock { $0.resetCount } == 1)
+        #expect(Set(store.state.withLock { $0.samples.map(\.id) }) == Set([external.id, yesterday.id, tomorrow.id]))
+        #expect(model.snapshot.events.map(\.id) == [external.id])
+        #expect(model.snapshot.todayIntakeML == volume)
+        #expect(model.undoableEvent == nil)
+        #expect(!model.didUndoLastDrink)
     }
 
     @Test("취소 대기 중 중복 취소·기록·초기화·새로고침은 겹쳐 실행하지 않는다", .timeLimit(.minutes(1)))
@@ -128,7 +157,8 @@ struct WatchHydrationUndoTests {
 
         await model.undoLastDrink(id: receipt.id)
         await model.drinkWater()
-        await model.resetToday()
+        model.requestResetConfirmation()
+        #expect(model.resetConfirmation == nil)
         await model.load()
         await gate.resume()
         await firstUndo.value

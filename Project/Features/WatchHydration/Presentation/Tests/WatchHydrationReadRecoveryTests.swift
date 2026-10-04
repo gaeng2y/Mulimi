@@ -114,19 +114,54 @@ struct WatchHydrationReadRecoveryTests {
     }
 
     @Test("초기화 성공 후 조회 실패도 초기화를 다시 실행하지 않는다")
-    func successfulResetFailedRefresh() async {
+    func successfulResetFailedRefresh() async throws {
         let repository = ReadRecoveryRepository()
-        repository.events = [WatchHydrationEvent(id: UUID(), consumedAt: .now, volumeML: 500)]
-        repository.failAfterWrite = true
         let model = makeModel(repository)
         await model.load()
-        await model.resetToday()
+        await model.drinkWater()
+        #expect(model.undoableEvent != nil)
+        repository.failAfterWrite = true
+        model.requestResetConfirmation()
+        let confirmation = try #require(model.resetConfirmation)
+        await model.confirmReset(id: confirmation.id)
         #expect(model.hasReadError)
         #expect(model.mutationErrorMessage == nil)
+        #expect(model.undoableEvent == nil)
+        #expect(!model.canRequestReset)
+        await model.confirmReset(id: confirmation.id)
         repository.readError = nil
         await model.load()
         #expect(model.snapshot.todayIntakeML == 0)
         #expect(repository.resetCount == 1)
+    }
+
+    @Test("전체 삭제 직전 조회가 실패하면 기록과 영수증을 보존하고 조회 복구 후 다시 확인한다")
+    func resetPreflightFailureBlocksDeletion() async throws {
+        let repository = ReadRecoveryRepository()
+        let model = makeModel(repository)
+        await model.load()
+        await model.drinkWater()
+        let receipt = try #require(model.undoableEvent)
+        let snapshot = model.snapshot
+        model.requestResetConfirmation()
+        let confirmation = try #require(model.resetConfirmation)
+        repository.readError = CocoaError(.fileReadUnknown)
+
+        await model.confirmReset(id: confirmation.id)
+        #expect(repository.resetCount == 0)
+        #expect(model.hasReadError)
+        #expect(model.snapshot == snapshot)
+        #expect(model.undoableEvent == receipt)
+        #expect(!model.canRequestReset)
+
+        repository.readError = nil
+        await model.load()
+        model.requestResetConfirmation()
+        let retry = try #require(model.resetConfirmation)
+        await model.confirmReset(id: retry.id)
+        #expect(repository.resetCount == 1)
+        #expect(model.snapshot.events.isEmpty)
+        #expect(model.undoableEvent == nil)
     }
 
     @Test("다음 날 조회 실패는 전날 스냅샷을 오늘 기록으로 노출하지 않는다")

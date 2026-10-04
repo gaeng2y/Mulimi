@@ -60,6 +60,22 @@
 
 화면 검증(2026-09-29): Watch SE 3 40mm/watchOS 27 Simulator에서 실제 View·ViewModel에 임시 테스트 UseCase를 주입해 [기록 정보](assets/watch-undo-record.jpg), [양·시각 확인 창](assets/watch-undo-confirmation.jpg), [취소 성공](assets/watch-undo-success.jpg)을 확인했다. 확인 창을 닫으면 기록이 유지된다. 큰 글씨(`accessibility3`)에서도 취소 확인과 [권한 실패 안내](assets/watch-undo-permission-failure.jpg)가 표시된다. 캡처는 테스트 데이터이며 실제 HealthKit 권한·동기화 검증을 대신하지 않는다.
 
+## Watch Today Record Deletion (#351)
+
+- 전체 삭제는 홈의 `마시기` 버튼 옆에서 제거하고 `오늘 상태 → 기록 관리 → 오늘 기록 삭제…` 한 곳에서 제공한다. 첫 탭은 확인 시트만 열며 HealthKit 삭제를 실행하지 않는다.
+- 확인 시트에 연·월·일, **이 날짜에 Mulimi에서 만든 수분 기록만 모두 삭제**한다는 범위, 외부 앱 기록 유지, 홈의 최근 한 건 되돌리기 동선을 표시한다. 조회된 전체 합계·횟수를 삭제 가능한 양으로 표시하지 않는다.
+- 날짜와 안내는 줄 수를 제한하지 않고 스크롤로 읽는다. 시스템 닫기와 `취소`는 기록을 유지한다. `모두 삭제` 버튼의 접근성 레이블에도 대상 날짜와 Mulimi 기록 범위를 포함하고, 취소 레이블은 `취소, 기록 유지`다.
+- 확인 상태는 날짜와 고유 ID를 가진 Presentation 상태다. 취소한 확인, 이전 날짜의 확인, 이미 실행한 확인 ID는 다시 사용할 수 없다. 확인을 소비한 뒤에만 기존 삭제 UseCase를 호출한다.
+- 확인 중 날짜가 바뀌면 변경 안내와 새 날짜를 표시하고 다시 확인받는다. 새 날짜 기록을 조회해 취소 후에도 현재 상태로 돌아갈 수 있게 하며, 재확인 전에는 삭제하지 않는다. 확인 후 실행 중 자정이 지나면 처음 확인한 날짜를 계속 사용한다.
+- 삭제·기록·한 건 되돌리기·조회는 중복 실행을 막는다. 확인 시트가 열린 동안 다른 쓰기도 막는다. 삭제 성공 시에만 스냅샷과 최근 기록 취소 상태를 갱신하며, 실패하면 기존 상태와 실패 안내를 유지하고 새 확인을 통해 재시도한다.
+- 쓰기 전 조회 실패는 삭제를 차단하고 조회 재시도를 제공한다. 삭제 성공 후 조회만 실패하면 취소 영수증을 해제하고 조회 오류를 표시한다. 조회 재시도는 삭제를 반복하지 않는다. HealthKit의 날짜 범위·쓰기 권한·소유권 검사는 기존 Data/Core 경로를 유지한다.
+
+검증(2026-10-04): `WatchHydrationTests` 24개 정의·매개변수 포함 32건, 린트·아키텍처 검사, Watch Simulator 및 서명 없는 iOS 앱 빌드 통과. watchOS 26.5/27.0에서 취소·날짜 변경·중복 동작·권한/시스템 실패·조회 복구·외부/다른 날짜 기록 보존을 검증했다.
+
+Watch SE 3 40mm/watchOS 26.5에서 실제 View·ViewModel과 임시 테스트 UseCase로 [관리 진입점](assets/watch-reset-management.png), [날짜·삭제 범위](assets/watch-reset-confirmation-top.png), [취소·삭제](assets/watch-reset-confirmation-actions.png), [자정 재확인](assets/watch-reset-midnight.png), [삭제 후 외부 기록 유지](assets/watch-reset-success.png), [권한 실패](assets/watch-reset-permission-failure.png)를 확인했다. Watch 설정의 Text Size를 최대 단계(6)로 높인 뒤에도 [날짜](assets/watch-reset-confirmation-large-top.png)와 [버튼](assets/watch-reset-confirmation-large-actions.png)에 스크롤로 접근하고 취소할 수 있었다. 설정은 검증 후 원래 단계(1)로 복원했다.
+
+접근성 트리에서 날짜·소유 범위·취소 레이블과 버튼 역할을 확인했다. 해당 Watch Simulator의 접근성 설정에는 VoiceOver 항목이 없어 **실제 음성 낭독은 미검증**이다. 캡처는 테스트 데이터이며 실기기 HealthKit 권한·동기화 검증을 대신하지 않는다. 임시 QA 앱은 제품에 포함하지 않는다.
+
 ## App Store Review Request Policy
 
 - 메인 화면의 성공한 수분 기록으로 오늘 목표를 처음 달성한 순간만 리뷰 요청 후보로 본다.
