@@ -44,6 +44,23 @@
 
 기본 기록량 개인화가 필요하면 #203 범위를 기능 이슈로 복원하고, App Group에서 앱/Widget/AppIntent/Watch가 함께 읽을 수 있는 사용자 설정으로 설계한다.
 
+## Watch Recent Record Undo (#336)
+
+- Watch에서 저장이 성공하면 해당 HealthKit 샘플의 UUID·기록량·시각을 화면 상태로 전달한다. 조회 목록의 마지막 항목이나 같은 용량·시각으로 취소 대상을 추정하지 않는다.
+- 홈의 `최근 기록 되돌리기`에 기록량·날짜·시각을 표시하고, 확인 대화상자에서 해당 한 건을 취소하거나 기록을 유지한다.
+- 이 앱 실행 중 마지막으로 성공한 Watch 기록만 대상이다. 다음 저장 성공 시 교체하고, 취소·전체 초기화 성공 또는 프로세스 종료 시 해제한다. 조회·앱 재진입만으로 iPhone·외부 앱 기록을 취소 대상으로 고르지 않으며, 취소 영수증을 디스크에 저장하지 않는다.
+- 목표 초과 차단과 저장 실패는 새 취소 대상을 만들지 않는다. 실패한 다음 기록은 기존의 마지막 성공 기록을 덮어쓰지 않는다.
+- 삭제는 `.dietaryWater`와 정확한 UUID 조건으로 수행하고 HealthKit의 소유권·쓰기 권한 검사를 따른다. 삭제 건수 1일 때만 성공으로 표시한다. 이미 삭제된 항목·권한 부족·시스템 실패는 실패 안내와 같은 대상의 재시도를 제공하며 전체 초기화로 대체하지 않는다.
+- 저장·취소·초기화·새로고침은 화면에서 겹쳐 실행하지 않는다. 확인한 UUID가 현재 취소 대상과 다르면 삭제를 실행하지 않는다. 취소 후 합계는 HealthKit 재조회 결과를 따른다.
+- 저장 성공 후 재조회가 실패해도 정확한 UUID를 취소 대상으로 유지한다. 취소·초기화가 성공한 뒤 재조회만 실패하면 취소 대상을 해제하고 조회 재시도 안내를 표시한다. 조회 재시도는 성공한 저장·삭제를 반복하지 않는다.
+- 기존 복구 동선은 iPhone 단건 삭제 또는 Watch 전체 초기화였다. 새 동선은 Watch 홈에서 대상 확인 → 단건 취소이며, 전체 기록 편집기는 추가하지 않는다. 이 비교는 구현 동선 비교이고 사용자 시안 평가 결과가 아니다.
+
+기술 근거: [HealthKit의 조건부 삭제 API](https://developer.apple.com/documentation/healthkit/hkhealthstore/deleteobjects%28of%3Apredicate%3Awithcompletion%3A%29)는 앱이 저장한 객체만 삭제하며 삭제 건수를 반환한다. 저장 완료 후 원래 `HKQuantitySample.uuid`를 반환하므로 동시 기록을 재조회해서 식별할 필요가 없다.
+
+[#336](https://github.com/gaeng2y/Mulimi/issues/336)의 실제 Watch 오입력 사례·시안 비교·사용자 수요는 **미검증**이다. 구현 요청에 따라 최소 기능을 제공하며, 이 구현을 수요나 효과 검증 완료로 해석하지 않는다. 실기기에서 iPhone 동시 기록, 권한 철회와 HealthKit 동기화를 추가 확인해야 한다.
+
+화면 검증(2026-09-29): Watch SE 3 40mm/watchOS 27 Simulator에서 실제 View·ViewModel에 임시 테스트 UseCase를 주입해 [기록 정보](assets/watch-undo-record.jpg), [양·시각 확인 창](assets/watch-undo-confirmation.jpg), [취소 성공](assets/watch-undo-success.jpg)을 확인했다. 확인 창을 닫으면 기록이 유지된다. 큰 글씨(`accessibility3`)에서도 취소 확인과 [권한 실패 안내](assets/watch-undo-permission-failure.jpg)가 표시된다. 캡처는 테스트 데이터이며 실제 HealthKit 권한·동기화 검증을 대신하지 않는다.
+
 ## App Store Review Request Policy
 
 - 메인 화면의 성공한 수분 기록으로 오늘 목표를 처음 달성한 순간만 리뷰 요청 후보로 본다.

@@ -17,8 +17,15 @@ public struct WatchHydrationRepositoryImpl: WatchHydrationRepository {
     }
 
     @discardableResult
-    public func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult {
+    public func addDrink(
+        volumeML: Int,
+        consumedAt: Date
+    ) async -> Result<WatchHydrationEvent, HydrationWriteFailureReason> {
         await localDataSource.addDrink(volumeML: volumeML, consumedAt: consumedAt)
+    }
+
+    public func deleteDrink(id: UUID) async -> HydrationWriteResult {
+        await localDataSource.deleteDrink(id: id)
     }
 
     @discardableResult

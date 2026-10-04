@@ -7,7 +7,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/gaeng2y/Mulimi",
-      "revision": "d575ffbf878f260448a5b99a438f473fb3280357"
+      "revision": "221c44489b3ec4567f37334675830b63461dd51d"
     },
     "viewBox": [
       1395,
@@ -245,14 +245,14 @@
       "type": "backend",
       "label": "WatchHydration",
       "sublabel": "WatchDependencyInjection",
-      "tag": "전용 Domain·Data·Presentation",
+      "tag": "전용 3개 레이어 · 회귀 테스트",
       "row": 2,
       "col": 1,
       "sources": [
         {
           "path": "Project/Features/WatchHydration/Project.swift",
           "line": 18,
-          "label": "3개 레이어·조회 복구 테스트"
+          "label": "3개 레이어·WatchHydrationTests"
         },
         {
           "path": "Project/App/DependencyInjection/Project.swift",
@@ -450,7 +450,7 @@
       "dot": "violet",
       "title": "화살표는 주요 의존 방향",
       "items": [
-        "2.5.0 (33) · 17개 프로젝트 · 53개 타깃 중 테스트 16개",
+        "2.5.1 (37) · 17개 프로젝트 · 53개 타깃 중 테스트 16개",
         "DI는 3개 레이어를 모두 조립; 위젯은 Domain과 Localization을 직접 참조",
         "전체 직접 의존 174개; AppDelegate는 HydrationReminderData의 알림 카테고리·결과 안내 사용"
       ]
