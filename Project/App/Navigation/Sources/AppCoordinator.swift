@@ -2,8 +2,9 @@ import Foundation
 import SwiftUI
 
 @Observable
-public final class AppCoordinator: DeepLinkHandling, StackRouting {
+public final class AppCoordinator: DeepLinkHandling, StackRouting, SheetRouting {
     public var path = NavigationPath()
+    public var presentedRoute: AppRoute?
 
     public init() {}
 

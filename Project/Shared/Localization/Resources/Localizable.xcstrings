@@ -205,13 +205,90 @@
         }
       }
     },
-    "starterPlanEntry": {
-      "extractionState": "manual",
-      "localizations": {
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "7일 시작 가이드"
+    "starterPlanCloseAction" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
+          }
+        }
+      }
+    },
+    "starterPlanContinueEntry" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플랜 이어가기"
+          }
+        }
+      }
+    },
+    "starterPlanFinishEntry" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "플랜 마무리하기"
+          }
+        }
+      }
+    },
+    "starterPlanNextFinish" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세 가지 준비를 마쳤어요. 플랜을 완료해 주세요."
+          }
+        }
+      }
+    },
+    "starterPlanNextMethod" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 간편하게 기록할 방법을 골라보세요."
+          }
+        }
+      }
+    },
+    "starterPlanNextRecord" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음은 물 한 잔을 기록할 차례예요."
+          }
+        }
+      }
+    },
+    "starterPlanNextRoutine" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음은 물 마실 시간을 정해볼까요?"
+          }
+        }
+      }
+    },
+    "starterPlanOpenAccessibilityHint" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스타터 플랜 체크리스트를 엽니다."
           }
         }
       }
@@ -464,7 +541,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "뒤로 가면 나중에 이어서 볼 수 있어요. 준비를 완료하거나 다시 보지 않기를 선택하면 이 기기에서 더 이상 안내하지 않아요."
+            "value": "닫으면 나중에 이어서 볼 수 있어요. 준비를 완료하거나 다시 보지 않기를 선택하면 이 기기에서 더 이상 안내하지 않아요."
           }
         }
       }

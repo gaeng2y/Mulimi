@@ -7,6 +7,13 @@ import RoutineDomain
 @MainActor
 @Observable
 public final class HydrationStarterPlanViewModel {
+    enum NextStep: Equatable {
+        case recordWater
+        case saveRoutine
+        case chooseMethod
+        case finish
+    }
+
     public private(set) var plan: HydrationStarterPlan?
     public private(set) var hasRecordedWater = false
     public private(set) var hasSavedRoutine = false
@@ -45,6 +52,14 @@ public final class HydrationStarterPlanViewModel {
 
     public var completedStepCount: Int {
         [hasRecordedWater, hasSavedRoutine, plan?.quickRecordingMethod != nil].filter { $0 }.count
+    }
+
+    var nextStep: NextStep? {
+        guard isAvailable else { return nil }
+        if !hasRecordedWater { return .recordWater }
+        if !hasSavedRoutine { return .saveRoutine }
+        if plan?.quickRecordingMethod == nil { return .chooseMethod }
+        return .finish
     }
 
     public func refresh() async {

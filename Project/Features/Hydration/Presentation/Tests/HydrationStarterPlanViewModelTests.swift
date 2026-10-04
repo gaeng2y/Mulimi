@@ -14,6 +14,28 @@ struct HydrationStarterPlanViewModelTests {
     private let analytics = MockAnalyticsUseCase()
     private let now = Date(timeIntervalSince1970: 1_800_000_000)
 
+    @Test("홈 카드의 다음 단계는 실제 저장 상태를 따르고 닫은 플랜은 안내하지 않는다")
+    func nextStepFollowsSavedState() async {
+        let model = makeModel()
+        await model.refresh()
+        #expect(model.nextStep == nil)
+
+        saveWater()
+        await model.refresh()
+        #expect(model.nextStep == .saveRoutine)
+        saveRoutine()
+        await model.refresh()
+        #expect(model.nextStep == .chooseMethod)
+        model.selectQuickRecordingMethod(.widget)
+        #expect(model.nextStep == .finish)
+
+        water.setHydrationEvents([], on: now)
+        await model.refresh()
+        #expect(model.nextStep == .recordWater)
+        model.dismiss()
+        #expect(model.nextStep == nil)
+    }
+
     @Test("실패한 기록·다른 앱 기록·과거 기록으로는 시작하지 않는다")
     func requiresTodaysSavedAppRecord() async {
         let model = makeModel()

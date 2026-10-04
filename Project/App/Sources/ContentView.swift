@@ -28,6 +28,7 @@ struct ContentView: View {
 
     @State private var appCoordinator: AppCoordinator
     @State private var selectedTab: AppTab = .drink
+    @State private var pendingRouteAfterSheet: AppRoute?
     @State private var drinkWaterViewModel: DrinkWaterViewModel
     @State private var starterPlanViewModel: HydrationStarterPlanViewModel
     @State private var hydrationRecordListViewModel: HydrationRecordListViewModel
@@ -121,15 +122,6 @@ struct ContentView: View {
                     Label(L10n.tr("profileTitle"), systemImage: "person.crop.circle")
                 }
             }
-            .toolbar {
-                if selectedTab == .drink, starterPlanViewModel.isAvailable {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(L10n.tr("starterPlanEntry"), systemImage: "checklist") {
-                            appCoordinator.push(.hydrationStarterPlan)
-                        }
-                    }
-                }
-            }
             .navigationDestination(for: AppRoute.self) { route in
                 destinationView(for: route)
             }
@@ -138,18 +130,38 @@ struct ContentView: View {
             }
         }
         .tint(.accent)
+        .sheet(
+            item: Binding(
+                get: { appCoordinator.presentedRoute },
+                set: { appCoordinator.presentedRoute = $0 }
+            ),
+            onDismiss: {
+                if let route = pendingRouteAfterSheet {
+                    pendingRouteAfterSheet = nil
+                    appCoordinator.push(route)
+                }
+            }
+        ) { route in
+            NavigationStack {
+                destinationView(for: route)
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
         .task {
             await refreshSelectedTab()
         }
         .task(id: selectedTab) {
             await refreshSelectedTab()
         }
-        .task(id: scenePhase == .active && appCoordinator.path.isEmpty) {
-            guard scenePhase == .active, appCoordinator.path.isEmpty else {
+        .task(id: scenePhase == .active && appCoordinator.path.isEmpty && appCoordinator.presentedRoute == nil) {
+            guard scenePhase == .active, appCoordinator.path.isEmpty, appCoordinator.presentedRoute == nil else {
                 return
             }
+            await starterPlanViewModel.refresh()
             if await drinkWaterViewModel.prepareComebackIfNeeded() {
-                guard !Task.isCancelled, scenePhase == .active, appCoordinator.path.isEmpty else {
+                guard !Task.isCancelled, scenePhase == .active,
+                      appCoordinator.path.isEmpty, appCoordinator.presentedRoute == nil else {
                     drinkWaterViewModel.endComebackPresentation()
                     return
                 }
@@ -171,9 +183,16 @@ struct ContentView: View {
     }
 
     private var drinkWaterView: some View {
-        DrinkWaterView(viewModel: drinkWaterViewModel) {
-            await starterPlanViewModel.refresh()
-        }
+        DrinkWaterView(
+            viewModel: drinkWaterViewModel,
+            starterPlanViewModel: starterPlanViewModel,
+            onStarterPlanAction: {
+                appCoordinator.presentSheet(.hydrationStarterPlan)
+            },
+            onRecordAttemptFinished: {
+                await starterPlanViewModel.refresh()
+            }
+        )
     }
 
     @ViewBuilder
@@ -187,9 +206,11 @@ struct ContentView: View {
                 onRecordAction: {
                     selectedTab = .drink
                     appCoordinator.resetPath()
+                    appCoordinator.dismissSheet()
                 },
                 onRoutineAction: {
-                    appCoordinator.push(.profileRoutineAction(.create))
+                    pendingRouteAfterSheet = .profileRoutineAction(.create)
+                    appCoordinator.dismissSheet()
                 }
             )
         case let .profileRoutineAction(action):

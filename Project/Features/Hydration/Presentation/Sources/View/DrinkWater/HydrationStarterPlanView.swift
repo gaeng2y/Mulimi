@@ -40,6 +40,13 @@ public struct HydrationStarterPlanView: View {
         }
         .navigationTitle(L10n.tr("starterPlanTitle"))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(L10n.tr("starterPlanCloseAction"), systemImage: "xmark") {
+                    dismiss()
+                }
+            }
+        }
         .task {
             await refresh()
         }

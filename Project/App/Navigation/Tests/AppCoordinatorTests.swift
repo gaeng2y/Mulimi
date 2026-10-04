@@ -5,14 +5,20 @@ import Testing
 
 @Suite("AppCoordinator Tests")
 struct AppCoordinatorTests {
-    @Test("스타터 플랜은 기존 루트 스택에서 push하고 기록으로 돌아갈 때 초기화한다")
+    @Test("스타터 플랜 시트는 루트 스택을 유지하고 닫은 뒤 루틴 화면으로 이동한다")
     func starterPlanRoute() {
         let coordinator = AppCoordinator()
-        coordinator.push(.hydrationStarterPlan)
+        coordinator.push(.hydrationLogging)
+        coordinator.presentSheet(.hydrationStarterPlan)
         #expect(AppRoute.hydrationStarterPlan.id == "hydration_starter_plan")
-        #expect(AppRoute.hydrationStarterPlan.presentationStyle == .push)
+        #expect(AppRoute.hydrationStarterPlan.presentationStyle == .sheet)
+        #expect(coordinator.presentedRoute == .hydrationStarterPlan)
+        #expect(coordinator.path.count == 1)
+        coordinator.dismissSheet()
+        #expect(coordinator.presentedRoute == nil)
         #expect(coordinator.path.count == 1)
         coordinator.push(.profileRoutineAction(.create))
+        #expect(AppRoute.profileRoutineAction(.create).presentationStyle == .push)
         #expect(coordinator.path.count == 2)
         coordinator.resetPath()
         #expect(coordinator.path.isEmpty)
