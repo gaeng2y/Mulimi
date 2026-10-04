@@ -13,13 +13,6 @@ import Foundation
 import Localization
 import Observation
 
-struct HydrationInsightMetric: Identifiable, Equatable {
-    let id: String
-    let title: String
-    let value: String
-    let detail: String
-}
-
 struct HydrationInsightWeekdayDistribution: Identifiable, Equatable {
     let weekday: Int
     let label: String
@@ -130,6 +123,8 @@ public final class HydrationInsightViewModel {
     public private(set) var monthlyAverageML: Double = 0
     public private(set) var weeklyElapsedDays: Int = 0
     public private(set) var monthlyElapsedDays: Int = 0
+    private(set) var weeklyPeriodText: String = ""
+    private(set) var monthlyPeriodText: String = ""
     private(set) var bestWeekday: HydrationInsightWeekdayDistribution?
     private(set) var leastWeekday: HydrationInsightWeekdayDistribution?
     private(set) var weekdayDistributions: [HydrationInsightWeekdayDistribution] = []
@@ -163,21 +158,8 @@ public final class HydrationInsightViewModel {
         self.currentDateProvider = currentDateProvider
     }
 
-    var metrics: [HydrationInsightMetric] {
-        [
-            HydrationInsightMetric(
-                id: "weeklyAverage",
-                title: L10n.tr("insightMetricWeeklyAverageTitle"),
-                value: volumeText(weeklyAverageML),
-                detail: L10n.tr("insightElapsedDaysFormat", weeklyElapsedDays)
-            ),
-            HydrationInsightMetric(
-                id: "monthlyAverage",
-                title: L10n.tr("insightMetricMonthlyAverageTitle"),
-                value: volumeText(monthlyAverageML),
-                detail: L10n.tr("insightElapsedDaysFormat", monthlyElapsedDays)
-            )
-        ]
+    var monthlyAverageText: String {
+        weekdayDistributions.isEmpty ? L10n.tr("insightNoRecordsValue") : volumeText(monthlyAverageML)
     }
 
     var dailyGoalText: String {
@@ -234,7 +216,7 @@ public final class HydrationInsightViewModel {
     }
 
     var routineAdherenceMetrics: [RoutineAdherenceInsightMetric] {
-        guard let insight = routineAdherenceInsight else {
+        guard let insight = routineAdherenceInsight, insight.hasDueOccurrences else {
             return []
         }
 
@@ -291,33 +273,7 @@ public final class HydrationInsightViewModel {
         }
     }
 
-    var weeklyReportInsightText: String {
-        guard let weeklyReport else {
-            return L10n.tr("insightWeeklyReportNoComparisonDescription")
-        }
-
-        guard weeklyReport.hasCurrentWeekRecords else {
-            return L10n.tr("insightWeeklyReportEmptyDescriptionFormat", dailyGoalText)
-        }
-
-        guard let averageDeltaML = weeklyReport.averageDeltaML else {
-            return L10n.tr("insightWeeklyReportNoComparisonDescription")
-        }
-
-        let roundedDelta = Int(abs(averageDeltaML).rounded())
-        if roundedDelta == 0 {
-            return L10n.tr("insightWeeklyReportStableDescription")
-        }
-
-        let deltaText = volumeText(Double(roundedDelta))
-        if averageDeltaML > 0 {
-            return L10n.tr("insightWeeklyReportIncreasedDescriptionFormat", deltaText)
-        }
-
-        return L10n.tr("insightWeeklyReportDecreasedDescriptionFormat", deltaText)
-    }
-
-    var weeklyReportMetrics: [HydrationWeeklyReportMetric] {
+    var weeklySummaryMetrics: [HydrationWeeklyReportMetric] {
         guard let weeklyReport else {
             return []
         }
@@ -325,27 +281,34 @@ public final class HydrationInsightViewModel {
         return [
             HydrationWeeklyReportMetric(
                 id: "average",
-                title: L10n.tr("insightWeeklyReportAverageTitle"),
-                value: volumeText(weeklyReport.averageML),
+                title: L10n.tr("insightMetricWeeklyAverageTitle"),
+                value: weeklyReport.hasCurrentWeekRecords ?
+                    volumeText(weeklyReport.averageML) : L10n.tr("insightNoRecordsValue"),
                 detail: weeklyAverageDetailText(for: weeklyReport)
             ),
             HydrationWeeklyReportMetric(
                 id: "achieved",
                 title: L10n.tr("insightWeeklyReportAchievedTitle"),
-                value: L10n.tr(
+                value: !weeklyReport.hasCurrentWeekRecords ? L10n.tr("insightNoRecordsValue") :
+                    dailyGoalML <= 0 ? L10n.tr("insightGoalNotSetValue") : L10n.tr(
                     "insightAchievementDaysFormat",
                     weeklyReport.achievedDays,
                     weeklyReport.elapsedDays
                 ),
-                detail: weeklyAchievedDetailText(for: weeklyReport)
-            ),
-            HydrationWeeklyReportMetric(
-                id: "emptySlot",
-                title: L10n.tr("insightWeeklyReportGapTitle"),
-                value: weeklyEmptySlotValueText(for: weeklyReport),
-                detail: weeklyEmptySlotDetailText(for: weeklyReport)
+                detail: dailyGoalML <= 0 ? L10n.tr("insightEmptyGoalCTATitle") :
+                    weeklyAchievedDetailText(for: weeklyReport)
             )
         ]
+    }
+
+    var weeklyGapMetric: HydrationWeeklyReportMetric? {
+        guard let weeklyReport else { return nil }
+        return HydrationWeeklyReportMetric(
+            id: "emptySlot",
+            title: L10n.tr("insightWeeklyGapTitle"),
+            value: weeklyEmptySlotValueText(for: weeklyReport),
+            detail: weeklyEmptySlotDetailText(for: weeklyReport)
+        )
     }
 
     var routineRecoveryCard: RoutineRecoveryCardModel? {
@@ -528,6 +491,8 @@ public final class HydrationInsightViewModel {
             monthlyAverageML = snapshot.monthlyAverageML
             weeklyElapsedDays = snapshot.weeklyElapsedDays
             monthlyElapsedDays = snapshot.monthlyElapsedDays
+            weeklyPeriodText = periodText(for: elapsedWeekInterval)
+            monthlyPeriodText = periodText(for: elapsedMonthInterval)
             isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
             routineAdherenceInsight = resolvedRoutineAdherence
             notificationStatus = resolvedNotificationStatus
@@ -568,6 +533,8 @@ public final class HydrationInsightViewModel {
         monthlyAverageML = 0
         weeklyElapsedDays = 0
         monthlyElapsedDays = 0
+        weeklyPeriodText = ""
+        monthlyPeriodText = ""
         bestWeekday = nil
         leastWeekday = nil
         weekdayDistributions = []
@@ -860,6 +827,16 @@ public final class HydrationInsightViewModel {
         formatter.calendar = calendar
         formatter.locale = calendar.locale ?? Locale.autoupdatingCurrent
         return formatter.shortWeekdaySymbols
+    }
+
+    private func periodText(for interval: DateInterval) -> String {
+        let formatter = DateIntervalFormatter()
+        formatter.calendar = calendar
+        formatter.locale = calendar.locale ?? Locale.autoupdatingCurrent
+        formatter.timeZone = calendar.timeZone
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: interval.start, to: interval.end.addingTimeInterval(-1))
     }
 
     private func volumeText(_ volumeML: Double) -> String {
