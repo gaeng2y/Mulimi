@@ -9,7 +9,7 @@ import Testing
 @Suite("RoutineRecommendationUseCase Tests")
 struct RoutineRecommendationUseCaseTests {
     @Test("아침 첫 물이 늦어지는 날이 많으면 아침 루틴 추천을 반환한다")
-    func morningStartRecommendation() async {
+    func morningStartRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 4, day: 9, hour: 10))!
         let routineRepository = MockRoutineRepository()
@@ -27,7 +27,7 @@ struct RoutineRecommendationUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let recommendations = await useCase.fetchRecommendations(
+        let recommendations = try await useCase.fetchRecommendations(
             referenceDate: referenceDate,
             calendar: calendar
         )
@@ -38,7 +38,7 @@ struct RoutineRecommendationUseCaseTests {
     }
 
     @Test("오후 공백이 반복되면 오후 보충 루틴 추천을 반환한다")
-    func afternoonGapRecommendation() async {
+    func afternoonGapRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 4, day: 9, hour: 10))!
         let routineRepository = MockRoutineRepository()
@@ -56,7 +56,7 @@ struct RoutineRecommendationUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let recommendations = await useCase.fetchRecommendations(
+        let recommendations = try await useCase.fetchRecommendations(
             referenceDate: referenceDate,
             calendar: calendar
         )
@@ -67,7 +67,7 @@ struct RoutineRecommendationUseCaseTests {
     }
 
     @Test("최근 자주 마신 시간대가 있으면 해당 시간 루틴 추천을 반환한다")
-    func frequentHydrationRecommendation() async {
+    func frequentHydrationRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 4, day: 9, hour: 10))!
         let routineRepository = MockRoutineRepository()
@@ -86,7 +86,7 @@ struct RoutineRecommendationUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let recommendations = await useCase.fetchRecommendations(
+        let recommendations = try await useCase.fetchRecommendations(
             referenceDate: referenceDate,
             calendar: calendar
         )
@@ -97,7 +97,7 @@ struct RoutineRecommendationUseCaseTests {
     }
 
     @Test("기존 활성 루틴과 겹치는 추천은 제외한다")
-    func duplicateRecommendationIsFiltered() async {
+    func duplicateRecommendationIsFiltered() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 4, day: 10, hour: 10))!
         let routineRepository = MockRoutineRepository()
@@ -125,7 +125,7 @@ struct RoutineRecommendationUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let recommendations = await useCase.fetchRecommendations(
+        let recommendations = try await useCase.fetchRecommendations(
             referenceDate: referenceDate,
             calendar: calendar
         )

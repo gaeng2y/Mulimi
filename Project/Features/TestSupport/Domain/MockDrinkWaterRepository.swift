@@ -10,6 +10,9 @@ import HydrationDomain
 import Foundation
 
 final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable {
+    var readError: Error?
+    var readErrorAfterWrite: Error?
+    var failingEventDate: Date?
     var loggingReadError: Error?
     var recordedIdempotencyKeys: [String?] = []
 
@@ -29,22 +32,28 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
     var resetResult: HydrationWriteResult = .success
 
     var currentWaterIntakeML: Double {
-        get async {
-            currentWaterIntakeMLValue
+        get async throws {
+            if let readError { throw readError }
+            return currentWaterIntakeMLValue
         }
     }
 
     func waterIntakeForLogging() async throws -> Double {
         if let loggingReadError { throw loggingReadError }
-        return await currentWaterIntakeML
+        return try await currentWaterIntakeML
     }
 
-    func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+    func hydrationEvents(on date: Date) async throws -> [HydrationEvent] {
+        if let readError { throw readError }
+        if let failingEventDate, Calendar.current.isDate(date, inSameDayAs: failingEventDate) {
+            throw CocoaError(.fileReadUnknown)
+        }
         hydrationEventsCallCount += 1
         return _events.filter { Calendar.autoupdatingCurrent.isDate($0.consumedAt, inSameDayAs: date) }
     }
 
-    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+    func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent] {
+        if let readError { throw readError }
         hydrationEventsInIntervalCallCount += 1
         return _events.filter {
             interval.contains($0.consumedAt)
@@ -77,6 +86,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
                 volumeML: volumeML
             )
         )
+        readError = readErrorAfterWrite
         return drinkWaterResult
     }
 
@@ -89,6 +99,7 @@ final class MockDrinkWaterRepository: DrinkWaterRepository, @unchecked Sendable 
 
         currentWaterIntakeMLValue = 0
         _events.removeAll()
+        readError = readErrorAfterWrite
         return resetResult
     }
 

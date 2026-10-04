@@ -126,6 +126,7 @@ let project = Project(
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
+                .project(target: "Localization", path: .relativeToRoot("Project/Shared/Localization")),
                 .project(
                     target: "Utils",
                     path: .relativeToRoot("Project/Shared/Utils")

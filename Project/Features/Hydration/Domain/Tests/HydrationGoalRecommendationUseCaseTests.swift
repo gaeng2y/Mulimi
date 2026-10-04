@@ -113,3 +113,23 @@ private struct MockBodyProfileUseCaseForDomain: BodyProfileUseCase {
         snapshot
     }
 }
+
+extension HydrationGoalRecommendationUseCaseTests {
+    @Test("조회 오류를 추천 입력의 0으로 바꾸지 않는다")
+    func readErrorStopsRecommendationGeneration() async {
+        let water = MockDrinkWaterRepository()
+        water.readError = CocoaError(.fileReadUnknown)
+        let recommendation = MockHydrationGoalRecommendationRepository()
+        let useCase = HydrationGoalRecommendationUseCaseImpl(
+            bodyProfileUseCase: MockBodyProfileUseCaseForDomain.ready,
+            drinkWaterRepository: water,
+            userPreferencesRepository: MockUserPreferencesRepository(),
+            recommendationRepository: recommendation
+        )
+        await #expect(throws: CocoaError.self) {
+            try await useCase.generateRecommendation(referenceDate: .now)
+        }
+        #expect(recommendation.generateRecommendationCallCount == 0)
+        #expect(recommendation.capturedInput == nil)
+    }
+}

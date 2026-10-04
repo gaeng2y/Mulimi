@@ -17,10 +17,10 @@ public struct HydrationRoutineAdherenceUseCaseImpl: HydrationRoutineAdherenceUse
     public func weeklyInsight(
         referenceDate: Date,
         calendar: Calendar
-    ) async -> HydrationRoutineAdherenceInsight {
+    ) async throws -> HydrationRoutineAdherenceInsight {
         let routines = routineUseCase.fetchRoutines().map(\.nextActionSchedule)
         let fetchInterval = fetchInterval(referenceDate: referenceDate, calendar: calendar)
-        let events = await drinkWaterRepository.hydrationEvents(in: fetchInterval).map {
+        let events = try await drinkWaterRepository.hydrationEvents(in: fetchInterval).map {
             HydrationRoutineAdherenceEvent(
                 id: $0.id.uuidString,
                 consumedAt: $0.consumedAt

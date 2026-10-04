@@ -22,8 +22,19 @@ public struct ProfileRoutineView: View {
 
     public var body: some View {
         List {
-            Section(L10n.tr("profileRoutineGuidanceSectionTitle")) {
-                guidanceCard
+            if viewModel.hasReadError {
+                Section {
+                    Label(L10n.tr("hydrationReadFailureTitle"), systemImage: "exclamationmark.triangle")
+                    Text(L10n.tr("hydrationReadFailureDescription"))
+                    Button(L10n.tr("hydrationReadRetryTitle")) {
+                        Task { await viewModel.load() }
+                    }
+                }
+            }
+            if viewModel.hasLoadedHydration && !viewModel.hasReadError {
+                Section(L10n.tr("profileRoutineGuidanceSectionTitle")) {
+                    guidanceCard
+                }
             }
 
             if !viewModel.recommendationCards.isEmpty {

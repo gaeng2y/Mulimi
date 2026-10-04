@@ -10,6 +10,7 @@ import DependencyInjection
 import AccountDomain
 import MulimiAnalytics
 import HydrationDomain
+import Localization
 import WidgetKit
 
 enum LogWaterAmountOption: String, AppEnum {
@@ -124,7 +125,12 @@ struct LogWaterAppIntent: AppIntent {
 
         let waterUseCase = DIContainer.shared.resolve(DrinkWaterUseCase.self)
         let userPreferencesUseCase = DIContainer.shared.resolve(UserPreferencesUseCase.self)
-        let currentMl = await waterUseCase.currentWaterIntakeML
+        let currentMl: Double
+        do {
+            currentMl = try await waterUseCase.waterIntakeForLogging()
+        } catch {
+            return .result(dialog: IntentDialog(stringLiteral: L10n.tr("hydrationReadOpenAppDescription")))
+        }
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let nextMl = currentMl + Double(volumeML)
 

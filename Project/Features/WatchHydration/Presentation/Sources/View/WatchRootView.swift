@@ -14,30 +14,37 @@ public struct WatchRootView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
-                    heroCard
+                    if viewModel.hasReadError {
+                        WatchReadFailureView(viewModel: viewModel)
+                    }
+                    if viewModel.hasCurrentSnapshot {
+                        heroCard
 
-                    NavigationLink {
-                        WatchTodayView(viewModel: viewModel)
-                    } label: {
-                        WatchNavigationCard(
-                            title: WatchL10n.tr("watchHomeRecordsCardTitle"),
-                            detail: WatchL10n.tr(
-                                "watchHomeRecordsCardDetailFormat",
-                                Int64(viewModel.snapshot.eventCount)
+                        NavigationLink {
+                            WatchTodayView(viewModel: viewModel)
+                        } label: {
+                            WatchNavigationCard(
+                                title: WatchL10n.tr("watchHomeRecordsCardTitle"),
+                                detail: WatchL10n.tr(
+                                    "watchHomeRecordsCardDetailFormat",
+                                    Int64(viewModel.snapshot.eventCount)
+                                )
                             )
-                        )
-                    }
-                    .buttonStyle(.plain)
+                        }
+                        .buttonStyle(.plain)
 
-                    NavigationLink {
-                        WatchStatusView(viewModel: viewModel)
-                    } label: {
-                        WatchNavigationCard(
-                            title: WatchL10n.tr("watchHomeStatusCardTitle"),
-                            detail: remainingText(viewModel.snapshot.remainingML)
-                        )
+                        NavigationLink {
+                            WatchStatusView(viewModel: viewModel)
+                        } label: {
+                            WatchNavigationCard(
+                                title: WatchL10n.tr("watchHomeStatusCardTitle"),
+                                detail: remainingText(viewModel.snapshot.remainingML)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    } else if !viewModel.hasReadError {
+                        ProgressView()
                     }
-                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -144,7 +151,7 @@ public struct WatchRootView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                .disabled(viewModel.isMutating || viewModel.snapshot.events.isEmpty)
+                .disabled(viewModel.isMutating || viewModel.isLoading || viewModel.hasReadError || viewModel.snapshot.events.isEmpty)
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -172,9 +179,11 @@ public struct WatchRootView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                Text(nextActionText)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(accentColor)
+                if !viewModel.hasReadError {
+                    Text(nextActionText)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(accentColor)
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -286,37 +295,44 @@ private struct WatchTodayView: View {
 
     var body: some View {
         List {
-            Section {
-                HStack {
-                    Text(WatchL10n.tr("watchTodayTotalLabel"))
-                    Spacer()
-                    Text(mlText(viewModel.snapshot.todayIntakeML))
-                        .foregroundStyle(.teal)
-                }
-
-                HStack {
-                    Text(WatchL10n.tr("watchTodayRemainingLabel"))
-                    Spacer()
-                    Text(mlText(viewModel.snapshot.remainingML))
-                }
+            if viewModel.hasReadError {
+                WatchReadFailureView(viewModel: viewModel)
             }
+            if viewModel.hasCurrentSnapshot {
+                Section {
+                    HStack {
+                        Text(WatchL10n.tr("watchTodayTotalLabel"))
+                        Spacer()
+                        Text(mlText(viewModel.snapshot.todayIntakeML))
+                            .foregroundStyle(.teal)
+                    }
 
-            if viewModel.snapshot.events.isEmpty {
-                Section {
-                    Text(WatchL10n.tr("watchTodayEmpty"))
-                        .foregroundStyle(.secondary)
+                    HStack {
+                        Text(WatchL10n.tr("watchTodayRemainingLabel"))
+                        Spacer()
+                        Text(mlText(viewModel.snapshot.remainingML))
+                    }
                 }
-            } else {
-                Section {
-                    ForEach(viewModel.snapshot.events.reversed()) { event in
-                        HStack {
-                            Text(event.consumedAt.formatted(.dateTime.hour().minute()))
-                            Spacer()
-                            Text(mlText(event.volumeML))
-                                .foregroundStyle(.secondary)
+
+                if viewModel.snapshot.events.isEmpty {
+                    Section {
+                        Text(WatchL10n.tr("watchTodayEmpty"))
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Section {
+                        ForEach(viewModel.snapshot.events.reversed()) { event in
+                            HStack {
+                                Text(event.consumedAt.formatted(.dateTime.hour().minute()))
+                                Spacer()
+                                Text(mlText(event.volumeML))
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }
+            } else if !viewModel.hasReadError {
+                ProgressView()
             }
         }
         .navigationTitle(WatchL10n.tr("watchTodayTitle"))
@@ -332,34 +348,41 @@ private struct WatchStatusView: View {
 
     var body: some View {
         List {
-            Section {
-                WatchMetricRow(
-                    title: WatchL10n.tr("watchStatusProgressTitle"),
-                    value: WatchL10n.tr(
-                        "watchCommonPercentFormat",
-                        Int64(Int((viewModel.snapshot.progress * 100).rounded()))
-                    )
-                )
-                WatchMetricRow(
-                    title: WatchL10n.tr("watchStatusRemainingTitle"),
-                    value: mlText(viewModel.snapshot.remainingML)
-                )
-                WatchMetricRow(
-                    title: WatchL10n.tr("watchStatusCountTitle"),
-                    value: WatchL10n.tr(
-                        "watchStatusCountFormat",
-                        Int64(viewModel.snapshot.eventCount)
-                    )
-                )
+            if viewModel.hasReadError {
+                WatchReadFailureView(viewModel: viewModel)
             }
-
-            Section {
-                Button(WatchL10n.tr("watchCommonResetButton"), role: .destructive) {
-                    Task {
-                        await viewModel.resetToday()
-                    }
+            if viewModel.hasCurrentSnapshot {
+                Section {
+                    WatchMetricRow(
+                        title: WatchL10n.tr("watchStatusProgressTitle"),
+                        value: WatchL10n.tr(
+                            "watchCommonPercentFormat",
+                            Int64(Int((viewModel.snapshot.progress * 100).rounded()))
+                        )
+                    )
+                    WatchMetricRow(
+                        title: WatchL10n.tr("watchStatusRemainingTitle"),
+                        value: mlText(viewModel.snapshot.remainingML)
+                    )
+                    WatchMetricRow(
+                        title: WatchL10n.tr("watchStatusCountTitle"),
+                        value: WatchL10n.tr(
+                            "watchStatusCountFormat",
+                            Int64(viewModel.snapshot.eventCount)
+                        )
+                    )
                 }
-                .disabled(viewModel.isMutating || viewModel.snapshot.events.isEmpty)
+
+                Section {
+                    Button(WatchL10n.tr("watchCommonResetButton"), role: .destructive) {
+                        Task {
+                            await viewModel.resetToday()
+                        }
+                    }
+                    .disabled(viewModel.isMutating || viewModel.isLoading || viewModel.hasReadError || viewModel.snapshot.events.isEmpty)
+                }
+            } else if !viewModel.hasReadError {
+                ProgressView()
             }
         }
         .navigationTitle(WatchL10n.tr("watchStatusTitle"))
@@ -381,5 +404,23 @@ private struct WatchMetricRow: View {
             Text(value)
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+private struct WatchReadFailureView: View {
+    let viewModel: WatchHydrationViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(WatchL10n.tr("hydrationReadFailureTitle"), systemImage: "exclamationmark.triangle")
+                .font(.headline)
+            Text(WatchL10n.tr(viewModel.hasCurrentSnapshot ? "hydrationReadStaleDescription" : "hydrationReadFailureDescription"))
+                .font(.caption2)
+            Button(WatchL10n.tr("hydrationReadRetryTitle")) {
+                Task { await viewModel.load() }
+            }
+            .disabled(viewModel.isLoading || viewModel.isMutating)
+        }
+        .padding(8)
     }
 }

@@ -93,3 +93,11 @@ xcodebuild test \
 - `Docs/skills/lint-fix-loop.md`
 - `Docs/delivery-workflow.md`
 - `.github/pull_request_template.md`
+
+## HealthKit 조회 복구 검증 (#350)
+
+- Hydration Domain/Data/Presentation과 Routine·Challenge Domain/Presentation 테스트로 정상 빈 결과·실제 오류·부분 조회 실패를 구분한다.
+- `WatchHydrationTests`는 Watch Data·Domain·Presentation을 watchOS Simulator에서 함께 검증한다. `xcodebuild test -workspace Mulimi.xcworkspace -scheme WatchHydrationTests -destination 'platform=watchOS Simulator,id=<WATCH_SIM_ID>'`를 실행한다.
+- 저장 전 조회 오류 시 쓰기 0회, 저장 후 조회 오류와 읽기 재시도 시 쓰기 1회를 확인한다. 초기화 후 조회 실패도 쓰기를 반복하지 않아야 한다.
+- 앱·Watch·Widget 빌드와 함께 날짜/기간 변경 시 이전 값 숨김, 오류 안내, 조회만 재시도하는 화면을 확인한다.
+- HealthKit 실제 읽기 권한 거부 여부는 API의 빈 결과로 판정하지 않는다. 잠금/권한 실기기 QA와 오류 주입 단위 테스트 결과를 구분해 적는다.

@@ -17,8 +17,8 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
     }
 
     public var currentWaterIntakeML: Double {
-        get async {
-            await dataSource.currentWaterIntakeML
+        get async throws {
+            try await dataSource.currentWaterIntakeML
         }
     }
 
@@ -26,12 +26,12 @@ public struct DrinkWaterRepositoryImpl: DrinkWaterRepository {
         try await dataSource.waterIntakeForLogging()
     }
 
-    public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
-        await dataSource.hydrationEvents(on: date)
+    public func hydrationEvents(on date: Date) async throws -> [HydrationEvent] {
+        try await dataSource.hydrationEvents(on: date)
     }
 
-    public func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
-        await dataSource.hydrationEvents(in: interval)
+    public func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent] {
+        try await dataSource.hydrationEvents(in: interval)
     }
 
     public func migrateLegacyDataIfNeeded() async {

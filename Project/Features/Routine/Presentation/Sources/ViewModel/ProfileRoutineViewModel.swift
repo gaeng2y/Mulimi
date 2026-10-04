@@ -150,6 +150,12 @@ public final class ProfileRoutineViewModel {
     public private(set) var routines: [HydrationRoutine] = []
     private var routineRecommendations: [HydrationRoutineRecommendation] = []
     public private(set) var currentWaterIntakeML = 0.0
+    public private(set) var hasReadError = false
+    public var hasLoadedHydration: Bool {
+        lastLoadedDate.map { calendar.isDate($0, inSameDayAs: nowProvider()) } ?? false
+    }
+    private var lastLoadedDate: Date?
+    private var isLoading = false
     public private(set) var dailyWaterLimitML = 0
     public var isEditorPresented = false
     public var isSaving = false
@@ -377,14 +383,32 @@ public final class ProfileRoutineViewModel {
     }
 
     public func load() async {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        let referenceDate = nowProvider()
         notificationStatus = await routineUseCase.notificationAuthorizationStatus()
         routines = routineUseCase.fetchRoutines()
-        routineRecommendations = await routineRecommendationUseCase.fetchRecommendations(
-            referenceDate: nowProvider(),
-            calendar: calendar
-        )
-        currentWaterIntakeML = await drinkWaterUseCase.currentWaterIntakeML
         dailyWaterLimitML = Int(userPreferencesUseCase.getDailyWaterLimit().rounded())
+        do {
+            let recommendations = try await routineRecommendationUseCase.fetchRecommendations(
+                referenceDate: referenceDate,
+                calendar: calendar
+            )
+            let intake = try await drinkWaterUseCase.currentWaterIntakeML
+            guard !Task.isCancelled else { return }
+            guard calendar.isDate(referenceDate, inSameDayAs: nowProvider()) else {
+                hasReadError = true
+                return
+            }
+            routineRecommendations = recommendations
+            currentWaterIntakeML = intake
+            hasReadError = false
+            lastLoadedDate = referenceDate
+        } catch {
+            hasReadError = true
+            routineRecommendations = []
+        }
     }
 
     public func refreshAuthorizationStatus() async {

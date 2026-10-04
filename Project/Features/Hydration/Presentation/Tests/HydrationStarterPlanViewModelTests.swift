@@ -178,3 +178,21 @@ private final class StarterPlanRoutineStub: RoutineUseCase, @unchecked Sendable 
     func saveRoutine(_ routine: HydrationRoutine) async throws { routines.append(routine) }
     func deleteRoutine(id: UUID) async throws { routines.removeAll { $0.id == id } }
 }
+
+extension HydrationStarterPlanViewModelTests {
+    @Test("조회 실패 중에는 이전 체크가 완료되어 있어도 스타터 플랜을 완료하지 않는다")
+    func failedReadDoesNotCertifyCompletion() async {
+        saveWater()
+        saveRoutine()
+        let model = makeModel()
+        await model.refresh()
+        model.selectQuickRecordingMethod(.widget)
+        #expect(model.completedStepCount == 3)
+        water.readError = CocoaError(.fileReadUnknown)
+        #expect(!(await model.complete()))
+        #expect(model.hasReadError)
+        #expect(repository.plan?.isCompleted == false)
+        water.readError = nil
+        #expect(await model.complete())
+    }
+}

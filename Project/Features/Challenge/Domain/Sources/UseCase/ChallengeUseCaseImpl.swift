@@ -27,8 +27,8 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         self.drinkWaterRepository = drinkWaterRepository
     }
 
-    public func fetchChallenges(referenceDate: Date, calendar: Calendar) async -> [HydrationChallenge] {
-        let snapshot = await progressUseCase.progressSnapshot(
+    public func fetchChallenges(referenceDate: Date, calendar: Calendar) async throws -> [HydrationChallenge] {
+        let snapshot = try await progressUseCase.progressSnapshot(
             referenceDate: referenceDate,
             calendar: calendar
         )
@@ -36,7 +36,7 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         let persistedHistoriesByID = Dictionary(
             uniqueKeysWithValues: persistedHistories.map { ($0.id, $0) }
         )
-        let totalAchievedDays = await totalAchievedDayCount(
+        let totalAchievedDays = try await totalAchievedDayCount(
             upTo: referenceDate,
             calendar: calendar,
             dailyGoalML: snapshot.dailyGoalML
@@ -226,7 +226,7 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
         upTo referenceDate: Date,
         calendar: Calendar,
         dailyGoalML: Double
-    ) async -> Int {
+    ) async throws -> Int {
         guard dailyGoalML > 0 else {
             return 0
         }
@@ -237,7 +237,7 @@ public struct ChallengeUseCaseImpl: ChallengeUseCase {
             to: calendar.startOfDay(for: referenceDate)
         ) ?? referenceDate
 
-        let events = await drinkWaterRepository.hydrationEvents(
+        let events = try await drinkWaterRepository.hydrationEvents(
             in: DateInterval(start: .distantPast, end: intervalEnd)
         )
         let totals = events.reduce(into: [Date: Double]()) { partialResult, event in

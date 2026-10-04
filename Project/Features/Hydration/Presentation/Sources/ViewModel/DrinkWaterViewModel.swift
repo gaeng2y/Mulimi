@@ -65,6 +65,14 @@ public final class DrinkWaterViewModel {
     private(set) var recordSuccessFeedbackMessage: String?
     private(set) var pendingAppReviewRequestID: UUID?
     private(set) var isRecording = false
+    private(set) var isRefreshing = false
+    private(set) var hasReadError = false
+    private var lastLoadedDate: Date?
+    private var pendingUndoDate: Date?
+
+    var hasCurrentIntake: Bool {
+        lastLoadedDate.map { calendar.isDate($0, inSameDayAs: nowProvider()) } ?? false
+    }
     private(set) var comebackOpportunityDate: Date?
     private var hasTrackedComebackPresentation = false
 
@@ -242,25 +250,11 @@ public final class DrinkWaterViewModel {
         }
     }
 
-    private func updateCurrentIntake() async {
-        let newIntake = await waterUseCase.currentWaterIntakeML
-        if currentWaterIntakeML != newIntake {
-            currentWaterIntakeML = newIntake
-        }
-    }
-
     private func updateDailyLimit() {
         let newLimit = userPreferencesUseCase.getDailyWaterLimit()
         if currentDailyLimit != newLimit {
             currentDailyLimit = newLimit
         }
-    }
-
-    private func updateNextActionGuide() async {
-        nextActionGuide = await nextActionGuideUseCase.guide(
-            referenceDate: nowProvider(),
-            calendar: calendar
-        )
     }
 
     public func loadInitialState() async {
@@ -275,8 +269,10 @@ public final class DrinkWaterViewModel {
         }
 
         let referenceDate = nowProvider()
-        let snapshot = await progressUseCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar)
-        let currentIntake = await waterUseCase.currentWaterIntakeML
+        guard let snapshot = try? await progressUseCase.progressSnapshot(referenceDate: referenceDate, calendar: calendar),
+              let currentIntake = try? await waterUseCase.currentWaterIntakeML else {
+            return false
+        }
         guard !Task.isCancelled, !isRecording, comebackOpportunityDate == nil,
               calendar.isDate(referenceDate, inSameDayAs: nowProvider()),
               currentIntake == 0, snapshot.dailyGoalML >= Double(HydrationServing.defaultGlassVolumeML),
@@ -380,22 +376,35 @@ public final class DrinkWaterViewModel {
         servingType: String,
         preset: String?
     ) async -> Bool {
-        guard !isRecording else {
+        guard !isRecording, !isRefreshing, volumeML > 0 else {
             return false
         }
 
         recordSuccessFeedbackMessage = nil
         cancelPendingAppReviewRequest()
 
-        guard isRecordable(volumeML: volumeML) else {
-            return false
-        }
-
         isRecording = true
         defer {
             isRecording = false
         }
 
+        do {
+            let referenceDate = nowProvider()
+            let intake = try await waterUseCase.waterIntakeForLogging()
+            guard calendar.isDate(referenceDate, inSameDayAs: nowProvider()) else {
+                hasReadError = true
+                return false
+            }
+            currentWaterIntakeML = intake
+            lastLoadedDate = referenceDate
+            hasReadError = false
+            updateDailyLimit()
+        } catch {
+            hasReadError = true
+            endComebackPresentation()
+            return false
+        }
+        guard isRecordable(volumeML: volumeML) else { return false }
         let previousIntakeML = currentWaterIntakeML
         let writeResult = await waterUseCase.drinkWater(volumeML: volumeML)
         guard writeResult.isSuccess else {
@@ -412,8 +421,9 @@ public final class DrinkWaterViewModel {
         }
 
         recordFailureAlert = nil
-        await refreshState()
-        await updateRecentRecordUndo()
+        recentRecordUndo = nil
+        pendingUndoDate = nowProvider()
+        await reloadState()
         recordSuccessFeedbackMessage = L10n.tr("drinkWaterRecordSuccessFeedbackTitle")
         widgetTimelineReloader.reloadAllTimelines()
         trackWaterLogged(
@@ -421,15 +431,17 @@ public final class DrinkWaterViewModel {
             servingType: servingType,
             preset: preset
         )
-        await prepareAppReviewRequest(
-            previousIntakeML: previousIntakeML,
-            currentIntakeML: currentWaterIntakeML
-        )
+        if !hasReadError {
+            await prepareAppReviewRequest(
+                previousIntakeML: previousIntakeML,
+                currentIntakeML: currentWaterIntakeML
+            )
+        }
         return true
     }
 
     func isRecordable(volumeML: Int) -> Bool {
-        guard volumeML > 0 else {
+        guard volumeML > 0, !hasReadError else {
             return false
         }
 
@@ -464,6 +476,7 @@ public final class DrinkWaterViewModel {
     }
 
     func customAmountErrorMessage(for text: String) -> String? {
+        if hasReadError { return L10n.tr("hydrationReadFailureDescription") }
         switch customAmountValidation(for: text) {
         case .empty, .valid:
             return nil
@@ -488,6 +501,9 @@ public final class DrinkWaterViewModel {
     }
 
     func reset() async {
+        guard !isRecording, !isRefreshing else { return }
+        isRecording = true
+        defer { isRecording = false }
         cancelPendingAppReviewRequest()
         let writeResult = await waterUseCase.reset()
         guard writeResult.isSuccess else {
@@ -499,14 +515,18 @@ public final class DrinkWaterViewModel {
 
         recordFailureAlert = nil
         recentRecordUndo = nil
+        pendingUndoDate = nil
         undoErrorMessage = nil
         recordSuccessFeedbackMessage = nil
-        await refreshState()
+        await reloadState()
         widgetTimelineReloader.reloadAllTimelines()
     }
 
     @discardableResult
     func undoRecentRecord() async -> Bool {
+        guard !isRecording, !isRefreshing else { return false }
+        isRecording = true
+        defer { isRecording = false }
         cancelPendingAppReviewRequest()
         guard let recentRecordUndo else {
             return false
@@ -519,9 +539,10 @@ public final class DrinkWaterViewModel {
         }
 
         self.recentRecordUndo = nil
+        pendingUndoDate = nil
         undoErrorMessage = nil
         recordSuccessFeedbackMessage = nil
-        await refreshState()
+        await reloadState()
         widgetTimelineReloader.reloadAllTimelines()
         return true
     }
@@ -567,11 +588,37 @@ public final class DrinkWaterViewModel {
     }
 
     public func refreshState() async {
+        guard !isRecording, !isRefreshing else { return }
+        await reloadState()
+    }
+
+    private func reloadState() async {
+        isRefreshing = true
+        defer { isRefreshing = false }
+        let referenceDate = nowProvider()
         updateMainIcon()
-        await updateCurrentIntake()
         updateDailyLimit()
-        await updateNextActionGuide()
-        if currentWaterIntakeML > 0 {
+        if !hasCurrentIntake { recentRecordUndo = nil }
+        do {
+            let intake = try await waterUseCase.currentWaterIntakeML
+            let guide = try await nextActionGuideUseCase.guide(referenceDate: referenceDate, calendar: calendar)
+            let shouldRefreshUndo = pendingUndoDate.map { calendar.isDate($0, inSameDayAs: referenceDate) } ?? false
+            let events = shouldRefreshUndo ? try await waterUseCase.hydrationEvents(on: referenceDate) : []
+            guard !Task.isCancelled else { return }
+            guard calendar.isDate(referenceDate, inSameDayAs: nowProvider()) else {
+                hasReadError = true
+                return
+            }
+            currentWaterIntakeML = intake
+            nextActionGuide = guide
+            if shouldRefreshUndo { updateRecentRecordUndo(events: events) }
+            pendingUndoDate = nil
+            lastLoadedDate = referenceDate
+            hasReadError = false
+            if currentWaterIntakeML > 0 { endComebackPresentation() }
+        } catch {
+            hasReadError = true
+            cancelPendingAppReviewRequest()
             endComebackPresentation()
         }
     }
@@ -580,9 +627,8 @@ public final class DrinkWaterViewModel {
         max(Int(dailyLimit.rounded() - currentWaterIntakeML.rounded()), 0)
     }
 
-    private func updateRecentRecordUndo() async {
-        let referenceDate = nowProvider()
-        let latestOwnedEvent = await waterUseCase.hydrationEvents(on: referenceDate)
+    private func updateRecentRecordUndo(events: [HydrationEvent]) {
+        let latestOwnedEvent = events
             .filter(\.isOwnedByCurrentApp)
             .max { lhs, rhs in lhs.consumedAt < rhs.consumedAt }
 

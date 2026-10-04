@@ -56,6 +56,8 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Delivery And Operations
 
+- [#350 HealthKit 조회 실패 복구 (PR 리뷰 대상)](exec-plans/active/2026-10-03-issue-350-read-recovery.md)
+
 - [빠른 물 기록 가이드 (발행 전 초안)](marketing/quick-recording-guide.md)
 - [Exec Plans Active](exec-plans/active/README.md)
 - [Exec Plans Completed](exec-plans/completed/README.md)

@@ -11,11 +11,11 @@ import HealthKit
 import OSLog
 
 public protocol DrinkWaterDataSource: Sendable {
-    var currentWaterIntakeML: Double { get async }
+    var currentWaterIntakeML: Double { get async throws }
     func waterIntakeForLogging() async throws -> Double
 
-    func hydrationEvents(on date: Date) async -> [HydrationEvent]
-    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
+    func hydrationEvents(on date: Date) async throws -> [HydrationEvent]
+    func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
     @discardableResult
     func drinkWater() async -> HydrationWriteResult
@@ -43,29 +43,24 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
     }
 
     public var currentWaterIntakeML: Double {
-        get async {
-            do {
-                return try await waterIntakeForLogging()
-            } catch {
-                logger.error("Failed to fetch current hydration samples: \(String(describing: error))")
-                return 0
-            }
+        get async throws {
+            try await waterIntakeForLogging()
         }
     }
 
     // Writes must distinguish an unavailable HealthKit query from a real zero.
     public func waterIntakeForLogging() async throws -> Double {
         let interval = dayInterval(for: .now)
-        let samples = try await healthKitDataSource.readWaterSamples(from: interval.start, to: interval.end)
+        let samples = try await hydrationEvents(in: interval)
         return samples.reduce(0) { $0 + Double($1.volumeML) }
     }
 
-    public func hydrationEvents(on date: Date) async -> [HydrationEvent] {
+    public func hydrationEvents(on date: Date) async throws -> [HydrationEvent] {
         let interval = dayInterval(for: date)
-        return await hydrationEvents(in: interval)
+        return try await hydrationEvents(in: interval)
     }
 
-    public func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent] {
+    public func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent] {
         do {
             return try await healthKitDataSource.readWaterSamples(
                 from: interval.start,
@@ -73,7 +68,7 @@ public actor DrinkWaterHealthKitDataSource: DrinkWaterDataSource {
             )
         } catch {
             logger.error("Failed to fetch hydration samples: \(String(describing: error))")
-            return []
+            throw error
         }
     }
 

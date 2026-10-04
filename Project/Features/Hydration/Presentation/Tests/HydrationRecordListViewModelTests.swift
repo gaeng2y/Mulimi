@@ -387,3 +387,67 @@ private final class RecordSpyWidgetTimelineReloader: WidgetTimelineReloading, @u
         reloadCallCount += 1
     }
 }
+
+extension HydrationRecordListViewModelTests {
+    @MainActor
+    @Test("기간 일부 조회가 실패하면 부분 합계를 발행하지 않고 같은 기간의 이전 값만 유지한다")
+    func partialFailurePreservesOnlyMatchingPeriod() async {
+        let water = MockDrinkWaterUseCase()
+        let date = Calendar.current.date(from: DateComponents(year: 2026, month: 3, day: 15))!
+        let first = Calendar.current.date(from: DateComponents(year: 2026, month: 3, day: 1))!
+        let model = HydrationRecordListViewModel(
+            useCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nowProvider: { date }
+        )
+        water.setHydrationEvents([HydrationEvent(id: UUID(), consumedAt: first, volumeML: 500)], on: first)
+        await model.updateDisplayedMonth(year: 2026, month: 3)
+        #expect(model.hasLoadedRecords)
+        #expect(model.periodSummary.totalML == 500)
+
+        water.setHydrationEvents([HydrationEvent(id: UUID(), consumedAt: first, volumeML: 900)], on: first)
+        water.failingEventDate = first.addingTimeInterval(86_400)
+        await model.fetchHydrationRecord()
+        #expect(model.hasReadError)
+        #expect(model.hasLoadedRecords)
+        #expect(model.periodSummary.totalML == 500)
+
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.updateDisplayedMonth(year: 2026, month: 4)
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedRecords)
+
+        water.readError = nil
+        water.failingEventDate = nil
+        await model.fetchHydrationRecord()
+        #expect(!model.hasReadError)
+        #expect(model.hasLoadedRecords)
+        #expect(model.periodSummary.totalML == 0)
+    }
+}
+
+extension HydrationRecordListViewModelTests {
+    @MainActor
+    @Test("오늘 필터는 자정 후 전날 성공 결과를 재사용하지 않는다")
+    func todayRangeChangesAtMidnight() async {
+        let clock = RecordRecoveryClock()
+        let water = MockDrinkWaterUseCase()
+        let model = HydrationRecordListViewModel(
+            useCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nowProvider: { clock.date }
+        )
+        await model.updateSelectedPeriod(.today)
+        #expect(model.hasLoadedRecords)
+        clock.date = clock.date.addingTimeInterval(86_400)
+        #expect(!model.hasLoadedRecords)
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.refresh()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedRecords)
+    }
+}
+
+private final class RecordRecoveryClock: @unchecked Sendable {
+    var date = Date.now
+}

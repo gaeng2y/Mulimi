@@ -10,11 +10,20 @@ public final class WatchHydrationViewModel {
 
     var snapshot: WatchHydrationSnapshot
     var isMutating = false
+    var isLoading = false
+    var hasReadError = false
+    private var lastLoadedDate: Date?
+
+    var hasCurrentSnapshot: Bool {
+        lastLoadedDate.map { Calendar.current.isDate($0, inSameDayAs: now()) } ?? false
+    }
     var mutationErrorMessage: String?
 
     var canDrinkWater: Bool {
-        snapshot.dailyGoalML <= 0 ||
-        snapshot.todayIntakeML + HydrationServing.defaultGlassVolumeML <= snapshot.dailyGoalML
+        hasCurrentSnapshot && !hasReadError && !isLoading && (
+            snapshot.dailyGoalML <= 0 ||
+            snapshot.todayIntakeML + HydrationServing.defaultGlassVolumeML <= snapshot.dailyGoalML
+        )
     }
 
     public init(
@@ -28,7 +37,23 @@ public final class WatchHydrationViewModel {
     }
 
     func load() async {
-        snapshot = await useCase.loadSnapshot(referenceDate: now())
+        guard !isMutating, !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        let referenceDate = now()
+        do {
+            let loaded = try await useCase.loadSnapshot(referenceDate: referenceDate)
+            guard !Task.isCancelled else { return }
+            guard Calendar.current.isDate(referenceDate, inSameDayAs: now()) else {
+                hasReadError = true
+                return
+            }
+            snapshot = loaded
+            lastLoadedDate = referenceDate
+            hasReadError = false
+        } catch {
+            hasReadError = true
+        }
     }
 
     func drinkWater() async {
@@ -38,21 +63,41 @@ public final class WatchHydrationViewModel {
 
         isMutating = true
         defer { isMutating = false }
-        let result = await useCase.drinkWater(referenceDate: now())
-        snapshot = result.snapshot
-        mutationErrorMessage = errorMessage(for: result.writeResult, action: .record)
+        let referenceDate = now()
+        do {
+            let result = try await useCase.drinkWater(referenceDate: referenceDate)
+            apply(result, referenceDate: referenceDate)
+            mutationErrorMessage = errorMessage(for: result.writeResult, action: .record)
+        } catch {
+            hasReadError = true
+        }
     }
 
     func resetToday() async {
-        guard !isMutating else {
+        guard !isMutating, !isLoading else {
             return
         }
 
         isMutating = true
         defer { isMutating = false }
-        let result = await useCase.reset(referenceDate: now())
-        snapshot = result.snapshot
-        mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
+        let referenceDate = now()
+        do {
+            let result = try await useCase.reset(referenceDate: referenceDate)
+            apply(result, referenceDate: referenceDate)
+            mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
+        } catch {
+            hasReadError = true
+        }
+    }
+
+    private func apply(_ result: WatchHydrationMutationResult, referenceDate: Date) {
+        if let loaded = result.snapshot, Calendar.current.isDate(referenceDate, inSameDayAs: now()) {
+            snapshot = loaded
+            lastLoadedDate = referenceDate
+            hasReadError = false
+        } else {
+            hasReadError = true
+        }
     }
 
     func clearMutationError() {

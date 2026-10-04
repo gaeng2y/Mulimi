@@ -12,8 +12,8 @@ public struct WatchHydrationRepositoryImpl: WatchHydrationRepository {
         self.localDataSource = localDataSource
     }
 
-    public func hydrationEvents(on date: Date) async -> [WatchHydrationEvent] {
-        await localDataSource.hydrationEvents(on: date)
+    public func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent] {
+        try await localDataSource.hydrationEvents(on: date)
     }
 
     @discardableResult

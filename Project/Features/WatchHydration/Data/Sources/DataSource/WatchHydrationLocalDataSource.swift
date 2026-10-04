@@ -5,7 +5,7 @@ import OSLog
 import WatchHydrationDomain
 
 protocol WatchHydrationLocalDataSource: Sendable {
-    func hydrationEvents(on date: Date) async -> [WatchHydrationEvent]
+    func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent]
     @discardableResult
     func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult
     @discardableResult
@@ -33,7 +33,7 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
             && store.authorizationStatus(for: .dietaryWater) == .sharingAuthorized
     }
 
-    func hydrationEvents(on date: Date) async -> [WatchHydrationEvent] {
+    func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent] {
         let interval = dayInterval(for: date)
 
         do {
@@ -51,7 +51,7 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
             }
         } catch {
             logger.error("Failed to fetch watch hydration samples: \(String(describing: error))")
-            return []
+            throw error
         }
     }
 

@@ -827,3 +827,79 @@ private final class SpyRoutineUseCase: RoutineUseCase, @unchecked Sendable {
         routines.removeAll { $0.id == id }
     }
 }
+
+extension HydrationInsightViewModelTests {
+    @MainActor
+    @Test("인사이트 일부 조회 실패는 이전 통계를 유지하며 복구 안내 기록을 차단한다")
+    func failedInsightReadPreservesSnapshot() async {
+        let water = MockDrinkWaterUseCase()
+        let progress = MockHydrationProgressUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: progress,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase()
+        )
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedInsights)
+        water.readError = nil
+        await model.loadInsights()
+        #expect(model.hasLoadedInsights)
+        #expect(!model.hasReadError)
+        let previousReport = model.weeklyReport?.averageML
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(model.hasLoadedInsights)
+        #expect(model.weeklyReport?.averageML == previousReport)
+        #expect(!(await model.recordRecoveryDrink()))
+        #expect(water.drinkWaterCallCount == 0)
+    }
+
+    @MainActor
+    @Test("인사이트에서 저장 직전 조회가 실패하면 쓰기를 시도하지 않는다")
+    func recoveryDrinkRequiresFreshRead() async {
+        let water = MockDrinkWaterUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: MockHydrationProgressUseCase(),
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase()
+        )
+        await model.loadInsights()
+        water.loggingReadError = CocoaError(.fileReadUnknown)
+        #expect(!(await model.recordRecoveryDrink()))
+        #expect(model.hasReadError)
+        #expect(water.drinkWaterCallCount == 0)
+    }
+}
+
+extension HydrationInsightViewModelTests {
+    @MainActor
+    @Test("날짜가 바뀌면 전날 인사이트를 숨기고 당일 조회 실패를 표시한다")
+    func dayChangeInvalidatesInsights() async {
+        let clock = InsightRecoveryClock()
+        let water = MockDrinkWaterUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: MockHydrationProgressUseCase(),
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
+            currentDateProvider: { clock.date }
+        )
+        await model.loadInsights()
+        #expect(model.hasLoadedInsights)
+        clock.date = clock.date.addingTimeInterval(86_400)
+        #expect(!model.hasLoadedInsights)
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedInsights)
+    }
+}
+
+private final class InsightRecoveryClock: @unchecked Sendable {
+    var date = Date.now
+}

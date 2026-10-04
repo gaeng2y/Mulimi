@@ -21,7 +21,12 @@ public struct HydrationStarterPlanView: View {
 
     public var body: some View {
         Group {
-            if viewModel.isAvailable {
+            if viewModel.hasReadError && !viewModel.isAvailable {
+                HydrationReadFailureView(isLoading: viewModel.isRefreshing) {
+                    await refresh()
+                }
+                .padding()
+            } else if viewModel.isAvailable {
                 checklist
             } else if viewModel.isRefreshing {
                 ProgressView()
@@ -47,6 +52,11 @@ public struct HydrationStarterPlanView: View {
 
     private var checklist: some View {
         List {
+            if viewModel.hasReadError {
+                HydrationReadFailureView(isLoading: viewModel.isRefreshing) {
+                    await refresh()
+                }
+            }
             Section {
                 Text(L10n.tr("starterPlanProgressFormat", viewModel.dayNumber ?? 1, viewModel.completedStepCount))
                     .font(.headline)
@@ -111,7 +121,7 @@ public struct HydrationStarterPlanView: View {
                         }
                     }
                 }
-                .disabled(viewModel.completedStepCount != 3 || viewModel.isRefreshing)
+                .disabled(viewModel.completedStepCount != 3 || viewModel.isRefreshing || viewModel.hasReadError)
 
                 Button(L10n.tr("starterPlanDismissAction"), role: .destructive) {
                     viewModel.dismiss()
