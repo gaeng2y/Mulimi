@@ -127,34 +127,21 @@ public struct WatchRootView: View {
                 }
             }
 
-            HStack(spacing: 8) {
-                Button {
-                    Task {
-                        await viewModel.drinkWater()
-                    }
-                } label: {
-                    Text(
-                        viewModel.snapshot.isGoalReached
-                        ? WatchL10n.tr("watchHomeDrinkCompleteButton")
-                        : WatchL10n.tr("watchCommonDrinkButton")
-                    )
-                        .frame(maxWidth: .infinity)
+            Button {
+                Task {
+                    await viewModel.drinkWater()
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(viewModel.canDrinkWater ? accentColor : .gray)
-                .disabled(viewModel.isMutating || !viewModel.canDrinkWater)
-
-                Button(role: .destructive) {
-                    Task {
-                        await viewModel.resetToday()
-                    }
-                } label: {
-                    Text(WatchL10n.tr("watchCommonResetButton"))
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .disabled(viewModel.isMutating || viewModel.isLoading || viewModel.hasReadError || viewModel.snapshot.events.isEmpty)
+            } label: {
+                Text(
+                    viewModel.snapshot.isGoalReached
+                    ? WatchL10n.tr("watchHomeDrinkCompleteButton")
+                    : WatchL10n.tr("watchCommonDrinkButton")
+                )
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.borderedProminent)
+            .tint(viewModel.canDrinkWater ? accentColor : .gray)
+            .disabled(viewModel.isMutating || !viewModel.canDrinkWater)
 
             if let event = viewModel.undoableEvent {
                 undoButton(for: event)
@@ -420,19 +407,23 @@ private struct WatchStatusView: View {
                     )
                 }
 
-                Section {
-                    Button(WatchL10n.tr("watchCommonResetButton"), role: .destructive) {
-                        Task {
-                            await viewModel.resetToday()
-                        }
+                Section(WatchL10n.tr("watchStatusManagementTitle")) {
+                    Button(WatchL10n.tr("watchHydrationResetButton"), role: .destructive) {
+                        viewModel.requestResetConfirmation()
                     }
-                    .disabled(viewModel.isMutating || viewModel.isLoading || viewModel.hasReadError || viewModel.snapshot.events.isEmpty)
+                    .disabled(!viewModel.canRequestReset)
                 }
             } else if !viewModel.hasReadError {
                 ProgressView()
             }
         }
         .navigationTitle(WatchL10n.tr("watchStatusTitle"))
+        .sheet(item: Binding(
+            get: { viewModel.resetConfirmation },
+            set: { if $0 == nil { viewModel.cancelResetConfirmation() } }
+        )) { confirmation in
+            WatchResetConfirmationView(viewModel: viewModel, confirmation: confirmation)
+        }
     }
 
     private func mlText(_ value: Int) -> String {
