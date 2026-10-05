@@ -1,6 +1,6 @@
 import Foundation
 
 public protocol ChallengeUseCase: Sendable {
-    func fetchChallenges(referenceDate: Date, calendar: Calendar) async -> [HydrationChallenge]
+    func fetchChallenges(referenceDate: Date, calendar: Calendar) async throws -> [HydrationChallenge]
     func fetchBadgeHistories() async -> [HydrationChallengeBadgeHistory]
 }

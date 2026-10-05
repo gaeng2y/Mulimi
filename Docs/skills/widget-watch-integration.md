@@ -40,9 +40,10 @@ make arch-check
 xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 ```
 
-범위가 watch면 다음 watchOS Simulator 빌드도 추가한다.
+범위가 watch면 watchOS 26+ Simulator에서 회귀 테스트와 앱 빌드도 추가한다. `WatchHydrationTests`는 Domain·Data·Presentation과 공용 HealthKit 어댑터를 함께 검증한다.
 
 ```bash
+xcodebuild test -workspace Mulimi.xcworkspace -scheme WatchHydrationTests -sdk watchsimulator -destination 'platform=watchOS Simulator,id=<WATCH_SIM_ID>' -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 xcodebuild build -workspace Mulimi.xcworkspace -scheme MulimiWatch -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 ```
 

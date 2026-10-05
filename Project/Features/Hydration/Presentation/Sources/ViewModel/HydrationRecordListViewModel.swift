@@ -104,6 +104,13 @@ public final class HydrationRecordListViewModel {
     private(set) var isMonthPickerPresented = false
 
     private(set) var errorMessage: String = ""
+    private(set) var hasReadError = false
+    var hasLoadedRecords: Bool {
+        !loadedDates.isEmpty && loadedDates == dates(for: selectedPeriod)
+    }
+    private(set) var isLoading = false
+    private var loadedDates: [Date] = []
+    private var latestLoadID = UUID()
     private let useCase: DrinkWaterUseCase
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let widgetTimelineReloader: any WidgetTimelineReloading
@@ -160,43 +167,59 @@ public final class HydrationRecordListViewModel {
     func fetchHydrationRecord() async {
         dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let periodDates = dates(for: selectedPeriod)
-        var fetchedRecords: [HydrationRecord] = []
-        var fetchedDaySummaries: [HydrationRecordDaySummary] = []
+        let loadID = UUID()
+        latestLoadID = loadID
+        isLoading = true
+        defer { if latestLoadID == loadID { isLoading = false } }
+        do {
+            var fetchedRecords: [HydrationRecord] = []
+            var fetchedDaySummaries: [HydrationRecordDaySummary] = []
 
-        for day in periodDates {
-            let events = await useCase.hydrationEvents(on: day)
-            let total = events.reduce(0) { partialResult, event in
-                partialResult + event.volumeML
+            for day in periodDates {
+                let events = try await useCase.hydrationEvents(on: day)
+                let total = events.reduce(0) { partialResult, event in
+                    partialResult + event.volumeML
+                }
+
+                guard total > 0 else {
+                    continue
+                }
+
+                let dayStart = calendar.startOfDay(for: day)
+                fetchedRecords.append(
+                    HydrationRecord(
+                        id: UUID(),
+                        date: dayStart,
+                        mililiter: Double(total)
+                    )
+                )
+                fetchedDaySummaries.append(
+                    HydrationRecordDaySummary(
+                        date: dayStart,
+                        totalML: total,
+                        eventCount: events.count,
+                        events: events.sorted { $0.consumedAt < $1.consumedAt }
+                    )
+                )
             }
 
-            guard total > 0 else {
-                continue
+            guard latestLoadID == loadID, !Task.isCancelled else { return }
+            guard periodDates == dates(for: selectedPeriod) else {
+                hasReadError = true
+                return
             }
-
-            let dayStart = calendar.startOfDay(for: day)
-            fetchedRecords.append(
-                HydrationRecord(
-                    id: UUID(),
-                    date: dayStart,
-                    mililiter: Double(total)
-                )
+            loadedDates = periodDates
+            hasReadError = false
+            records = fetchedRecords.sorted { $0.date < $1.date }
+            daySummaries = fetchedDaySummaries.sorted { $0.date < $1.date }
+            periodSummary = makePeriodSummary(
+                daySummaries: daySummaries,
+                dayCount: max(periodDates.count, 1)
             )
-            fetchedDaySummaries.append(
-                HydrationRecordDaySummary(
-                    date: dayStart,
-                    totalML: total,
-                    eventCount: events.count,
-                    events: events.sorted { $0.consumedAt < $1.consumedAt }
-                )
-            )
+        } catch {
+            guard latestLoadID == loadID, !Task.isCancelled else { return }
+            hasReadError = true
         }
-
-        records = fetchedRecords.sorted { $0.date < $1.date }
-        daySummaries = fetchedDaySummaries.sorted { $0.date < $1.date }
-        periodSummary = makePeriodSummary(
-            daySummaries: daySummaries,
-            dayCount: max(periodDates.count, 1)
-        )
     }
 
     @MainActor

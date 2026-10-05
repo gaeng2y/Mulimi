@@ -9,7 +9,7 @@ import Testing
 @Suite("HydrationRoutineAdherenceUseCase Tests")
 struct HydrationRoutineAdherenceUseCaseTests {
     @Test("이번 주 도래한 루틴별 수행률과 미스 시간대를 계산한다")
-    func weeklyInsightCalculatesRoutineRatesAndMissPattern() async {
+    func weeklyInsightCalculatesRoutineRatesAndMissPattern() async throws {
         let calendar = makeCalendar()
         let referenceDate = makeDate(year: 2026, month: 4, day: 10, hour: 18, minute: 0, calendar: calendar)
         let morningRoutine = HydrationRoutine(
@@ -48,7 +48,7 @@ struct HydrationRoutineAdherenceUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let insight = await useCase.weeklyInsight(referenceDate: referenceDate, calendar: calendar)
+        let insight = try await useCase.weeklyInsight(referenceDate: referenceDate, calendar: calendar)
 
         let morningSummary = insight.routineSummaries.first { $0.id == morningRoutine.id.uuidString }
         let afternoonSummary = insight.routineSummaries.first { $0.id == afternoonRoutine.id.uuidString }

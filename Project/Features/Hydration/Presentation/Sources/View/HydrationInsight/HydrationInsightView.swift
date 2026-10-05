@@ -19,7 +19,7 @@ public struct HydrationInsightView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.openURL) private var openURL
     @State private var viewModel: HydrationInsightViewModel
-    @State private var selectedCategory: HydrationInsightCategory = .overview
+    @State private var selectedCategory: HydrationInsightCategory = .analysis
     private let onRoutineAction: (RoutineActionIntent) -> Void
     private let onDailyGoalAction: () -> Void
     private let onRecordAction: () -> Void
@@ -62,10 +62,10 @@ public struct HydrationInsightView: View {
                 .offset(x: 140, y: 180)
 
             Group {
-                if viewModel.isLoading {
+                if viewModel.isLoading || (!viewModel.hasLoadedInsights && !viewModel.hasReadError) {
                     ProgressView(L10n.tr("insightLoadingTitle"))
-                } else if viewModel.isEmpty {
-                    emptyState
+                } else if viewModel.hasReadError, !viewModel.hasLoadedInsights {
+                    HydrationReadFailureView(retry: { await viewModel.loadInsights() })
                 } else {
                     insightContent
                 }
@@ -78,18 +78,41 @@ public struct HydrationInsightView: View {
         .refreshable {
             await viewModel.loadInsights()
         }
+        .safeAreaInset(edge: .top) {
+            if viewModel.hasReadError, viewModel.hasLoadedInsights {
+                HydrationReadFailureView(
+                    showsPreviousData: true,
+                    isLoading: viewModel.isLoading,
+                    retry: { await viewModel.loadInsights() }
+                )
+                .padding(.horizontal, 20)
+            }
+        }
     }
 
     private var insightContent: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                categoryPicker
+        VStack(spacing: 12) {
+            categoryPicker
+                .padding(.top, 20)
 
-                selectedCategoryContent
+            ScrollView {
+                VStack(spacing: 16) {
+                    if viewModel.isEmpty {
+                        emptyState
+                    } else {
+                        selectedCategoryContent
+                    }
+                }
+                .padding(.bottom, 20)
             }
-            .padding(.vertical, 20)
+            .scrollIndicators(.hidden)
+            .id(selectedCategory)
         }
-        .scrollIndicators(.hidden)
+    }
+
+    private var metricColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize ?
+            [GridItem(.flexible())] : [GridItem(.adaptive(minimum: 130), spacing: 10)]
     }
 
     private var categoryPicker: some View {
@@ -103,104 +126,86 @@ public struct HydrationInsightView: View {
                 )
             }
         )
-        .accessibilityLabel(L10n.tr("insightCategoryPickerAccessibilityLabel"))
     }
 
     @ViewBuilder
     private var selectedCategoryContent: some View {
         switch selectedCategory {
-        case .overview:
-            overviewCard
-        case .pattern:
-            if viewModel.weekdayDistributions.isEmpty {
-                categoryEmptyCard(
-                    title: L10n.tr("insightPatternEmptyTitle"),
-                    description: viewModel.weekdayInsightText,
-                    systemImage: "chart.bar.doc.horizontal"
-                )
-            } else {
-                weekdayPatternCard
-            }
+        case .analysis:
+            weeklySummaryCard
+            weekdayPatternCard
+            weeklyCoachingSection
         case .routine:
             routineAdherenceCard
-        case .report:
-            weeklyReportCard
         }
     }
 
-    private var overviewCard: some View {
-        ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.accent.opacity(0.95),
-                            Color.cyan.opacity(0.8)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-
-            Circle()
-                .fill(.white.opacity(0.18))
-                .frame(width: 120, height: 120)
-                .offset(x: 30, y: -30)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-
-            VStack(alignment: .leading, spacing: 16) {
-                Label(L10n.tr("insightOverviewTitle"), systemImage: "chart.bar.xaxis")
-                    .font(.headline)
-                    .foregroundStyle(.white.opacity(0.92))
-
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(L10n.tr("insightDailyGoalFormat", viewModel.dailyGoalText))
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(.white)
-                }
-
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: 12),
-                        GridItem(.flexible(), spacing: 12)
-                    ],
-                    spacing: 12
-                ) {
-                    ForEach(viewModel.metrics) { metric in
-                        OverviewMetricTile(metric: metric)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(22)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .shadow(color: .black.opacity(0.08), radius: 20, x: 0, y: 14)
-    }
-
-    private var weeklyReportCard: some View {
+    private var weeklySummaryCard: some View {
         InsightCard(
-            title: L10n.tr("insightWeeklyReportTitle"),
-            subtitle: viewModel.weeklyReportInsightText
+            title: L10n.tr("insightWeeklySummaryTitle"),
+            subtitle: viewModel.weeklyPeriodText
         ) {
             VStack(alignment: .leading, spacing: 14) {
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: 10),
-                        GridItem(.flexible(), spacing: 10),
-                        GridItem(.flexible(), spacing: 10)
-                    ],
-                    spacing: 10
-                ) {
-                    ForEach(viewModel.weeklyReportMetrics) { metric in
+                LazyVGrid(columns: metricColumns, spacing: 10) {
+                    ForEach(viewModel.weeklySummaryMetrics) { metric in
                         weeklyReportMetric(metric)
                     }
                 }
 
-                ForEach(viewModel.weeklyCoachingCards) { card in
-                    weeklyCoachingCard(card)
+                Text(L10n.tr("insightWeeklyComparisonPeriodDescription"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Divider()
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(L10n.tr("insightMonthlyAverageFormat", viewModel.monthlyAverageText))
+                        .font(.subheadline)
+                    Text(viewModel.monthlyPeriodText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .accessibilityElement(children: .combine)
+
+                Button {
+                    onDailyGoalAction()
+                } label: {
+                    Label(
+                        viewModel.dailyGoalML > 0 ?
+                            L10n.tr("insightDailyGoalFormat", viewModel.dailyGoalText) :
+                            L10n.tr("insightEmptyGoalCTATitle"),
+                        systemImage: "target"
+                    )
+                    .font(.footnote)
+                    .frame(minHeight: 44, alignment: .leading)
+                }
+                .accessibilityHint(L10n.tr("insightGoalActionAccessibilityHint"))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var weeklyCoachingSection: some View {
+        let cards = viewModel.hasReadError ? [] : viewModel.weeklyCoachingCards
+        if let primaryCard = cards.first {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(L10n.tr("insightNextActionTitle"))
+                    .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
+
+                weeklyCoachingCard(primaryCard)
+
+                if cards.count > 1 {
+                    DisclosureGroup(L10n.tr("insightMoreSuggestionsTitle")) {
+                        ForEach(cards.dropFirst()) { card in
+                            weeklyCoachingCard(card)
+                        }
+                        .padding(.top, 8)
+                    }
+                    .font(.subheadline)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -212,11 +217,7 @@ public struct HydrationInsightView: View {
             VStack(alignment: .leading, spacing: 16) {
                 if !viewModel.routineAdherenceMetrics.isEmpty {
                     LazyVGrid(
-                        columns: [
-                            GridItem(.flexible(), spacing: 10),
-                            GridItem(.flexible(), spacing: 10),
-                            GridItem(.flexible(), spacing: 10)
-                        ],
+                        columns: metricColumns,
                         spacing: 10
                     ) {
                         ForEach(viewModel.routineAdherenceMetrics) { metric in
@@ -237,7 +238,7 @@ public struct HydrationInsightView: View {
                     }
                 }
 
-                if let recoveryCard = viewModel.routineRecoveryCard {
+                if !viewModel.hasReadError, let recoveryCard = viewModel.routineRecoveryCard {
                     routineRecoveryCard(recoveryCard)
                 }
             }
@@ -247,63 +248,82 @@ public struct HydrationInsightView: View {
     private var weekdayPatternCard: some View {
         InsightCard(
             title: L10n.tr("insightWeekdayPatternTitle"),
-            subtitle: viewModel.weekdayInsightText
+            subtitle: L10n.tr("insightMonthlyPatternPeriodFormat", viewModel.monthlyPeriodText)
         ) {
             VStack(alignment: .leading, spacing: 14) {
-                Chart(viewModel.weekdayDistributions) { distribution in
-                    BarMark(
-                        x: .value(L10n.tr("insightChartWeekdayAxisTitle"), distribution.label),
+                Text(viewModel.weekdayInsightText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                if !viewModel.weekdayDistributions.isEmpty {
+                    weekdayPatternDetails
+                }
+
+                if let gap = viewModel.weeklyGapMetric {
+                    Divider()
+                    weeklyReportMetric(gap)
+                }
+            }
+        }
+    }
+
+    private var weekdayPatternDetails: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Chart(viewModel.weekdayDistributions) { distribution in
+                BarMark(
+                    x: .value(L10n.tr("insightChartWeekdayAxisTitle"), distribution.label),
+                    y: .value(
+                        L10n.tr("insightChartAverageIntakeAxisTitle"),
+                        distribution.averageIntakeML
+                    )
+                )
+                .cornerRadius(8)
+                .foregroundStyle(
+                    distribution.weekday == viewModel.bestWeekday?.weekday ?
+                    Color.accent.gradient :
+                    Color.cyan.opacity(0.55).gradient
+                )
+
+                if viewModel.dailyGoalML > 0 {
+                    RuleMark(
                         y: .value(
-                            L10n.tr("insightChartAverageIntakeAxisTitle"),
-                            distribution.averageIntakeML
+                            L10n.tr("insightChartGoalAxisTitle"),
+                            viewModel.dailyGoalML
                         )
                     )
-                    .cornerRadius(8)
-                    .foregroundStyle(
-                        distribution.weekday == viewModel.bestWeekday?.weekday ?
-                        Color.accent.gradient :
-                        Color.cyan.opacity(0.55).gradient
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 4]))
+                        .foregroundStyle(Color.secondary.opacity(0.7))
+                }
+            }
+            .chartYScale(domain: 0...max(viewModel.chartUpperBound, 1))
+            .chartLegend(.hidden)
+            .frame(height: 220)
+
+            LazyVGrid(columns: metricColumns, spacing: 12) {
+                if let bestWeekday = viewModel.bestWeekday {
+                    BadgeView(
+                        title: L10n.tr("insightMostDrankDayTitle"),
+                        value: L10n.tr(
+                            "insightWeekdayBadgeValueFormat",
+                            bestWeekday.label,
+                            Int(bestWeekday.averageIntakeML.rounded())
+                        )
                     )
-
-                    if viewModel.dailyGoalML > 0 {
-                        RuleMark(
-                            y: .value(
-                                L10n.tr("insightChartGoalAxisTitle"),
-                                viewModel.dailyGoalML
-                            )
-                        )
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 4]))
-                            .foregroundStyle(Color.secondary.opacity(0.7))
-                    }
-                }
-                .chartYScale(domain: 0...max(viewModel.chartUpperBound, 1))
-                .chartLegend(.hidden)
-                .frame(height: 220)
-
-                HStack(spacing: 12) {
-                    if let bestWeekday = viewModel.bestWeekday {
-                        BadgeView(
-                            title: L10n.tr("insightMostDrankDayTitle"),
-                            value: L10n.tr(
-                                "insightWeekdayBadgeValueFormat",
-                                bestWeekday.label,
-                                Int(bestWeekday.averageIntakeML.rounded())
-                            )
-                        )
-                    }
-
-                    if let leastWeekday = viewModel.leastWeekday {
-                        BadgeView(
-                            title: L10n.tr("insightLeastDrankDayTitle"),
-                            value: L10n.tr(
-                                "insightWeekdayBadgeValueFormat",
-                                leastWeekday.label,
-                                Int(leastWeekday.averageIntakeML.rounded())
-                            )
-                        )
-                    }
                 }
 
+                if let leastWeekday = viewModel.leastWeekday {
+                    BadgeView(
+                        title: L10n.tr("insightLeastDrankDayTitle"),
+                        value: L10n.tr(
+                            "insightWeekdayBadgeValueFormat",
+                            leastWeekday.label,
+                            Int(leastWeekday.averageIntakeML.rounded())
+                        )
+                    )
+                }
+            }
+
+            if viewModel.dailyGoalML > 0 {
                 HStack(spacing: 8) {
                     Circle()
                         .fill(Color.secondary.opacity(0.7))
@@ -334,6 +354,7 @@ public struct HydrationInsightView: View {
         .frame(maxWidth: .infinity, minHeight: 86, alignment: .leading)
         .padding(12)
         .background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 
     private func weeklyCoachingCard(_ card: HydrationWeeklyCoachingCardModel) -> some View {
@@ -400,6 +421,7 @@ public struct HydrationInsightView: View {
         .frame(maxWidth: .infinity, minHeight: 82, alignment: .leading)
         .padding(12)
         .background(Color(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 
     private func routineAdherenceRow(_ row: RoutineAdherenceDisplayRow) -> some View {
@@ -426,19 +448,21 @@ public struct HydrationInsightView: View {
                     )
             }
 
-            ProgressView(value: row.progress)
-                .tint(routineAdherenceStatusColor(row.status))
+            if row.status != .inactive && row.status != .noDueOccurrences {
+                ProgressView(value: row.progress)
+                    .tint(routineAdherenceStatusColor(row.status))
 
-            HStack {
-                Text(row.detailText)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(row.detailText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                Spacer()
+                    Spacer()
 
-                Text(row.rateText)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    Text(row.rateText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.primary)
+                }
             }
         }
         .padding(12)
@@ -571,8 +595,6 @@ public struct HydrationInsightView: View {
 
     private var emptyState: some View {
         VStack(spacing: 18) {
-            Spacer()
-
             Image(systemName: "chart.bar.doc.horizontal")
                 .font(.system(size: 44))
                 .foregroundStyle(Color.accent)
@@ -580,17 +602,16 @@ public struct HydrationInsightView: View {
             VStack(spacing: 8) {
                 Text(L10n.tr("insightEmptyTitle"))
                     .font(.title3.weight(.bold))
-                Text(L10n.tr("insightEmptyDescriptionFormat", viewModel.dailyGoalText))
+                Text(L10n.tr("insightEmptyDescription"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
 
             emptyStateCTAButtons
-
-            Spacer()
         }
         .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
     }
 
     @ViewBuilder
@@ -641,32 +662,6 @@ public struct HydrationInsightView: View {
         }
     }
 
-    private func categoryEmptyCard(
-        title: String,
-        description: String,
-        systemImage: String
-    ) -> some View {
-        InsightCard(
-            title: title,
-            subtitle: description
-        ) {
-            HStack(spacing: 12) {
-                Image(systemName: systemImage)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 42, height: 42)
-                    .background(Color.accentColor.opacity(0.12), in: Circle())
-
-                Text(L10n.tr("insightCategoryEmptyGuideDescription"))
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Spacer(minLength: 0)
-            }
-        }
-    }
-
     private func openSettings() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
             return
@@ -677,10 +672,8 @@ public struct HydrationInsightView: View {
 }
 
 private enum HydrationInsightCategory: CaseIterable, Identifiable {
-    case overview
-    case pattern
+    case analysis
     case routine
-    case report
 
     var id: Self {
         self
@@ -688,27 +681,19 @@ private enum HydrationInsightCategory: CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .overview:
-            L10n.tr("insightCategoryOverviewTitle")
-        case .pattern:
-            L10n.tr("insightCategoryPatternTitle")
+        case .analysis:
+            L10n.tr("insightCategoryAnalysisTitle")
         case .routine:
             L10n.tr("insightCategoryRoutineTitle")
-        case .report:
-            L10n.tr("insightCategoryReportTitle")
         }
     }
 
     var systemImage: String {
         switch self {
-        case .overview:
+        case .analysis:
             "chart.bar.xaxis"
-        case .pattern:
-            "calendar"
         case .routine:
             "bell.badge"
-        case .report:
-            "doc.text.magnifyingglass"
         }
     }
 }
@@ -734,6 +719,7 @@ private struct InsightCard<Content: View>: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
                 Text(subtitle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -770,30 +756,6 @@ private struct InsightCard<Content: View>: View {
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
-    }
-}
-
-private struct OverviewMetricTile: View {
-    let metric: HydrationInsightMetric
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(metric.title)
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.78))
-
-            Text(metric.value)
-                .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
-
-            Text(metric.detail)
-                .font(.footnote)
-                .foregroundStyle(.white.opacity(0.72))
-        }
-        .frame(maxWidth: .infinity, minHeight: 84, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
 

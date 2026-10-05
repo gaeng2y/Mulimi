@@ -1,6 +1,72 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "hydrationReadFailureTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 불러오지 못했어요"
+          }
+        }
+      }
+    },
+    "hydrationReadFailureDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠시 후 다시 불러와 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReadStaleDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막으로 확인한 기록이에요. 최신 기록을 다시 불러와 주세요."
+          }
+        }
+      }
+    },
+    "hydrationReadRetryTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 불러오기"
+          }
+        }
+      }
+    },
+    "hydrationReadOpenAppTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물리미를 열어 다시 확인"
+          }
+        }
+      }
+    },
+    "hydrationReadOpenAppDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록을 확인하지 못했어요. 물리미에서 다시 불러와 주세요."
+          }
+        }
+      }
+    },
     "watchCommonDrinkButton" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30,17 +96,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
-          }
-        }
-      }
-    },
-    "watchCommonResetButton" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "초기화"
           }
         }
       }
@@ -95,7 +150,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오늘 기록을 초기화하지 못했어요. 잠시 후 다시 시도해 주세요."
+            "value" : "Mulimi 기록을 삭제하지 못했어요. 잠시 후 다시 시도해 주세요."
           }
         }
       }
@@ -106,7 +161,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "건강 앱 권한이 없어 오늘 기록을 초기화하지 못했어요. iPhone에서 물리미 권한을 확인해 주세요."
+            "value" : "건강 앱 권한이 없어 Mulimi 기록을 삭제하지 못했어요. iPhone에서 물리미 권한을 확인해 주세요."
           }
         }
       }
@@ -360,6 +415,204 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오늘 총량"
+          }
+        }
+      }
+    },
+    "watchHydrationUndoButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록 되돌리기"
+          }
+        }
+      }
+    },
+    "watchHydrationUndoRecordFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
+          }
+        }
+      }
+    },
+    "watchHydrationUndoConfirmationTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기록 한 건을 취소할까요?"
+          }
+        }
+      }
+    },
+    "watchHydrationKeepRecordButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 유지"
+          }
+        }
+      }
+    },
+    "watchHydrationUndoSuccess" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 기록 한 건을 취소했어요."
+          }
+        }
+      }
+    },
+    "watchHydrationUndoPermissionFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건강 앱 권한이 없어 이 기록을 취소하지 못했어요. iPhone에서 물리미 권한을 확인해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationUndoFailure" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기록을 취소하지 못했어요. 이미 삭제됐거나 건강 앱에 접근할 수 없을 수 있어요. 기록을 확인한 뒤 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "watchStatusManagementTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록 관리"
+          }
+        }
+      }
+    },
+    "watchHydrationResetButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 기록 삭제…"
+          }
+        }
+      }
+    },
+    "watchHydrationResetConfirmationTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 확인"
+          }
+        }
+      }
+    },
+    "watchHydrationResetDateFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제할 날짜: %@"
+          }
+        }
+      }
+    },
+    "watchHydrationResetScope" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 날짜에 Mulimi에서 만든 수분 기록만 모두 삭제해요. 다른 앱의 기록은 유지돼요."
+          }
+        }
+      }
+    },
+    "watchHydrationResetUndoDifference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 건만 취소하려면 홈의 ‘최근 기록 되돌리기’를 사용해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationResetDateChanged" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "날짜가 바뀌었어요. 아래 날짜를 다시 확인해 주세요."
+          }
+        }
+      }
+    },
+    "watchHydrationResetConfirmButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모두 삭제"
+          }
+        }
+      }
+    },
+    "watchHydrationResetConfirmAccessibilityFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, Mulimi에서 만든 수분 기록 모두 삭제"
+          }
+        }
+      }
+    },
+    "watchHydrationResetCancelButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
+          }
+        }
+      }
+    },
+    "watchHydrationResetCancelAccessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소, 기록 유지"
           }
         }
       }

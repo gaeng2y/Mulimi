@@ -18,7 +18,7 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
         self.userPreferencesRepository = userPreferencesRepository
     }
 
-    public func progressSnapshot(referenceDate: Date, calendar: Calendar) async -> HydrationProgressSnapshot {
+    public func progressSnapshot(referenceDate: Date, calendar: Calendar) async throws -> HydrationProgressSnapshot {
         let dailyGoalML = userPreferencesRepository.getDailyWaterLimit()
 
         guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: referenceDate),
@@ -37,8 +37,8 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
             in: DateInterval(start: recentStart, end: referenceDate)
         )
 
-        let (resolvedWeeklyEvents, resolvedMonthlyEvents) = await (weeklyEvents, monthlyEvents)
-        let recentRecordDate = await recentEvents
+        let (resolvedWeeklyEvents, resolvedMonthlyEvents) = try await (weeklyEvents, monthlyEvents)
+        let recentRecordDate = try await recentEvents
             .filter { $0.volumeML > 0 && $0.consumedAt <= referenceDate }
             .map(\.consumedAt)
             .max()
@@ -49,12 +49,12 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
         let monthlyElapsedDays = elapsedDayCount(in: elapsedMonthInterval, calendar: calendar)
         let weeklyAchievedDays = achievedDayCount(in: weeklyTotals, dailyGoalML: dailyGoalML)
         let monthlyAchievedDays = achievedDayCount(in: monthlyTotals, dailyGoalML: dailyGoalML)
-        let streakProgress = await calculateCurrentStreak(
+        let streakProgress = try await calculateCurrentStreak(
             referenceDate: referenceDate,
             calendar: calendar,
             dailyGoalML: dailyGoalML
         )
-        let todayTotalIntake = await totalIntake(
+        let todayTotalIntake = try await totalIntake(
             on: calendar.startOfDay(for: referenceDate),
             calendar: calendar
         )
@@ -127,13 +127,13 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
         referenceDate: Date,
         calendar: Calendar,
         dailyGoalML: Double
-    ) async -> StreakProgress {
+    ) async throws -> StreakProgress {
         guard dailyGoalML > 0 else {
             return StreakProgress(count: 0, startDate: nil)
         }
 
         var date = calendar.startOfDay(for: referenceDate)
-        if await totalIntake(on: date, calendar: calendar) < dailyGoalML {
+        if try await totalIntake(on: date, calendar: calendar) < dailyGoalML {
             guard let previousDate = calendar.date(byAdding: .day, value: -1, to: date) else {
                 return StreakProgress(count: 0, startDate: nil)
             }
@@ -143,7 +143,7 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
         var streak = 0
         var streakStartDate: Date?
 
-        while await totalIntake(on: date, calendar: calendar) >= dailyGoalML {
+        while try await totalIntake(on: date, calendar: calendar) >= dailyGoalML {
             streak += 1
             streakStartDate = date
 
@@ -156,8 +156,8 @@ public struct HydrationProgressUseCaseImpl: HydrationProgressUseCase {
         return StreakProgress(count: streak, startDate: streakStartDate)
     }
 
-    private func totalIntake(on date: Date, calendar: Calendar) async -> Double {
-        (await drinkWaterRepository.hydrationEvents(on: date)).reduce(0) { partialResult, event in
+    private func totalIntake(on date: Date, calendar: Calendar) async throws -> Double {
+        (try await drinkWaterRepository.hydrationEvents(on: date)).reduce(0) { partialResult, event in
             partialResult + Double(event.volumeML)
         }
     }

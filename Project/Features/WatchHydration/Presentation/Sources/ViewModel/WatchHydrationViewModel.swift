@@ -10,11 +10,27 @@ public final class WatchHydrationViewModel {
 
     var snapshot: WatchHydrationSnapshot
     var isMutating = false
+    var isLoading = false
+    var hasReadError = false
+    private var lastLoadedDate: Date?
+
+    var hasCurrentSnapshot: Bool {
+        lastLoadedDate.map { Calendar.current.isDate($0, inSameDayAs: now()) } ?? false
+    }
     var mutationErrorMessage: String?
+    private(set) var undoableEvent: WatchHydrationEvent?
+    private(set) var didUndoLastDrink = false
+    private(set) var resetConfirmation: WatchHydrationResetConfirmation?
+
+    var canRequestReset: Bool {
+        hasCurrentSnapshot && !hasReadError && !isLoading && !isMutating && !snapshot.events.isEmpty
+    }
 
     var canDrinkWater: Bool {
-        snapshot.dailyGoalML <= 0 ||
-        snapshot.todayIntakeML + HydrationServing.defaultGlassVolumeML <= snapshot.dailyGoalML
+        hasCurrentSnapshot && !hasReadError && !isLoading && (
+            snapshot.dailyGoalML <= 0 ||
+            snapshot.todayIntakeML + HydrationServing.defaultGlassVolumeML <= snapshot.dailyGoalML
+        )
     }
 
     public init(
@@ -28,31 +44,105 @@ public final class WatchHydrationViewModel {
     }
 
     func load() async {
-        snapshot = await useCase.loadSnapshot(referenceDate: now())
+        guard !isMutating, !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        let referenceDate = now()
+        do {
+            let loaded = try await useCase.loadSnapshot(referenceDate: referenceDate)
+            guard !Task.isCancelled else { return }
+            guard Calendar.current.isDate(referenceDate, inSameDayAs: now()) else {
+                hasReadError = true
+                return
+            }
+            snapshot = loaded
+            lastLoadedDate = referenceDate
+            hasReadError = false
+        } catch {
+            hasReadError = true
+        }
     }
 
     func drinkWater() async {
-        guard !isMutating, canDrinkWater else {
+        guard !isMutating, resetConfirmation == nil, canDrinkWater else {
             return
         }
 
         isMutating = true
+        didUndoLastDrink = false
         defer { isMutating = false }
-        let result = await useCase.drinkWater(referenceDate: now())
-        snapshot = result.snapshot
-        mutationErrorMessage = errorMessage(for: result.writeResult, action: .record)
+        let referenceDate = now()
+        do {
+            let result = try await useCase.drinkWater(referenceDate: referenceDate)
+            apply(result, referenceDate: referenceDate)
+            if result.writeResult.isSuccess, let recordedEvent = result.recordedEvent {
+                undoableEvent = recordedEvent
+            }
+            mutationErrorMessage = errorMessage(for: result.writeResult, action: .record)
+        } catch {
+            hasReadError = true
+        }
     }
 
-    func resetToday() async {
-        guard !isMutating else {
+    func undoLastDrink(id: UUID) async {
+        guard !isMutating, !isLoading, resetConfirmation == nil, undoableEvent?.id == id else { return }
+
+        isMutating = true
+        didUndoLastDrink = false
+        defer { isMutating = false }
+        let referenceDate = now()
+        let result = await useCase.undoDrink(id: id, referenceDate: referenceDate)
+        apply(result, referenceDate: referenceDate)
+        if result.writeResult.isSuccess {
+            undoableEvent = nil
+            didUndoLastDrink = true
+        }
+        mutationErrorMessage = errorMessage(for: result.writeResult, action: .undo)
+    }
+
+    func requestResetConfirmation() {
+        guard canRequestReset, resetConfirmation == nil else { return }
+        resetConfirmation = WatchHydrationResetConfirmation(date: now())
+    }
+
+    func cancelResetConfirmation() {
+        resetConfirmation = nil
+    }
+
+    func confirmReset(id: UUID) async {
+        guard !isMutating, !isLoading, let confirmation = resetConfirmation, confirmation.id == id else { return }
+        let currentDate = now()
+        guard Calendar.current.isDate(confirmation.date, inSameDayAs: currentDate) else {
+            resetConfirmation = WatchHydrationResetConfirmation(date: currentDate, dateChanged: true)
+            await load()
             return
         }
 
+        // Consume this confirmation before suspending so repeated taps cannot repeat the deletion.
+        resetConfirmation = nil
         isMutating = true
         defer { isMutating = false }
-        let result = await useCase.reset(referenceDate: now())
-        snapshot = result.snapshot
-        mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
+        do {
+            let result = try await useCase.reset(referenceDate: confirmation.date)
+            if result.writeResult.isSuccess {
+                apply(result, referenceDate: confirmation.date)
+                undoableEvent = nil
+                didUndoLastDrink = false
+            }
+            mutationErrorMessage = errorMessage(for: result.writeResult, action: .reset)
+        } catch {
+            hasReadError = true
+        }
+    }
+
+    private func apply(_ result: WatchHydrationMutationResult, referenceDate: Date) {
+        if let loaded = result.snapshot, Calendar.current.isDate(referenceDate, inSameDayAs: now()) {
+            snapshot = loaded
+            lastLoadedDate = referenceDate
+            hasReadError = false
+        } else {
+            hasReadError = true
+        }
     }
 
     func clearMutationError() {
@@ -76,11 +166,16 @@ public final class WatchHydrationViewModel {
             return WatchL10n.tr("watchHydrationResetPermissionFailure")
         case (.reset, .invalidObjectType), (.reset, .systemError):
             return WatchL10n.tr("watchHydrationResetFailure")
+        case (.undo, .permissionDenied):
+            return WatchL10n.tr("watchHydrationUndoPermissionFailure")
+        case (.undo, .invalidObjectType), (.undo, .systemError):
+            return WatchL10n.tr("watchHydrationUndoFailure")
         }
     }
 
     private enum MutationAction {
         case record
         case reset
+        case undo
     }
 }

@@ -7,7 +7,7 @@ final class MockChallengeUseCase: ChallengeUseCase, @unchecked Sendable {
     private(set) var requestedReferenceDate: Date?
     private(set) var fetchBadgeHistoriesCallCount = 0
 
-    func fetchChallenges(referenceDate: Date, calendar: Calendar) async -> [HydrationChallenge] {
+    func fetchChallenges(referenceDate: Date, calendar: Calendar) async throws -> [HydrationChallenge] {
         requestedReferenceDate = referenceDate
         return challenges
     }

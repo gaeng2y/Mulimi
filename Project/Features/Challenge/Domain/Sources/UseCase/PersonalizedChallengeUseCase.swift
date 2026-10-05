@@ -6,5 +6,5 @@ public protocol PersonalizedChallengeUseCase: Sendable {
         snapshot: HydrationProgressSnapshot,
         referenceDate: Date,
         calendar: Calendar
-    ) async -> [PersonalizedHydrationChallenge]
+    ) async throws -> [PersonalizedHydrationChallenge]
 }

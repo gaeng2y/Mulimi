@@ -58,7 +58,7 @@ public struct HydrationGoalRecommendationUseCaseImpl: HydrationGoalRecommendatio
             throw HydrationGoalRecommendationError.modelUnavailable(unavailableReason)
         }
 
-        let input = await buildInput(
+        let input = try await buildInput(
             from: snapshot.resolvedBodyProfile,
             referenceDate: referenceDate
         )
@@ -69,9 +69,9 @@ public struct HydrationGoalRecommendationUseCaseImpl: HydrationGoalRecommendatio
     private func buildInput(
         from bodyProfile: BodyProfile,
         referenceDate: Date
-    ) async -> HydrationGoalRecommendationInput {
+    ) async throws -> HydrationGoalRecommendationInput {
         let dayInterval = analysisInterval(for: referenceDate)
-        let events = await drinkWaterRepository.hydrationEvents(in: dayInterval)
+        let events = try await drinkWaterRepository.hydrationEvents(in: dayInterval)
         let dailyTotals = aggregateDailyTotals(from: events)
 
         let analysisDays = Constants.analysisDays

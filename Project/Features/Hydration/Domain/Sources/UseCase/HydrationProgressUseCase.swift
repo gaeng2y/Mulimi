@@ -1,5 +1,5 @@
 import Foundation
 
 public protocol HydrationProgressUseCase: Sendable {
-    func progressSnapshot(referenceDate: Date, calendar: Calendar) async -> HydrationProgressSnapshot
+    func progressSnapshot(referenceDate: Date, calendar: Calendar) async throws -> HydrationProgressSnapshot
 }

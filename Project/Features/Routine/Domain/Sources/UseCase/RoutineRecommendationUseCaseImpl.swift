@@ -36,10 +36,10 @@ public struct RoutineRecommendationUseCaseImpl: RoutineRecommendationUseCase {
     public func fetchRecommendations(
         referenceDate: Date,
         calendar: Calendar
-    ) async -> [HydrationRoutineRecommendation] {
+    ) async throws -> [HydrationRoutineRecommendation] {
         let enabledRoutines = routineUseCase.fetchRoutines().filter(\.isEnabled)
         let interval = analysisInterval(referenceDate: referenceDate, calendar: calendar)
-        let events = await drinkWaterRepository.hydrationEvents(in: interval)
+        let events = try await drinkWaterRepository.hydrationEvents(in: interval)
             .sorted { $0.consumedAt < $1.consumedAt }
 
         let daySummaries = makeDaySummaries(events: events, calendar: calendar)

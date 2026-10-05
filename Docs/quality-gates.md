@@ -37,7 +37,7 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 | Domain Entity/UseCase 변경 | `make lint`, `make arch-check`, 해당 기능 `Domain` 테스트 | Presentation 모델 변환 영향이 있으면 해당 기능 `Presentation` 테스트 |
 | Data/HealthKit 변경 | `make lint`, `make arch-check`, 관련 Unit Test, 앱 빌드 | 권한/동기화 흐름은 실제 시뮬레이터 또는 기기에서 수동 확인 |
 | Widget 변경 | `make lint`, `make arch-check`, 앱 빌드 | 위젯 타깃 빌드와 App Group 데이터 확인 |
-| Watch 변경 | `make lint`, `make arch-check`, 앱 빌드 | Watch 타깃 빌드와 앱/워치 수분 규칙 일치 확인 |
+| Watch 변경 | `make lint`, `make arch-check`, `WatchHydrationTests`, 앱 빌드 | watchOS 26+ Simulator 테스트·Watch 타깃 빌드와 앱/워치 수분 규칙 일치 확인 |
 | Localization 변경 | `jq empty Project/Shared/Localization/Resources/Localizable.xcstrings`, 앱 빌드 | 문구가 권한/알림이면 관련 화면 수동 확인 |
 | Tuist/Project.swift 변경 | `tuist generate`, `make lint`, `make arch-check`, 앱 빌드 | 변경된 scheme 테스트 |
 | Feature 모듈 변경 | `make lint`, `make arch-check`, 변경 feature의 `Domain/Data/Presentation` 테스트 | 앱 조립이 바뀌면 앱 빌드 |
@@ -93,3 +93,11 @@ xcodebuild test \
 - `Docs/skills/lint-fix-loop.md`
 - `Docs/delivery-workflow.md`
 - `.github/pull_request_template.md`
+
+## HealthKit 조회 복구 검증 (#350)
+
+- Hydration Domain/Data/Presentation과 Routine·Challenge Domain/Presentation 테스트로 정상 빈 결과·실제 오류·부분 조회 실패를 구분한다.
+- `WatchHydrationTests`는 Watch Data·Domain·Presentation을 watchOS Simulator에서 함께 검증한다. `xcodebuild test -workspace Mulimi.xcworkspace -scheme WatchHydrationTests -destination 'platform=watchOS Simulator,id=<WATCH_SIM_ID>'`를 실행한다.
+- 저장 전 조회 오류 시 쓰기 0회, 저장 후 조회 오류와 읽기 재시도 시 쓰기 1회를 확인한다. 초기화 후 조회 실패도 쓰기를 반복하지 않아야 한다.
+- 앱·Watch·Widget 빌드와 함께 날짜/기간 변경 시 이전 값 숨김, 오류 안내, 조회만 재시도하는 화면을 확인한다.
+- HealthKit 실제 읽기 권한 거부 여부는 API의 빈 결과로 판정하지 않는다. 잠금/권한 실기기 QA와 오류 주입 단위 테스트 결과를 구분해 적는다.

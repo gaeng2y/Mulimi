@@ -991,8 +991,112 @@ private final class StubHydrationNextActionGuideUseCase: HydrationNextActionGuid
     )
     private(set) var guideCallCount = 0
 
-    func guide(referenceDate: Date, calendar: Calendar) async -> HydrationNextActionGuide {
+    func guide(referenceDate: Date, calendar: Calendar) async throws -> HydrationNextActionGuide {
         guideCallCount += 1
         return guideValue
     }
+}
+
+extension DrinkWaterViewModelTests {
+    @MainActor
+    @Test("조회 실패와 정상 0을 구분하고 재시도 시 마지막 정상 값을 갱신한다")
+    func readFailureAndRecovery() async {
+        let water = MockDrinkWaterUseCase()
+        let model = DrinkWaterViewModel(
+            waterUseCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.refreshState()
+        #expect(model.hasReadError)
+        #expect(!model.hasCurrentIntake)
+
+        water.readError = nil
+        await model.refreshState()
+        #expect(!model.hasReadError)
+        #expect(model.hasCurrentIntake)
+        #expect(model.currentWaterIntakeML == 0)
+
+        water.currentWaterIntakeMLValue = 500
+        await model.refreshState()
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.refreshState()
+        #expect(model.hasReadError)
+        #expect(model.hasCurrentIntake)
+        #expect(model.currentWaterIntakeML == 500)
+        #expect(!model.isRecordable(volumeML: HydrationServing.defaultGlassVolumeML))
+    }
+
+    @MainActor
+    @Test("기록 직전 조회 실패는 저장을 차단한다")
+    func preflightReadFailureDoesNotWrite() async {
+        let water = MockDrinkWaterUseCase()
+        let model = DrinkWaterViewModel(
+            waterUseCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+        await model.refreshState()
+        water.loggingReadError = CocoaError(.fileReadUnknown)
+        #expect(!(await model.drinkWater()))
+        #expect(model.hasReadError)
+        #expect(water.drinkWaterCallCount == 0)
+    }
+
+    @MainActor
+    @Test("저장 후 조회 실패는 저장 성공을 유지하고 조회 재시도로 중복 저장하지 않는다")
+    func successfulWriteFailedRefreshRetriesOnlyRead() async {
+        let water = MockDrinkWaterUseCase()
+        water.readErrorAfterWrite = CocoaError(.fileReadUnknown)
+        let model = DrinkWaterViewModel(
+            waterUseCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader()
+        )
+        await model.refreshState()
+        #expect(await model.drinkWater())
+        #expect(model.hasReadError)
+        #expect(model.recordFailureAlert == nil)
+        #expect(model.recordSuccessFeedbackMessage != nil)
+        #expect(model.recentRecordUndo == nil)
+        await model.refreshState()
+        #expect(water.drinkWaterCallCount == 1)
+
+        water.readError = nil
+        await model.refreshState()
+        #expect(!model.hasReadError)
+        #expect(model.currentWaterIntakeML == Double(HydrationServing.defaultGlassVolumeML))
+        #expect(model.recentRecordUndo != nil)
+        #expect(water.drinkWaterCallCount == 1)
+    }
+
+    @MainActor
+    @Test("날짜가 바뀐 뒤 실패하면 전날 값을 오늘 값으로 노출하지 않는다")
+    func previousDayIsNotCurrentIntake() async {
+        let clock = ReadRecoveryClock()
+        let water = MockDrinkWaterUseCase()
+        water.currentWaterIntakeMLValue = 500
+        let model = DrinkWaterViewModel(
+            waterUseCase: water,
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            nextActionGuideUseCase: StubHydrationNextActionGuideUseCase(),
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            nowProvider: { clock.date }
+        )
+        await model.refreshState()
+        #expect(model.hasCurrentIntake)
+        clock.date = clock.date.addingTimeInterval(86_400)
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.refreshState()
+        #expect(model.hasReadError)
+        #expect(!model.hasCurrentIntake)
+    }
+}
+
+private final class ReadRecoveryClock: @unchecked Sendable {
+    var date = Date.now
 }

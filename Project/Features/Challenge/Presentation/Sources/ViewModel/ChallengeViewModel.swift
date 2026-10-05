@@ -54,6 +54,11 @@ struct PersonalizedChallengeCardModel: Identifiable, Equatable {
 @Observable
 public final class ChallengeViewModel {
     private(set) var isLoading = false
+    private(set) var hasReadError = false
+    var hasLoadedChallenges: Bool {
+        lastLoadedDate.map { calendar.isDate($0, inSameDayAs: currentDateProvider()) } ?? false
+    }
+    private var lastLoadedDate: Date?
     private(set) var isEmpty = false
     private(set) var recommendedChallenges: [PersonalizedChallengeCardModel] = []
     private(set) var inProgressChallenges: [ChallengeCardModel] = []
@@ -83,46 +88,65 @@ public final class ChallengeViewModel {
     }
 
     public func loadChallenges() async {
+        guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
 
         let referenceDate = currentDateProvider()
-        let snapshot = await progressUseCase.progressSnapshot(
-            referenceDate: referenceDate,
-            calendar: calendar
-        )
+        do {
+            let snapshot = try await progressUseCase.progressSnapshot(
+                referenceDate: referenceDate,
+                calendar: calendar
+            )
 
-        isEmpty = snapshot.isEmpty
-        guard snapshot.isEmpty == false else {
-            recommendedChallenges = []
-            inProgressChallenges = []
-            completedChallenges = []
-            return
+            guard !Task.isCancelled else { return }
+            guard calendar.isDate(referenceDate, inSameDayAs: currentDateProvider()) else {
+                hasReadError = true
+                return
+            }
+            guard snapshot.isEmpty == false else {
+                isEmpty = true
+                hasReadError = false
+                lastLoadedDate = referenceDate
+                recommendedChallenges = []
+                inProgressChallenges = []
+                completedChallenges = []
+                return
+            }
+
+            let recommendedCards = try await personalizedChallengeUseCase.fetchPersonalizedChallenges(
+                snapshot: snapshot,
+                referenceDate: referenceDate,
+                calendar: calendar
+            )
+            let fixedCards = try await challengeUseCase.fetchChallenges(
+                referenceDate: referenceDate,
+                calendar: calendar
+            )
+
+            let badgeHistories = await challengeUseCase.fetchBadgeHistories()
+
+            guard !Task.isCancelled else { return }
+            guard calendar.isDate(referenceDate, inSameDayAs: currentDateProvider()) else {
+                hasReadError = true
+                return
+            }
+            isEmpty = false
+            hasReadError = false
+
+            lastLoadedDate = referenceDate
+            recommendedChallenges = recommendedCards.map(makePersonalizedCardModel(from:))
+
+            inProgressChallenges = fixedCards
+                .filter { $0.isCompleted == false }
+                .map { makeCardModel(from: $0, snapshot: snapshot) }
+                .sorted(by: inProgressSort)
+            completedChallenges = badgeHistories
+                .map { makeHistoryCardModel(from: $0) }
+                .sorted(by: completedSort)
+        } catch {
+            hasReadError = true
         }
-
-        async let recommended = personalizedChallengeUseCase.fetchPersonalizedChallenges(
-            snapshot: snapshot,
-            referenceDate: referenceDate,
-            calendar: calendar
-        )
-        async let challenges = challengeUseCase.fetchChallenges(
-            referenceDate: referenceDate,
-            calendar: calendar
-        )
-
-        let recommendedCards = await recommended
-        let fixedCards = await challenges
-        let badgeHistories = await challengeUseCase.fetchBadgeHistories()
-
-        recommendedChallenges = recommendedCards.map(makePersonalizedCardModel(from:))
-
-        inProgressChallenges = fixedCards
-            .filter { $0.isCompleted == false }
-            .map { makeCardModel(from: $0, snapshot: snapshot) }
-            .sorted(by: inProgressSort)
-        completedChallenges = badgeHistories
-            .map { makeHistoryCardModel(from: $0) }
-            .sorted(by: completedSort)
     }
 
     func trackRoutineActionTapped(for challenge: PersonalizedChallengeCardModel) {

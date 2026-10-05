@@ -44,7 +44,7 @@ public struct ChallengeView: View {
                 .offset(x: 150, y: 220)
 
             Group {
-                if viewModel.isLoading {
+                if viewModel.isLoading || (!viewModel.hasLoadedChallenges && !viewModel.hasReadError) {
                     ProgressView(L10n.tr("challengeLoadingTitle"))
                 } else {
                     challengeContent
@@ -63,8 +63,21 @@ public struct ChallengeView: View {
     private var challengeContent: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                categoryPicker
-                selectedCategoryContent
+                if viewModel.hasReadError {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label(L10n.tr("hydrationReadFailureTitle"), systemImage: "exclamationmark.triangle")
+                        Text(L10n.tr(viewModel.hasLoadedChallenges ? "hydrationReadStaleDescription" : "hydrationReadFailureDescription"))
+                            .font(.subheadline)
+                        Button(L10n.tr("hydrationReadRetryTitle")) {
+                            Task { await viewModel.loadChallenges() }
+                        }
+                    }
+                }
+                if viewModel.hasLoadedChallenges {
+                    categoryPicker
+                    selectedCategoryContent
+                        .disabled(viewModel.hasReadError)
+                }
             }
             .padding(.vertical, 20)
         }

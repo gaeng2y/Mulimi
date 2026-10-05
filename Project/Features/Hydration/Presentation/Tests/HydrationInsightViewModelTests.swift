@@ -3,6 +3,7 @@ import MulimiAnalytics
 import HydrationDomain
 import RoutineDomain
 import Foundation
+import Localization
 import Testing
 
 @testable import HydrationPresentation
@@ -107,7 +108,12 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.weeklyReport?.achievedDayDelta == 2)
         #expect(viewModel.weeklyReport?.frequentlyEmptySlot == .afternoon)
         #expect(viewModel.weeklyReport?.frequentlyEmptySlotMissingDays == 4)
-        #expect(viewModel.weeklyReportMetrics.count == 3)
+        #expect(viewModel.weeklySummaryMetrics.count == 2)
+        #expect(viewModel.weeklySummaryMetrics.map(\.id) == ["average", "achieved"])
+        #expect(viewModel.monthlyAverageText == L10n.tr("commonMilliliterFormat", 1042))
+        #expect(!viewModel.weeklyPeriodText.isEmpty)
+        #expect(viewModel.weeklyPeriodText != viewModel.monthlyPeriodText)
+        #expect(viewModel.weeklyGapMetric?.value == L10n.tr("insightWeeklyReportAfternoonSlot"))
         #expect(viewModel.weeklyCoachingCards.first?.action == .routine(.manageRoutine(.create)))
         #expect(viewModel.notificationStatus == .authorized)
         #expect(progressUseCase.requestedReferenceDate == referenceDate)
@@ -143,7 +149,11 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.routineAdherenceInsight != nil)
         #expect(viewModel.weeklyReport?.hasCurrentWeekRecords == false)
         #expect(viewModel.weeklyReport?.elapsedDays == 4)
-        #expect(viewModel.weeklyReportMetrics.count == 3)
+        #expect(viewModel.weeklySummaryMetrics.count == 2)
+        #expect(viewModel.weeklySummaryMetrics.allSatisfy { $0.value == L10n.tr("insightNoRecordsValue") })
+        #expect(viewModel.monthlyAverageText == L10n.tr("insightNoRecordsValue"))
+        #expect(viewModel.weeklyGapMetric?.value == L10n.tr("insightWeeklyReportPendingValue"))
+        #expect(viewModel.routineAdherenceMetrics.isEmpty)
     }
 
     @MainActor
@@ -357,6 +367,8 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.routineAdherenceRows.map(\.status) == [.noRecords, .inactive])
         #expect(viewModel.routineAdherenceInsight?.scheduledCount == 4)
         #expect(viewModel.weeklyReport?.elapsedDays == 4)
+        #expect(viewModel.weeklySummaryMetrics.allSatisfy { $0.value == L10n.tr("insightNoRecordsValue") })
+        #expect(viewModel.monthlyAverageText == L10n.tr("insightNoRecordsValue"))
     }
 
     @MainActor
@@ -755,6 +767,74 @@ struct HydrationInsightViewModelTests {
         #expect(viewModel.weeklyCoachingCards.map(\.action) == [.none])
     }
 
+    @MainActor
+    @Test("분석은 전주 기록 부족과 목표 미설정을 0 또는 정상 상태로 표시하지 않는다", arguments: [0.0, 2000.0])
+    func analysisWithoutComparisonOrGoal(dailyGoal: Double) async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 10))!
+        let waterUseCase = MockDrinkWaterUseCase()
+        setTotal(600, on: referenceDate, using: waterUseCase)
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: dailyGoal, weeklyAverageML: 150, monthlyAverageML: 50,
+            weeklyAchievementRate: 0, monthlyAchievementRate: 0,
+            weeklyAchievedDays: 0, monthlyAchievedDays: 0,
+            weeklyElapsedDays: 4, monthlyElapsedDays: 12, currentStreak: 0, isEmpty: false
+        )
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: waterUseCase,
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(viewModel.weeklySummaryMetrics.first?.value == L10n.tr("commonMilliliterFormat", 150))
+        #expect(viewModel.weeklySummaryMetrics.first?.detail == L10n.tr("insightWeeklyReportNoComparisonDetail"))
+        #expect(viewModel.monthlyAverageText == L10n.tr("commonMilliliterFormat", 50))
+        let achieved = viewModel.weeklySummaryMetrics.first { $0.id == "achieved" }
+        if dailyGoal == 0 {
+            #expect(achieved?.value == L10n.tr("insightGoalNotSetValue"))
+        } else {
+            #expect(achieved?.value == L10n.tr("insightAchievementDaysFormat", 0, 4))
+        }
+    }
+
+    @MainActor
+    @Test("이번 주 기록이 없어도 이번 달 패턴은 유지하고 주간 수치는 기록 없음으로 표시한다")
+    func analysisWithMonthlyRecordsOnly() async {
+        let calendar = makeCalendar()
+        let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 16, hour: 10))!
+        let waterUseCase = MockDrinkWaterUseCase()
+        setTotal(2000, on: calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 10))!, using: waterUseCase)
+        let progressUseCase = MockHydrationProgressUseCase()
+        progressUseCase.snapshot = HydrationProgressSnapshot(
+            dailyGoalML: 2000, weeklyAverageML: 0, monthlyAverageML: 125,
+            weeklyAchievementRate: 0, monthlyAchievementRate: 1.0 / 16,
+            weeklyAchievedDays: 0, monthlyAchievedDays: 1,
+            weeklyElapsedDays: 1, monthlyElapsedDays: 16, currentStreak: 0, isEmpty: false
+        )
+        let viewModel = HydrationInsightViewModel(
+            waterUseCase: waterUseCase,
+            progressUseCase: progressUseCase,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
+            calendar: calendar,
+            currentDateProvider: { referenceDate }
+        )
+
+        await viewModel.loadInsights()
+
+        #expect(!viewModel.isEmpty)
+        #expect(!viewModel.weekdayDistributions.isEmpty)
+        #expect(viewModel.monthlyAverageText == L10n.tr("commonMilliliterFormat", 125))
+        #expect(viewModel.weeklySummaryMetrics.allSatisfy { $0.value == L10n.tr("insightNoRecordsValue") })
+        #expect(viewModel.weeklyGapMetric?.value == L10n.tr("insightWeeklyReportPendingValue"))
+    }
+
     private func setTotal(_ volumeML: Int, on date: Date, using useCase: MockDrinkWaterUseCase) {
         useCase.setHydrationEvents(
             [HydrationEvent(id: UUID(), consumedAt: date, volumeML: volumeML)],
@@ -826,4 +906,96 @@ private final class SpyRoutineUseCase: RoutineUseCase, @unchecked Sendable {
     func deleteRoutine(id: UUID) async throws {
         routines.removeAll { $0.id == id }
     }
+}
+
+extension HydrationInsightViewModelTests {
+    @MainActor
+    @Test("인사이트 일부 조회 실패는 이전 통계를 유지하며 복구 안내 기록을 차단한다")
+    func failedInsightReadPreservesSnapshot() async {
+        let water = MockDrinkWaterUseCase()
+        let progress = MockHydrationProgressUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: progress,
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase()
+        )
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedInsights)
+        #expect(model.weeklyPeriodText.isEmpty)
+        #expect(model.monthlyPeriodText.isEmpty)
+        water.readError = nil
+        await model.loadInsights()
+        #expect(model.hasLoadedInsights)
+        #expect(!model.hasReadError)
+        let previousReport = model.weeklyReport?.averageML
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(model.hasLoadedInsights)
+        #expect(model.weeklyReport?.averageML == previousReport)
+        #expect(!(await model.recordRecoveryDrink()))
+        #expect(water.drinkWaterCallCount == 0)
+    }
+
+    @MainActor
+    @Test("인사이트에서 저장 직전 조회가 실패하면 쓰기를 시도하지 않는다")
+    func recoveryDrinkRequiresFreshRead() async {
+        let water = MockDrinkWaterUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: MockHydrationProgressUseCase(),
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase()
+        )
+        await model.loadInsights()
+        water.loggingReadError = CocoaError(.fileReadUnknown)
+        #expect(!(await model.recordRecoveryDrink()))
+        #expect(model.hasReadError)
+        #expect(water.drinkWaterCallCount == 0)
+    }
+}
+
+extension HydrationInsightViewModelTests {
+    @MainActor
+    @Test("날짜가 바뀌면 전날 인사이트를 숨기고 당일 조회 실패를 표시한다")
+    func dayChangeInvalidatesInsights() async {
+        let calendar = makeCalendar()
+        let clock = InsightRecoveryClock()
+        clock.date = calendar.date(from: DateComponents(year: 2026, month: 3, day: 31, hour: 10))!
+        let water = MockDrinkWaterUseCase()
+        let model = HydrationInsightViewModel(
+            waterUseCase: water,
+            progressUseCase: MockHydrationProgressUseCase(),
+            routineAdherenceUseCase: MockHydrationRoutineAdherenceUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
+            calendar: calendar,
+            currentDateProvider: { clock.date }
+        )
+        await model.loadInsights()
+        #expect(model.hasLoadedInsights)
+        let previousWeeklyPeriod = model.weeklyPeriodText
+        let previousMonthlyPeriod = model.monthlyPeriodText
+        clock.date = clock.date.addingTimeInterval(86_400)
+        #expect(!model.hasLoadedInsights)
+        water.readError = CocoaError(.fileReadUnknown)
+        await model.loadInsights()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedInsights)
+        #expect(model.weeklyPeriodText == previousWeeklyPeriod)
+        #expect(model.monthlyPeriodText == previousMonthlyPeriod)
+
+        water.readError = nil
+        await model.loadInsights()
+        #expect(!model.hasReadError)
+        #expect(model.hasLoadedInsights)
+        #expect(model.weeklyPeriodText != previousWeeklyPeriod)
+        #expect(model.monthlyPeriodText != previousMonthlyPeriod)
+    }
+}
+
+private final class InsightRecoveryClock: @unchecked Sendable {
+    var date = Date.now
 }

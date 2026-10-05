@@ -18,7 +18,12 @@ public enum AppRoute: NavigationRoute, Sendable {
     }
 
     public var presentationStyle: NavigationPresentationStyle {
-        .push
+        switch self {
+        case .hydrationStarterPlan:
+            return .sheet
+        case .hydrationLogging, .profileRoutineAction:
+            return .push
+        }
     }
 }
 

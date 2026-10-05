@@ -49,3 +49,21 @@ struct ReminderHealthKitWriteTests {
         #expect(health.saved.isEmpty)
     }
 }
+
+extension ReminderHealthKitWriteTests {
+    @Test("실제 조회 오류는 Domain까지 전달하고 정상 빈 결과는 그대로 반환한다")
+    func readErrorsAreNotEmptyRecords() async throws {
+        let health = HealthKitSource()
+        let source = DrinkWaterHealthKitDataSource(healthKitDataSource: health)
+        let useCase = DrinkWaterUseCaseImpl(repository: DrinkWaterRepositoryImpl(dataSource: source))
+        health.readError = HealthKitError.healthKitInternalError
+        await #expect(throws: HealthKitError.self) { try await useCase.currentWaterIntakeML }
+        await #expect(throws: HealthKitError.self) { try await useCase.hydrationEvents(on: .now) }
+        await #expect(throws: HealthKitError.self) {
+            try await useCase.hydrationEvents(in: DateInterval(start: .now, duration: 60))
+        }
+        health.readError = nil
+        #expect(try await useCase.currentWaterIntakeML == 0)
+        #expect(try await useCase.hydrationEvents(on: .now).isEmpty)
+    }
+}

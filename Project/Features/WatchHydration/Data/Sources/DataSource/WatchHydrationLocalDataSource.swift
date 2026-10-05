@@ -5,9 +5,10 @@ import OSLog
 import WatchHydrationDomain
 
 protocol WatchHydrationLocalDataSource: Sendable {
-    func hydrationEvents(on date: Date) async -> [WatchHydrationEvent]
+    func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent]
     @discardableResult
-    func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult
+    func addDrink(volumeML: Int, consumedAt: Date) async -> Result<WatchHydrationEvent, HydrationWriteFailureReason>
+    func deleteDrink(id: UUID) async -> HydrationWriteResult
     @discardableResult
     func resetEvents(on date: Date) async -> HydrationWriteResult
 }
@@ -33,7 +34,7 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
             && store.authorizationStatus(for: .dietaryWater) == .sharingAuthorized
     }
 
-    func hydrationEvents(on date: Date) async -> [WatchHydrationEvent] {
+    func hydrationEvents(on date: Date) async throws -> [WatchHydrationEvent] {
         let interval = dayInterval(for: date)
 
         do {
@@ -51,27 +52,40 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
             }
         } catch {
             logger.error("Failed to fetch watch hydration samples: \(String(describing: error))")
-            return []
+            throw error
         }
     }
 
     @discardableResult
-    func addDrink(volumeML: Int, consumedAt: Date) async -> HydrationWriteResult {
+    func addDrink(volumeML: Int, consumedAt: Date) async -> Result<WatchHydrationEvent, HydrationWriteFailureReason> {
+        guard volumeML > 0 else { return .failure(.invalidObjectType) }
         guard isWaterSharingAuthorized else {
             logger.error("HealthKit water write permission is unavailable on watch.")
             return .failure(.permissionDenied)
         }
 
         do {
-            try await store.save(
+            let id = try await store.save(
                 Double(volumeML),
                 unit: .literUnit(with: .milli),
                 of: .dietaryWater,
                 at: consumedAt
             )
-            return .success
+            return .success(WatchHydrationEvent(id: id, consumedAt: consumedAt, volumeML: volumeML))
         } catch {
             logger.error("Failed to save watch hydration sample: \(String(describing: error))")
+            return .failure(Self.writeFailureReason(for: error))
+        }
+    }
+
+    func deleteDrink(id: UUID) async -> HydrationWriteResult {
+        guard isWaterSharingAuthorized else { return .failure(.permissionDenied) }
+
+        do {
+            let deleted = try await store.deleteOwnedSample(id: id, of: .dietaryWater)
+            return deleted ? .success : .failure(.systemError)
+        } catch {
+            logger.error("Failed to undo watch hydration sample: \(String(describing: error))")
             return .failure(Self.writeFailureReason(for: error))
         }
     }
@@ -99,6 +113,9 @@ actor WatchHydrationHealthKitDataSource: WatchHydrationLocalDataSource {
     }
 
     private static func writeFailureReason(for error: Error) -> HydrationWriteFailureReason {
+        if case HealthQuantityStoreError.permissionDenied = error {
+            return .permissionDenied
+        }
         if case HealthQuantityStoreError.invalidObjectType = error {
             return .invalidObjectType
         }

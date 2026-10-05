@@ -1,12 +1,12 @@
 # 프로젝트 전체 구조와 의존성
 
-기준: 검토 커밋 `3f30fce80efffa134036b0532db92d6f4f6fc67d`와 이후 watchOS 단일 앱 전환을 반영한 작업 트리, Mulimi **2.5.0 (33)**. 실제 `Project.swift` 17개와 진입점·DI·저장 구현을 확인한 스냅샷이다. 구조도 `meta.repository.revision`은 변경 전 검토 커밋을 가리킨다.
+기준: 검토 커밋 `221c44489b3ec4567f37334675830b63461dd51d`와 #336 Watch 단건 취소를 반영한 작업 트리, Mulimi **2.5.1 (37)**. #350 조회 실패 복구와 함께 실제 `Project.swift` 17개 및 진입점·DI·저장 구현을 확인한 스냅샷이다. 구조도 `meta.repository.revision`은 변경 전 검토 커밋을 가리킨다.
 
 [전체 구조도 열기](diagrams/mulimi-project-architecture.html) · [다이어그램 원본 JSON](diagrams/mulimi-project-architecture.json) · [라이트·다크 화면 검증](diagrams/mulimi-project-architecture.visual-check.html)
 
 ## 읽는 방법
 
-구조도는 11개 묶음으로 주요 의존 방향을 보여준다. 모든 간선을 그린 타깃 그래프는 아니며, 아래 표가 **선언된 52개 타깃과 직접 의존 선언 169개 전체**를 담는다. 이 중 15개는 테스트 타깃이고, 의존 선언은 내부 타깃 165개와 외부 제품 참조 4개다. Apple SDK의 암시적 링크와 전이 의존성은 이 개수에 포함하지 않는다.
+구조도는 11개 묶음으로 주요 의존 방향을 보여준다. 모든 간선을 그린 타깃 그래프는 아니며, 아래 표가 **선언된 53개 타깃과 직접 의존 선언 174개 전체**를 담는다. 이 중 16개는 테스트 타깃이고, 의존 선언은 내부 타깃 170개와 외부 제품 참조 4개다. Apple SDK의 암시적 링크와 전이 의존성은 이 개수에 포함하지 않는다.
 
 화살표 `A → B`는 A가 B를 참조한다는 뜻이다. DI의 객체 조립, 프레임워크 링크, 앱의 확장 포함은 같은 실행 호출 흐름이 아니다. 특히 `Data → Domain`은 Repository 계약 구현에 필요한 **컴파일 의존 방향**이다. 실행 시에는 ViewModel이 UseCase를 호출하고, 주입된 Repository 구현이 시스템에 접근한다.
 
@@ -52,10 +52,11 @@ Project/
 
 - iOS 진입: `DrinkWaterApp → RootView`. 인증 후 `Onboarding → HydrationReminderPermissionGate → HealthKitPermissionGate → ContentView` 순서로 진입한다. 전역 push는 `ContentView + AppCoordinator`가 담당한다.
 - iOS DI: `DataAssembly / DomainAssembly / PresentationAssembly`가 Swinject로 구현·UseCase·ViewModel을 연결한다. 제품, Preview, Testing은 별도 타깃으로 선언돼 있다.
-- 위젯: `WidgetExtension`은 Account·Hydration·Routine Domain과 제품 DI를 재사용한다. `LogWaterAppIntent.swift`는 앱과 위젯 양쪽 타깃에서 컴파일한다.
+- 위젯: `WidgetExtension`은 Account·Hydration·Routine Domain과 제품 DI를 재사용한다. 오류 안내는 `Localization`을 직접 참조한다. `LogWaterAppIntent.swift`는 앱과 위젯 양쪽 타깃에서 컴파일한다.
 - Watch: `MulimiWatch → WatchDependencyInjection`. 단일 `.app` 타깃이 진입 코드·전체 리소스·HealthKit/App Group/iCloud 권한을 소유하며, `WKApplication`을 선언한다. 앱 번들 ID `gaeng2y.DrinkWater.watchkitapp`과 iOS 앱의 Watch 포함 관계는 유지한다. `WatchDIContainer`는 Swinject 없이 Repository·UseCase·ViewModel을 직접 조립한다.
 - Watch의 `HydrationServing`, `HydrationWriteResult`, `HydrationNextActionGuide`는 iOS Hydration의 **동일 소스 파일을 별도 컴파일**한다. `WatchHydrationDomain → HydrationDomain`이라는 타깃 의존성은 없다.
 - `MulimiCloudKit`과 `MulimiHealthKit`은 iOS·watchOS 공용 타깃이다. `MulimiCloudKit`의 현재 구현은 CloudKit 레코드 DB가 아니라 `NSUbiquitousKeyValueStore`와 UserDefaults mirror다.
+- `WatchHydrationTests`는 watchOS 전용 테스트 번들이다. Watch Presentation·Domain·Data와 공용 HealthKit 어댑터의 기록 영수증·단건 취소를 함께 검증하며 제품 앱에는 포함하지 않는다.
 
 ## 기능 간 직접 의존에서 주의할 점
 
@@ -89,78 +90,80 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [DependencyInjection](../Project/App/DependencyInjection/Project.swift#L29) | `Swinject` (외부), `AccountDomain`, `AccountData`, `AccountPresentation`, `ChallengeDomain`, `ChallengeData`, `ChallengePresentation`, `MulimiAnalytics`, `MulimiNavigation`, `MulimiPlatform`, `MulimiAnalyticsData`, `HydrationDomain`, `HydrationData`, `HydrationPresentation`, `HydrationReminderDomain`, `HydrationReminderData`, `HydrationReminderPresentation`, `RoutineDomain`, `RoutineData`, `RoutinePresentation`, `Utils` |
-| [WatchDependencyInjection](../Project/App/DependencyInjection/Project.swift#L72) | `WatchHydrationData`, `WatchHydrationDomain`, `WatchHydrationPresentation` |
-| [DependencyInjectionPreview](../Project/App/DependencyInjection/Project.swift#L96) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `AccountPresentation`, `ChallengeDomain`, `ChallengePresentation`, `MulimiAnalytics`, `MulimiNavigation`, `MulimiPlatform`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderDomain`, `HydrationReminderPresentation`, `RoutineDomain`, `RoutinePresentation` |
-| [DependencyInjectionTesting](../Project/App/DependencyInjection/Project.swift#L129) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `ChallengeDomain`, `MulimiAnalytics`, `HydrationDomain`, `HydrationReminderDomain`, `RoutineDomain` |
+| [DependencyInjection](../Project/App/DependencyInjection/Project.swift#L14) | `Swinject` (외부), `AccountDomain`, `AccountData`, `AccountPresentation`, `ChallengeDomain`, `ChallengeData`, `ChallengePresentation`, `MulimiAnalytics`, `MulimiNavigation`, `MulimiPlatform`, `MulimiAnalyticsData`, `HydrationDomain`, `HydrationData`, `HydrationPresentation`, `HydrationReminderDomain`, `HydrationReminderData`, `HydrationReminderPresentation`, `RoutineDomain`, `RoutineData`, `RoutinePresentation`, `Utils` |
+| [WatchDependencyInjection](../Project/App/DependencyInjection/Project.swift#L73) | `WatchHydrationData`, `WatchHydrationDomain`, `WatchHydrationPresentation` |
+| [DependencyInjectionPreview](../Project/App/DependencyInjection/Project.swift#L97) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `AccountPresentation`, `ChallengeDomain`, `ChallengePresentation`, `MulimiAnalytics`, `MulimiNavigation`, `MulimiPlatform`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderDomain`, `HydrationReminderPresentation`, `RoutineDomain`, `RoutinePresentation` |
+| [DependencyInjectionTesting](../Project/App/DependencyInjection/Project.swift#L130) | `DependencyInjection`, `Swinject` (외부), `AccountDomain`, `ChallengeDomain`, `MulimiAnalytics`, `HydrationDomain`, `HydrationReminderDomain`, `RoutineDomain` |
 | [Mulimi](../Project/App/Project.swift#L36) | `MulimiWatch`, `WidgetExtension`, `MulimiNavigation`, `DependencyInjection`, `AccountDomain`, `AccountPresentation`, `ChallengePresentation`, `MulimiAnalytics`, `HydrationDomain`, `HydrationPresentation`, `HydrationReminderData`, `HydrationReminderPresentation`, `RoutinePresentation`, `Localization`, `Utils` |
-| [WidgetExtension](../Project/App/Project.swift#L109) | `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Utils`, `DependencyInjection` |
-| [MulimiNavigation](../Project/App/Project.swift#L150) | `RoutineDomain` |
-| [MulimiWatch](../Project/App/Project.swift#L194) | `WatchDependencyInjection` |
+| [WidgetExtension](../Project/App/Project.swift#L72) | `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Localization`, `Utils`, `DependencyInjection` |
+| [MulimiNavigation](../Project/App/Project.swift#L73) | `RoutineDomain` |
+| [MulimiWatch](../Project/App/Project.swift#L71) | `WatchDependencyInjection` |
 
 ### Features — 18개
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [AccountDomain](../Project/Features/Account/Project.swift#L18) | 없음 |
-| [AccountData](../Project/Features/Account/Project.swift#L26) | `AccountDomain`, `MulimiCloudKit`, `MulimiKeychain`, `Utils` |
-| [AccountPresentation](../Project/Features/Account/Project.swift#L43) | `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `HydrationDomain`, `HydrationPresentation`, `RoutinePresentation`, `HydrationReminderDomain`, `Localization` |
-| [ChallengeDomain](../Project/Features/Challenge/Project.swift#L18) | `HydrationDomain`, `RoutineDomain` |
-| [ChallengeData](../Project/Features/Challenge/Project.swift#L30) | `ChallengeDomain`, `Utils` |
-| [ChallengePresentation](../Project/Features/Challenge/Project.swift#L42) | `ChallengeDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `RoutinePresentation`, `DesignSystem`, `Localization` |
-| [HydrationDomain](../Project/Features/Hydration/Project.swift#L18) | `AccountDomain` |
-| [HydrationData](../Project/Features/Hydration/Project.swift#L29) | `HydrationDomain`, `MulimiHealthKit`, `Utils` |
-| [HydrationPresentation](../Project/Features/Hydration/Project.swift#L42) | `HydrationDomain`, `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `RoutineDomain`, `DesignSystem`, `Localization` |
-| [HydrationReminderDomain](../Project/Features/HydrationReminder/Project.swift#L21) | 없음 |
-| [HydrationReminderData](../Project/Features/HydrationReminder/Project.swift#L29) | `HydrationReminderDomain`, `Localization`, `Utils` |
-| [HydrationReminderPresentation](../Project/Features/HydrationReminder/Project.swift#L48) | `HydrationReminderDomain`, `MulimiAnalytics`, `Localization` |
-| [RoutineDomain](../Project/Features/Routine/Project.swift#L18) | `AccountDomain`, `HydrationDomain` |
-| [RoutineData](../Project/Features/Routine/Project.swift#L30) | `RoutineDomain`, `Localization`, `Utils` |
-| [RoutinePresentation](../Project/Features/Routine/Project.swift#L43) | `RoutineDomain`, `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `Localization` |
-| [WatchHydrationDomain](../Project/Features/WatchHydration/Project.swift#L18) | 없음 |
-| [WatchHydrationData](../Project/Features/WatchHydration/Project.swift#L31) | `WatchHydrationDomain`, `MulimiCloudKit`, `MulimiHealthKit` |
-| [WatchHydrationPresentation](../Project/Features/WatchHydration/Project.swift#L44) | `WatchHydrationDomain` |
+| [AccountDomain](../Project/Features/Account/Project.swift#L19) | 없음 |
+| [AccountData](../Project/Features/Account/Project.swift#L27) | `AccountDomain`, `MulimiCloudKit`, `MulimiKeychain`, `Utils` |
+| [AccountPresentation](../Project/Features/Account/Project.swift#L44) | `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `HydrationDomain`, `HydrationPresentation`, `RoutinePresentation`, `HydrationReminderDomain`, `Localization` |
+| [ChallengeDomain](../Project/Features/Challenge/Project.swift#L19) | `HydrationDomain`, `RoutineDomain` |
+| [ChallengeData](../Project/Features/Challenge/Project.swift#L31) | `ChallengeDomain`, `Utils` |
+| [ChallengePresentation](../Project/Features/Challenge/Project.swift#L43) | `ChallengeDomain`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `RoutinePresentation`, `DesignSystem`, `Localization` |
+| [HydrationDomain](../Project/Features/Hydration/Project.swift#L19) | `AccountDomain` |
+| [HydrationData](../Project/Features/Hydration/Project.swift#L30) | `HydrationDomain`, `MulimiHealthKit`, `Utils` |
+| [HydrationPresentation](../Project/Features/Hydration/Project.swift#L43) | `HydrationDomain`, `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `RoutineDomain`, `DesignSystem`, `Localization` |
+| [HydrationReminderDomain](../Project/Features/HydrationReminder/Project.swift#L22) | 없음 |
+| [HydrationReminderData](../Project/Features/HydrationReminder/Project.swift#L30) | `HydrationReminderDomain`, `Localization`, `Utils` |
+| [HydrationReminderPresentation](../Project/Features/HydrationReminder/Project.swift#L49) | `HydrationReminderDomain`, `MulimiAnalytics`, `Localization` |
+| [RoutineDomain](../Project/Features/Routine/Project.swift#L19) | `AccountDomain`, `HydrationDomain` |
+| [RoutineData](../Project/Features/Routine/Project.swift#L31) | `RoutineDomain`, `Localization`, `Utils` |
+| [RoutinePresentation](../Project/Features/Routine/Project.swift#L44) | `RoutineDomain`, `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `Localization` |
+| [WatchHydrationDomain](../Project/Features/WatchHydration/Project.swift#L19) | 없음 |
+| [WatchHydrationData](../Project/Features/WatchHydration/Project.swift#L32) | `WatchHydrationDomain`, `MulimiCloudKit`, `MulimiHealthKit` |
+| [WatchHydrationPresentation](../Project/Features/WatchHydration/Project.swift#L45) | `WatchHydrationDomain` |
 
 ### Core — 6개
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [MulimiAnalytics](../Project/Core/Analytics/Project.swift#L18) | 없음 |
-| [MulimiAnalyticsData](../Project/Core/Analytics/Project.swift#L26) | `MulimiAnalytics`, `PostHog` (외부) |
-| [MulimiCloudKit](../Project/Core/CloudKit/Project.swift#L18) | 없음 |
-| [MulimiHealthKit](../Project/Core/HealthKit/Project.swift#L18) | 없음 |
-| [MulimiKeychain](../Project/Core/Keychain/Project.swift#L18) | 없음 |
-| [MulimiPlatform](../Project/Core/Platform/Project.swift#L18) | 없음 |
+| [MulimiAnalytics](../Project/Core/Analytics/Project.swift#L7) | 없음 |
+| [MulimiAnalyticsData](../Project/Core/Analytics/Project.swift#L27) | `MulimiAnalytics`, `PostHog` (외부) |
+| [MulimiCloudKit](../Project/Core/CloudKit/Project.swift#L7) | 없음 |
+| [MulimiHealthKit](../Project/Core/HealthKit/Project.swift#L7) | 없음 |
+| [MulimiKeychain](../Project/Core/Keychain/Project.swift#L7) | 없음 |
+| [MulimiPlatform](../Project/Core/Platform/Project.swift#L7) | 없음 |
 
 ### Shared — 5개
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [DesignSystem](../Project/Shared/DesignSystem/Project.swift#L28) | 없음 |
-| [Localization](../Project/Shared/Localization/Project.swift#L22) | 없음 |
-| [Persistence](../Project/Shared/Persistence/Project.swift#L28) | 없음 |
-| [PersistenceWatch](../Project/Shared/Persistence/Project.swift#L36) | 없음 |
-| [Utils](../Project/Shared/Utils/Project.swift#L28) | 없음 |
+| [DesignSystem](../Project/Shared/DesignSystem/Project.swift#L14) | 없음 |
+| [Localization](../Project/Shared/Localization/Project.swift#L7) | 없음 |
+| [Persistence](../Project/Shared/Persistence/Project.swift#L14) | 없음 |
+| [PersistenceWatch](../Project/Shared/Persistence/Project.swift#L37) | 없음 |
+| [Utils](../Project/Shared/Utils/Project.swift#L14) | 없음 |
 
-### Tests — 15개
+### Tests — 16개
 
 | 타깃 (선언 위치) | 직접 의존하는 타깃·외부 제품 |
 | --- | --- |
-| [MulimiNavigationTests](../Project/App/Project.swift#L172) | `MulimiNavigation` |
-| [AccountDomainTests](../Project/Features/Account/Project.swift#L64) | `AccountDomain` |
-| [AccountPresentationTests](../Project/Features/Account/Project.swift#L77) | `AccountPresentation`, `MulimiAnalytics`, `MulimiPlatform`, `HydrationReminderDomain` |
-| [ChallengeDomainTests](../Project/Features/Challenge/Project.swift#L59) | `ChallengeDomain`, `HydrationDomain`, `RoutineDomain` |
-| [ChallengeDataTests](../Project/Features/Challenge/Project.swift#L78) | `ChallengeData`, `ChallengeDomain` |
-| [ChallengePresentationTests](../Project/Features/Challenge/Project.swift#L87) | `ChallengePresentation`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Localization` |
-| [HydrationDomainTests](../Project/Features/Hydration/Project.swift#L59) | `HydrationDomain`, `AccountDomain` |
-| [HydrationDataTests](../Project/Features/Hydration/Project.swift#L77) | `HydrationData`, `HydrationDomain` |
-| [HydrationPresentationTests](../Project/Features/Hydration/Project.swift#L86) | `HydrationPresentation`, `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `RoutineDomain`, `Localization` |
-| [HydrationReminderDomainTests](../Project/Features/HydrationReminder/Project.swift#L67) | `HydrationReminderDomain` |
-| [HydrationReminderDataTests](../Project/Features/HydrationReminder/Project.swift#L78) | `HydrationReminderData`, `HydrationReminderDomain` |
-| [HydrationReminderPresentationTests](../Project/Features/HydrationReminder/Project.swift#L90) | `HydrationReminderPresentation`, `HydrationReminderDomain`, `MulimiAnalytics`, `Localization` |
-| [RoutineDomainTests](../Project/Features/Routine/Project.swift#L58) | `RoutineDomain`, `AccountDomain`, `HydrationDomain` |
-| [RoutineDataTests](../Project/Features/Routine/Project.swift#L76) | `RoutineData`, `RoutineDomain` |
-| [RoutinePresentationTests](../Project/Features/Routine/Project.swift#L85) | `RoutinePresentation`, `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `Localization` |
+| [MulimiNavigationTests](../Project/App/Project.swift#L174) | `MulimiNavigation` |
+| [AccountDomainTests](../Project/Features/Account/Project.swift#L65) | `AccountDomain` |
+| [AccountPresentationTests](../Project/Features/Account/Project.swift#L78) | `AccountPresentation`, `MulimiAnalytics`, `MulimiPlatform`, `HydrationReminderDomain` |
+| [ChallengeDomainTests](../Project/Features/Challenge/Project.swift#L60) | `ChallengeDomain`, `HydrationDomain`, `RoutineDomain` |
+| [ChallengeDataTests](../Project/Features/Challenge/Project.swift#L79) | `ChallengeData`, `ChallengeDomain` |
+| [ChallengePresentationTests](../Project/Features/Challenge/Project.swift#L88) | `ChallengePresentation`, `MulimiAnalytics`, `HydrationDomain`, `RoutineDomain`, `Localization` |
+| [HydrationDomainTests](../Project/Features/Hydration/Project.swift#L60) | `HydrationDomain`, `AccountDomain` |
+| [HydrationDataTests](../Project/Features/Hydration/Project.swift#L78) | `HydrationData`, `HydrationDomain` |
+| [HydrationPresentationTests](../Project/Features/Hydration/Project.swift#L87) | `HydrationPresentation`, `AccountDomain`, `MulimiAnalytics`, `MulimiPlatform`, `RoutineDomain`, `Localization` |
+| [HydrationReminderDomainTests](../Project/Features/HydrationReminder/Project.swift#L68) | `HydrationReminderDomain` |
+| [HydrationReminderDataTests](../Project/Features/HydrationReminder/Project.swift#L79) | `HydrationReminderData`, `HydrationReminderDomain` |
+| [HydrationReminderPresentationTests](../Project/Features/HydrationReminder/Project.swift#L91) | `HydrationReminderPresentation`, `HydrationReminderDomain`, `MulimiAnalytics`, `Localization` |
+| [RoutineDomainTests](../Project/Features/Routine/Project.swift#L59) | `RoutineDomain`, `AccountDomain`, `HydrationDomain` |
+| [RoutineDataTests](../Project/Features/Routine/Project.swift#L77) | `RoutineData`, `RoutineDomain` |
+| [RoutinePresentationTests](../Project/Features/Routine/Project.swift#L86) | `RoutinePresentation`, `AccountDomain`, `MulimiAnalytics`, `HydrationDomain`, `Localization` |
+
+| [WatchHydrationTests](../Project/Features/WatchHydration/Project.swift#L54) | `WatchHydrationDomain`, `WatchHydrationData`, `WatchHydrationPresentation`, `MulimiHealthKit` |
 
 ## 검증과 갱신
 
@@ -186,10 +189,10 @@ archify로 실제 소스 참조 31개를 검증하고 HTML을 생성했다. 아�
 ```text
 diagram_type: architecture
 output: Docs/diagrams/mulimi-project-architecture.html
-specification_sha256: a2230c829c1724a2d6d2d6e1faf01d53fb75d98765e97cbdb40ae0f7fc2467f1
+specification_sha256: 8ef46657a0ff6b3a3c8401316ee685a5c7fd119819a57d41bdd08ba0901378b8
 specification_bytes: 12197
-artifact_sha256: a06ff1829c45ff34ef6ef62a28e372434b6fd345b197fee89926f5f70bdc61c5
-artifact_bytes: 721424
+artifact_sha256: f808f9ec2790eea54f581bb96ea8d718588bfe8ce7f7be741091b173f3ac2363
+artifact_bytes: 721438
 validation: 9/9 showcase, 0 errors, 0 warnings
 visual_review: passed
 correction_rounds: 0
@@ -197,7 +200,9 @@ correction_rounds: 0
 
 화면 검증: 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침 없음. 1440×900과 2048×1320의 라이트·다크 캡처 4장을 직접 확인했다. READ·정지 화면 기준이다. 자동 검증 receipt의 `visualReview: pending`과 별도로 캡처를 직접 확인했다.
 
-저장소 검증(2026-09-26): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 다음을 직접 확인했다.
+저장소 검증(2026-09-29, #336): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 `make lint`(316개 파일, 위반 0), `make arch-check`, `tuist generate --no-open`을 통과했다. Watch SE 3 40mm/watchOS 27의 `WatchHydrationTests`는 정의 6개·매개변수 포함 12건, iPhone 17e/iOS 27의 `HydrationDomain` 65개·`HydrationData` 6개·`HydrationPresentation` 91개가 통과했다. Watch Debug Simulator 및 워치를 포함한 iOS Release 서명 없는 빌드도 통과했다. 실기기 HealthKit 동기화·권한 검증은 별도다.
+
+이전 저장소 검증(2026-09-26): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 다음을 직접 확인했다.
 
 - `make lint`: 315개 파일에서 위반 0개. `make arch-check`, `tuist generate --no-open`, `git diff --check` 통과.
 - `xcodebuild build -workspace Mulimi.xcworkspace -scheme MulimiWatch -destination 'generic/platform=watchOS Simulator' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO`: Debug/watchOS Simulator 27 SDK 빌드 통과. 첫 실행은 샌드박스의 CoreSimulator 접근 차단으로 실패했으며, 시스템 접근을 허용한 재실행에서 통과했다.
@@ -208,3 +213,5 @@ correction_rounds: 0
 [#321 실행 당시](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md) 전체 빌드를 막던 WatchKit 확장 형식은 [Apple의 단일 타깃 전환 지침](https://developer.apple.com/documentation/watchos-apps/migrating-to-a-single-target-watchos-app)에 맞춰 제거했다. 이후 드러난 `AppDelegate`의 Swift 6 전송 오류도 알림 객체 대신 `String`·`Date`·`Bool` 값만 MainActor에 전달하도록 수정했다. 실기기 서명·설치와 HealthKit 권한 동작은 이번 서명 없는 빌드 검증에 포함하지 않았다.
 
 #321에서는 AppDelegate가 HydrationReminderData의 카테고리·전달 영수증·실패 안내를 직접 호출한다. 영수증은 `UserDefaults.standard`에 요청별 마지막 성공 전달 시각만 보관하고, 실제 수분 기록과 중복 방지 sync metadata는 HealthKit에 둔다.
+
+#350에서는 WatchHydrationTests를 추가해 실제 Data 오류 전파, 저장 전 조회 실패, 저장·초기화 후 조회 실패와 날짜 경계를 검증한다. 수분 조회는 오류를 던지는 계약이며 마지막 정상 값은 화면 메모리에만 남는다. 위젯은 실패 상태로 앱의 기존 기록 딥링크를 연다.

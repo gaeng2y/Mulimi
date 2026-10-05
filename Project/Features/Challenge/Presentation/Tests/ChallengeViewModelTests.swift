@@ -378,3 +378,25 @@ struct ChallengeViewModelTests {
         return calendar
     }
 }
+
+extension ChallengeViewModelTests {
+    @MainActor
+    @Test("챌린지 조회 실패와 성공한 빈 기록을 구분하고 재시도한다")
+    func readFailureAndRetry() async {
+        let progress = MockHydrationProgressUseCase()
+        let model = ChallengeViewModel(
+            challengeUseCase: MockChallengeUseCase(),
+            personalizedChallengeUseCase: MockPersonalizedChallengeUseCase(),
+            progressUseCase: progress
+        )
+        progress.readError = CocoaError(.fileReadUnknown)
+        await model.loadChallenges()
+        #expect(model.hasReadError)
+        #expect(!model.hasLoadedChallenges)
+        progress.readError = nil
+        await model.loadChallenges()
+        #expect(!model.hasReadError)
+        #expect(model.hasLoadedChallenges)
+        #expect(model.isEmpty)
+    }
+}

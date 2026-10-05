@@ -9,7 +9,7 @@ import Testing
 @Suite("ChallengeUseCase Tests")
 struct ChallengeUseCaseTests {
     @Test("3종 챌린지를 계산하고 새 완료 이력을 저장한다")
-    func fetchChallenges() async {
+    func fetchChallenges() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let progressUseCase = MockHydrationProgressUseCase()
@@ -38,7 +38,7 @@ struct ChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let challenges = try await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
 
         #expect(challenges.count == 3)
 
@@ -65,7 +65,7 @@ struct ChallengeUseCaseTests {
     }
 
     @Test("같은 주기의 반복형 챌린지는 완료 상태와 달성 시점을 유지한다")
-    func keepsRecurringCompletionWithinSameCycle() async {
+    func keepsRecurringCompletionWithinSameCycle() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let achievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10, hour: 8))!
@@ -105,7 +105,7 @@ struct ChallengeUseCaseTests {
             drinkWaterRepository: MockDrinkWaterRepository()
         )
 
-        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let challenges = try await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
         let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
 
         #expect(weekly?.isCompleted == true)
@@ -115,7 +115,7 @@ struct ChallengeUseCaseTests {
     }
 
     @Test("새 주기로 넘어가면 반복형 챌린지는 완료 상태를 초기화한다")
-    func resetsRecurringCompletionWhenCycleChanges() async {
+    func resetsRecurringCompletionWhenCycleChanges() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 17, hour: 9))!
         let previousWeekDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
@@ -156,7 +156,7 @@ struct ChallengeUseCaseTests {
             drinkWaterRepository: MockDrinkWaterRepository()
         )
 
-        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let challenges = try await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
         let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
 
         #expect(weekly?.isCompleted == false)
@@ -166,7 +166,7 @@ struct ChallengeUseCaseTests {
     }
 
     @Test("누적형 챌린지는 진행도가 바뀌어도 완료 상태를 유지한다")
-    func keepsCumulativeCompletion() async {
+    func keepsCumulativeCompletion() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
         let achievedAt = calendar.date(from: DateComponents(year: 2026, month: 3, day: 9, hour: 8))!
@@ -203,7 +203,7 @@ struct ChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let challenges = try await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
         let count = challenges.first { $0.kind == .goalAchievement30 }
 
         #expect(count?.isCompleted == true)
@@ -213,7 +213,7 @@ struct ChallengeUseCaseTests {
     }
 
     @Test("반복형 챌린지는 새 주기 완료 시 배지 이력을 누적 저장한다")
-    func appendsRecurringBadgeHistoryForNewCycleCompletion() async {
+    func appendsRecurringBadgeHistoryForNewCycleCompletion() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 17, hour: 9))!
         let previousWeekDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 12, hour: 9))!
@@ -254,7 +254,7 @@ struct ChallengeUseCaseTests {
             drinkWaterRepository: MockDrinkWaterRepository()
         )
 
-        let challenges = await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
+        let challenges = try await useCase.fetchChallenges(referenceDate: referenceDate, calendar: calendar)
         let weekly = challenges.first { $0.kind == .weeklyAchievement80 }
 
         #expect(weekly?.isCompleted == true)
@@ -286,5 +286,23 @@ struct ChallengeUseCaseTests {
         calendar.firstWeekday = 2
         calendar.minimumDaysInFirstWeek = 4
         return calendar
+    }
+}
+
+extension ChallengeUseCaseTests {
+    @Test("필요한 HealthKit 조회가 실패하면 배지 이력을 갱신하지 않는다")
+    func failedReadDoesNotSaveBadges() async {
+        let water = MockDrinkWaterRepository()
+        water.readError = CocoaError(.fileReadUnknown)
+        let badges = MockChallengeRepository()
+        let useCase = ChallengeUseCaseImpl(
+            progressUseCase: MockHydrationProgressUseCase(),
+            challengeRepository: badges,
+            drinkWaterRepository: water
+        )
+        await #expect(throws: CocoaError.self) {
+            try await useCase.fetchChallenges(referenceDate: .now, calendar: .current)
+        }
+        #expect(badges.saveBadgeHistoriesCallCount == 0)
     }
 }

@@ -35,11 +35,23 @@ struct RecordCalendarView: View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
                 Section {
-                    summaryCard
+                    if viewModel.hasReadError {
+                        HydrationReadFailureView(
+                            showsPreviousData: viewModel.hasLoadedRecords,
+                            isLoading: viewModel.isLoading,
+                            retry: { await viewModel.refresh() }
+                        )
                         .padding(.horizontal, 16)
-                        .padding(.top, 12)
+                    }
+                    if viewModel.hasLoadedRecords {
+                        summaryCard
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
 
-                    periodContent
+                        periodContent
+                    } else if !viewModel.hasReadError {
+                        ProgressView()
+                    }
                 } header: {
                     VStack(spacing: 12) {
                         periodPicker

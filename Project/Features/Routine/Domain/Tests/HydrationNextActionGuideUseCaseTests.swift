@@ -9,7 +9,7 @@ import Testing
 @Suite("HydrationNextActionGuideUseCase Tests")
 struct HydrationNextActionGuideUseCaseTests {
     @Test("남은 양과 잔 수, 다음 루틴까지 시간을 함께 계산한다")
-    func guideCombinesRemainingServingAndNextRoutine() async {
+    func guideCombinesRemainingServingAndNextRoutine() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 4, day: 10, hour: 9, minute: 30))!
         let weekday = RoutineWeekday(rawValue: calendar.component(.weekday, from: referenceDate))!
@@ -33,7 +33,7 @@ struct HydrationNextActionGuideUseCaseTests {
             routineUseCase: RoutineUseCaseImpl(repository: routineRepository)
         )
 
-        let guide = await useCase.guide(referenceDate: referenceDate, calendar: calendar)
+        let guide = try await useCase.guide(referenceDate: referenceDate, calendar: calendar)
 
         #expect(guide.state == .approachingRoutine)
         #expect(guide.remainingML == 750)

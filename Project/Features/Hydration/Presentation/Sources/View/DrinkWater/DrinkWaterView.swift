@@ -22,6 +22,8 @@ public struct DrinkWaterView: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(\.scenePhase) private var scenePhase
     private var viewModel: DrinkWaterViewModel
+    private let starterPlanViewModel: HydrationStarterPlanViewModel?
+    private let onStarterPlanAction: () -> Void
     private let onRecordAttemptFinished: () async -> Void
     @State private var isResetConfirmationPresented = false
 
@@ -33,9 +35,13 @@ public struct DrinkWaterView: View {
 
     public init(
         viewModel: DrinkWaterViewModel,
+        starterPlanViewModel: HydrationStarterPlanViewModel? = nil,
+        onStarterPlanAction: @escaping () -> Void = {},
         onRecordAttemptFinished: @escaping () async -> Void = {}
     ) {
         self.viewModel = viewModel
+        self.starterPlanViewModel = starterPlanViewModel
+        self.onStarterPlanAction = onStarterPlanAction
         self.onRecordAttemptFinished = onRecordAttemptFinished
     }
 
@@ -47,30 +53,66 @@ public struct DrinkWaterView: View {
             GeometryReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 28) {
-                        nextActionSummary
+                        if viewModel.hasReadError {
+                            HydrationReadFailureView(
+                                showsPreviousData: viewModel.hasCurrentIntake,
+                                isLoading: viewModel.isRefreshing,
+                                retry: { await viewModel.refreshState() }
+                            )
+                            .padding(.horizontal, 24)
+                        }
+
+                        if let starterPlanViewModel, starterPlanViewModel.isAvailable {
+                            HydrationStarterPlanCard(viewModel: starterPlanViewModel) {
+                                viewModel.cancelPendingAppReviewRequest()
+                                onStarterPlanAction()
+                            }
                             .padding(.top, 8)
                             .padding(.horizontal, 24)
-                            .accessibilityElement(children: viewModel.isComebackCardVisible ? .contain : .combine)
+                        }
+
+                        if viewModel.hasCurrentIntake, !viewModel.hasReadError, viewModel.isComebackCardVisible {
+                            comebackSummary
+                                .padding(.top, isStarterPlanVisible ? 0 : 8)
+                                .padding(.horizontal, 24)
+                                .accessibilityElement(children: .contain)
+                        }
 
                         Spacer(minLength: 0)
 
-                        waterDropArea(in: proxy.size)
+                        if viewModel.hasCurrentIntake {
+                            waterDropArea(in: proxy.size)
 
-                        progressSummary
-                            .padding(.horizontal, 24)
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityLabel(progressAccessibilityLabel)
+                            progressSummary
+                                .padding(.horizontal, 24)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityLabel(progressAccessibilityLabel)
+                        } else if !viewModel.hasReadError {
+                            ProgressView()
+                        }
 
                         Spacer(minLength: 0)
 
-                        actionButtons
-                            .padding(.horizontal, 24)
-                            .padding(.bottom, 24)
+                        if !isStarterPlanVisible {
+                            actionButtons
+                                .disabled(!viewModel.hasCurrentIntake || viewModel.hasReadError || viewModel.isRefreshing)
+                                .padding(.horizontal, 24)
+                                .padding(.bottom, 24)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: proxy.size.height, alignment: .top)
                 }
                 .scrollBounceBehavior(.basedOnSize)
+            }
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if isStarterPlanVisible {
+                actionButtons
+                    .disabled(!viewModel.hasCurrentIntake || viewModel.hasReadError || viewModel.isRefreshing)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .background(Color.background)
             }
         }
         .task {
@@ -156,6 +198,10 @@ public struct DrinkWaterView: View {
             viewModel.cancelPendingAppReviewRequest()
             viewModel.endComebackPresentation()
         }
+    }
+
+    private var isStarterPlanVisible: Bool {
+        starterPlanViewModel?.isAvailable == true
     }
 
     private var appReviewRequestTaskID: AppReviewRequestTaskID {
@@ -303,7 +349,7 @@ public struct DrinkWaterView: View {
         }
     }
 
-    private var nextActionSummary: some View {
+    private var comebackSummary: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Label(
@@ -313,17 +359,15 @@ public struct DrinkWaterView: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Color.accent)
 
-                if viewModel.isComebackCardVisible {
-                    Spacer()
-                    Button {
-                        viewModel.dismissComeback()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .frame(minWidth: 44, minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(L10n.tr("drinkWaterComebackDismissTitle"))
+                Spacer()
+                Button {
+                    viewModel.dismissComeback()
+                } label: {
+                    Image(systemName: "xmark")
+                        .frame(minWidth: 44, minHeight: 44)
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(L10n.tr("drinkWaterComebackDismissTitle"))
             }
 
             Text(viewModel.nextActionHeadline)
@@ -404,7 +448,7 @@ public struct DrinkWaterView: View {
             return .green
         }
 
-        if viewModel.isLimitReached {
+        if viewModel.isLimitReached || viewModel.hasReadError || !viewModel.hasCurrentIntake {
             return .gray
         }
 

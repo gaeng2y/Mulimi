@@ -9,7 +9,7 @@ import Testing
 @Suite("PersonalizedChallengeUseCase Tests")
 struct PersonalizedChallengeUseCaseTests {
     @Test("활성 루틴이 있으면 루틴 기반 추천을 우선 노출한다")
-    func routineAnchorRecommendation() async {
+    func routineAnchorRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 19, hour: 9))!
         let routineRepository = MockRoutineRepository()
@@ -35,7 +35,7 @@ struct PersonalizedChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchPersonalizedChallenges(
+        let challenges = try await useCase.fetchPersonalizedChallenges(
             snapshot: makeSnapshot(monthlyAverageML: 1500, dailyGoalML: 2000, weeklyAchievementRate: 0.65),
             referenceDate: referenceDate,
             calendar: calendar
@@ -47,7 +47,7 @@ struct PersonalizedChallengeUseCaseTests {
     }
 
     @Test("오전 섭취 습관이 부족하면 기록 기반 추천은 오전 시작 챌린지를 반환한다")
-    func morningKickstartRecommendation() async {
+    func morningKickstartRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 19, hour: 9))!
         let routineRepository = MockRoutineRepository()
@@ -64,7 +64,7 @@ struct PersonalizedChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchPersonalizedChallenges(
+        let challenges = try await useCase.fetchPersonalizedChallenges(
             snapshot: makeSnapshot(monthlyAverageML: 1800, dailyGoalML: 2000, weeklyAchievementRate: 0.35),
             referenceDate: referenceDate,
             calendar: calendar
@@ -77,7 +77,7 @@ struct PersonalizedChallengeUseCaseTests {
     }
 
     @Test("최근 평균이 목표보다 낮지만 오전 습관이 안정적이면 평균 증량 추천을 반환한다")
-    func dailyGoalBoosterRecommendation() async {
+    func dailyGoalBoosterRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 19, hour: 9))!
         let routineRepository = MockRoutineRepository()
@@ -94,7 +94,7 @@ struct PersonalizedChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchPersonalizedChallenges(
+        let challenges = try await useCase.fetchPersonalizedChallenges(
             snapshot: makeSnapshot(monthlyAverageML: 1620, dailyGoalML: 2000, weeklyAchievementRate: 0.5),
             referenceDate: referenceDate,
             calendar: calendar
@@ -106,7 +106,7 @@ struct PersonalizedChallengeUseCaseTests {
     }
 
     @Test("목표를 안정적으로 달성 중이면 유지형 추천을 반환한다")
-    func consistencyDefenderRecommendation() async {
+    func consistencyDefenderRecommendation() async throws {
         let calendar = makeCalendar()
         let referenceDate = calendar.date(from: DateComponents(year: 2026, month: 3, day: 19, hour: 9))!
         let routineRepository = MockRoutineRepository()
@@ -123,7 +123,7 @@ struct PersonalizedChallengeUseCaseTests {
             drinkWaterRepository: drinkWaterRepository
         )
 
-        let challenges = await useCase.fetchPersonalizedChallenges(
+        let challenges = try await useCase.fetchPersonalizedChallenges(
             snapshot: makeSnapshot(
                 monthlyAverageML: 2150,
                 dailyGoalML: 2000,

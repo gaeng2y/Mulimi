@@ -14,6 +14,28 @@ struct HydrationStarterPlanViewModelTests {
     private let analytics = MockAnalyticsUseCase()
     private let now = Date(timeIntervalSince1970: 1_800_000_000)
 
+    @Test("홈 카드의 다음 단계는 실제 저장 상태를 따르고 닫은 플랜은 안내하지 않는다")
+    func nextStepFollowsSavedState() async {
+        let model = makeModel()
+        await model.refresh()
+        #expect(model.nextStep == nil)
+
+        saveWater()
+        await model.refresh()
+        #expect(model.nextStep == .saveRoutine)
+        saveRoutine()
+        await model.refresh()
+        #expect(model.nextStep == .chooseMethod)
+        model.selectQuickRecordingMethod(.widget)
+        #expect(model.nextStep == .finish)
+
+        water.setHydrationEvents([], on: now)
+        await model.refresh()
+        #expect(model.nextStep == .recordWater)
+        model.dismiss()
+        #expect(model.nextStep == nil)
+    }
+
     @Test("실패한 기록·다른 앱 기록·과거 기록으로는 시작하지 않는다")
     func requiresTodaysSavedAppRecord() async {
         let model = makeModel()
@@ -177,4 +199,22 @@ private final class StarterPlanRoutineStub: RoutineUseCase, @unchecked Sendable 
     func requestNotificationAuthorization() async throws -> RoutineNotificationAuthorizationStatus { .denied }
     func saveRoutine(_ routine: HydrationRoutine) async throws { routines.append(routine) }
     func deleteRoutine(id: UUID) async throws { routines.removeAll { $0.id == id } }
+}
+
+extension HydrationStarterPlanViewModelTests {
+    @Test("조회 실패 중에는 이전 체크가 완료되어 있어도 스타터 플랜을 완료하지 않는다")
+    func failedReadDoesNotCertifyCompletion() async {
+        saveWater()
+        saveRoutine()
+        let model = makeModel()
+        await model.refresh()
+        model.selectQuickRecordingMethod(.widget)
+        #expect(model.completedStepCount == 3)
+        water.readError = CocoaError(.fileReadUnknown)
+        #expect(!(await model.complete()))
+        #expect(model.hasReadError)
+        #expect(repository.plan?.isCompleted == false)
+        water.readError = nil
+        #expect(await model.complete())
+    }
 }

@@ -9,11 +9,11 @@
 import Foundation
 
 public protocol DrinkWaterRepository: Sendable {
-    var currentWaterIntakeML: Double { get async }
+    var currentWaterIntakeML: Double { get async throws }
     func waterIntakeForLogging() async throws -> Double
 
-    func hydrationEvents(on date: Date) async -> [HydrationEvent]
-    func hydrationEvents(in interval: DateInterval) async -> [HydrationEvent]
+    func hydrationEvents(on date: Date) async throws -> [HydrationEvent]
+    func hydrationEvents(in interval: DateInterval) async throws -> [HydrationEvent]
     func migrateLegacyDataIfNeeded() async
     @discardableResult
     func drinkWater() async -> HydrationWriteResult

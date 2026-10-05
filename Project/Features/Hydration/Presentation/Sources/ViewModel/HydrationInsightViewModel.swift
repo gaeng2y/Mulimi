@@ -13,13 +13,6 @@ import Foundation
 import Localization
 import Observation
 
-struct HydrationInsightMetric: Identifiable, Equatable {
-    let id: String
-    let title: String
-    let value: String
-    let detail: String
-}
-
 struct HydrationInsightWeekdayDistribution: Identifiable, Equatable {
     let weekday: Int
     let label: String
@@ -130,6 +123,8 @@ public final class HydrationInsightViewModel {
     public private(set) var monthlyAverageML: Double = 0
     public private(set) var weeklyElapsedDays: Int = 0
     public private(set) var monthlyElapsedDays: Int = 0
+    private(set) var weeklyPeriodText: String = ""
+    private(set) var monthlyPeriodText: String = ""
     private(set) var bestWeekday: HydrationInsightWeekdayDistribution?
     private(set) var leastWeekday: HydrationInsightWeekdayDistribution?
     private(set) var weekdayDistributions: [HydrationInsightWeekdayDistribution] = []
@@ -163,21 +158,8 @@ public final class HydrationInsightViewModel {
         self.currentDateProvider = currentDateProvider
     }
 
-    var metrics: [HydrationInsightMetric] {
-        [
-            HydrationInsightMetric(
-                id: "weeklyAverage",
-                title: L10n.tr("insightMetricWeeklyAverageTitle"),
-                value: volumeText(weeklyAverageML),
-                detail: L10n.tr("insightElapsedDaysFormat", weeklyElapsedDays)
-            ),
-            HydrationInsightMetric(
-                id: "monthlyAverage",
-                title: L10n.tr("insightMetricMonthlyAverageTitle"),
-                value: volumeText(monthlyAverageML),
-                detail: L10n.tr("insightElapsedDaysFormat", monthlyElapsedDays)
-            )
-        ]
+    var monthlyAverageText: String {
+        weekdayDistributions.isEmpty ? L10n.tr("insightNoRecordsValue") : volumeText(monthlyAverageML)
     }
 
     var dailyGoalText: String {
@@ -234,7 +216,7 @@ public final class HydrationInsightViewModel {
     }
 
     var routineAdherenceMetrics: [RoutineAdherenceInsightMetric] {
-        guard let insight = routineAdherenceInsight else {
+        guard let insight = routineAdherenceInsight, insight.hasDueOccurrences else {
             return []
         }
 
@@ -291,33 +273,7 @@ public final class HydrationInsightViewModel {
         }
     }
 
-    var weeklyReportInsightText: String {
-        guard let weeklyReport else {
-            return L10n.tr("insightWeeklyReportNoComparisonDescription")
-        }
-
-        guard weeklyReport.hasCurrentWeekRecords else {
-            return L10n.tr("insightWeeklyReportEmptyDescriptionFormat", dailyGoalText)
-        }
-
-        guard let averageDeltaML = weeklyReport.averageDeltaML else {
-            return L10n.tr("insightWeeklyReportNoComparisonDescription")
-        }
-
-        let roundedDelta = Int(abs(averageDeltaML).rounded())
-        if roundedDelta == 0 {
-            return L10n.tr("insightWeeklyReportStableDescription")
-        }
-
-        let deltaText = volumeText(Double(roundedDelta))
-        if averageDeltaML > 0 {
-            return L10n.tr("insightWeeklyReportIncreasedDescriptionFormat", deltaText)
-        }
-
-        return L10n.tr("insightWeeklyReportDecreasedDescriptionFormat", deltaText)
-    }
-
-    var weeklyReportMetrics: [HydrationWeeklyReportMetric] {
+    var weeklySummaryMetrics: [HydrationWeeklyReportMetric] {
         guard let weeklyReport else {
             return []
         }
@@ -325,27 +281,34 @@ public final class HydrationInsightViewModel {
         return [
             HydrationWeeklyReportMetric(
                 id: "average",
-                title: L10n.tr("insightWeeklyReportAverageTitle"),
-                value: volumeText(weeklyReport.averageML),
+                title: L10n.tr("insightMetricWeeklyAverageTitle"),
+                value: weeklyReport.hasCurrentWeekRecords ?
+                    volumeText(weeklyReport.averageML) : L10n.tr("insightNoRecordsValue"),
                 detail: weeklyAverageDetailText(for: weeklyReport)
             ),
             HydrationWeeklyReportMetric(
                 id: "achieved",
                 title: L10n.tr("insightWeeklyReportAchievedTitle"),
-                value: L10n.tr(
+                value: !weeklyReport.hasCurrentWeekRecords ? L10n.tr("insightNoRecordsValue") :
+                    dailyGoalML <= 0 ? L10n.tr("insightGoalNotSetValue") : L10n.tr(
                     "insightAchievementDaysFormat",
                     weeklyReport.achievedDays,
                     weeklyReport.elapsedDays
                 ),
-                detail: weeklyAchievedDetailText(for: weeklyReport)
-            ),
-            HydrationWeeklyReportMetric(
-                id: "emptySlot",
-                title: L10n.tr("insightWeeklyReportGapTitle"),
-                value: weeklyEmptySlotValueText(for: weeklyReport),
-                detail: weeklyEmptySlotDetailText(for: weeklyReport)
+                detail: dailyGoalML <= 0 ? L10n.tr("insightEmptyGoalCTATitle") :
+                    weeklyAchievedDetailText(for: weeklyReport)
             )
         ]
+    }
+
+    var weeklyGapMetric: HydrationWeeklyReportMetric? {
+        guard let weeklyReport else { return nil }
+        return HydrationWeeklyReportMetric(
+            id: "emptySlot",
+            title: L10n.tr("insightWeeklyGapTitle"),
+            value: weeklyEmptySlotValueText(for: weeklyReport),
+            detail: weeklyEmptySlotDetailText(for: weeklyReport)
+        )
     }
 
     var routineRecoveryCard: RoutineRecoveryCardModel? {
@@ -458,7 +421,20 @@ public final class HydrationInsightViewModel {
         return max(dailyGoalML, highestAverage) * 1.2
     }
 
+    private(set) var hasReadError = false
+    var hasLoadedInsights: Bool {
+        lastLoadedDate.map { calendar.isDate($0, inSameDayAs: currentDateProvider()) } ?? false
+    }
+    private var lastLoadedDate: Date?
+    private var isRecordingRecovery = false
+
     public func loadInsights() async {
+        guard !isRecordingRecovery else { return }
+        await reloadInsights()
+    }
+
+    private func reloadInsights() async {
+        guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
 
@@ -469,70 +445,83 @@ public final class HydrationInsightViewModel {
             return
         }
 
-        let elapsedWeekInterval = elapsedInterval(from: weekInterval, upTo: referenceDate)
-        let previousWeekInterval = previousComparisonInterval(matching: elapsedWeekInterval)
-        let elapsedMonthInterval = elapsedInterval(from: monthInterval, upTo: referenceDate)
+        do {
+            let elapsedWeekInterval = elapsedInterval(from: weekInterval, upTo: referenceDate)
+            let previousWeekInterval = previousComparisonInterval(matching: elapsedWeekInterval)
+            let elapsedMonthInterval = elapsedInterval(from: monthInterval, upTo: referenceDate)
 
-        async let progressSnapshot = progressUseCase.progressSnapshot(
-            referenceDate: referenceDate,
-            calendar: calendar
-        )
-        async let currentWeekEvents = waterUseCase.hydrationEvents(in: elapsedWeekInterval)
-        async let previousWeekEvents = waterUseCase.hydrationEvents(in: previousWeekInterval)
-        async let monthlyEvents = waterUseCase.hydrationEvents(in: elapsedMonthInterval)
-        async let routineAdherence = routineAdherenceUseCase.weeklyInsight(
-            referenceDate: referenceDate,
-            calendar: calendar
-        )
-        async let currentNotificationStatus = routineUseCase.notificationAuthorizationStatus()
-
-        let (
-            snapshot,
-            resolvedCurrentWeekEvents,
-            resolvedPreviousWeekEvents,
-            resolvedMonthlyEvents,
-            resolvedRoutineAdherence,
-            resolvedNotificationStatus
-        ) = await (
-            progressSnapshot,
-            currentWeekEvents,
-            previousWeekEvents,
-            monthlyEvents,
-            routineAdherence,
-            currentNotificationStatus
-        )
-        dailyGoalML = snapshot.dailyGoalML
-        todayIntakeML = snapshot.todayIntakeML
-        weeklyAverageML = snapshot.weeklyAverageML
-        monthlyAverageML = snapshot.monthlyAverageML
-        weeklyElapsedDays = snapshot.weeklyElapsedDays
-        monthlyElapsedDays = snapshot.monthlyElapsedDays
-        isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
-        routineAdherenceInsight = resolvedRoutineAdherence
-        notificationStatus = resolvedNotificationStatus
-        weeklyReport = makeWeeklyReport(
-            snapshot: snapshot,
-            currentWeekEvents: resolvedCurrentWeekEvents,
-            previousWeekEvents: resolvedPreviousWeekEvents,
-            elapsedWeekInterval: elapsedWeekInterval
-        )
-
-        if resolvedMonthlyEvents.isEmpty {
-            weekdayDistributions = []
-            bestWeekday = nil
-            leastWeekday = nil
-        } else {
-            let monthlyTotals = dailyTotals(from: resolvedMonthlyEvents)
-            weekdayDistributions = makeWeekdayDistributions(
-                from: monthlyTotals,
-                in: elapsedMonthInterval
+            async let progressSnapshot = progressUseCase.progressSnapshot(
+                referenceDate: referenceDate,
+                calendar: calendar
             )
-            bestWeekday = weekdayDistributions.max { lhs, rhs in
-                lhs.averageIntakeML < rhs.averageIntakeML
+            async let currentWeekEvents = waterUseCase.hydrationEvents(in: elapsedWeekInterval)
+            async let previousWeekEvents = waterUseCase.hydrationEvents(in: previousWeekInterval)
+            async let monthlyEvents = waterUseCase.hydrationEvents(in: elapsedMonthInterval)
+            async let routineAdherence = routineAdherenceUseCase.weeklyInsight(
+                referenceDate: referenceDate,
+                calendar: calendar
+            )
+            async let currentNotificationStatus = routineUseCase.notificationAuthorizationStatus()
+
+            let (
+                snapshot,
+                resolvedCurrentWeekEvents,
+                resolvedPreviousWeekEvents,
+                resolvedMonthlyEvents,
+                resolvedRoutineAdherence,
+                resolvedNotificationStatus
+            ) = try await (
+                progressSnapshot,
+                currentWeekEvents,
+                previousWeekEvents,
+                monthlyEvents,
+                routineAdherence,
+                currentNotificationStatus
+            )
+            guard !Task.isCancelled else { return }
+            guard calendar.isDate(referenceDate, inSameDayAs: currentDateProvider()) else {
+                hasReadError = true
+                return
             }
-            leastWeekday = weekdayDistributions.min { lhs, rhs in
-                lhs.averageIntakeML < rhs.averageIntakeML
+            lastLoadedDate = referenceDate
+            hasReadError = false
+            dailyGoalML = snapshot.dailyGoalML
+            todayIntakeML = snapshot.todayIntakeML
+            weeklyAverageML = snapshot.weeklyAverageML
+            monthlyAverageML = snapshot.monthlyAverageML
+            weeklyElapsedDays = snapshot.weeklyElapsedDays
+            monthlyElapsedDays = snapshot.monthlyElapsedDays
+            weeklyPeriodText = periodText(for: elapsedWeekInterval)
+            monthlyPeriodText = periodText(for: elapsedMonthInterval)
+            isEmpty = snapshot.isEmpty && resolvedRoutineAdherence.routineSummaries.isEmpty
+            routineAdherenceInsight = resolvedRoutineAdherence
+            notificationStatus = resolvedNotificationStatus
+            weeklyReport = makeWeeklyReport(
+                snapshot: snapshot,
+                currentWeekEvents: resolvedCurrentWeekEvents,
+                previousWeekEvents: resolvedPreviousWeekEvents,
+                elapsedWeekInterval: elapsedWeekInterval
+            )
+
+            if resolvedMonthlyEvents.isEmpty {
+                weekdayDistributions = []
+                bestWeekday = nil
+                leastWeekday = nil
+            } else {
+                let monthlyTotals = dailyTotals(from: resolvedMonthlyEvents)
+                weekdayDistributions = makeWeekdayDistributions(
+                    from: monthlyTotals,
+                    in: elapsedMonthInterval
+                )
+                bestWeekday = weekdayDistributions.max { lhs, rhs in
+                    lhs.averageIntakeML < rhs.averageIntakeML
+                }
+                leastWeekday = weekdayDistributions.min { lhs, rhs in
+                    lhs.averageIntakeML < rhs.averageIntakeML
+                }
             }
+        } catch {
+            hasReadError = true
         }
     }
 
@@ -544,6 +533,8 @@ public final class HydrationInsightViewModel {
         monthlyAverageML = 0
         weeklyElapsedDays = 0
         monthlyElapsedDays = 0
+        weeklyPeriodText = ""
+        monthlyPeriodText = ""
         bestWeekday = nil
         leastWeekday = nil
         weekdayDistributions = []
@@ -553,7 +544,20 @@ public final class HydrationInsightViewModel {
 
     @discardableResult
     func recordRecoveryDrink() async -> Bool {
-        guard canRecordRecoveryDrink else {
+        guard !isRecordingRecovery, !isLoading, canRecordRecoveryDrink else {
+            return false
+        }
+        isRecordingRecovery = true
+        defer { isRecordingRecovery = false }
+
+        do {
+            let currentIntake = try await waterUseCase.waterIntakeForLogging()
+            guard currentIntake + Double(HydrationServing.defaultGlassVolumeML) <= dailyGoalML else {
+                await reloadInsights()
+                return false
+            }
+        } catch {
+            hasReadError = true
             return false
         }
 
@@ -586,7 +590,7 @@ public final class HydrationInsightViewModel {
                 dailyGoalML: Int(dailyGoalML.rounded())
             )
         )
-        await loadInsights()
+        await reloadInsights()
         return true
     }
 
@@ -825,6 +829,16 @@ public final class HydrationInsightViewModel {
         return formatter.shortWeekdaySymbols
     }
 
+    private func periodText(for interval: DateInterval) -> String {
+        let formatter = DateIntervalFormatter()
+        formatter.calendar = calendar
+        formatter.locale = calendar.locale ?? Locale.autoupdatingCurrent
+        formatter.timeZone = calendar.timeZone
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: interval.start, to: interval.end.addingTimeInterval(-1))
+    }
+
     private func volumeText(_ volumeML: Double) -> String {
         L10n.tr("commonMilliliterFormat", Int(volumeML.rounded()))
     }
@@ -1046,9 +1060,7 @@ public final class HydrationInsightViewModel {
     }
 
     private var canRecordRecoveryDrink: Bool {
-        guard dailyGoalML > 0 else {
-            return true
-        }
+        guard hasLoadedInsights, !hasReadError, dailyGoalML > 0 else { return false }
 
         return todayIntakeML + Double(HydrationServing.defaultGlassVolumeML) <= dailyGoalML
     }

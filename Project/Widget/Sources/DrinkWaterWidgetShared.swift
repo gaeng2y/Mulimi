@@ -41,31 +41,35 @@ struct DrinkWaterWidgetProvider: AppIntentTimelineProvider {
         in context: Context
     ) async -> Timeline<DrinkWaterEntry> {
         let currentDate = Date()
-        var entries: [DrinkWaterEntry] = []
-
-        for hourOffset in 0..<5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate) ?? currentDate
-            let entry = await makeEntry(date: entryDate)
-            entries.append(entry)
-        }
-
-        return Timeline(entries: entries, policy: .atEnd)
+        let entry = await makeEntry(date: currentDate)
+        let nextDay = Calendar.current.dateInterval(of: .day, for: currentDate)?.end
+            ?? currentDate.addingTimeInterval(15 * 60)
+        // Never carry today's total into tomorrow while WidgetKit delays a reload.
+        let expiredEntry = DrinkWaterEntry.unavailable(date: nextDay)
+        return Timeline(
+            entries: [entry, expiredEntry],
+            policy: .after(min(currentDate.addingTimeInterval(15 * 60), nextDay))
+        )
     }
 
     private func makeEntry(date: Date) async -> DrinkWaterEntry {
         let dailyLimit = userPreferencesUseCase.getDailyWaterLimit()
         let mainIconSymbol = userPreferencesUseCase.getMainIcon().fillSystemImage
 
-        return DrinkWaterEntry(
-            date: date,
-            currentIntakeML: await waterUseCase.currentWaterIntakeML,
-            dailyLimit: dailyLimit,
-            mainIconSymbol: mainIconSymbol,
-            nextActionGuide: await nextActionGuideUseCase.guide(
-                referenceDate: date,
-                calendar: .current
+        do {
+            let intake = try await waterUseCase.currentWaterIntakeML
+            let guide = try await nextActionGuideUseCase.guide(referenceDate: date, calendar: .current)
+            guard Calendar.current.isDate(date, inSameDayAs: .now) else { return .unavailable(date: date) }
+            return DrinkWaterEntry(
+                date: date,
+                currentIntakeML: intake,
+                dailyLimit: dailyLimit,
+                mainIconSymbol: mainIconSymbol,
+                nextActionGuide: guide
             )
-        )
+        } catch {
+            return .unavailable(date: date)
+        }
     }
 }
 
@@ -75,9 +79,21 @@ struct DrinkWaterEntry: TimelineEntry {
     let dailyLimit: Double
     let mainIconSymbol: String
     let nextActionGuide: HydrationNextActionGuide
+    var hasReadError = false
 }
 
 extension DrinkWaterEntry {
+    static func unavailable(date: Date) -> Self {
+        .init(
+            date: date,
+            currentIntakeML: 0,
+            dailyLimit: 0,
+            mainIconSymbol: "exclamationmark.triangle",
+            nextActionGuide: .make(currentIntakeML: 0, dailyGoalML: 0),
+            hasReadError: true
+        )
+    }
+
     var mililiters: Int {
         Int(currentIntakeML.rounded())
     }
