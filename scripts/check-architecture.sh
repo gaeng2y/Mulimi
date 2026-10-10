@@ -11,6 +11,10 @@ fi
 
 FAILED=0
 
+if ! python3 scripts/check-ui-boundaries.py; then
+  FAILED=1
+fi
+
 report_violation() {
   TITLE="$1"
   OUTPUT="$2"

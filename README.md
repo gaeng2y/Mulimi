@@ -65,7 +65,8 @@
   - `Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain` 시스템 인프라
   - 기능·UI를 소유하지 않는 `Mulimi*` 계약과 어댑터
 - `Shared`
-  - `Localization`, `DesignSystem`, `Utils`
+  - `Localization`, `DesignSystemFoundation`, `MulimiUISystem`, `Utils`
+  - 디자인 시스템: `Presentation -> MulimiUISystem -> DesignSystemFoundation` ([공개 API·리소스](Docs/design-system.md))
   - `Persistence`·`PersistenceWatch`는 선언만 남은 미참조 타깃이며 현재 수분 기록 경로에서 사용하지 않음
 - `Widget`
   - 홈 화면/잠금화면 위젯과 AppIntent
@@ -136,7 +137,8 @@ Mulimi/
 │   │   ├── Sources/
 │   │   └── Resources/
 │   └── Shared/
-│       ├── DesignSystem/
+│       ├── DesignSystemFoundation/
+│       ├── MulimiUISystem/
 │       ├── Localization/
 │       ├── Persistence/
 │       └── Utils/

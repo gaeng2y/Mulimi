@@ -37,6 +37,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Domain And Architecture Docs
 
+- [Design System (UI 계층·공개 API·리소스)](design-system.md)
 - [Project Architecture And Dependencies (전체 구조도·타깃 의존성)](project-architecture-and-dependencies.md)
 - [Feature Discovery (검증 후보와 선정 근거)](feature-discovery.md)
 - [Profile Information Architecture](profile-information-architecture.md)
@@ -56,6 +57,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Delivery And Operations
 
+- [#356 디자인 시스템 계층 분리](exec-plans/active/2026-10-10-issue-356-design-system.md)
 - [#350 HealthKit 조회 실패 복구 (PR 리뷰 대상)](exec-plans/active/2026-10-03-issue-350-read-recovery.md)
 
 - [빠른 물 기록 가이드 (발행 전 초안)](marketing/quick-recording-guide.md)

@@ -6,7 +6,7 @@
 //
 
 import Charts
-import DesignSystem
+import MulimiUISystem
 import AccountDomain
 import MulimiAnalytics
 import HydrationDomain

@@ -1,6 +1,6 @@
 //
 //  LiquidGlassSegmentedControl.swift
-//  Core
+//  MulimiUISystem
 //
 //  Created by Codex on 4/19/26.
 //
@@ -44,60 +44,64 @@ public struct LiquidGlassSegmentedControl<Value: Hashable>: View {
         self.segments = segments
     }
 
+    private var style: LiquidGlassSegmentStyle {
+        LiquidGlassSegmentStyle(
+            reduceMotion: reduceMotion,
+            reduceTransparency: reduceTransparency,
+            dynamicTypeSize: dynamicTypeSize
+        )
+    }
+
     public var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: style.spacing) {
             ForEach(segments) { segment in
                 segmentButton(segment)
             }
         }
-        .padding(5)
-        .background(containerBackground, in: Capsule(style: .continuous))
+        .padding(style.padding)
+        .background(style.containerBackground, in: Capsule(style: .continuous))
         .overlay {
             Capsule(style: .continuous)
-                .strokeBorder(containerBorder, lineWidth: 1)
+                .strokeBorder(style.containerBorder, lineWidth: style.borderWidth)
         }
-        .shadow(color: .black.opacity(0.08), radius: 18, x: 0, y: 10)
+        .shadow(color: style.containerShadow, radius: 18, x: 0, y: 10)
     }
 
     private func segmentButton(_ segment: LiquidGlassSegment<Value>) -> some View {
         let isSelected = selection == segment.value
 
         return Button {
-            if reduceMotion {
+            withAnimation(style.animation) {
                 selection = segment.value
-            } else {
-                withAnimation(.easeOut(duration: 0.25)) {
-                    selection = segment.value
-                }
             }
         } label: {
-            HStack(spacing: 5) {
+            HStack(spacing: style.labelSpacing) {
                 if let systemImage = segment.systemImage {
                     Image(systemName: systemImage)
-                        .font(.caption.weight(.semibold))
+                        .font(style.font)
                 }
 
                 Text(segment.title)
-                    .font(.caption.weight(.semibold))
-                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
-                    .minimumScaleFactor(0.78)
+                    .font(style.font)
+                    .lineLimit(style.lineLimit)
+                    .minimumScaleFactor(style.minimumScaleFactor)
             }
-            .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? 52 : 44)
+            .frame(maxWidth: .infinity, minHeight: style.minimumHeight)
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
             .contentShape(Capsule(style: .continuous))
             .background {
                 if isSelected {
                     Capsule(style: .continuous)
-                        .fill(activeSegmentBackground)
+                        .fill(style.activeBackground)
                         .overlay {
                             Capsule(style: .continuous)
-                                .strokeBorder(activeSegmentBorder, lineWidth: 1)
+                                .strokeBorder(style.activeBorder, lineWidth: style.borderWidth)
                         }
                         .matchedGeometryEffect(
                             id: "activeSegment",
                             in: activeSegmentNamespace
                         )
-                        .shadow(color: Color.accentColor.opacity(0.18), radius: 10, x: 0, y: 5)
+                        .shadow(color: style.activeShadow, radius: 10, x: 0, y: 5)
                 }
             }
         }
@@ -106,42 +110,4 @@ public struct LiquidGlassSegmentedControl<Value: Hashable>: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    private var containerBackground: AnyShapeStyle {
-        if reduceTransparency {
-            return AnyShapeStyle(Color(uiColor: .secondarySystemBackground))
-        }
-
-        return AnyShapeStyle(.ultraThinMaterial)
-    }
-
-    private var activeSegmentBackground: AnyShapeStyle {
-        if reduceTransparency {
-            return AnyShapeStyle(Color(uiColor: .systemBackground))
-        }
-
-        return AnyShapeStyle(Color(uiColor: .systemBackground).opacity(0.72))
-    }
-
-    private var containerBorder: LinearGradient {
-        LinearGradient(
-            colors: [
-                .white.opacity(0.42),
-                .white.opacity(0.12),
-                Color.accentColor.opacity(0.12)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-
-    private var activeSegmentBorder: LinearGradient {
-        LinearGradient(
-            colors: [
-                .white.opacity(0.7),
-                Color.accentColor.opacity(0.22)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
 }

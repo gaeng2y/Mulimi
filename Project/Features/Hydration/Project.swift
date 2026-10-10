@@ -52,7 +52,7 @@ let project = Project(
                 .project(target: "MulimiAnalytics", path: .relativeToRoot("Project/Core/Analytics")),
                 .project(target: "MulimiPlatform", path: .relativeToRoot("Project/Core/Platform")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
-                .project(target: "DesignSystem", path: .relativeToRoot("Project/Shared/DesignSystem")),
+                .project(target: "MulimiUISystem", path: .relativeToRoot("Project/Shared/MulimiUISystem")),
                 .project(target: "Localization", path: .relativeToRoot("Project/Shared/Localization"))
             ]
         ),
