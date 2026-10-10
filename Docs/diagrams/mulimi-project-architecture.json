@@ -7,7 +7,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/gaeng2y/Mulimi",
-      "revision": "221c44489b3ec4567f37334675830b63461dd51d"
+      "revision": "6fd6b9fb9cb0f3fcc9ae43f8fa73727b07dd0d51"
     },
     "viewBox": [
       1395,
@@ -25,7 +25,9 @@
           "label": "시스템·외부 SDK"
         }
       }
-    }
+    },
+    "animation": "none",
+    "visual_preset": "classic"
   },
   "layout": {
     "mode": "grid",
@@ -81,7 +83,7 @@
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 72,
+          "line": 110,
           "label": "타깃·Localization 직접 참조"
         },
         {
@@ -226,7 +228,7 @@
       "sources": [
         {
           "path": "Project/App/Project.swift",
-          "line": 71,
+          "line": 196,
           "label": "Watch 앱·코드·리소스·권한"
         },
         {
@@ -273,26 +275,26 @@
     {
       "id": "shared-foundations",
       "type": "backend",
-      "label": "Shared 공용 모듈",
-      "sublabel": "Localization · DesignSystem · Utils",
-      "tag": "Persistence 2종은 현재 미참조",
+      "label": "MulimiUISystem",
+      "sublabel": "테마 · 컴포넌트 · 브랜드 리소스",
+      "tag": "Shared: Localization · Utils도 제공",
       "row": 0,
       "col": 2,
       "sources": [
         {
+          "path": "Project/Shared/MulimiUISystem/Project.swift",
+          "line": 29,
+          "label": "공용 UI·Foundation 직접 의존"
+        },
+        {
+          "path": "Project/Shared/MulimiUISystem/Sources/MulimiTheme.swift",
+          "line": 5,
+          "label": "프레임워크 번들 색상 로드"
+        },
+        {
           "path": "Project/Shared/Localization/Project.swift",
           "line": 22,
-          "label": "한국어 기준 문자열·리소스"
-        },
-        {
-          "path": "Project/Shared/DesignSystem/Project.swift",
-          "line": 28,
-          "label": "공용 UI·리소스"
-        },
-        {
-          "path": "Project/Shared/Persistence/Project.swift",
-          "line": 28,
-          "label": "선언은 있으나 소비 타깃 없음"
+          "label": "별도 공용 현지화 모듈"
         }
       ],
       "size": [
@@ -353,6 +355,31 @@
           "path": "Project/Core/Analytics/Data/Sources/PostHogAnalyticsRepository.swift",
           "line": 3,
           "label": "외부 분석 SDK 경계"
+        }
+      ],
+      "size": [
+        260,
+        96
+      ]
+    },
+    {
+      "id": "design-foundation",
+      "type": "backend",
+      "label": "DesignSystemFoundation",
+      "sublabel": "기본 토큰 · UI 원시 요소",
+      "tag": "제품·기능 의존성 없음",
+      "row": 0,
+      "col": 3,
+      "sources": [
+        {
+          "path": "Project/Shared/DesignSystemFoundation/Project.swift",
+          "line": 29,
+          "label": "UI 기반 framework"
+        },
+        {
+          "path": "Project/Shared/DesignSystemFoundation/Sources/DesignTokens.swift",
+          "line": 4,
+          "label": "현재 사용 중인 기본 값"
         }
       ],
       "size": [
@@ -434,6 +461,13 @@
         900,
         575
       ]
+    },
+    {
+      "id": "ui-uses-foundation",
+      "from": "shared-foundations",
+      "to": "design-foundation",
+      "label": "기반 조합",
+      "variant": "emphasis"
     }
   ],
   "cards": [
@@ -450,9 +484,9 @@
       "dot": "violet",
       "title": "화살표는 주요 의존 방향",
       "items": [
-        "2.5.1 (37) · 17개 프로젝트 · 53개 타깃 중 테스트 16개",
-        "DI는 3개 레이어를 모두 조립; 위젯은 Domain과 Localization을 직접 참조",
-        "전체 직접 의존 174개; AppDelegate는 HydrationReminderData의 알림 카테고리·결과 안내 사용"
+        "2.6.0 (37) · 18개 프로젝트 · 55개 타깃 중 테스트 17개",
+        "Presentation → MulimiUISystem → DesignSystemFoundation; Domain의 UI 의존 금지",
+        "전체 직접 의존 176개; DI는 3개 레이어 조립, Persistence 2종은 현재 미참조"
       ]
     },
     {

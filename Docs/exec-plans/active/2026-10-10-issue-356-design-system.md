@@ -1,5 +1,7 @@
 # #356 디자인 시스템 계층 분리
 
+상태: 구현·로컬 검증 완료, develop 대상 PR 리뷰 준비. 머지 후 completed로 이동한다.
+
 ## Context
 
 - 이슈: https://github.com/gaeng2y/Mulimi/issues/356
@@ -51,3 +53,22 @@
 - 기존 Foundation Models deprecated API, 테스트 unused result, AppIntents metadata 생략 메시지가 있다. 앱 빌드는 `Could not archive SSU artifacts` 메시지를 출력했지만 종료 코드 0 / BUILD SUCCEEDED다.
 - 새 색상 테스트는 UIColor의 색 공간 객체 동일성 대신 RGBA 값으로 비교한다. 접근성 시스템 환경 값은 읽기 전용이므로 테스트에서 강제로 쓰지 않는다.
 - 구조도 소스 참조는 실제 코드 커밋이 필요해 코드 커밋 후 생성물을 별도 커밋한다.
+
+
+## UI 비교 결과
+
+- iPhone 17e / iOS 27.0의 별도 QA 앱에서 기준 커밋 `930e5bc`의 원본 컴포넌트와 새 framework 컴포넌트를 같은 호스트에 렌더링했다.
+- XCUITest 2개 통과: 선택 trait의 초기 상태·탭 후 이동과 Binding 값, 네 환경에서의 최소 높이를 검증했다.
+- 라이트/다크 × 기본/접근성 최대 크기 네 조건의 **전체 캡처 RGB 픽셀이 동일**했다. 물방울 반사 효과도 같은 캡처에 포함된다.
+- 최대 크기에서 세 칸에 긴 라벨을 넣으면 일부 글자가 줄임표로 표시되는 기존 제한이 양쪽에서 동일하다. 이 작업은 기존 표현을 보존하며 레이아웃 변경은 포함하지 않는다. 전체 라벨과 선택 상태의 접근성 정보는 유지된다.
+- [기본 라이트: 이전](../../validation/issue-356/before-light.png) / [이후](../../validation/issue-356/after-light.png)
+- [기본 다크: 이전](../../validation/issue-356/before-dark.png) / [이후](../../validation/issue-356/after-dark.png)
+- [최대 글씨 라이트: 이전](../../validation/issue-356/before-large-light.png) / [이후](../../validation/issue-356/after-large-light.png)
+- [최대 글씨 다크: 이전](../../validation/issue-356/before-large-dark.png) / [이후](../../validation/issue-356/after-large-dark.png)
+- QA fixture는 저장소 밖 `/private/tmp/mulimi-356-qa`, 결과는 `/private/tmp/mulimi-356-qa-results.xcresult`에 보관했다. 제품 테스트 타깃이나 CI에 QA 앱을 추가하지 않았다.
+- 구조도는 코드 커밋 `6fd6b9f` 기준 소스 33개를 검증했다. showcase 9/9, 오류/경고 0, 네 해상도의 넘침 없음, 작은·큰 화면의 라이트/다크 캡처 네 장 직접 확인 완료.
+
+- Graphify는 격리된 출력 경로에서 AST만 갱신했다. 4,204개 노드·11,186개 간선·192개 커뮤니티이며, 생성물 출처 노드와 세션 학습 섹션이 없다. 문서 의미 재분석은 하지 않았다.
+
+- Reduce Motion/Transparency는 시뮬레이터 접근성 설정을 활성화한 뒤 앱의 두 SwiftUI 환경 값이 모두 `true`인 것을 확인했다. 불투명 배경과 선택 변경을 직접 확인했고 같은 XCUITest 선택/Binding 검증 1개도 통과했다. [설정 활성화 캡처](../../validation/issue-356/reduced-motion-transparency.png). 검증 후 설정은 원래 값으로 복구했다.
+- 시뮬레이터 Settings의 스위치 탭이 설정을 바꾸지 않아 `simctl spawn ... defaults`로 테스트 설정을 적용하고, 앱에서 읽은 실제 환경 값으로 반영 여부를 확인했다. 실기기 VoiceOver 음성·HealthKit 권한 검증은 이번 UI 모듈 분리 범위에 포함하지 않았다.
