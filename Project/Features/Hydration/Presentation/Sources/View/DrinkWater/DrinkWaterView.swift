@@ -5,7 +5,7 @@
 //  Created by Kyeongmo Yang on 8/30/24.
 //
 
-import DesignSystem
+import MulimiUISystem
 import AccountDomain
 import MulimiAnalytics
 import HydrationDomain

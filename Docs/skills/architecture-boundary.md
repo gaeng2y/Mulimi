@@ -23,6 +23,7 @@ Mulimi의 `Clean Architecture + MVVM` 경계를 유지한다.
 
 ## Guardrails
 
+- 디자인 시스템: `App·Presentation -> MulimiUISystem -> DesignSystemFoundation`. 두 UI 모듈의 기능/현지화 역참조와 Domain UI 의존은 금지한다. import와 manifest 선언은 `check-ui-boundaries.py`가 검사한다.
 - `Project/Features/*/Domain`에서 `SwiftUI`, `UIKit`, `WidgetKit`, `Localization`, `Data`, `Presentation` import 금지
 - `Project/Features/*/Presentation`의 ViewModel에서 시스템 side-effect API 직접 접근 금지
 - ViewModel 간 직접 타입 참조 금지

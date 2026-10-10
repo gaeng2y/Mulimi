@@ -38,3 +38,4 @@ jobs:
         run: |
           set -euo pipefail
           ./scripts/check-architecture.sh
+          python3 scripts/test-ui-boundaries.py

@@ -5,6 +5,7 @@
 //  Created by Kyeongmo Yang on 9/6/24.
 //
 
+internal import DesignSystemFoundation
 import SwiftUI
 
 struct GlareCircleView: View {
@@ -13,9 +14,7 @@ struct GlareCircleView: View {
     let offset: CGPoint
 
     var body: some View {
-        Circle()
-            .fill(.white.opacity(opacity))
-            .frame(width: sizeConstant, height: sizeConstant)
+        CircleHighlight(diameter: sizeConstant, color: DesignTokens.Palette.highlight.opacity(opacity))
             .offset(x: offset.x, y: offset.y)
     }
 }
