@@ -52,7 +52,7 @@ let project = Project(
                 .project(target: "HydrationDomain", path: .relativeToRoot("Project/Features/Hydration")),
                 .project(target: "RoutineDomain", path: .relativeToRoot("Project/Features/Routine")),
                 .project(target: "RoutinePresentation", path: .relativeToRoot("Project/Features/Routine")),
-                .project(target: "DesignSystem", path: .relativeToRoot("Project/Shared/DesignSystem")),
+                .project(target: "MulimiUISystem", path: .relativeToRoot("Project/Shared/MulimiUISystem")),
                 .project(target: "Localization", path: .relativeToRoot("Project/Shared/Localization"))
             ]
         ),

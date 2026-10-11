@@ -11,7 +11,7 @@ import ProjectDescriptionHelpers
 let bundleId = "gaeng2y.DrinkWater"
 
 let project = Project(
-    name: "DesignSystem",
+    name: "MulimiUISystem",
     organizationName: "gaeng2y",
     settings: .settings(
         base: [
@@ -26,15 +26,26 @@ let project = Project(
     ),
     targets: [
         .target(
-            name: "DesignSystem",
+            name: "MulimiUISystem",
             destinations: .iOS,
             product: .framework,
-            bundleId: "\(bundleId).DesignSystem",
+            bundleId: "\(bundleId).MulimiUISystem",
             deploymentTargets: .iOS("26.0"),
             infoPlist: .default,
             sources: ["Sources/**"],
             resources: ["Resources/**"],
-            dependencies: []
+            dependencies: [
+                .project(target: "DesignSystemFoundation", path: .relativeToRoot("Project/Shared/DesignSystemFoundation"))
+            ]
+        ),
+        .target(
+            name: "MulimiUISystemTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId: "\(bundleId).MulimiUISystem.Tests",
+            deploymentTargets: .iOS("26.0"),
+            sources: ["Tests/**"],
+            dependencies: [.target(name: "MulimiUISystem")]
         )
     ]
 )

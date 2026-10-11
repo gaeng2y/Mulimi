@@ -32,10 +32,11 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
   - `Core`: 시스템 인프라 모듈(`Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain`)
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
   - `Widget`: WidgetKit / AppIntent
-  - `Shared`: Localization / DesignSystem / Utils (`Persistence`·`PersistenceWatch`는 현재 미참조)
+  - `Shared`: Localization / DesignSystemFoundation / MulimiUISystem / Utils (`Persistence`·`PersistenceWatch`는 현재 미참조)
 
 ## Constitution
 
+- 디자인 시스템은 `App·Presentation -> MulimiUISystem -> DesignSystemFoundation` 방향을 지킨다. Foundation 직접 소비와 두 UI 모듈의 기능·현지화 의존, Domain의 UI 의존을 금지한다.
 - 모든 기능 `Domain`은 `SwiftUI`, `Localization`, UI 문구, 심볼 이름에 의존하지 않는다.
 - ViewModel은 프레젠테이션 상태만 관리한다. `UIApplication`, `WidgetCenter`, `NotificationCenter`, `Bundle`, `UserDefaults`를 직접 다루지 않는다.
 - ViewModel이 다른 ViewModel을 주입받아 상태를 직접 바꾸지 않는다.

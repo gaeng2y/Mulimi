@@ -72,7 +72,9 @@ Project/
 
 ### Shared
 
-- `Localization`, `DesignSystem`, `Utils`
+- `Localization`, `DesignSystemFoundation`, `MulimiUISystem`, `Utils`
+- `DesignSystemFoundation`은 SwiftUI 기본 토큰·원시 요소를, `MulimiUISystem`은 Mulimi 테마·리소스·컴포넌트를 소유한다. 앱과 Presentation은 UISystem을 통해 소비하며 Foundation 직접 import/의존을 금지한다.
+- 두 UI 모듈은 Feature, App, Core, Localization을 참조하지 않는다. Domain은 두 UI 모듈에 의존하지 않는다. 공개 API와 iOS 지원 범위는 [디자인 시스템](Docs/design-system.md)을 따른다.
 - `Persistence`·`PersistenceWatch`는 선언과 소스만 남아 있고 현재 소비 타깃은 없다. 수분 기록 경로에 다시 연결하지 않는다.
 
 ## Dependency Direction
@@ -86,6 +88,7 @@ Widget -> DependencyInjection + AccountDomain + HydrationDomain + RoutineDomain
 ChallengeDomain -> RoutineDomain -> HydrationDomain -> AccountDomain
 MulimiWatch (single-target app) -> WatchDependencyInjection -> WatchHydration Presentation / Data / Domain
 Feature Presentation / Data -> Shared as needed
+App / Feature Presentation -> MulimiUISystem -> DesignSystemFoundation
 Feature Domain -> no UI dependency
 ```
 
