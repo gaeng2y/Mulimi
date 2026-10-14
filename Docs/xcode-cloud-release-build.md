@@ -58,7 +58,7 @@ Xcode Cloud 워크플로에 아래 값을 설정한다. 실제 값은 저장소�
 | `POSTHOG_CLI_PROJECT_ID` | No | dSYM을 연결할 PostHog project ID |
 | `POSTHOG_CLI_HOST` | No | 기본 US는 생략 가능, EU/self-hosted만 설정 |
 
-`ci_post_clone.sh`는 필수 값이 없으면 archive 준비를 실패시키고, 토큰을 `Secrets.xcconfig`에 주입하며 PostHog CLI를 설치한다. Release archive의 마지막 build phase가 생성된 dSYM을 업로드한다.
+`ci_post_clone.sh`는 `Secrets.xcconfig`가 없어 새로 생성할 때 위 필수 값을 검사하고 토큰을 주입한다. 파일이 이미 있으면 이 생성·검사 분기를 건너뛴다. PostHog CLI 설치 후 Release archive의 마지막 build phase가 생성된 dSYM을 업로드한다. 실제 Cloud 시작 조건·서명·업로드 결과는 콘솔에서 별도로 확인한다.
 
 참고: 태그 기반으로 두면 의도된 릴리즈 시점에만 아카이브가 실행됩니다.
 
@@ -107,4 +107,4 @@ xcodebuild -workspace Mulimi.xcworkspace -scheme DependencyInjection -configurat
 - 포함: Release Archive 자동화
 - 포함: Release dSYM 생성 및 PostHog symbol set 업로드
 - 제외: Xcode Cloud 기반 PR 유닛 테스트 게이팅
-- GitHub Actions 담당: PR lint, architecture check, 기능별 `Domain`/`Data`/`Presentation` 유닛 테스트
+- GitHub Actions 담당: PR lint, UI 포함 architecture check·경계 회귀 검사, 공용 UI·내비게이션·기능·Watch 테스트. 현재 스킴과 실행 순서는 [PR CI 검증 범위](skills/xcode-build-test.md#pr-ci-scope)를 따른다.

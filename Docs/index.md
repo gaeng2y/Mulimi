@@ -7,17 +7,19 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 1. `AGENTS.md`
 2. `README.md`
 3. `ARCHITECTURE.md`
-4. 작업 대상 이슈
-5. 브랜치/PR 기준이 필요하면 `delivery-workflow.md`
-6. 관련 `product-specs` 또는 도메인 문서
-7. 수정 대상 모듈의 `Project.swift`와 실제 구현
+4. `Docs/index.md` (이 문서)
+5. 작업 대상 이슈
+6. 브랜치/PR 기준이 필요하면 `delivery-workflow.md`
+7. 관련 도메인 문서 또는 `product-specs/`
+8. 관련 `skills/`
+9. 수정 대상 모듈의 `Project.swift`와 실제 구현
 
 ## Core Docs
 
 - [README](../README.md)
 - [AGENTS](../AGENTS.md)
 - [ARCHITECTURE](../ARCHITECTURE.md)
-- [Harness Engineering Structure](harness-engineering.md)
+- [Harness Engineering Structure (운영 구조도·자동화 범위)](harness-engineering.md)
 - [Quality Gates](quality-gates.md)
 - [Documentation Maintenance](documentation-maintenance.md)
 - [Accessibility And Dynamic Type Audit](accessibility-dynamic-type-audit.md)
@@ -57,16 +59,17 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Delivery And Operations
 
-- [#356 디자인 시스템 계층 분리 (PR 리뷰 대상)](exec-plans/active/2026-10-10-issue-356-design-system.md)
-- [#350 HealthKit 조회 실패 복구 (PR 리뷰 대상)](exec-plans/active/2026-10-03-issue-350-read-recovery.md)
+- [#358 하네스 문서와 운영 구조도 갱신](exec-plans/active/2026-10-14-issue-358-harness-docs.md)
+- [#356 디자인 시스템 계층 분리 (구현 머지 완료)](exec-plans/completed/2026-10-10-issue-356-design-system.md)
+- [#350 HealthKit 조회 실패 복구 (구현 머지 완료)](exec-plans/completed/2026-10-03-issue-350-read-recovery.md)
 
 - [빠른 물 기록 가이드 (발행 전 초안)](marketing/quick-recording-guide.md)
 - [Exec Plans Active](exec-plans/active/README.md)
 - [Exec Plans Completed](exec-plans/completed/README.md)
-- [#336 Watch 최근 기록 한 건 되돌리기](exec-plans/active/2026-09-29-issue-336-watch-undo.md)
-- [#329 빠른 물 기록 가이드 제작·발행](exec-plans/active/2026-09-25-issue-329-quick-recording-guide.md)
-- [#321 수분 알림 바로 기록](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md)
-- [#320 7일 스타터 플랜 제품 적용 (PR 전달)](exec-plans/active/2026-09-13-issue-320-starter-plan.md)
+- [#336 Watch 되돌리기 (실기기·수요 검증 대기)](exec-plans/active/2026-09-29-issue-336-watch-undo.md)
+- [#329 빠른 기록 가이드 (발행·효과 검증 대기)](exec-plans/active/2026-09-25-issue-329-quick-recording-guide.md)
+- [#321 알림 바로 기록 (실기기·측정 검증 대기)](exec-plans/active/2026-09-18-issue-321-notification-quick-log.md)
+- [#320 7일 스타터 플랜 제품 적용 (구현 머지 완료)](exec-plans/completed/2026-09-13-issue-320-starter-plan.md)
 - [Exec Plan Template](exec-plans/template.md)
 - [Tech Debt Tracker](exec-plans/tech-debt-tracker.md)
 - [Delivery Workflow](delivery-workflow.md)
@@ -81,4 +84,4 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 - 검증 기준이 바뀌면 `Docs/quality-gates.md`와 필요한 `Docs/skills/`를 갱신한다.
 - 이슈/PR 운영 흐름이 바뀌면 `Docs/delivery-workflow.md`를 갱신한다.
 - 문서 구조가 바뀌면 `Docs/documentation-maintenance.md`와 이 인덱스를 갱신한다.
-- 긴 작업은 `Docs/exec-plans/active/`에 남기고, 종료 후 `completed/`로 옮긴다.
+- 긴 작업은 `Docs/exec-plans/active/`에 남기고, [머지·완료 조건](delivery-workflow.md#merge-and-issue-closure)을 확인한 뒤 `completed/`로 옮긴다.

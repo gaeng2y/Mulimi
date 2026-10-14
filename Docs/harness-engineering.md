@@ -8,6 +8,16 @@ Mulimi에서 말하는 하네스 엔지니어링은 AI 에이전트와 개발자
 - 제품 요구, 구조 규칙, 실행 계획, 검증 규칙을 분리한다.
 - 문서가 늘어나도 SSOT가 어디인지 헷갈리지 않게 한다.
 
+## Operating Map
+
+![문서 진입부터 로컬 검증·PR·머지 후 정리로 이어지는 Mulimi 하네스](diagrams/mulimi-harness-architecture.visual-check.2048x1320.light.png)
+
+[운영 구조도 HTML](diagrams/mulimi-harness-architecture.html) · [원본 JSON](diagrams/mulimi-harness-architecture.json) · [라이트·다크 화면 검증](diagrams/mulimi-harness-architecture.visual-check.html)
+
+번호는 작업 순서이며 점선은 별도 릴리스 흐름이다. 문서와 영향받는 산출물은 PR 전에 갱신하고, 머지 후에는 실행 계획 상태·후속 작업·인덱스를 정리한다. CI 실패 시 구현·검증 단계로 돌아간다. Xcode Cloud의 시작 조건과 실제 실행 결과는 콘솔에서 확인한다.
+
+그림은 2026-10-14에 확인한 `develop@ed71ce1`의 규칙·스크립트를 근거로 하며, 각 노드에서 해당 커밋의 파일을 열 수 있다. 앱 모듈 의존성은 [앱 구조·의존성 스냅샷](project-architecture-and-dependencies.md)을 참고한다. 설명은 한국어이며 archify의 고정 Viewer UI와 `<html lang>`는 영어다.
+
 ## Top-Level Map
 
 ```text
@@ -45,7 +55,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 4. `Docs/index.md`
 5. 작업 대상 이슈
 6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
-7. 관련 `Docs/product-specs/`
+7. 관련 도메인 문서 또는 `Docs/product-specs/`
 8. 관련 `Docs/skills/`
 9. 실제 코드와 `Project.swift`
 
@@ -118,16 +128,23 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 
 하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.
 
-| Surface | File | Responsibility |
+검토 기준: `ed71ce1` (2026-10-14). 각 파일에 선언된 실행 조건과 검증 범위를 정리했다.
+
+| 실행 지점 | 근거 파일 | 실행 조건·검증 범위 |
 | --- | --- | --- |
-| Local | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | 개발자와 에이전트가 같은 lint/architecture guardrail을 실행한다. |
-| Local | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드와 문서 관계를 조회 가능한 지식 그래프로 유지한다. 코드 변경 후 아래 격리 절차로 공유 산출물을 갱신한다. |
-| Local (수동) | `Docs/diagrams/`, 로컬 archify 스킬 | 구조도 원본에서 HTML을 생성하고 품질·화면 검증 결과를 함께 남긴다. |
-| Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
-| GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
-| GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 기능별 `Domain`, `Data`, `Presentation` 테스트를 실행한다. |
-| GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
-| Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
+| 로컬 명령 | `Makefile`, `scripts/lint.sh`, `scripts/lint-fix.sh`, `scripts/check-architecture.sh` | `make verify`는 SwiftLint와 아키텍처 검사만 묶는다. 아키텍처 검사는 `scripts/check-ui-boundaries.py`를 포함한다. |
+| UI 경계 회귀 검사 | `scripts/test-ui-boundaries.py` | 검사기 변경 시 로컬에서 별도 실행한다. `make verify`와 커밋 훅에는 포함되지 않는다. |
+| 커밋 훅 | `.githooks/pre-commit` | `make hooks`로 설치한다. 추가·복사·수정·이름 변경된 staged `.swift` 경로가 있으면 해당 파일의 SwiftLint와 전체 아키텍처 검사를 실행한다. 문서만 변경하거나 Swift 파일 삭제만 있는 커밋은 건너뛴다. |
+| Lint CI | `.github/workflows/lint.yml` | `main`·`develop` 대상 PR과 수동 실행에서 SwiftLint, 아키텍처 검사, UI 경계 회귀 테스트를 실행한다. |
+| PR Unit Tests | `.github/workflows/pr-unit-tests.yml` | Tuist 설치·생성 후 Icon Composer 유형 보정과 앱 Resources 연결을 검사한다. iOS 16개 스킴과 `WatchHydrationTests`를 실행한다. 스킴 목록과 명령은 [빌드·테스트 절차](skills/xcode-build-test.md#pr-ci-scope)에 둔다. |
+| AI PR Review | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR의 생성·ready 전환에서 실행한다. 키·텍스트 diff가 없으면 리뷰를 생략한다. 조건은 [전달 흐름](delivery-workflow.md#ai-review-automation)을 따른다. |
+| Xcode Cloud | `ci_scripts/ci_post_clone.sh` | `Secrets.xcconfig` 생성 시 필수 PostHog 환경 변수를 검사하고, mise·PostHog CLI·Tuist와 Icon Composer 유형을 준비한다. archive·서명·배포는 [Cloud 콘솔 설정](xcode-cloud-release-build.md#2-xcode-cloud-워크플로-생성)을 따른다. |
+| 수동 문서·구조도 검증 | `Docs/diagrams/`, 로컬 archify 스킬 | 링크·소스 근거를 대조하고 구조도 원본에서 HTML·화면 검증 산출물을 생성한다. |
+| 수동 그래프 갱신 | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드 변경 후 격리된 출력 경로에서 공유 산출물 4개를 갱신한다. 아래 Graphify Artifacts 절차를 따른다. |
+
+Lint와 PR Unit Tests는 PR 생성·동기화·재열기 및 수동 실행을 지원한다. draft·문서 전용 PR을 제외하는 조건은 없다. Xcode Cloud post-clone은 아이콘 유형 보정만 실행하며, 아이콘 회귀·Resources 연결 검사는 PR Unit Tests와 로컬 검증에서 수행한다.
+
+검사기는 Swift import와 리터럴 Tuist 의존 선언을 확인한다. 전체 Swift 의미 분석이나 빌드를 대신하지 않는다. 세부 검사 범위·수정 순서는 [린트 절차](skills/lint-fix-loop.md)를 따른다.
 
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
 
@@ -167,10 +184,46 @@ AST-only 갱신을 문서의 의미적 재분석으로 보고하지 않는다. �
 ### Architecture Artifacts
 
 - [구조·의존성 문서](project-architecture-and-dependencies.md)는 실제 타깃 목록·소스 공유·실행 경계를 설명한다. 타깃 수와 검토 기준 커밋도 이 문서에서 관리한다.
-- 작성 원본은 `Docs/diagrams/mulimi-project-architecture.json`이다. `meta.repository.revision`과 `sources`에는 실제 확인한 커밋·파일 위치를 기록한다.
+- 원본은 아래 두 구조도로 관리한다. `meta.repository.revision`과 `sources`에는 실제 확인한 커밋·파일 위치를 기록한다.
 - 같은 이름의 HTML, `*.visual-check.json`, 라이트·다크 PNG 4장, `*.visual-check.html`은 배포·검증 산출물로 Git에 함께 보관한다. 로컬 상태인 `graphify-out/graph.html`과 구분한다.
 - 원본을 수정하면 archify의 `validate → deliver → visual-check → 캡처 직접 확인` 순서로 다시 검증한다. HTML을 직접 편집하거나 원본과 다른 HTML의 해시·화면 검증 결과를 재사용하지 않는다.
-- 명령은 [구조도 검증·재생성 절차](project-architecture-and-dependencies.md#검증과-갱신), 합격 기준은 [품질 게이트](quality-gates.md#architecture-artifact-gate)를 따른다. README 링크·설명만 변경했다면 기존 구조도를 불필요하게 재생성하지 않는다.
+- 합격 기준은 [품질 게이트](quality-gates.md#architecture-artifact-gate)를 따른다. README 링크·설명만 변경했다면 기존 구조도를 불필요하게 재생성하지 않는다.
+
+| 구조도 | 원본·HTML의 공통 이름 | 근거·갱신 조건 |
+| --- | --- | --- |
+| 앱 구조·의존성 | `mulimi-project-architecture` | `Project.swift`·구현의 타깃, 직접 의존성, 소스 공유 경계가 바뀔 때 |
+| 하네스 운영 | `mulimi-harness-architecture` | 문서 진입, 검증 스크립트, CI, 머지 후 정리 흐름이 바뀔 때 |
+
+archify 설치 디렉터리에서 실행한다. `mulimi_repo`는 저장소의 절대 경로로, `mulimi_diagram`은 위 표에서 영향받은 이름으로 지정한다.
+
+```sh
+mulimi_repo="/absolute/path/to/Mulimi"
+mulimi_diagram="mulimi-harness-architecture"
+node bin/archify.mjs validate architecture "$mulimi_repo/Docs/diagrams/$mulimi_diagram.json" --quality showcase --repo-root "$mulimi_repo" --json
+node bin/archify.mjs deliver architecture "$mulimi_repo/Docs/diagrams/$mulimi_diagram.json" "$mulimi_repo/Docs/diagrams/$mulimi_diagram.html" --quality showcase --repo-root "$mulimi_repo" --json
+node bin/archify.mjs visual-check "$mulimi_repo/Docs/diagrams/$mulimi_diagram.html" --json
+```
+
+검토 커밋이 오래됐다는 이유만으로 해시·캡처를 새 결과로 바꾸지 않는다. 코드가 같다면 재검토 날짜와 비교 범위를 문서에 추가하고 기존 산출물의 생성 이력을 보존한다.
+
+### Harness Artifact Validation
+
+2026-10-14, archify 2.16 / Node.js 24.18.1 / Google Chrome에서 새 운영 구조도를 검증했다. 근거 파일 참조는 중복 포함 22개다. 앱 구조도의 이전 검증 기록은 [구조·의존성 문서](project-architecture-and-dependencies.md#생성-검증-결과)에 보존한다.
+
+```text
+diagram_type: architecture
+output: Docs/diagrams/mulimi-harness-architecture.html
+source_revision: ed71ce1a0abe4448d4f29f991788bc80a7dfe562
+specification_sha256: 597f1a0c2277e57d105b2b83f93e2c0d585b86f729c1e3234b095287df051411
+specification_bytes: 5317
+artifact_sha256: 67ab1b3d17cdb7dbb9ad9c226f17548feebfc107534ef283f8d43460baa62563
+artifact_bytes: 709580
+validation: 9/9 showcase, 0 errors, 0 warnings
+visual_review: passed
+correction_rounds: 1 (릴리스 분기 라벨 위치)
+```
+
+자동 검증은 1440×900, 1600×1000, 1920×1080, 2048×1320에서 넘침 없음과 캡처 생성을 확인했다. 1440×900·2048×1320의 라이트·다크 캡처 4장을 직접 확인해 라벨·화살표·범례·카드가 잘리지 않는 것을 확인했다. `visual-check.json`의 `visualReview: pending`은 자동 검증 결과로 유지하며, 이 문단이 별도의 육안 검증 기록이다. 원본·HTML의 실제 SHA-256 및 바이트 수와 화면 검증 receipt를 대조한다.
 
 ## Update Rules
 
@@ -184,7 +237,7 @@ AST-only 갱신을 문서의 의미적 재분석으로 보고하지 않는다. �
 - Graphify 분석 범위 변경: `.graphifyignore`와 `graphify-out/`을 함께 갱신
 - 문서 구조 변경: `Docs/documentation-maintenance.md`, `Docs/index.md`, `README.md` 링크 갱신
 - 긴 작업 시작: `Docs/exec-plans/active/`에 계획 기록
-- 긴 작업 종료: `Docs/exec-plans/completed/`로 이동하거나 `tech-debt-tracker.md`에 후속 항목 기록
+- 긴 작업 종료: [머지·완료 조건](delivery-workflow.md#merge-and-issue-closure)을 확인하고 계획 상태·후속 항목·인덱스를 함께 갱신
 - 코드와 문서가 어긋나면 코드를 먼저 확인하고 작업 끝에 문서를 맞춘다
 
 ## Toolchain Policy
@@ -193,7 +246,7 @@ AST-only 갱신을 문서의 의미적 재분석으로 보고하지 않는다. �
 
 - Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
 - GitHub Actions의 iOS 유닛 테스트는 `macos-15` runner와 `latest-stable` Xcode를 사용한다. AI 리뷰는 별도 `ubuntu-latest` job이다.
-- CI 시뮬레이터 destination은 hosted runner에서 안정적으로 찾을 수 있는 이름 기반 값을 사용한다.
+- CI의 iOS destination은 `iPhone 16 Pro,OS=latest`를 사용한다. Watch는 사용 가능한 watchOS 26+ 기기를 조회해 런타임에 선택한 `id`를 사용한다.
 - 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.
 
 최신 도구 drift로 CI나 로컬 검증이 반복 실패하면, 실패 로그와 영향 범위를 남기고 `.mise.toml`, GitHub Actions Xcode 버전, 문서의 기준 버전을 같은 PR에서 pin한다.

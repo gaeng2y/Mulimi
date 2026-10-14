@@ -13,7 +13,7 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 | 실제 타깃·직접 의존 선언 | `Project/**/Project.swift` | 타깃, 플랫폼, 의존성, 공유 소스 경계가 바뀔 때 |
 | 구조·의존성 스냅샷과 구조도 | `Docs/project-architecture-and-dependencies.md`, `Docs/diagrams/` | 실제 선언·구현이 바뀌면 검토 기준 커밋, 직접 의존성 목록, 영향받는 그림을 함께 맞출 때 |
 | 문서 허브 | `Docs/index.md` | 새 문서가 생기거나 읽기 경로가 바뀔 때 |
-| 하네스 구조 | `Docs/harness-engineering.md` | 문서/검증/실행계획 운영 구조가 바뀔 때 |
+| 하네스 구조와 운영 구조도 | `Docs/harness-engineering.md`, `Docs/diagrams/mulimi-harness-architecture.*` | 문서 진입, 로컬 검사, CI, 실행 계획 정리 흐름이 바뀔 때 |
 | 이슈/PR 전달 흐름 | `Docs/delivery-workflow.md` | 브랜치 전략, PR 템플릿 작성, 이슈 종료 기준이 바뀔 때 |
 | 보안/개인정보 운영 | `Docs/security-privacy.md` | 권한, 민감 데이터 저장소, 외부 SDK, 광고/IAP, App Store privacy label 영향이 바뀔 때 |
 | 제품 요구 | `Docs/product-specs/` | 사용자 흐름, 화면 상태, 정책 문구가 바뀔 때 |
@@ -50,10 +50,19 @@ Mulimi 문서가 코드와 함께 유지되도록 관리하는 규칙이다. 문
 - 구조 규칙 변경이면 `ARCHITECTURE.md` 또는 `AGENTS.md`도 갱신했는가?
 - 타깃·직접 의존성·공유 소스가 바뀌었다면 구조·의존성 목록과 관련 그림을 실제 `Project.swift`에 맞췄는가?
 - 구조도를 바꿨다면 원본 JSON, 생성 HTML, 검증 해시, 화면 캡처가 같은 결과를 가리키는가?
+- 하네스 변경이면 실제 `Makefile`·훅·스크립트·workflow와 실행 조건을 대조했는가? 자동 검사와 수동 확인 범위를 구분했는가?
 - 에이전트 공통 규칙을 도구별 파일에 복제하지 않았는가?
 - 긴 작업이면 `Docs/exec-plans/active/` 또는 `completed/`에 기록했는가?
 - 과거 문서가 현재 구조를 오도하지 않는가?
 - 참고 문서의 수치·커밋·검증 결과를 새로 확인하지 않고 최신 결과처럼 옮기지 않았는가?
+
+## Execution Plan Maintenance
+
+- 각 계획의 첫 문단에 현재 상태, 확인 날짜, 관련 PR과 남은 작업을 적는다. 아래 검증 기록은 실행 당시의 환경·결과로 유지한다.
+- 이동 여부는 [머지·완료 조건](delivery-workflow.md#merge-and-issue-closure)을 따른다. GitHub 이슈의 열린/닫힌 상태만으로 실기기 QA나 효과 검증을 완료 처리하지 않는다.
+- 계획을 옮기면 `Docs/index.md`와 다른 문서의 해당 링크를 함께 갱신한다. 같은 깊이의 `active/ → completed/` 이동이어도 이미지·상대 링크를 확인한다.
+- 새로 실행한 검증은 날짜·명령·환경과 함께 추가한다. 과거 실패가 해결됐다는 근거가 있으면 후속 기록으로 연결하고 원래 실패 기록은 보존한다.
+- 문구·링크 변경은 원문으로 확인한다. Graphify의 AST 갱신을 문서 의미 재분석의 근거로 사용하지 않는다.
 
 ## Naming
 
