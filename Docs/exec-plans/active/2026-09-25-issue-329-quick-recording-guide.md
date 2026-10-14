@@ -1,5 +1,7 @@
 # #329 빠른 물 기록 가이드 제작·발행
 
+상태(2026-10-14 확인): 초안 제작 [PR #343](https://github.com/gaeng2y/Mulimi/pull/343)은 2026-09-26에 develop으로 머지됐다. 이슈 #329는 열려 있으며 발행 기록·실기기 따라 하기·28일 효과 검증이 남아 active에 유지한다.
+
 ## Context
 
 - [#329](https://github.com/gaeng2y/Mulimi/issues/329)의 가이드 원고와 커뮤니티 요약을 준비한다. 상위 실험은 [#284](https://github.com/gaeng2y/Mulimi/issues/284), 촬영 자산은 [#328](https://github.com/gaeng2y/Mulimi/issues/328), ASO는 [#327](https://github.com/gaeng2y/Mulimi/issues/327)에서 관리한다.

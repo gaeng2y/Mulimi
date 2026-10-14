@@ -9,6 +9,7 @@
 
 ## Move Checklist
 
-- 구현이 머지되었는지 확인
-- 남은 후속 작업이 있으면 `tech-debt-tracker.md`나 새 이슈로 남김
-- 문서 경로와 파일명이 현재 기능 이름과 맞는지 확인
+- PR 머지와 계획의 완료 조건을 확인하고 날짜·PR 링크를 기록한다.
+- 남은 후속 작업은 [기술 부채](../tech-debt-tracker.md)나 후속 이슈로 연결한다. 계획 자체의 검증·발행이 남았다면 `active/`를 유지한다.
+- `Docs/index.md`와 참조 링크를 갱신하고 이미지·앵커를 확인한다.
+- 과거 검증의 날짜·환경·실패 기록을 보존한다. 상세 기준은 [전달 흐름](../../delivery-workflow.md#merge-and-issue-closure)을 따른다.

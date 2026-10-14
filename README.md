@@ -235,6 +235,10 @@ make arch-check
 make verify
 ```
 
+`make verify`는 SwiftLint와 UI 모듈을 포함한 아키텍처 경계 검사를 실행합니다. 테스트·앱 빌드·문서 링크·구조도 검증은 [변경 유형별 품질 게이트](Docs/quality-gates.md)를 따라 별도로 확인합니다.
+
+작업 시작부터 검증·PR·머지 후 정리까지는 [하네스 운영 구조도](Docs/harness-engineering.md#operating-map)에서 근거 파일과 함께 볼 수 있습니다.
+
 ### 코드 지식 그래프
 
 저장소에는 Codex용 Graphify 스킬과 공유 지식 그래프가 포함됩니다.
@@ -260,7 +264,7 @@ CLI 조회에는 실제 심볼·문서 이름을 사용합니다. Codex 스킬�
 4. `Docs/index.md`
 5. 작업 대상 이슈
 6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
-7. 관련 `Docs/product-specs/`
+7. 관련 도메인 문서 또는 `Docs/product-specs/`
 8. 관련 `Docs/skills/`
 9. 수정 대상 모듈의 `Project.swift`와 실제 구현
 
