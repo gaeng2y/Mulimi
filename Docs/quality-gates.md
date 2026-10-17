@@ -42,6 +42,7 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 | Tuist/Project.swift 변경 | `tuist generate`, `make lint`, `make arch-check`, 앱 빌드 | 변경된 scheme 테스트 |
 | Feature 모듈 변경 | `make lint`, `make arch-check`, 변경 feature의 `Domain/Data/Presentation` 테스트 | 앱 조립이 바뀌면 앱 빌드 |
 | CI/릴리스 변경 | 관련 스크립트 정적 확인, 앱 빌드 | Xcode Cloud 또는 GitHub Actions 실행 결과 확인 |
+| Tuist Preview 변경 | `make preview-check`, `make preview-build`, workflow 구문 검사 | 실제 업로드·URL 실행, PR CI와 수동 실행 결과. [검증 절차](tuist-previews.md#검증과-문제-해결) |
 
 ## Architecture Artifact Gate
 
