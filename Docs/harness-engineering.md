@@ -33,6 +33,7 @@ Docs/*.md          -> 도메인/설계 배경 문서
 graphify-out       -> 공유 코드 지식 그래프
 .github/workflows/lint.yml -> PR lint와 architecture check
 .github/workflows/pr-unit-tests.yml -> PR 단위 Unit Test
+.github/workflows/tuist-preview.yml -> 시뮬레이터 Preview 공유
 .github/workflows/ai-pr-review.yml -> Git Flow PR AI 리뷰
 ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 ```
@@ -126,10 +127,13 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | Local | `.githooks/pre-commit` | staged Swift 파일이 있을 때 SwiftLint와 architecture check를 커밋 전에 차단한다. |
 | GitHub Actions | `.github/workflows/lint.yml` | `main`, `develop` 대상 PR에서 SwiftLint와 architecture check를 실행한다. |
 | GitHub Actions | `.github/workflows/pr-unit-tests.yml` | `main`, `develop` 대상 PR에서 기능별 `Domain`, `Data`, `Presentation` 테스트를 실행한다. |
+| Local / GitHub Actions | `scripts/tuist-preview.py`, `.github/workflows/tuist-preview.yml` | Debug 시뮬레이터 앱과 포함된 Widget/Watch 산출물을 검증하고 Tuist에 공유한다. 같은 저장소의 `develop` 대상 PR과 수동 실행을 지원한다. |
 | GitHub Actions | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR이 열리거나 ready 상태가 될 때 AI 리뷰 코멘트를 생성한다. |
 | Xcode Cloud | `ci_scripts/ci_post_clone.sh`, `Docs/xcode-cloud-release-build.md` | 태그 기반 Release archive를 준비한다. PR 유닛 테스트 게이트는 GitHub Actions가 담당한다. |
 
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
+
+Preview 생성·인증·리뷰어 실행 절차는 [Tuist Previews](tuist-previews.md)를 따른다. `make preview-check`는 업로드 전 회귀 검사이고, 실제 공유와 시뮬레이터 실행 결과는 PR에 따로 기록한다.
 
 문서 링크 검사와 구조도 검증은 현재 `make verify`, pre-commit, GitHub Actions에 자동으로 포함되지 않는다. 작성자가 [문서·구조도 품질 게이트](quality-gates.md#architecture-artifact-gate)를 별도로 확인한다.
 
@@ -191,7 +195,7 @@ AST-only 갱신을 문서의 의미적 재분석으로 보고하지 않는다. �
 
 현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
 
-- Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
+- Tuist는 `.mise.toml`의 `4.205.0`으로 고정한다. 버전 변경 시 프로젝트 생성·Preview 빌드·공유 명령을 함께 검증한다.
 - GitHub Actions의 iOS 유닛 테스트는 `macos-15` runner와 `latest-stable` Xcode를 사용한다. AI 리뷰는 별도 `ubuntu-latest` job이다.
 - CI 시뮬레이터 destination은 hosted runner에서 안정적으로 찾을 수 있는 이름 기반 값을 사용한다.
 - 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.

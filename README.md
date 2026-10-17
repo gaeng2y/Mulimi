@@ -235,6 +235,18 @@ make arch-check
 make verify
 ```
 
+### Tuist Preview 공유
+
+기존 Tuist 프로젝트 `gaeng2y/mulimi`에 Debug 시뮬레이터 빌드를 공유합니다. Tuist 버전은 `.mise.toml`에서 고정합니다.
+
+```bash
+mise install
+mise exec -- tuist auth login
+make preview-share
+```
+
+업로드 없이 빌드만 확인하려면 `make preview-build`를 실행합니다. 공유 결과의 URL로 `tuist run <preview-url>`을 실행할 수 있습니다. GitHub 연결과 PR 자동 공유는 [Tuist Previews 사용 방법](Docs/tuist-previews.md)을 참고하세요.
+
 ### 코드 지식 그래프
 
 저장소에는 Codex용 Graphify 스킬과 공유 지식 그래프가 포함됩니다.

@@ -74,6 +74,8 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 
 ## Documentation Updates
 
+`develop` 대상 같은 저장소 PR은 [Tuist Preview workflow](tuist-previews.md#github-연결과-ci)로 시뮬레이터 빌드를 공유한다. 리뷰어는 해당 PR의 Preview 링크로 실행하고, 작성자는 빌드·업로드·실행 중 실제로 확인한 결과를 Testing에 기록한다.
+
 - 새 제품 정책이나 화면 상태가 생기면 `Docs/product-specs/`를 갱신한다.
 - 구조 규칙이 바뀌면 `ARCHITECTURE.md` 또는 관련 `Docs/skills/`를 갱신한다.
 - 작업 운영 규칙이 바뀌면 이 문서와 `Docs/harness-engineering.md`를 갱신한다.
