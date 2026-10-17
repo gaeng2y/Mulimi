@@ -80,6 +80,8 @@ Tuist 계정 설정의 **Integrations**에서 Tuist GitHub App 설치 상태를 
 
 `macos-15`의 `latest-stable` Xcode를 선택하고, mise로 고정된 Tuist를 설치한다. `contents: read`, `id-token: write` 권한으로 `tuist auth login`을 실행해 OIDC로 인증한다. 사용자 토큰을 CI secret으로 복사할 필요가 없다. [CI 인증](https://tuist.dev/en/docs/guides/integrations/continuous-integration)
 
+`tuist project show`는 사용자 세션을 조회하므로 로컬 공유의 사전 확인에만 사용한다. CI에서는 workflow의 OIDC 로그인 후 Preview 업로드 API가 CI 주체의 권한을 검사한다. Tuist 4.205.0의 [프로젝트 조회](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/projects_controller.ex)와 [Preview API](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/previews_controller.ex)는 인증 주체를 다르게 처리한다.
+
 공유 성공 시 Actions summary에서 URL·빌드한 커밋·버전·실행 명령을 확인한다. Tuist GitHub 연동은 해당 PR에도 Preview 링크를 게시한다. 수동 실행은 Actions summary에서 결과를 확인한다. 업로드나 빌드가 실패하면 job이 실패하며 성공 링크를 만들지 않는다. 같은 PR의 새 실행은 이전 실행을 취소한다.
 
 ## 검증과 문제 해결

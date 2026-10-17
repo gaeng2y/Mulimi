@@ -49,7 +49,8 @@ Preview workflow와 명령을 되돌리면 기존 테스트·릴리스 경로를
 - 실행: iOS 27.0의 새 iPhone 18 Pro 시뮬레이터에 설치·실행해 로그인 초기 화면을 확인했다. 로컬 변경이 포함된 빌드이며 기준 커밋은 `ed71ce1`이다.
 - 빌드 로그: 기존 소스의 FoundationModels deprecated API, AccentColor, AppIntents 메타데이터 경고가 있다. SSU archive 오류 문구도 출력되지만 xcodebuild는 성공으로 종료했고 앱 실행을 확인했다.
 - 공유 검증: `make preview-share`는 프로젝트 조회 단계에서 `You must be logged in to do this`로 종료됐다. 업로드 성공이나 Preview URL 실행으로 보고하지 않는다.
-- 공유 지식 그래프는 격리된 출력 경로에서 AST만 갱신했다. 4,244개 노드·11,299개 관계이며 세션 기록은 포함하지 않았다.
+- 공유 지식 그래프는 격리된 출력 경로에서 AST만 갱신했다. 4,245개 노드·11,300개 관계이며 세션 기록은 포함하지 않았다.
+- PR #361의 첫 Preview CI에서 OIDC 로그인은 통과했다. 사용자 세션을 요구하는 `tuist project show`가 CI 주체를 거부해, 이 사전 조회를 로컬에만 적용하고 CI는 Preview API의 권한 검사를 사용하도록 수정했다. 관련 회귀 검사를 추가했다.
 
 ## Remaining Validation
 
