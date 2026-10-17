@@ -7,6 +7,7 @@ Mulimi의 Debug iOS Simulator 빌드를 공유하는 절차다. 연결 대상은
 - `.mise.toml`이 Tuist **4.205.0**을 고정한다. `mise install` 후 `mise exec -- tuist version`으로 확인한다.
 - 루트 `Tuist.swift`가 `fullHandle`과 Generated Project 구성을 선언한다. `Tuist/Tuist.swift`는 이 버전의 설정 탐색 위치에 포함되지 않는다.
 - iOS/watchOS 26 이상 SDK가 포함된 Xcode가 필요하다. 실행할 Mac에는 iOS 26 이상 시뮬레이터 런타임도 설치한다.
+- `tuist run`으로 Simulator 창까지 열려면 선택한 Xcode에 `Simulator.app` GUI가 있어야 한다.
 - 인증 없이도 일반 프로젝트 생성과 `make preview-build`를 실행할 수 있다. `optionalAuthentication`을 사용하며, 모듈 캐시 저장소는 로컬로 한정한다.
 - 공유할 때는 Tuist 계정에 해당 프로젝트의 업로드·조회 권한이 있어야 한다.
 
@@ -78,6 +79,12 @@ Tuist 계정 설정의 **Integrations**에서 Tuist GitHub App 설치 상태를 
 - Actions의 **Tuist Preview → Run workflow**: 선택한 브랜치를 빌드한다. workflow가 기본 브랜치에 등록돼야 수동 실행 메뉴가 나타난다.
 - fork PR: 업로드 job을 건너뛴다.
 
+기본 브랜치에 반영되기 전에도 PR 실행으로 workflow가 등록되면 CLI로 수동 실행할 수 있다. 이 저장소의 workflow ID는 `387766351`이다. workflow를 다시 만들었다면 `gh workflow list --all`에서 ID를 확인한다. `<작업 브랜치>`는 workflow 파일이 있는 브랜치로 바꾼다.
+
+```sh
+gh workflow run 387766351 --repo gaeng2y/Mulimi --ref '<작업 브랜치>'
+```
+
 `macos-15`의 `latest-stable` Xcode를 선택하고, mise로 고정된 Tuist를 설치한다. `contents: read`, `id-token: write` 권한으로 `tuist auth login`을 실행해 OIDC로 인증한다. 사용자 토큰을 CI secret으로 복사할 필요가 없다. [CI 인증](https://tuist.dev/en/docs/guides/integrations/continuous-integration)
 
 `tuist project show`는 사용자 세션을 조회하므로 로컬 공유의 사전 확인에만 사용한다. CI에서는 workflow의 OIDC 로그인 후 Preview 업로드 API가 CI 주체의 권한을 검사한다. Tuist 4.205.0의 [프로젝트 조회](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/projects_controller.ex)와 [Preview API](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/previews_controller.ex)는 인증 주체를 다르게 처리한다.
@@ -103,5 +110,6 @@ make preview-build
 | Watch 아이콘 또는 플랫폼 오류 | 전역 `-sdk iphonesimulator` 없이 지정된 Preview 명령을 사용한다. |
 | 빌드 번호·리소스 검사 실패 | 같은 실행의 산출물과 Icon Composer 검증 로그를 확인한다. 실패한 산출물은 공유하지 않는다. |
 | 링크 실행 실패 | Tuist 조회 권한과 iOS 26+ 시뮬레이터 설치 상태, 빌드 아키텍처를 확인한다. |
+| `Simulator.app` 없음 / Code 260 | 선택한 Xcode의 Simulator GUI 설치를 확인한다. 다운로드·설치가 끝났다면 `simctl launch`로 앱 동작을 별도로 확인할 수 있지만, `tuist run` 전체 성공으로 기록하지 않는다. |
 
 PR에는 로컬 검사, 실제 공유·실행, Actions 결과를 각각 기록한다. 실기기용 배포는 서명·프로비저닝과 설치 검증을 포함해 별도로 진행한다.

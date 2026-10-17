@@ -42,20 +42,33 @@ Preview workflow와 명령을 되돌리면 기존 테스트·릴리스 경로를
 
 ## Progress
 
-- 2026-10-18: 구현 시작. 로컬 Tuist 인증 갱신이 시간 초과로 실패해 재로그인을 요청했다. 업로드·서버 연결 검증은 인증 복구 후 진행한다.
 - 구현: 루트 Tuist 설정·버전 고정, `make preview-build/share/check`, PR·수동 CI와 사용 문서를 추가했다. 생성 단계의 인증은 선택 사항이고 모듈 캐시는 로컬로 한정한다.
-- 로컬 검증: SwiftLint 328개 파일 위반 0개, 아키텍처 검사, Preview 회귀 테스트 10개, actionlint 1.7.12 검사를 통과했다. 일반 `tuist generate --no-open`도 인증 없이 통과했다.
-- 빌드: Xcode 27.1 (`27A9275`), Tuist 4.205.0, Debug 시뮬레이터 빌드 성공. `x86_64`와 `arm64`를 포함하며 앱·위젯·워치 모두 `2.6.0 (20261017154552)`로 검증했다. 전역 `-sdk iphonesimulator`를 제거해 Watch가 `watchsimulator`로 빌드되도록 했다.
-- 실행: iOS 27.0의 새 iPhone 18 Pro 시뮬레이터에 설치·실행해 로그인 초기 화면을 확인했다. 로컬 변경이 포함된 빌드이며 기준 커밋은 `ed71ce1`이다.
-- 빌드 로그: 기존 소스의 FoundationModels deprecated API, AccentColor, AppIntents 메타데이터 경고가 있다. SSU archive 오류 문구도 출력되지만 xcodebuild는 성공으로 종료했고 앱 실행을 확인했다.
-- 공유 검증: `make preview-share`는 프로젝트 조회 단계에서 `You must be logged in to do this`로 종료됐다. 업로드 성공이나 Preview URL 실행으로 보고하지 않는다.
+- 전달: [PR #361](https://github.com/gaeng2y/Mulimi/pull/361), 구현 커밋 `a08324b`와 CI 인증 수정 `a711de3`을 `gitmoji -c`로 생성했다.
+- 사용자 세션을 요구하는 `tuist project show`는 로컬 사전 확인에만 사용한다. CI는 OIDC 로그인 후 Preview API에서 업로드 권한을 확인한다.
 - 공유 지식 그래프는 격리된 출력 경로에서 AST만 갱신했다. 4,245개 노드·11,300개 관계이며 세션 기록은 포함하지 않았다.
-- PR #361의 첫 Preview CI에서 OIDC 로그인은 통과했다. 사용자 세션을 요구하는 `tuist project show`가 CI 주체를 거부해, 이 사전 조회를 로컬에만 적용하고 CI는 Preview API의 권한 검사를 사용하도록 수정했다. 관련 회귀 검사를 추가했다.
+
+## 검증 결과 — 2026-10-18
+
+| 항목 | 결과 |
+| --- | --- |
+| SwiftLint / 아키텍처 | 328개 파일 위반 0개, UI 경계 포함 통과 |
+| Preview 회귀 검사 | 11개 통과 |
+| workflow | actionlint 1.7.12 통과 |
+| Tuist 설정 / 생성 | fullHandle·선택적 인증·로컬 캐시 확인, 인증 없이 일반 생성 통과 |
+| 로컬 빌드 | Xcode 27.1 (`27A9275`), Tuist 4.205.0, Debug `arm64`/`x86_64` 성공 |
+| 로컬 공유 | 앱·위젯·워치 `2.6.0 (20261017160536)` 검증 후 업로드 성공 |
+| PR CI | [run 39047396063](https://github.com/gaeng2y/Mulimi/actions/runs/39047396063) 성공, Xcode 26.3, 빌드 `2.1`, Tuist PR 코멘트 확인 |
+| 기존 PR 테스트 | [run 39047396050](https://github.com/gaeng2y/Mulimi/actions/runs/39047396050) 성공, 단위 테스트와 Watch undo 회귀 검사 포함 |
+| 수동 CI | [run 39047611177](https://github.com/gaeng2y/Mulimi/actions/runs/39047611177) 성공, 빌드 `3.1` |
+| Preview 설치·실행 | URL에서 내려받은 빌드 `20261017160536`의 설치 버전 확인 후 `simctl launch`, iOS 27.0 / iPhone 18 Pro 로그인 화면 확인 |
+| `tuist run` 전체 명령 | 다운로드·설치 후 Simulator GUI 열기 실패: 현재 선택한 Xcode에 `Simulator.app`이 없음 |
+
+검증한 [Preview URL](https://tuist.dev/gaeng2y/mulimi/previews/01a14a9b-9fd7-7fcb-a61d-6fed37d16125)은 같은 커밋의 PR·수동·로컬 빌드를 묶는다. 로컬 공유에는 `a711de3` 위의 문서 수정이 포함됐고 `build.json`에 미커밋 변경 여부를 기록했다.
+
+빌드 로그에는 FoundationModels deprecated API, AccentColor, AppIntents 메타데이터 경고가 있다. 로컬 Xcode의 SSU archive 오류 문구도 출력되지만 xcodebuild는 성공으로 종료했고 앱 실행을 확인했다.
 
 ## Remaining Validation
 
-- Tuist 프로젝트 조회·업로드 인증 복구와 실제 Preview URL 실행
-- Tuist GitHub App의 `gaeng2y/Mulimi` 연결, PR OIDC 업로드·코멘트 확인
-- workflow가 기본 브랜치에 등록된 후 `workflow_dispatch` 실행 확인
+- Simulator GUI가 포함된 Xcode에서 `tuist run <preview-url>` 전체 명령 성공 확인
 
-이 항목은 #360과 PR에서 계속 추적한다. 실제 공유 검증이 끝나기 전에는 완료로 표시하지 않는다.
+남은 검증은 #360과 PR에서 추적한다. PR 머지 전까지 이 계획을 active에 유지한다.
