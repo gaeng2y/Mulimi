@@ -71,6 +71,9 @@ Tuist/.build/
 ### Tuist managed dependencies ###
 XCConfig/Secrets.xcconfig
 
+### Python tool cache ###
+__pycache__/
+
 ### Local analytics configuration ###
 .env
 .env.example
