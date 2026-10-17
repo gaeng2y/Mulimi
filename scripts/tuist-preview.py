@@ -151,8 +151,9 @@ def main():
     parser.add_argument("action", choices=("build", "share"))
     args = parser.parse_args()
     number = build_number(os.environ)
-    if args.action == "share":
-        # Fail before the build when the session cannot access the existing project.
+    if args.action == "share" and os.environ.get("GITHUB_ACTIONS") != "true":
+        # project show checks a user session; CI authenticates with OIDC in the workflow.
+        # The upload endpoint authorizes the CI subject when sharing the preview.
         run("tuist", "project", "show", FULL_HANDLE)
     parent = ROOT / ".build/tuist-preview"
     parent.mkdir(parents=True, exist_ok=True)

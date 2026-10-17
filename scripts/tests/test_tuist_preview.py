@@ -100,6 +100,7 @@ class PreviewTests(unittest.TestCase):
 
     def test_failed_build_never_uploads(self):
         with patch.object(preview, "ROOT", self.root), \
+                patch.dict(preview.os.environ, {}, clear=True), \
                 patch("sys.argv", ["tuist-preview.py", "share"]), \
                 patch.object(preview, "run") as run, \
                 patch.object(preview, "build", side_effect=subprocess.CalledProcessError(65, "xcodebuild")):
@@ -115,6 +116,7 @@ class PreviewTests(unittest.TestCase):
             return metadata, output / "DerivedData"
 
         with patch.object(preview, "ROOT", self.root), \
+                patch.dict(preview.os.environ, {}, clear=True), \
                 patch("sys.argv", ["tuist-preview.py", "share"]), \
                 patch.object(preview, "run", return_value='{"url":"https://tuist.dev/preview/1"}') as run, \
                 patch.object(preview, "build", side_effect=built), \
@@ -127,6 +129,19 @@ class PreviewTests(unittest.TestCase):
         self.assertNotEqual(first[index], second[index])
         self.assertEqual(first[:3], ("tuist", "share", "Mulimi"))
         self.assertEqual(first[first.index("--configuration") + 1], "Debug")
+
+    def test_ci_upload_does_not_require_user_project_lookup(self):
+        metadata = {"commit": "abc123", "version": "2.6.0", "buildNumber": "123.1"}
+        env = {"GITHUB_ACTIONS": "true", "GITHUB_RUN_NUMBER": "123", "GITHUB_RUN_ATTEMPT": "1"}
+        with patch.object(preview, "ROOT", self.root), \
+                patch.dict(preview.os.environ, env, clear=True), \
+                patch("sys.argv", ["tuist-preview.py", "share"]), \
+                patch.object(preview, "run", return_value='{"url":"https://tuist.dev/preview/1"}') as run, \
+                patch.object(preview, "build", return_value=(metadata, self.root / "DerivedData")), \
+                patch.object(preview, "publish_result"):
+            preview.main()
+        self.assertEqual(run.call_count, 1)
+        self.assertEqual(run.call_args.args[:3], ("tuist", "share", "Mulimi"))
 
 
 if __name__ == "__main__":
