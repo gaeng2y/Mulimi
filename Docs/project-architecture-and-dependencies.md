@@ -2,6 +2,8 @@
 
 기준: 코드 커밋 `6fd6b9fb9cb0f3fcc9ae43f8fa73727b07dd0d51` (#356), Mulimi **2.6.0 (37)**. 실제 `Project.swift` 18개와 관련 구현을 확인한 스냅샷이다. 구조도 소스 링크도 이 코드 커밋에 고정했다.
 
+재검토(2026-10-14, #358): `develop@ed71ce1`의 18개 manifest에서 55개 타깃(테스트 17개)과 직접 의존 선언 176개(내부 172개·외부 4개)를 다시 추출해 아래 표 및 소스 줄 링크와 일치함을 확인했다. UI 계층, Watch의 세 파일 공유, Persistence 미참조도 대조했다. 기존 구조도 기준 커밋부터 `Project/`, `Workspace.swift`, `Tuist/`, `XCConfig/`의 변경이 없어 원본·HTML·생성 검증 이력을 유지한다. 앱 빌드·기능 테스트는 이번 문서 작업에서 재실행하지 않았다.
+
 [전체 구조도 열기](diagrams/mulimi-project-architecture.html) · [다이어그램 원본 JSON](diagrams/mulimi-project-architecture.json) · [라이트·다크 화면 검증](diagrams/mulimi-project-architecture.visual-check.html)
 
 ## 읽는 방법
@@ -179,13 +181,7 @@ Presentation은 자기 Domain만 참조하는 구조가 아니다. 예를 들어
 
 타깃이나 의존성 변경 시 이 표와 [구조도 JSON](diagrams/mulimi-project-architecture.json)을 함께 갱신한다. 구조도 JSON의 `meta.repository.revision`은 실제 검토한 커밋으로 맞추고, [ARCHITECTURE](../ARCHITECTURE.md)의 규율을 따른다.
 
-archify 설치 디렉터리에서 다음 명령으로 검증·재생성한다. `<repo>`는 저장소의 절대 경로다.
-
-```sh
-node bin/archify.mjs validate architecture <repo>/Docs/diagrams/mulimi-project-architecture.json --quality showcase --repo-root <repo> --json
-node bin/archify.mjs deliver architecture <repo>/Docs/diagrams/mulimi-project-architecture.json <repo>/Docs/diagrams/mulimi-project-architecture.html --quality showcase --repo-root <repo> --json
-node bin/archify.mjs visual-check <repo>/Docs/diagrams/mulimi-project-architecture.html --json
-```
+재생성 명령은 [하네스 산출물 절차](harness-engineering.md#architecture-artifacts)를 따른다. 앱 구조도에는 `mulimi_diagram="mulimi-project-architecture"`를 사용한다. [하네스 운영 구조도](harness-engineering.md#operating-map)는 문서·검증·전달 흐름을 설명하는 별도 산출물이다.
 
 HTML은 직접 편집하지 않는다. 검증 기준은 showcase 9/9, 오류·경고 0이며, 화면 검증 후 라이트·다크 캡처도 직접 확인한다. 자동 화면 검증 receipt의 `visualReview: pending`은 육안 검증 결과를 대신하지 않는다.
 
@@ -208,7 +204,7 @@ correction_rounds: 2 (소스 커밋·기존 타깃 위치 확정; 레이아웃 �
 
 화면 검증: 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침 없음. 1440×900과 2048×1320의 라이트·다크 캡처 4장을 직접 확인했다. READ·정지 화면 기준이다. 자동 검증 receipt의 `visualReview: pending`과 별도로 캡처를 직접 확인했다.
 
-저장소 검증(2026-10-10, #356): Xcode **27.0 (27A266a)**, Tuist **4.205.0**. `make lint` 328개 파일 위반 0, `make arch-check`, 경계 fixture 7개, `tuist generate --no-open` 통과. iPhone 17e/iOS 26.5에서 MulimiUISystem 5개(9건), Hydration Domain/Data/Presentation 67/7/104개, Challenge Domain/Data/Presentation 10/3/6개 통과. Mulimi 서명 없는 iOS Debug 빌드도 성공했다. UI 비교와 접근성 확인 결과는 [#356 실행 기록](exec-plans/active/2026-10-10-issue-356-design-system.md)에 남긴다.
+저장소 검증(2026-10-10, #356): Xcode **27.0 (27A266a)**, Tuist **4.205.0**. `make lint` 328개 파일 위반 0, `make arch-check`, 경계 fixture 7개, `tuist generate --no-open` 통과. iPhone 17e/iOS 26.5에서 MulimiUISystem 5개(9건), Hydration Domain/Data/Presentation 67/7/104개, Challenge Domain/Data/Presentation 10/3/6개 통과. Mulimi 서명 없는 iOS Debug 빌드도 성공했다. UI 비교와 접근성 확인 결과는 [#356 실행 기록](exec-plans/completed/2026-10-10-issue-356-design-system.md)에 남긴다.
 
 이전 저장소 검증(2026-09-29, #336): Xcode **27.0 (27A266a)**, Tuist **4.205.0**에서 `make lint`(316개 파일, 위반 0), `make arch-check`, `tuist generate --no-open`을 통과했다. Watch SE 3 40mm/watchOS 27의 `WatchHydrationTests`는 정의 6개·매개변수 포함 12건, iPhone 17e/iOS 27의 `HydrationDomain` 65개·`HydrationData` 6개·`HydrationPresentation` 91개가 통과했다. Watch Debug Simulator 및 워치를 포함한 iOS Release 서명 없는 빌드도 통과했다. 실기기 HealthKit 동기화·권한 검증은 별도다.
 

@@ -1,5 +1,7 @@
 # #321 수분 알림 바로 기록
 
+상태(2026-10-14 확인): [PR #340](https://github.com/gaeng2y/Mulimi/pull/340)은 2026-09-22에 develop으로 머지됐고 이슈 #321은 닫혀 있다. 실제 잠금·백그라운드 HealthKit 저장과 측정 근거가 확인되지 않아 이 계획은 검증 대기로 active에 유지한다. 아래 빌드 실패는 구현 당시 기록이며, 후속 전체 빌드 결과는 [구조 문서의 검증 기록](../../project-architecture-and-dependencies.md#생성-검증-결과)을 참고한다.
+
 ## Context
 
 - [#321](https://github.com/gaeng2y/Mulimi/issues/321)의 “마셨어요” 액션을 Release에서도 사용할 수 있도록 구현하고 git flow feature PR로 전달한다.
