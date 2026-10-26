@@ -1,6 +1,6 @@
 # Tuist Builds·Xcode Cache·Module Cache 연결
 
-상태: 구현·로컬 빌드 검증 완료(2026-10-26). 사용자 요청으로 `release/2.7.0`에서 진행한다. 관련 릴리스 PR은 [#367](https://github.com/gaeng2y/Mulimi/pull/367)이며 CI·문서 산출물·머지 확인이 남아 있다.
+상태: 구현·로컬 빌드·문서 산출물 검증 완료(2026-10-26). 사용자 요청으로 `release/2.7.0`에서 진행한다. 관련 릴리스 PR은 [#367](https://github.com/gaeng2y/Mulimi/pull/367)이며 CI·머지 결과는 PR에서 확인한다.
 
 ## Context
 
@@ -57,5 +57,7 @@ Tuist 4.205.0의 반복 setup에서 launchd bootstrap 오류와 구성 옵션에
 - `MulimiUISystem` 3개, `WatchHydrationTests` 20개 테스트 통과 및 Tuist 결과 업로드.
 - 빈 인증 디렉터리와 클라우드 비활성화 설정으로 생성 성공. 생성된 앱 스킴과 프로젝트에서 원격 캐시·기록 후처리 제거를 확인한 뒤 기본 설정으로 복원.
 - Builds 업로드: [시뮬레이터](https://tuist.dev/gaeng2y/mulimi/builds/build-runs/d13cbd22-4b44-4acb-b9d3-e6d77b2ef191), [기기용](https://tuist.dev/gaeng2y/mulimi/builds/build-runs/5ff52a4e-c3aa-4610-b990-40d5cf81c34f), [캐시 재사용](https://tuist.dev/gaeng2y/mulimi/builds/build-runs/4b0c7e6d-c346-4160-b394-04eb80754c51).
+- 하네스 구조도: showcase 9/9, 오류·경고 0개. 네 화면 크기의 넘침 검사와 작은·큰 화면의 라이트·다크 캡처 4장 직접 확인. 해시·바이트 수는 [검증 기록](../../harness-engineering.md#harness-artifact-validation)에 보존.
+- 격리 `GRAPHIFY_OUT`에서 AST 갱신: 4,391개 노드·11,460개 관계. 생성물 출처·세션 학습 섹션 제외를 확인했으며 문서 의미 분석은 실행하지 않음.
 
 이 변경에서 Preview 공유·앱 설치·서명 archive·Xcode Cloud 실행은 수행하지 않았다. PR 머지 전에는 이 계획을 `active/`에 유지한다.

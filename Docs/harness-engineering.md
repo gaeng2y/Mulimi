@@ -16,7 +16,7 @@ Mulimi에서 말하는 하네스 엔지니어링은 AI 에이전트와 개발자
 
 번호는 작업 순서이며 점선은 별도 릴리스 흐름이다. 문서와 영향받는 산출물은 PR 전에 갱신하고, 머지 후에는 실행 계획 상태·후속 작업·인덱스를 정리한다. CI 실패 시 구현·검증 단계로 돌아간다. Xcode Cloud의 시작 조건과 실제 실행 결과는 콘솔에서 확인한다.
 
-그림은 2026-10-14에 확인한 `develop@ed71ce1`의 규칙·스크립트를 근거로 하며, 각 노드에서 해당 커밋의 파일을 열 수 있다. 앱 모듈 의존성은 [앱 구조·의존성 스냅샷](project-architecture-and-dependencies.md)을 참고한다. 설명은 한국어이며 archify의 고정 Viewer UI와 `<html lang>`는 영어다.
+그림은 2026-10-26에 확인한 `release/2.7.0@5b08b19`의 규칙·스크립트를 근거로 하며, 각 노드에서 해당 커밋의 파일을 열 수 있다. 앱 모듈 의존성은 [앱 구조·의존성 스냅샷](project-architecture-and-dependencies.md)을 참고한다. 설명은 한국어이며 archify의 고정 Viewer UI와 `<html lang>`는 영어다.
 
 ## Top-Level Map
 
@@ -129,7 +129,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 
 하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.
 
-검토 기준: `ed71ce1` (2026-10-14). 각 파일에 선언된 실행 조건과 검증 범위를 정리했다.
+검토 기준: `5b08b19` (2026-10-26). 각 파일에 선언된 실행 조건과 검증 범위를 정리했다.
 
 | 실행 지점 | 근거 파일 | 실행 조건·검증 범위 |
 | --- | --- | --- |
@@ -214,19 +214,19 @@ node bin/archify.mjs visual-check "$mulimi_repo/Docs/diagrams/$mulimi_diagram.ht
 
 ### Harness Artifact Validation
 
-2026-10-14, archify 2.16 / Node.js 24.18.1 / Google Chrome에서 새 운영 구조도를 검증했다. 근거 파일 참조는 중복 포함 22개다. 앱 구조도의 이전 검증 기록은 [구조·의존성 문서](project-architecture-and-dependencies.md#생성-검증-결과)에 보존한다.
+2026-10-26, archify 2.16 / Node.js 24.18.1 / Google Chrome에서 Tuist Builds·캐시와 CI 인증 경로를 추가한 운영 구조도를 검증했다. 근거 파일 참조는 중복 포함 25개다. 앱 구조도의 이전 검증 기록은 [구조·의존성 문서](project-architecture-and-dependencies.md#생성-검증-결과)에 보존한다.
 
 ```text
 diagram_type: architecture
 output: Docs/diagrams/mulimi-harness-architecture.html
-source_revision: ed71ce1a0abe4448d4f29f991788bc80a7dfe562
-specification_sha256: 597f1a0c2277e57d105b2b83f93e2c0d585b86f729c1e3234b095287df051411
-specification_bytes: 5317
-artifact_sha256: 67ab1b3d17cdb7dbb9ad9c226f17548feebfc107534ef283f8d43460baa62563
-artifact_bytes: 709580
+source_revision: 5b08b19ecdc94e391a561c10586a46404721674b
+specification_sha256: 763d9f9915b7b316b7e1f7fff2708ba7e551871a6bec621d86ceff95f94de6cd
+specification_bytes: 5989
+artifact_sha256: 271bf0d2cfb54aaaccad3785325c949e4512218b7f291c1fdd5d4e9a62e66797
+artifact_bytes: 713135
 validation: 9/9 showcase, 0 errors, 0 warnings
 visual_review: passed
-correction_rounds: 1 (릴리스 분기 라벨 위치)
+correction_rounds: 1 (OIDC 인증 라벨 위치)
 ```
 
 자동 검증은 1440×900, 1600×1000, 1920×1080, 2048×1320에서 넘침 없음과 캡처 생성을 확인했다. 1440×900·2048×1320의 라이트·다크 캡처 4장을 직접 확인해 라벨·화살표·범례·카드가 잘리지 않는 것을 확인했다. `visual-check.json`의 `visualReview: pending`은 자동 검증 결과로 유지하며, 이 문단이 별도의 육안 검증 기록이다. 원본·HTML의 실제 SHA-256 및 바이트 수와 화면 검증 receipt를 대조한다.

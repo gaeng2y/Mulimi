@@ -24,7 +24,8 @@ Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR
 로컬에서 Cloud의 생성 후 처리를 확인하는 명령:
 
 ```sh
-tuist generate --no-open
+make tuist-setup
+mise exec -- tuist generate --no-open --configuration Release
 python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 python3 scripts/test-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 ```
@@ -76,9 +77,11 @@ Tuist 토큰은 `Secrets.xcconfig`에 기록하지 않는다. `TUIST_TOKEN`이 �
 추가 플래그 없는 로컬 Release 검증:
 
 ```sh
-tuist generate --no-open
-xcodebuild -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
-  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+make tuist-setup
+mise exec -- tuist generate --no-open --configuration Release
+mise exec -- tuist xcodebuild build \
+  -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
+  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 ```
 
 생성된 두 소비 타깃의 실제 조건도 확인한다. 아래 명령은 조건 줄만 출력해 빌드 설정의 secret을 노출하지 않는다.
