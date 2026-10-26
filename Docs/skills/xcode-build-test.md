@@ -92,6 +92,6 @@ xcrun simctl list devices available
 
 ## Toolchain Troubleshooting
 
-- `.mise.toml`은 현재 `tuist = "latest"`를 사용한다. Tuist 최신 버전 변경으로 생성 결과가 달라지면 `.mise.toml` pinning과 문서 갱신을 같은 변경으로 처리한다.
+- `.mise.toml`은 Tuist `4.205.0`을 고정한다. 버전을 변경하면 프로젝트 생성·테스트·Preview 명령과 관련 문서를 함께 검증한다.
 - GitHub Actions는 `latest-stable` Xcode를 사용한다. Xcode 업데이트로 SDK, simulator, Swift 컴파일 결과가 달라지면 실패 로그의 `xcodebuild -version`, `xcodebuild -showsdks` 출력부터 확인한다.
 - Metal shader 또는 SwiftUI shader asset 빌드가 Metal toolchain 누락으로 실패하면 Xcode component 상태를 확인한다. CLI에서 가능한 환경이면 `xcodebuild -downloadComponent MetalToolchain` 실행 후 같은 빌드를 다시 확인한다.

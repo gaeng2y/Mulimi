@@ -59,6 +59,9 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Delivery And Operations
 
+- [Tuist Previews 빌드·공유·CI](tuist-previews.md)
+- [#360 Tuist Previews 적용 계획](exec-plans/active/2026-10-18-issue-360-tuist-previews.md)
+
 - [#358 하네스 문서와 운영 구조도 갱신](exec-plans/active/2026-10-14-issue-358-harness-docs.md)
 - [#356 디자인 시스템 계층 분리 (구현 머지 완료)](exec-plans/completed/2026-10-10-issue-356-design-system.md)
 - [#350 HealthKit 조회 실패 복구 (구현 머지 완료)](exec-plans/completed/2026-10-03-issue-350-read-recovery.md)

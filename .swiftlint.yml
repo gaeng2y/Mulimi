@@ -1,6 +1,7 @@
 included:
   - Project
   - Tuist
+  - Tuist.swift
   - Workspace.swift
 
 excluded:

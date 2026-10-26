@@ -64,6 +64,20 @@ verify:
 	@make lint
 	@make arch-check
 
+.PHONY: preview-build preview-share preview-check
+
+## preview-build: Builds and verifies a Debug iOS Simulator preview.
+preview-build:
+	@mise exec -- python3 scripts/tuist-preview.py build
+
+## preview-share: Builds, verifies, and uploads a Tuist preview.
+preview-share:
+	@mise exec -- python3 scripts/tuist-preview.py share
+
+## preview-check: Tests the preview pipeline without building or uploading.
+preview-check:
+	@python3 -m unittest discover -s scripts/tests -p 'test_tuist_preview.py'
+
 ## clean: Cleans all generated files by Tuist.
 .PHONY: clean
 clean:

@@ -43,6 +43,7 @@ Docs/*.md          -> 도메인/설계 배경 문서
 graphify-out       -> 공유 코드 지식 그래프
 .github/workflows/lint.yml -> PR lint와 architecture check
 .github/workflows/pr-unit-tests.yml -> PR 단위 Unit Test
+.github/workflows/tuist-preview.yml -> 시뮬레이터 Preview 공유
 .github/workflows/ai-pr-review.yml -> Git Flow PR AI 리뷰
 ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 ```
@@ -137,6 +138,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | 커밋 훅 | `.githooks/pre-commit` | `make hooks`로 설치한다. 추가·복사·수정·이름 변경된 staged `.swift` 경로가 있으면 해당 파일의 SwiftLint와 전체 아키텍처 검사를 실행한다. 문서만 변경하거나 Swift 파일 삭제만 있는 커밋은 건너뛴다. |
 | Lint CI | `.github/workflows/lint.yml` | `main`·`develop` 대상 PR과 수동 실행에서 SwiftLint, 아키텍처 검사, UI 경계 회귀 테스트를 실행한다. |
 | PR Unit Tests | `.github/workflows/pr-unit-tests.yml` | Tuist 설치·생성 후 Icon Composer 유형 보정과 앱 Resources 연결을 검사한다. iOS 16개 스킴과 `WatchHydrationTests`를 실행한다. 스킴 목록과 명령은 [빌드·테스트 절차](skills/xcode-build-test.md#pr-ci-scope)에 둔다. |
+| Local / GitHub Actions | `scripts/tuist-preview.py`, `.github/workflows/tuist-preview.yml` | Debug 시뮬레이터 앱과 포함된 Widget/Watch 산출물을 검증하고 Tuist에 공유한다. 같은 저장소의 `develop` 대상 PR과 수동 실행을 지원한다. |
 | AI PR Review | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR의 생성·ready 전환에서 실행한다. 키·텍스트 diff가 없으면 리뷰를 생략한다. 조건은 [전달 흐름](delivery-workflow.md#ai-review-automation)을 따른다. |
 | Xcode Cloud | `ci_scripts/ci_post_clone.sh` | `Secrets.xcconfig` 생성 시 필수 PostHog 환경 변수를 검사하고, mise·PostHog CLI·Tuist와 Icon Composer 유형을 준비한다. archive·서명·배포는 [Cloud 콘솔 설정](xcode-cloud-release-build.md#2-xcode-cloud-워크플로-생성)을 따른다. |
 | 수동 문서·구조도 검증 | `Docs/diagrams/`, 로컬 archify 스킬 | 링크·소스 근거를 대조하고 구조도 원본에서 HTML·화면 검증 산출물을 생성한다. |
@@ -147,6 +149,8 @@ Lint와 PR Unit Tests는 PR 생성·동기화·재열기 및 수동 실행을 �
 검사기는 Swift import와 리터럴 Tuist 의존 선언을 확인한다. 전체 Swift 의미 분석이나 빌드를 대신하지 않는다. 세부 검사 범위·수정 순서는 [린트 절차](skills/lint-fix-loop.md)를 따른다.
 
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
+
+Preview 생성·인증·리뷰어 실행 절차는 [Tuist Previews](tuist-previews.md)를 따른다. `make preview-check`는 업로드 전 회귀 검사이고, 실제 공유와 시뮬레이터 실행 결과는 PR에 따로 기록한다.
 
 문서 링크 검사와 구조도 검증은 현재 `make verify`, pre-commit, GitHub Actions에 자동으로 포함되지 않는다. 작성자가 [문서·구조도 품질 게이트](quality-gates.md#architecture-artifact-gate)를 별도로 확인한다.
 
@@ -244,7 +248,7 @@ correction_rounds: 1 (릴리스 분기 라벨 위치)
 
 현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
 
-- Tuist는 `.mise.toml`의 `tuist = "latest"`를 사용한다.
+- Tuist는 `.mise.toml`의 `4.205.0`으로 고정한다. 버전 변경 시 프로젝트 생성·Preview 빌드·공유 명령을 함께 검증한다.
 - GitHub Actions의 iOS 유닛 테스트는 `macos-15` runner와 `latest-stable` Xcode를 사용한다. AI 리뷰는 별도 `ubuntu-latest` job이다.
 - CI의 iOS destination은 `iPhone 16 Pro,OS=latest`를 사용한다. Watch는 사용 가능한 watchOS 26+ 기기를 조회해 런타임에 선택한 `id`를 사용한다.
 - 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.
