@@ -48,7 +48,15 @@ echo "❗️tuist install"
 tuist version
 xcodebuild -version
 tuist install
+# Xcode Cloud uses an account token; keep archive builds available before it is configured.
+if [ -n "${TUIST_TOKEN:-}" ]; then
+  export TUIST_MULIMI_CLOUD_ENABLED=1
+  make tuist-cache CACHE_CONFIGURATION=Release
+else
+  export TUIST_MULIMI_CLOUD_ENABLED=0
+  echo "Tuist cloud services disabled: configure TUIST_TOKEN in Xcode Cloud to enable them."
+fi
 echo "❗️tuist generate"
-tuist generate --no-open
+tuist generate --no-open --configuration Release
 # Tuist may omit the .icon file type; Cloud must pass it to the asset catalog compiler.
 python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"

@@ -4,11 +4,11 @@ Mulimi의 Debug iOS Simulator 빌드를 공유하는 절차다. 연결 대상은
 
 ## 설정과 준비
 
-- `.mise.toml`이 Tuist **4.205.0**을 고정한다. `mise install` 후 `mise exec -- tuist version`으로 확인한다.
+- `.mise.toml`이 Tuist **4.206.0**을 고정한다. `mise install` 후 `mise exec -- tuist version`으로 확인한다.
 - 루트 `Tuist.swift`가 `fullHandle`과 Generated Project 구성을 선언한다. `Tuist/Tuist.swift`는 이 버전의 설정 탐색 위치에 포함되지 않는다.
 - iOS/watchOS 26 이상 SDK가 포함된 Xcode가 필요하다. 실행할 Mac에는 iOS 26 이상 시뮬레이터 런타임도 설치한다.
 - `tuist run`으로 Simulator 창까지 열려면 선택한 Xcode에 `Simulator.app` GUI가 있어야 한다.
-- 인증 없이도 일반 프로젝트 생성과 `make preview-build`를 실행할 수 있다. `optionalAuthentication`을 사용하며, 모듈 캐시 저장소는 로컬로 한정한다.
+- Builds, Xcode Cache, 원격 Module Cache를 기본으로 사용한다. 인증 없는 빌드는 `TUIST_MULIMI_CLOUD_ENABLED=0 make preview-build`로 실행한다. [공통 설정](tuist-builds-and-cache.md)을 따른다.
 - 공유할 때는 Tuist 계정에 해당 프로젝트의 업로드·조회 권한이 있어야 한다.
 
 ```sh
@@ -17,7 +17,7 @@ mise exec -- tuist auth login
 mise exec -- tuist project show gaeng2y/mulimi
 ```
 
-설정 위치는 Tuist 4.205.0의 [설정 로더](https://github.com/tuist/tuist/blob/4.205.0/cli/Sources/TuistConfigLoader/SwiftConfigLoader.swift)를 기준으로 한다. 로그인 세션과 CI 인증은 [공식 CI 안내](https://tuist.dev/en/docs/guides/integrations/continuous-integration)를 따른다.
+설정 위치는 Tuist 4.206.0의 [설정 로더](https://github.com/tuist/tuist/blob/4.206.0/cli/Sources/TuistConfigLoader/SwiftConfigLoader.swift)를 기준으로 한다. 로그인 세션과 CI 인증은 [공식 CI 안내](https://tuist.dev/en/docs/guides/integrations/continuous-integration)를 따른다.
 
 ## 로컬 빌드와 공유
 
@@ -33,9 +33,9 @@ make preview-share
 
 1. `XCConfig/Secrets.xcconfig`가 없으면 템플릿과 `TEAM_ID`로 준비한다. 기본 팀 ID는 기존 CI와 같다.
 2. Tuist/Xcode/SDK 버전을 출력하고 의존성을 설치한다.
-3. `tuist generate --no-open --no-binary-cache`로 프로젝트를 생성한다.
+3. `make tuist-setup`으로 Xcode Cache를 준비하고 `tuist generate --no-open --configuration Debug`로 프로젝트를 생성한다. 기본 `only-external` 프로필로 외부 모듈 캐시를 재사용한다.
 4. 기존 Icon Composer 보정·검증 스크립트를 실행한다.
-5. `Mulimi` 스킴을 Debug, `generic/platform=iOS Simulator`로 빌드한다. Watch 타깃의 SDK 선택을 위해 전역 `-sdk`는 지정하지 않는다.
+5. `tuist xcodebuild build`로 `Mulimi` 스킴을 Debug, `generic/platform=iOS Simulator`로 빌드하고 `Build.xcresult`를 남긴다. Watch 타깃의 SDK 선택을 위해 전역 `-sdk`는 지정하지 않는다.
 6. 앱·위젯·워치의 bundle ID, 실행 파일, 시뮬레이터 플랫폼과 버전 일치 여부를 확인한다. 앱 에셋과 UI·현지화 프레임워크도 확인한다.
 7. 공유 명령은 해당 실행의 DerivedData 경로와 `Debug`/iOS를 지정해 `tuist share --json`을 실행한다.
 
@@ -87,6 +87,8 @@ gh workflow run 387766351 --repo gaeng2y/Mulimi --ref '<작업 브랜치>'
 
 `macos-15`의 `latest-stable` Xcode를 선택하고, mise로 고정된 Tuist를 설치한다. `contents: read`, `id-token: write` 권한으로 `tuist auth login`을 실행해 OIDC로 인증한다. 사용자 토큰을 CI secret으로 복사할 필요가 없다. [CI 인증](https://tuist.dev/en/docs/guides/integrations/continuous-integration)
 
+인증 후 `make tuist-cache`로 외부 모듈 캐시를 준비한다. 로컬에서 처음 공유하기 전에도 이 명령을 실행하면 이후 생성에서 바이너리를 재사용할 수 있다.
+
 `tuist project show`는 사용자 세션을 조회하므로 로컬 공유의 사전 확인에만 사용한다. CI에서는 workflow의 OIDC 로그인 후 Preview 업로드 API가 CI 주체의 권한을 검사한다. Tuist 4.205.0의 [프로젝트 조회](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/projects_controller.ex)와 [Preview API](https://github.com/tuist/tuist/blob/4.205.0/server/lib/tuist_web/controllers/api/previews_controller.ex)는 인증 주체를 다르게 처리한다.
 
 공유 성공 시 Actions summary에서 URL·빌드한 커밋·버전·실행 명령을 확인한다. Tuist GitHub 연동은 해당 PR에도 Preview 링크를 게시한다. 수동 실행은 Actions summary에서 결과를 확인한다. 업로드나 빌드가 실패하면 job이 실패하며 성공 링크를 만들지 않는다. 같은 PR의 새 실행은 이전 실행을 취소한다.
@@ -104,7 +106,7 @@ make preview-build
 
 | 증상 | 확인할 항목 |
 | --- | --- |
-| 로그인 갱신 시간 초과 | `tuist auth login`으로 재인증하고 서버 접근을 확인한다. 일반 빌드는 `make preview-build`로 진행할 수 있다. |
+| 로그인 갱신 시간 초과 | `tuist auth login`으로 재인증하고 서버 접근을 확인한다. 인증 없는 빌드는 `TUIST_MULIMI_CLOUD_ENABLED=0 make preview-build`로 진행할 수 있다. |
 | OIDC 인증 실패 | Tuist의 GitHub 저장소 연결과 job의 `id-token: write` 권한을 확인한다. |
 | PR에 코멘트가 없음 | Actions summary의 업로드 결과, Tuist GitHub App 설치·저장소 연결을 확인한다. |
 | Watch 아이콘 또는 플랫폼 오류 | 전역 `-sdk iphonesimulator` 없이 지정된 Preview 명령을 사용한다. |

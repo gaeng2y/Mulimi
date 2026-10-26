@@ -4,6 +4,8 @@
 # --- Variables ---
 # Default target to run when no target is specified
 .DEFAULT_GOAL := help
+CACHE_PROFILE ?= only-external
+CACHE_CONFIGURATION ?= Debug
 
 # --- Main Targets ---
 
@@ -27,13 +29,26 @@ setup:
 .PHONY: install
 fetch:
 	@echo "📦 Fetching dependencies with Tuist..."
-	@tuist install
+	@mise exec -- tuist install
 
 ## generate: Generates the Xcode project.
 .PHONY: generate
-generate:
+generate: tuist-setup
 	@echo "✨ Generating Xcode project..."
-	@tuist generate
+	@mise exec -- tuist generate --configuration "$(CACHE_CONFIGURATION)"
+
+.PHONY: tuist-setup tuist-cache
+
+## tuist-setup: Sets up the Xcode cache service after Tuist authentication.
+tuist-setup:
+	@case "$${TUIST_MULIMI_CLOUD_ENABLED:-1}" in \
+		0|false|FALSE|no|NO) echo "Tuist cloud services disabled; using local sources and caches." ;; \
+		*) mise exec -- tuist setup cache ;; \
+	esac
+
+## tuist-cache: Warms shared module binaries (CACHE_PROFILE=all-possible includes app modules).
+tuist-cache: tuist-setup
+	@mise exec -- tuist cache --configuration "$(CACHE_CONFIGURATION)" --cache-profile "$(CACHE_PROFILE)"
 
 ## hooks: Configures the repository git hooks path.
 .PHONY: hooks

@@ -24,6 +24,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 - [Documentation Maintenance](documentation-maintenance.md)
 - [Accessibility And Dynamic Type Audit](accessibility-dynamic-type-audit.md)
 - [Security And Privacy Operations](security-privacy.md)
+- [Tuist Builds와 캐시](tuist-builds-and-cache.md)
 
 ## Product Specs
 
@@ -68,6 +69,7 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 - [빠른 물 기록 가이드 (발행 전 초안)](marketing/quick-recording-guide.md)
 - [Exec Plans Active](exec-plans/active/README.md)
+- [Tuist Builds·캐시 연결](exec-plans/active/2026-10-26-tuist-builds-cache.md)
 - [Exec Plans Completed](exec-plans/completed/README.md)
 - [#336 Watch 되돌리기 (실기기·수요 검증 대기)](exec-plans/active/2026-09-29-issue-336-watch-undo.md)
 - [#329 빠른 기록 가이드 (발행·효과 검증 대기)](exec-plans/active/2026-09-25-issue-329-quick-recording-guide.md)

@@ -46,5 +46,10 @@ jobs:
       - name: Authenticate with Tuist using OIDC
         run: tuist auth login
 
+      - name: Install dependencies and warm shared module cache
+        run: |
+          tuist install
+          make tuist-cache
+
       - name: Build and share simulator preview
         run: make preview-share
