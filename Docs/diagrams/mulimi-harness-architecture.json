@@ -7,14 +7,15 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/gaeng2y/Mulimi",
-      "revision": "ed71ce1a0abe4448d4f29f991788bc80a7dfe562"
+      "revision": "5b08b19ecdc94e391a561c10586a46404721674b"
     },
     "legend": {
       "entries": {
         "frontend": { "label": "작업자" },
         "backend": { "label": "구현·정리" },
         "security": { "label": "검증" },
-        "cloud": { "label": "CI" }
+        "cloud": { "label": "CI" },
+        "external": { "label": "빌드 서비스" }
       }
     }
   },
@@ -30,14 +31,16 @@
       "sources": [{ "path": "Makefile", "label": "make verify" }, { "path": "scripts/check-architecture.sh", "label": "UI 포함 경계 검사" }, { "path": ".githooks/pre-commit", "label": "staged Swift 조건" }] },
     { "id": "artifact-review", "row": 1, "col": 3, "size": [250, 96], "type": "security", "label": "5. 문서·산출물 확인", "sublabel": "링크 · 해시 · 화면", "tag": "작성자가 수동 실행",
       "sources": [{ "path": "Docs/quality-gates.md", "label": "수동 문서·구조도 게이트" }, { "path": "Docs/harness-engineering.md", "label": "구조도·격리 Graphify 절차" }, { "path": ".graphifyignore", "label": "그래프 분석 제외 범위" }] },
-    { "id": "pr-checks", "row": 1, "col": 2, "size": [250, 96], "type": "cloud", "label": "6. PR·GitHub Actions", "sublabel": "Lint · iOS · Watch", "tag": "로컬 검증과 별도 보고",
+    { "id": "pr-checks", "row": 1, "col": 2, "size": [250, 96], "type": "cloud", "label": "6. PR·GitHub Actions", "sublabel": "Lint · iOS · Watch", "tag": "OIDC · 빌드 기록",
       "sources": [{ "path": ".github/workflows/lint.yml", "label": "UI 경계 회귀 검사 포함" }, { "path": ".github/workflows/pr-unit-tests.yml", "label": "유닛·아이콘 검증" }, { "path": ".github/workflows/ai-pr-review.yml", "label": "조건부 AI 리뷰" }] },
     { "id": "merge-develop", "row": 1, "col": 1, "size": [250, 96], "type": "frontend", "label": "7. 리뷰·머지", "sublabel": "feature → develop", "tag": "머지 여부 확인",
       "sources": [{ "path": "Docs/delivery-workflow.md", "label": "리뷰·머지·이슈 종료" }, { "path": ".github/pull_request_template.md", "label": "검증·문서 보고" }] },
     { "id": "archive-plan", "row": 1, "col": 0, "size": [250, 96], "type": "backend", "label": "8. 실행 계획 정리", "sublabel": "완료 기록 · 후속 작업", "tag": "인덱스·링크 갱신",
       "sources": [{ "path": "Docs/exec-plans/completed/README.md", "label": "이동 조건" }, { "path": "Docs/exec-plans/tech-debt-tracker.md", "label": "남은 작업 추적" }] },
     { "id": "release-cloud", "row": 2, "col": 1, "size": [250, 96], "type": "cloud", "label": "Xcode Cloud", "sublabel": "Release archive 준비", "tag": "별도 릴리스 설정",
-      "sources": [{ "path": "ci_scripts/ci_post_clone.sh", "label": "설정·Tuist·아이콘 준비" }, { "path": "Docs/xcode-cloud-release-build.md", "label": "콘솔 설정·릴리스 절차" }] }
+      "sources": [{ "path": "ci_scripts/ci_post_clone.sh", "label": "설정·Tuist·아이콘 준비" }, { "path": "Docs/xcode-cloud-release-build.md", "label": "콘솔 설정·릴리스 절차" }] },
+    { "id": "tuist-services", "row": 2, "col": 2, "size": [250, 96], "type": "external", "label": "Tuist Builds·캐시", "sublabel": "Xcode · Module Cache", "tag": "gaeng2y/mulimi",
+      "sources": [{ "path": "Tuist.swift", "label": "기록·캐시 설정" }, { "path": "Makefile", "label": "로컬 서비스·캐시 준비" }, { "path": "Docs/tuist-builds-and-cache.md", "label": "로컬·CI 인증과 사용" }] }
   ],
   "connections": [
     { "from": "read-docs", "to": "scope-issue" },
@@ -47,7 +50,9 @@
     { "from": "artifact-review", "to": "pr-checks" },
     { "from": "pr-checks", "to": "merge-develop" },
     { "from": "merge-develop", "to": "archive-plan" },
-    { "from": "merge-develop", "to": "release-cloud", "label": "릴리스 시", "variant": "dashed", "labelAt": [505, 356] }
+    { "from": "merge-develop", "to": "release-cloud", "label": "릴리스 시", "variant": "dashed", "labelAt": [505, 356] },
+    { "from": "pr-checks", "to": "tuist-services", "label": "OIDC 인증", "labelAt": [845, 356] },
+    { "from": "release-cloud", "to": "tuist-services", "label": "토큰 설정 시", "variant": "dashed" }
   ],
   "cards": [
     { "dot": "emerald", "title": "자동 검증", "items": ["make verify: SwiftLint와 UI 포함 경계 검사", "Lint CI: UI 경계 회귀 테스트 추가", "PR CI: iOS·Watch·Icon Composer 검증"] },

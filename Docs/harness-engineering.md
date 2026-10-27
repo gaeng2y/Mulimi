@@ -16,7 +16,7 @@ Mulimi에서 말하는 하네스 엔지니어링은 AI 에이전트와 개발자
 
 번호는 작업 순서이며 점선은 별도 릴리스 흐름이다. 문서와 영향받는 산출물은 PR 전에 갱신하고, 머지 후에는 실행 계획 상태·후속 작업·인덱스를 정리한다. CI 실패 시 구현·검증 단계로 돌아간다. Xcode Cloud의 시작 조건과 실제 실행 결과는 콘솔에서 확인한다.
 
-그림은 2026-10-14에 확인한 `develop@ed71ce1`의 규칙·스크립트를 근거로 하며, 각 노드에서 해당 커밋의 파일을 열 수 있다. 앱 모듈 의존성은 [앱 구조·의존성 스냅샷](project-architecture-and-dependencies.md)을 참고한다. 설명은 한국어이며 archify의 고정 Viewer UI와 `<html lang>`는 영어다.
+그림은 2026-10-26에 확인한 `release/2.7.0@5b08b19`의 규칙·스크립트를 근거로 하며, 각 노드에서 해당 커밋의 파일을 열 수 있다. 앱 모듈 의존성은 [앱 구조·의존성 스냅샷](project-architecture-and-dependencies.md)을 참고한다. 설명은 한국어이며 archify의 고정 Viewer UI와 `<html lang>`는 영어다.
 
 ## Top-Level Map
 
@@ -129,7 +129,7 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 
 하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.
 
-검토 기준: `ed71ce1` (2026-10-14). 각 파일에 선언된 실행 조건과 검증 범위를 정리했다.
+검토 기준: `5b08b19` (2026-10-26). 각 파일에 선언된 실행 조건과 검증 범위를 정리했다.
 
 | 실행 지점 | 근거 파일 | 실행 조건·검증 범위 |
 | --- | --- | --- |
@@ -137,10 +137,10 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 | UI 경계 회귀 검사 | `scripts/test-ui-boundaries.py` | 검사기 변경 시 로컬에서 별도 실행한다. `make verify`와 커밋 훅에는 포함되지 않는다. |
 | 커밋 훅 | `.githooks/pre-commit` | `make hooks`로 설치한다. 추가·복사·수정·이름 변경된 staged `.swift` 경로가 있으면 해당 파일의 SwiftLint와 전체 아키텍처 검사를 실행한다. 문서만 변경하거나 Swift 파일 삭제만 있는 커밋은 건너뛴다. |
 | Lint CI | `.github/workflows/lint.yml` | `main`·`develop` 대상 PR과 수동 실행에서 SwiftLint, 아키텍처 검사, UI 경계 회귀 테스트를 실행한다. |
-| PR Unit Tests | `.github/workflows/pr-unit-tests.yml` | Tuist 설치·생성 후 Icon Composer 유형 보정과 앱 Resources 연결을 검사한다. iOS 16개 스킴과 `WatchHydrationTests`를 실행한다. 스킴 목록과 명령은 [빌드·테스트 절차](skills/xcode-build-test.md#pr-ci-scope)에 둔다. |
-| Local / GitHub Actions | `scripts/tuist-preview.py`, `.github/workflows/tuist-preview.yml` | Debug 시뮬레이터 앱과 포함된 Widget/Watch 산출물을 검증하고 Tuist에 공유한다. 같은 저장소의 `develop` 대상 PR과 수동 실행을 지원한다. |
+| PR Unit Tests | `.github/workflows/pr-unit-tests.yml` | 같은 저장소 PR·수동 실행은 OIDC 인증, Xcode Cache 준비, 외부 모듈 캐시 생성 후 프로젝트를 생성한다. fork PR은 클라우드 기능을 끈다. Icon Composer와 iOS 16개 스킴·Watch를 검증하고 `tuist xcodebuild`로 기록을 전송한다. [빌드·테스트 절차](skills/xcode-build-test.md#pr-ci-scope)를 따른다. |
+| Local / GitHub Actions | `scripts/tuist-preview.py`, `.github/workflows/tuist-preview.yml` | Debug 시뮬레이터 앱과 Widget/Watch를 검증하고 Tuist에 공유한다. Xcode·외부 모듈 캐시와 Builds를 사용하며 같은 저장소의 `develop` 대상 PR과 수동 실행을 지원한다. |
 | AI PR Review | `.github/workflows/ai-pr-review.yml` | Git Flow에 맞는 non-draft PR의 생성·ready 전환에서 실행한다. 키·텍스트 diff가 없으면 리뷰를 생략한다. 조건은 [전달 흐름](delivery-workflow.md#ai-review-automation)을 따른다. |
-| Xcode Cloud | `ci_scripts/ci_post_clone.sh` | `Secrets.xcconfig` 생성 시 필수 PostHog 환경 변수를 검사하고, mise·PostHog CLI·Tuist와 Icon Composer 유형을 준비한다. archive·서명·배포는 [Cloud 콘솔 설정](xcode-cloud-release-build.md#2-xcode-cloud-워크플로-생성)을 따른다. |
+| Xcode Cloud | `ci_scripts/ci_post_clone.sh` | PostHog 설정·도구·아이콘을 준비한다. `TUIST_TOKEN`이 있으면 Tuist 캐시와 기록을 활성화하고 없으면 클라우드 기능을 끈다. Release 프로젝트를 생성하며 archive·서명·배포는 [Cloud 콘솔 설정](xcode-cloud-release-build.md#2-xcode-cloud-워크플로-생성)을 따른다. |
 | 수동 문서·구조도 검증 | `Docs/diagrams/`, 로컬 archify 스킬 | 링크·소스 근거를 대조하고 구조도 원본에서 HTML·화면 검증 산출물을 생성한다. |
 | 수동 그래프 갱신 | `.codex/skills/graphify`, `.graphifyignore`, `graphify-out/` | 코드 변경 후 격리된 출력 경로에서 공유 산출물 4개를 갱신한다. 아래 Graphify Artifacts 절차를 따른다. |
 
@@ -151,6 +151,8 @@ Lint와 PR Unit Tests는 PR 생성·동기화·재열기 및 수동 실행을 �
 PR 본문에는 로컬에서 직접 실행한 검증과 GitHub Actions/Xcode Cloud가 실행한 검증을 구분해서 적는다.
 
 Preview 생성·인증·리뷰어 실행 절차는 [Tuist Previews](tuist-previews.md)를 따른다. `make preview-check`는 업로드 전 회귀 검사이고, 실제 공유와 시뮬레이터 실행 결과는 PR에 따로 기록한다.
+
+Tuist Builds·Xcode Cache·Module Cache 설정과 인증 없는 실행은 [Tuist Builds와 캐시](tuist-builds-and-cache.md)가 기준이다. `make generate`는 캐시 서비스를 준비하고, `make tuist-cache`는 기본적으로 외부 라이브러리 바이너리를 공유한다.
 
 문서 링크 검사와 구조도 검증은 현재 `make verify`, pre-commit, GitHub Actions에 자동으로 포함되지 않는다. 작성자가 [문서·구조도 품질 게이트](quality-gates.md#architecture-artifact-gate)를 별도로 확인한다.
 
@@ -212,19 +214,19 @@ node bin/archify.mjs visual-check "$mulimi_repo/Docs/diagrams/$mulimi_diagram.ht
 
 ### Harness Artifact Validation
 
-2026-10-14, archify 2.16 / Node.js 24.18.1 / Google Chrome에서 새 운영 구조도를 검증했다. 근거 파일 참조는 중복 포함 22개다. 앱 구조도의 이전 검증 기록은 [구조·의존성 문서](project-architecture-and-dependencies.md#생성-검증-결과)에 보존한다.
+2026-10-26, archify 2.16 / Node.js 24.18.1 / Google Chrome에서 Tuist Builds·캐시와 CI 인증 경로를 추가한 운영 구조도를 검증했다. 근거 파일 참조는 중복 포함 25개다. 앱 구조도의 이전 검증 기록은 [구조·의존성 문서](project-architecture-and-dependencies.md#생성-검증-결과)에 보존한다.
 
 ```text
 diagram_type: architecture
 output: Docs/diagrams/mulimi-harness-architecture.html
-source_revision: ed71ce1a0abe4448d4f29f991788bc80a7dfe562
-specification_sha256: 597f1a0c2277e57d105b2b83f93e2c0d585b86f729c1e3234b095287df051411
-specification_bytes: 5317
-artifact_sha256: 67ab1b3d17cdb7dbb9ad9c226f17548feebfc107534ef283f8d43460baa62563
-artifact_bytes: 709580
+source_revision: 5b08b19ecdc94e391a561c10586a46404721674b
+specification_sha256: 763d9f9915b7b316b7e1f7fff2708ba7e551871a6bec621d86ceff95f94de6cd
+specification_bytes: 5989
+artifact_sha256: 271bf0d2cfb54aaaccad3785325c949e4512218b7f291c1fdd5d4e9a62e66797
+artifact_bytes: 713135
 validation: 9/9 showcase, 0 errors, 0 warnings
 visual_review: passed
-correction_rounds: 1 (릴리스 분기 라벨 위치)
+correction_rounds: 1 (OIDC 인증 라벨 위치)
 ```
 
 자동 검증은 1440×900, 1600×1000, 1920×1080, 2048×1320에서 넘침 없음과 캡처 생성을 확인했다. 1440×900·2048×1320의 라이트·다크 캡처 4장을 직접 확인해 라벨·화살표·범례·카드가 잘리지 않는 것을 확인했다. `visual-check.json`의 `visualReview: pending`은 자동 검증 결과로 유지하며, 이 문단이 별도의 육안 검증 기록이다. 원본·HTML의 실제 SHA-256 및 바이트 수와 화면 검증 receipt를 대조한다.
@@ -248,7 +250,7 @@ correction_rounds: 1 (릴리스 분기 라벨 위치)
 
 현재 하네스는 최신 Apple 개발 환경을 빠르게 따라가는 운영을 기본값으로 둔다.
 
-- Tuist는 `.mise.toml`의 `4.205.0`으로 고정한다. 버전 변경 시 프로젝트 생성·Preview 빌드·공유 명령을 함께 검증한다.
+- Tuist는 `.mise.toml`의 `4.206.0`으로 고정한다. 버전 변경 시 프로젝트 생성·Preview 빌드·공유 명령을 함께 검증한다.
 - GitHub Actions의 iOS 유닛 테스트는 `macos-15` runner와 `latest-stable` Xcode를 사용한다. AI 리뷰는 별도 `ubuntu-latest` job이다.
 - CI의 iOS destination은 `iPhone 16 Pro,OS=latest`를 사용한다. Watch는 사용 가능한 watchOS 26+ 기기를 조회해 런타임에 선택한 `id`를 사용한다.
 - 로컬 `xcodebuild test`는 가능하면 시뮬레이터 `id`를 사용해 같은 이름의 여러 런타임 충돌을 피한다.

@@ -120,16 +120,18 @@ def build(output, number):
     run("xcodebuild", "-version")
     run("xcodebuild", "-showsdks")
     run("tuist", "install")
-    run("tuist", "generate", "--no-open", "--no-binary-cache")
+    run("make", "tuist-setup")
+    run("tuist", "generate", "--no-open", "--configuration", "Debug")
     project = ROOT / "Project/App/Mulimi App.xcodeproj/project.pbxproj"
     run("python3", "scripts/fix-icon-composer-file-types.py", project)
     run("python3", "scripts/test-icon-composer-file-types.py", project)
     derived_data = output / "DerivedData"
     run(
-        "xcodebuild", "build", "-workspace", "Mulimi.xcworkspace", "-scheme", "Mulimi",
+        "tuist", "xcodebuild", "build", "-workspace", "Mulimi.xcworkspace", "-scheme", "Mulimi",
         # Let Xcode choose each target's SDK so the embedded Watch app uses watchsimulator.
         "-configuration", "Debug",
         "-destination", "generic/platform=iOS Simulator", "-derivedDataPath", derived_data,
+        "-resultBundlePath", output / "Build.xcresult",
         f"APP_BUILD_NUMBER={number}", "CODE_SIGNING_ALLOWED=NO", "CODE_SIGNING_REQUIRED=NO",
         # Preview sessions use the existing NoOp analytics path.
         "POSTHOG_PROJECT_TOKEN=", "POSTHOG_HOST=",

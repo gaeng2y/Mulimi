@@ -182,6 +182,8 @@ Mulimi/
 ### 권장: Makefile 사용
 
 ```bash
+mise install
+mise exec -- tuist auth login
 make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 ```
 
@@ -189,7 +191,7 @@ make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 
 1. `XCConfig/Secrets.xcconfig` 생성
 2. `tuist install`
-3. `tuist generate`
+3. Xcode Cache 서비스 준비와 `tuist generate`
 4. `git hooks` 경로 설정
 
 ### 수동 설정
@@ -220,7 +222,8 @@ mise install tuist
 
 ```bash
 tuist install
-tuist generate
+tuist auth login
+make generate
 ```
 
 5. 생성된 `Mulimi.xcworkspace`를 Xcode에서 엽니다.
@@ -238,6 +241,17 @@ make verify
 `make verify`는 SwiftLint와 UI 모듈을 포함한 아키텍처 경계 검사를 실행합니다. 테스트·앱 빌드·문서 링크·구조도 검증은 [변경 유형별 품질 게이트](Docs/quality-gates.md)를 따라 별도로 확인합니다.
 
 작업 시작부터 검증·PR·머지 후 정리까지는 [하네스 운영 구조도](Docs/harness-engineering.md#operating-map)에서 근거 파일과 함께 볼 수 있습니다.
+
+### Tuist Builds와 캐시
+
+Builds 수집, Xcode Cache, 원격 Module Cache를 기본으로 사용합니다. `make generate`는 캐시 서비스를 준비하며, 기본 모듈 캐시 프로필은 앱 소스를 유지하는 `only-external`입니다.
+
+```sh
+make tuist-cache
+make generate
+```
+
+인증 없이 생성할 때는 `TUIST_MULIMI_CLOUD_ENABLED=0 make generate`를 사용합니다. 내부 모듈 캐시, CLI 빌드 기록, CI 인증은 [Tuist Builds와 캐시](Docs/tuist-builds-and-cache.md)를 참고하세요.
 
 ### Tuist Preview 공유
 

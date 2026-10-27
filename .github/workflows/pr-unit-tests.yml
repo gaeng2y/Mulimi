@@ -18,11 +18,15 @@ jobs:
   unit-tests:
     runs-on: macos-15
     timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write
     env:
       TEAM_ID: "8UV3Y69NB7"
       GITHUB_TOKEN: ${{ github.token }}
       AQUA_GITHUB_TOKEN: ${{ github.token }}
       IOS_SIMULATOR_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro,OS=latest"
+      TUIST_MULIMI_CLOUD_ENABLED: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && '1' || '0' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,7 +75,16 @@ jobs:
             tuist install
           fi
 
-          tuist generate --no-open
+      - name: Authenticate with Tuist using OIDC
+        if: env.TUIST_MULIMI_CLOUD_ENABLED == '1'
+        run: tuist auth login
+
+      - name: Warm shared module cache
+        if: env.TUIST_MULIMI_CLOUD_ENABLED == '1'
+        run: make tuist-cache
+
+      - name: Generate project
+        run: tuist generate --no-open --configuration Debug
 
       - name: Verify Icon Composer resources
         run: |
@@ -89,6 +102,7 @@ jobs:
       - name: Run unit tests
         run: |
           set -euo pipefail
+          mkdir -p .build/test-results
           for SCHEME in \
             MulimiUISystem \
             MulimiNavigation \
@@ -98,12 +112,13 @@ jobs:
             ChallengeDomain ChallengeData ChallengePresentation \
             HydrationReminderDomain HydrationReminderData HydrationReminderPresentation; do
             echo "Running tests for $SCHEME"
-            xcodebuild test \
+            tuist xcodebuild test \
               -workspace Mulimi.xcworkspace \
               -scheme "$SCHEME" \
               -sdk iphonesimulator \
               -destination "$IOS_SIMULATOR_DESTINATION" \
               -destination-timeout 180 \
+              -resultBundlePath ".build/test-results/${SCHEME}.xcresult" \
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO
           done
@@ -124,9 +139,10 @@ jobs:
           if watch is None:
               raise SystemExit("An available watchOS 26+ simulator is required for WatchHydrationTests.")
           subprocess.run([
-              "xcodebuild", "test", "-workspace", "Mulimi.xcworkspace", "-scheme", "WatchHydrationTests",
+              "tuist", "xcodebuild", "test", "-workspace", "Mulimi.xcworkspace", "-scheme", "WatchHydrationTests",
               "-sdk", "watchsimulator", "-destination", "platform=watchOS Simulator,id=" + watch["udid"],
               "-destination-timeout", "180", "-parallel-testing-enabled", "NO",
+              "-resultBundlePath", ".build/test-results/WatchHydrationTests.xcresult",
               "CODE_SIGNING_ALLOWED=NO", "CODE_SIGNING_REQUIRED=NO",
           ], check=True)
           PY

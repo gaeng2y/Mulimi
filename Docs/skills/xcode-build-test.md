@@ -71,12 +71,14 @@ Icon Composer 유형 보정과 실제 앱 Resources 연결을 확인할 때는 �
 
 실제 선언은 [pr-unit-tests.yml](../../.github/workflows/pr-unit-tests.yml)을 기준으로 한다. `ed71ce1`에서 확인한 순서다.
 
-1. Xcode 선택, `Secrets.xcconfig` 준비, mise·Tuist 설치, `tuist install`, `tuist generate --no-open`.
+1. Xcode 선택, `Secrets.xcconfig` 준비, mise·Tuist 설치, `tuist install`. 같은 저장소 PR·수동 실행은 OIDC 인증과 `make tuist-cache` 후 `tuist generate --no-open --configuration Debug`를 실행한다. fork PR은 클라우드 기능을 끄고 생성한다.
 2. Icon Composer 유형 보정과 회귀 테스트·실제 `Mulimi` 타깃 Resources 연결 검사.
 3. iOS Simulator 스킴 16개: `MulimiUISystem`, `MulimiNavigation`, `AccountDomain`, `AccountPresentation`, 그리고 `Hydration`·`Routine`·`Challenge`·`HydrationReminder`의 `Domain`·`Data`·`Presentation`.
 4. watchOS 26+ Simulator에서 `WatchHydrationTests`. 사용 가능한 기기가 없으면 실패한다.
 
 CI의 iOS 스킴은 서명을 끈 Simulator 테스트이며 Watch는 watchOS Simulator에서 실행한다. 실제 HealthKit 권한·동기화·VoiceOver와 Cloud archive 결과는 별도로 보고한다. 트리거·draft·문서 PR 처리 조건은 [하네스 자동화 표](../harness-engineering.md#automation-harness)를 따른다.
+
+CI 테스트는 `tuist xcodebuild test`와 스킴별 `.build/test-results/*.xcresult`를 사용해 빌드·테스트 기록을 수집한다. 기본 모듈 캐시 프로필은 `only-external`이므로 테스트 대상 앱·기능 코드는 소스로 유지한다. 설정과 인증 없는 실행은 [Tuist Builds와 캐시](../tuist-builds-and-cache.md)를 따른다.
 
 ## Simulator Discovery
 
@@ -92,6 +94,6 @@ xcrun simctl list devices available
 
 ## Toolchain Troubleshooting
 
-- `.mise.toml`은 Tuist `4.205.0`을 고정한다. 버전을 변경하면 프로젝트 생성·테스트·Preview 명령과 관련 문서를 함께 검증한다.
+- `.mise.toml`은 Tuist `4.206.0`을 고정한다. 버전을 변경하면 프로젝트 생성·테스트·Preview 명령과 관련 문서를 함께 검증한다.
 - GitHub Actions는 `latest-stable` Xcode를 사용한다. Xcode 업데이트로 SDK, simulator, Swift 컴파일 결과가 달라지면 실패 로그의 `xcodebuild -version`, `xcodebuild -showsdks` 출력부터 확인한다.
 - Metal shader 또는 SwiftUI shader asset 빌드가 Metal toolchain 누락으로 실패하면 Xcode component 상태를 확인한다. CLI에서 가능한 환경이면 `xcodebuild -downloadComponent MetalToolchain` 실행 후 같은 빌드를 다시 확인한다.
