@@ -1,6 +1,6 @@
 import ChallengeDomain
 import RoutineDomain
-import DesignSystem
+import MulimiUISystem
 import Localization
 import SwiftUI
 

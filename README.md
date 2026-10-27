@@ -65,7 +65,8 @@
   - `Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain` 시스템 인프라
   - 기능·UI를 소유하지 않는 `Mulimi*` 계약과 어댑터
 - `Shared`
-  - `Localization`, `DesignSystem`, `Utils`
+  - `Localization`, `DesignSystemFoundation`, `MulimiUISystem`, `Utils`
+  - 디자인 시스템: `Presentation -> MulimiUISystem -> DesignSystemFoundation` ([공개 API·리소스](Docs/design-system.md))
   - `Persistence`·`PersistenceWatch`는 선언만 남은 미참조 타깃이며 현재 수분 기록 경로에서 사용하지 않음
 - `Widget`
   - 홈 화면/잠금화면 위젯과 AppIntent
@@ -136,7 +137,8 @@ Mulimi/
 │   │   ├── Sources/
 │   │   └── Resources/
 │   └── Shared/
-│       ├── DesignSystem/
+│       ├── DesignSystemFoundation/
+│       ├── MulimiUISystem/
 │       ├── Localization/
 │       ├── Persistence/
 │       └── Utils/
@@ -180,6 +182,8 @@ Mulimi/
 ### 권장: Makefile 사용
 
 ```bash
+mise install
+mise exec -- tuist auth login
 make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 ```
 
@@ -187,7 +191,7 @@ make setup TEAM_ID=YOUR_APPLE_DEVELOPER_TEAM_ID
 
 1. `XCConfig/Secrets.xcconfig` 생성
 2. `tuist install`
-3. `tuist generate`
+3. Xcode Cache 서비스 준비와 `tuist generate`
 4. `git hooks` 경로 설정
 
 ### 수동 설정
@@ -218,7 +222,8 @@ mise install tuist
 
 ```bash
 tuist install
-tuist generate
+tuist auth login
+make generate
 ```
 
 5. 생성된 `Mulimi.xcworkspace`를 Xcode에서 엽니다.
@@ -232,6 +237,33 @@ make lint-fix
 make arch-check
 make verify
 ```
+
+`make verify`는 SwiftLint와 UI 모듈을 포함한 아키텍처 경계 검사를 실행합니다. 테스트·앱 빌드·문서 링크·구조도 검증은 [변경 유형별 품질 게이트](Docs/quality-gates.md)를 따라 별도로 확인합니다.
+
+작업 시작부터 검증·PR·머지 후 정리까지는 [하네스 운영 구조도](Docs/harness-engineering.md#operating-map)에서 근거 파일과 함께 볼 수 있습니다.
+
+### Tuist Builds와 캐시
+
+Builds 수집, Xcode Cache, 원격 Module Cache를 기본으로 사용합니다. `make generate`는 캐시 서비스를 준비하며, 기본 모듈 캐시 프로필은 앱 소스를 유지하는 `only-external`입니다.
+
+```sh
+make tuist-cache
+make generate
+```
+
+인증 없이 생성할 때는 `TUIST_MULIMI_CLOUD_ENABLED=0 make generate`를 사용합니다. 내부 모듈 캐시, CLI 빌드 기록, CI 인증은 [Tuist Builds와 캐시](Docs/tuist-builds-and-cache.md)를 참고하세요.
+
+### Tuist Preview 공유
+
+기존 Tuist 프로젝트 `gaeng2y/mulimi`에 Debug 시뮬레이터 빌드를 공유합니다. Tuist 버전은 `.mise.toml`에서 고정합니다.
+
+```bash
+mise install
+mise exec -- tuist auth login
+make preview-share
+```
+
+업로드 없이 빌드만 확인하려면 `make preview-build`를 실행합니다. 공유 결과의 URL로 `tuist run <preview-url>`을 실행할 수 있습니다. GitHub 연결과 PR 자동 공유는 [Tuist Previews 사용 방법](Docs/tuist-previews.md)을 참고하세요.
 
 ### 코드 지식 그래프
 
@@ -258,7 +290,7 @@ CLI 조회에는 실제 심볼·문서 이름을 사용합니다. Codex 스킬�
 4. `Docs/index.md`
 5. 작업 대상 이슈
 6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
-7. 관련 `Docs/product-specs/`
+7. 관련 도메인 문서 또는 `Docs/product-specs/`
 8. 관련 `Docs/skills/`
 9. 수정 대상 모듈의 `Project.swift`와 실제 구현
 

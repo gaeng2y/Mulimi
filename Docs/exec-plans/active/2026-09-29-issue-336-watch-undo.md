@@ -1,5 +1,7 @@
 # #336 Watch 최근 기록 한 건 되돌리기
 
+상태(2026-10-14 확인): [PR #348](https://github.com/gaeng2y/Mulimi/pull/348)은 2026-10-04에 develop으로 머지됐다. 이슈 #336은 열려 있으며 실제 Watch 오입력 수요·시안 비교·실기기 HealthKit 동기화와 권한·VoiceOver 검증이 남아 active에 유지한다.
+
 ## Context
 
 - [#336](https://github.com/gaeng2y/Mulimi/issues/336)은 수요·안전성 검증 후보다. 사용자의 구현 요청에 따라 이슈의 최소 범위를 개발하며 사용자 수요가 검증됐다고 간주하지 않는다.
@@ -42,7 +44,7 @@
 
 ## Completion Notes
 
-- 최소 구현·로컬 검증 완료, PR 전달 단계다. 미머지이므로 active에 유지한다.
+- 아래는 최소 구현의 로컬 검증 기록이다. 현재 머지 상태와 남은 검증은 첫 문단을 따른다.
 - 실제 저장 샘플 UUID를 전달하고 HealthKit 조건부 삭제 건수가 1일 때만 성공한다. 취소 대상은 메모리에만 유지한다.
 - `WatchHydrationTests` 정의 6개·매개변수 포함 12건 통과: 같은 시각·용량의 외부/iPhone 기록, 동시 기록, 권한 철회, 이미 삭제됨, 삭제 실패, 저장 실패/목표 차단, 취소 대상 수명, 중복 동작, Core UUID·삭제 건수 계약.
 - 기존 iOS `HydrationDomain` 65개·`HydrationData` 6개·`HydrationPresentation` 91개 통과. `make lint` 316개 파일 위반 0, `make arch-check`, `tuist generate --no-open`, Watch Debug Simulator·iOS Release 서명 없는 빌드, `git diff --check` 통과.

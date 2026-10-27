@@ -74,6 +74,10 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 
 ## Documentation Updates
 
+`develop` 대상 같은 저장소 PR은 [Tuist Preview workflow](tuist-previews.md#github-연결과-ci)로 시뮬레이터 빌드를 공유한다. 리뷰어는 해당 PR의 Preview 링크로 실행하고, 작성자는 빌드·업로드·실행 중 실제로 확인한 결과를 Testing에 기록한다.
+
+로컬·CI의 빌드 기록과 캐시는 [Tuist Builds와 캐시](tuist-builds-and-cache.md)를 따른다. 캐시 설정만으로 적중·업로드 성공을 보고하지 않고 실제 실행 결과를 확인한다.
+
 - 새 제품 정책이나 화면 상태가 생기면 `Docs/product-specs/`를 갱신한다.
 - 구조 규칙이 바뀌면 `ARCHITECTURE.md` 또는 관련 `Docs/skills/`를 갱신한다.
 - 작업 운영 규칙이 바뀌면 이 문서와 `Docs/harness-engineering.md`를 갱신한다.
@@ -83,9 +87,19 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 ## Merge And Issue Closure
 
 - `Closes #<issue-number>`가 PR 본문에 있으면 merge 시 이슈가 닫히는지 확인한다.
+- PR 머지와 이슈 종료를 각각 확인한다. `develop` 대상 머지 후 이슈가 열려 있더라도 문서의 구현 상태는 확인한 PR을 기준으로 기록한다.
 - 구현이 일부만 끝났다면 `Closes` 대신 `Related to`를 사용하고 남은 범위를 이슈 댓글이나 후속 이슈로 남긴다.
 - 머지 후 남은 기술 부채는 `Docs/exec-plans/tech-debt-tracker.md` 또는 새 GitHub issue로 옮긴다.
 - 릴리스 PR은 여러 feature PR이 이미 `develop`에 머지된 상태에서만 `main`으로 올린다.
+
+실행 계획은 다음 순서로 정리한다.
+
+1. PR의 `mergedAt`·머지 커밋과 대상 브랜치 반영 여부를 확인한다.
+2. 계획의 완료 조건과 남은 구현·검증·발행 작업을 대조한다. 이슈 종료만으로 배포·실기기·효과 검증을 통과 처리하지 않는다.
+3. 구현 계획의 범위가 끝났고 후속 작업의 추적 위치가 정해졌으면 `completed/`로 옮긴다. 계획 자체의 실기기·측정·발행 작업이 남았으면 상태와 이유를 적어 `active/`에 유지한다.
+4. 확인 날짜·PR 링크를 추가하고 인덱스와 이동된 문서 링크를 갱신한다. 과거 검증 결과는 당시 기록으로 보존한다.
+
+계획을 작성한 PR이 아직 머지되지 않았다면 `active/`를 유지한다. 머지 후 정리는 다음 문서 정리 변경에서 처리할 수 있다.
 
 ## Anti-Patterns
 

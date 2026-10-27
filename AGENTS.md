@@ -17,7 +17,8 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 5. 작업 대상 이슈
 6. 브랜치/PR 기준이 필요하면 `Docs/delivery-workflow.md`
 7. 관련 도메인 문서 또는 `Docs/product-specs/`
-8. 수정 대상 모듈의 `Project.swift`와 실제 구현
+8. 관련 `Docs/skills/`
+9. 수정 대상 모듈의 `Project.swift`와 실제 구현
 
 ## Project Snapshot
 
@@ -32,10 +33,11 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
   - `Core`: 시스템 인프라 모듈(`Analytics`, `Platform`, `CloudKit`, `HealthKit`, `Keychain`)
   - `Features`: `Account / Hydration / Routine / Challenge / HydrationReminder / WatchHydration` 기능별 `Domain / Data / Presentation`
   - `Widget`: WidgetKit / AppIntent
-  - `Shared`: Localization / DesignSystem / Utils (`Persistence`·`PersistenceWatch`는 현재 미참조)
+  - `Shared`: Localization / DesignSystemFoundation / MulimiUISystem / Utils (`Persistence`·`PersistenceWatch`는 현재 미참조)
 
 ## Constitution
 
+- 디자인 시스템은 `App·Presentation -> MulimiUISystem -> DesignSystemFoundation` 방향을 지킨다. Foundation 직접 소비와 두 UI 모듈의 기능·현지화 의존, Domain의 UI 의존을 금지한다.
 - 모든 기능 `Domain`은 `SwiftUI`, `Localization`, UI 문구, 심볼 이름에 의존하지 않는다.
 - ViewModel은 프레젠테이션 상태만 관리한다. `UIApplication`, `WidgetCenter`, `NotificationCenter`, `Bundle`, `UserDefaults`를 직접 다루지 않는다.
 - ViewModel이 다른 ViewModel을 주입받아 상태를 직접 바꾸지 않는다.
@@ -154,6 +156,7 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 - 같은 실수가 두 번 나오면 금지 규칙 한 줄로 이 파일에 추가한다.
 - 문서가 실제 코드와 달라졌다면 작업 끝에 바로 맞춘다.
+- 문서·구조도의 새 설명은 요청 언어로 통일하고 코드 식별자와 고정 Viewer UI만 원문을 유지한다.
 - “일단 여기서만 예외”라는 표현이 필요하면, 설계가 잘못된 것이다.
 
 ## Compact Instructions

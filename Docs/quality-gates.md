@@ -13,14 +13,14 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 
 문서만 바뀐 경우에도 `git diff --check`는 확인한다. 실행하지 않은 검증은 PR 본문에 통과했다고 적지 않는다.
 
-`make verify`는 `make lint`와 `make arch-check`를 묶은 lightweight gate다. Unit test와 앱 빌드가 필요한 변경에서는 아래 matrix에 맞는 `xcodebuild test` 또는 `xcodebuild build`를 별도로 실행한다.
+`make verify`는 `make lint`와 `make arch-check`를 묶는다. UI import·Tuist 의존 경계 검사도 포함되지만 UI 경계 회귀 테스트, Unit test, 앱 빌드, 문서·구조도 검증은 별도다. 아래 matrix로 필요한 검증을 고른다. 각 자동화의 실제 실행 조건은 [하네스 자동화 범위](harness-engineering.md#automation-harness)를 따른다.
 
 ## Validation Levels
 
 | Level | Scope | Commands |
 | --- | --- | --- |
 | Lightweight local | 공백, SwiftLint, architecture guardrail | `git diff --check`, `make lint`, `make arch-check` 또는 `make verify` |
-| Unit local | 변경 기능/레이어별 Swift unit test | 변경된 `<Feature>Domain`, `<Feature>Data`, `<Feature>Presentation` 스킴 `xcodebuild test` |
+| Unit local | 변경 기능/공용 모듈의 Swift unit test | 변경된 Feature 스킴, `MulimiUISystem`, `MulimiNavigation`, `WatchHydrationTests` 중 해당 스킴 `xcodebuild test` |
 | Build local | 앱/위젯/워치 통합 빌드 | `xcodebuild build -workspace Mulimi.xcworkspace -scheme Mulimi ...` |
 | PR CI | PR 단위 자동 검증 | `.github/workflows/lint.yml`, `.github/workflows/pr-unit-tests.yml` |
 | Release CI | 릴리스 archive 검증 | Xcode Cloud `Release-Build` |
@@ -33,6 +33,8 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 | 구조·의존성 목록 변경 | `git diff --check`, 실제 `Project.swift`·구현과 대조 | 직접/전이 의존성, 소스 공유, 미참조 타깃을 구분하고 관련 그림 확인 |
 | 구조도 원본·HTML 변경 | archify showcase 검증·원자적 생성, 화면 검증·캡처 직접 확인 | 아래 Architecture Artifact Gate 적용 |
 | SwiftUI View 변경 | `make lint`, `make arch-check`, 앱 빌드 | ViewModel 상태가 바뀌면 해당 기능 `Presentation` 테스트 |
+| 디자인 시스템 변경 | `make lint`, `make arch-check`, `MulimiUISystem` 테스트, 앱 빌드 | 영향받은 소비자의 Presentation 테스트와 색상·큰 글씨·선택 접근성·Reduce Motion/Transparency 확인; 타깃 변경이면 `tuist generate` |
+| UI 경계 검사기 변경 | `make lint`, `make arch-check`, `python3 scripts/test-ui-boundaries.py` | 허용·차단 fixture와 실제 import·리터럴 의존 선언 확인. 제품 코드 변경 시 해당 레이어 검증도 수행 |
 | ViewModel 변경 | `make lint`, `make arch-check`, 해당 기능 `Presentation` 테스트 | 화면 라우팅 영향이 있으면 앱 빌드 |
 | Domain Entity/UseCase 변경 | `make lint`, `make arch-check`, 해당 기능 `Domain` 테스트 | Presentation 모델 변환 영향이 있으면 해당 기능 `Presentation` 테스트 |
 | Data/HealthKit 변경 | `make lint`, `make arch-check`, 관련 Unit Test, 앱 빌드 | 권한/동기화 흐름은 실제 시뮬레이터 또는 기기에서 수동 확인 |
@@ -42,6 +44,7 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 | Tuist/Project.swift 변경 | `tuist generate`, `make lint`, `make arch-check`, 앱 빌드 | 변경된 scheme 테스트 |
 | Feature 모듈 변경 | `make lint`, `make arch-check`, 변경 feature의 `Domain/Data/Presentation` 테스트 | 앱 조립이 바뀌면 앱 빌드 |
 | CI/릴리스 변경 | 관련 스크립트 정적 확인, 앱 빌드 | Xcode Cloud 또는 GitHub Actions 실행 결과 확인 |
+| Tuist Preview 변경 | `make preview-check`, `make preview-build`, workflow 구문 검사 | 실제 업로드·URL 실행, PR CI와 수동 실행 결과. [검증 절차](tuist-previews.md#검증과-문제-해결) |
 
 ## Architecture Artifact Gate
 
@@ -49,7 +52,7 @@ Mulimi 변경 사항을 PR 전에 어느 수준까지 검증할지 정리한 문
 
 구조도 원본이나 HTML을 변경할 때는 다음을 확인한다.
 
-1. 구조·의존성 목록과 원본 JSON의 커밋·소스 위치를 실제 `Project.swift` 및 구현과 대조한다. 개요 그림을 전체 직접 의존성 그래프라고 표시하지 않는다.
+1. 원본 JSON의 커밋·소스 위치를 대조한다. 앱 구조도는 `Project.swift`·구현과 직접 의존성 목록, 하네스 운영 구조도는 문서·스크립트·CI를 기준으로 확인한다. 앱 개요 그림의 범위를 주요 관계로 표시한다.
 2. archify `validate`와 `deliver`가 모두 성공하고 showcase **9/9, 오류 0, 경고 0**인지 확인한다.
 3. `deliver`의 원본·HTML SHA-256 및 바이트 수를 남기고, `visual-check`가 같은 HTML 해시를 검사했는지 확인한다.
 4. 1440×900, 1600×1000, 1920×1080, 2048×1320에서 가로·세로 넘침이 없어야 한다. 작은·큰 화면의 라이트·다크 캡처를 직접 확인한다.

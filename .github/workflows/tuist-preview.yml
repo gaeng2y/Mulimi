@@ -1,0 +1,55 @@
+name: Tuist Preview
+
+on:
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tuist-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: macos-15
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TEAM_ID: "8UV3Y69NB7"
+      GITHUB_TOKEN: ${{ github.token }}
+      AQUA_GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout preview commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install pinned tools
+        uses: jdx/mise-action@v2
+
+      - name: Check preview pipeline
+        run: make preview-check
+
+      - name: Authenticate with Tuist using OIDC
+        run: tuist auth login
+
+      - name: Install dependencies and warm shared module cache
+        run: |
+          tuist install
+          make tuist-cache
+
+      - name: Build and share simulator preview
+        run: make preview-share

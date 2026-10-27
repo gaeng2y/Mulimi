@@ -9,7 +9,8 @@ Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR
 - 스크립트에서 수행:
   - `mise` 설치/활성화
   - `tuist install`
-  - `tuist generate --no-open`
+  - `TUIST_TOKEN`이 있으면 Xcode Cache 준비와 Release 외부 모듈 캐시 생성
+  - `tuist generate --no-open --configuration Release`
   - 생성된 앱 프로젝트의 Icon Composer 파일 유형 보정
 
 ### Icon Composer 아이콘
@@ -23,7 +24,8 @@ Xcode Cloud에는 PR 유닛 테스트 워크플로를 만들지 않습니다. PR
 로컬에서 Cloud의 생성 후 처리를 확인하는 명령:
 
 ```sh
-tuist generate --no-open
+make tuist-setup
+mise exec -- tuist generate --no-open --configuration Release
 python3 scripts/fix-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 python3 scripts/test-icon-composer-file-types.py "Project/App/Mulimi App.xcodeproj/project.pbxproj"
 ```
@@ -57,8 +59,11 @@ Xcode Cloud 워크플로에 아래 값을 설정한다. 실제 값은 저장소�
 | `POSTHOG_CLI_API_KEY` | Yes | dSYM 업로드용 personal API key (`error tracking write`, `organization read`) |
 | `POSTHOG_CLI_PROJECT_ID` | No | dSYM을 연결할 PostHog project ID |
 | `POSTHOG_CLI_HOST` | No | 기본 US는 생략 가능, EU/self-hosted만 설정 |
+| `TUIST_TOKEN` | Yes | 선택: `gaeng2y/mulimi` 빌드 기록·캐시 접근용 Tuist account token |
 
-`ci_post_clone.sh`는 필수 값이 없으면 archive 준비를 실패시키고, 토큰을 `Secrets.xcconfig`에 주입하며 PostHog CLI를 설치한다. Release archive의 마지막 build phase가 생성된 dSYM을 업로드한다.
+`ci_post_clone.sh`는 `Secrets.xcconfig`가 없어 새로 생성할 때 위 필수 값을 검사하고 토큰을 주입한다. 파일이 이미 있으면 이 생성·검사 분기를 건너뛴다. PostHog CLI 설치 후 Release archive의 마지막 build phase가 생성된 dSYM을 업로드한다. 실제 Cloud 시작 조건·서명·업로드 결과는 콘솔에서 별도로 확인한다.
+
+Tuist 토큰은 `Secrets.xcconfig`에 기록하지 않는다. `TUIST_TOKEN`이 있으면 `make tuist-cache CACHE_CONFIGURATION=Release`로 준비하고, 없으면 `TUIST_MULIMI_CLOUD_ENABLED=0`으로 생성해 기존 archive를 계속한다. 일반 로컬·GitHub Actions 연결은 [Tuist Builds와 캐시](tuist-builds-and-cache.md)를 따른다.
 
 참고: 태그 기반으로 두면 의도된 릴리즈 시점에만 아카이브가 실행됩니다.
 
@@ -72,9 +77,11 @@ Xcode Cloud 워크플로에 아래 값을 설정한다. 실제 값은 저장소�
 추가 플래그 없는 로컬 Release 검증:
 
 ```sh
-tuist generate --no-open
-xcodebuild -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
-  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+make tuist-setup
+mise exec -- tuist generate --no-open --configuration Release
+mise exec -- tuist xcodebuild build \
+  -workspace Mulimi.xcworkspace -scheme Mulimi -configuration Release \
+  -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 ```
 
 생성된 두 소비 타깃의 실제 조건도 확인한다. 아래 명령은 조건 줄만 출력해 빌드 설정의 secret을 노출하지 않는다.
@@ -107,4 +114,4 @@ xcodebuild -workspace Mulimi.xcworkspace -scheme DependencyInjection -configurat
 - 포함: Release Archive 자동화
 - 포함: Release dSYM 생성 및 PostHog symbol set 업로드
 - 제외: Xcode Cloud 기반 PR 유닛 테스트 게이팅
-- GitHub Actions 담당: PR lint, architecture check, 기능별 `Domain`/`Data`/`Presentation` 유닛 테스트
+- GitHub Actions 담당: PR lint, UI 포함 architecture check·경계 회귀 검사, 공용 UI·내비게이션·기능·Watch 테스트. 현재 스킴과 실행 순서는 [PR CI 검증 범위](skills/xcode-build-test.md#pr-ci-scope)를 따른다.
