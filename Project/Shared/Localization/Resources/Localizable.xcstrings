@@ -6778,7 +6778,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "계정과 연결된 데이터를 영구적으로 삭제합니다."
+            "value" : "로그인 정보와 루틴을 삭제하고 알림을 끕니다."
           }
         }
       }
@@ -6845,17 +6845,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중지"
-          }
-        }
-      }
-    },
-    "settingWithdrawalDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "계정을 영구적으로 삭제합니다"
           }
         }
       }
@@ -6932,7 +6921,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다."
+            "value" : "로그인 정보와 루틴이 삭제되고 수분·루틴 알림이 꺼집니다. 건강 앱의 물 섭취 기록과 목표량 등 앱 설정은 유지됩니다. 이 작업은 되돌릴 수 없습니다."
           }
         }
       }
@@ -6954,29 +6943,40 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "계정 정보 삭제"
+            "value" : "로그인 정보 삭제"
           }
         }
       }
     },
-    "withdrawalDeletePreferencesItem" : {
+    "withdrawalDeleteRoutinesItem" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개인 설정 정보 삭제"
+            "value" : "루틴 삭제 및 수분·루틴 알림 해제"
           }
         }
       }
     },
-    "withdrawalDeleteRecordsItem" : {
+    "withdrawalKeepHealthRecordsItem" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장된 물 섭취 기록 삭제"
+            "value" : "물 섭취 기록은 건강 앱에 유지 (건강 앱에서 삭제 가능)"
+          }
+        }
+      }
+    },
+    "withdrawalKeepPreferencesItem" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표량·메인 아이콘 등 앱 설정 유지"
           }
         }
       }
@@ -6987,7 +6987,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다."
+            "value" : "탈퇴하면 이 기기의 로그인 정보와 루틴이 삭제되고 수분·루틴 알림이 꺼집니다. 되돌릴 수 없어요."
           }
         }
       }

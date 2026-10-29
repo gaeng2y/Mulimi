@@ -1,0 +1,171 @@
+diff --git a/Project/App/Project.swift b/Project/App/Project.swift
+index d2adf26..7c223b7 100644
+--- a/Project/App/Project.swift
++++ b/Project/App/Project.swift
+@@ -192,6 +192,15 @@ let project = Project(
+                 ]
+             )
+         ),
++        .target(
++            name: "MulimiQAUITests",
++            destinations: .iOS,
++            product: .uiTests,
++            bundleId: "\(bundleId).QAUITests",
++            deploymentTargets: .iOS("26.0"),
++            sources: ["QAUITests/**"],
++            dependencies: [.target(name: "Mulimi")]
++        ),
+         .target(
+             name: "MulimiWatch",
+             destinations: [.appleWatch],
+diff --git a/Project/App/QAUITests/WithdrawalQA.swift b/Project/App/QAUITests/WithdrawalQA.swift
+new file mode 100644
+index 0000000..714e226
+--- /dev/null
++++ b/Project/App/QAUITests/WithdrawalQA.swift
+@@ -0,0 +1,129 @@
++import XCTest
++
++@MainActor
++final class WithdrawalQA: XCTestCase {
++    let dir = ProcessInfo.processInfo.environment["QA_OUT"] ?? "/tmp"
++    let app = XCUIApplication()
++
++    func shot(_ name: String) {
++        let data = XCUIScreen.main.screenshot().pngRepresentation
++        try? data.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
++        try? app.debugDescription.write(toFile: "\(dir)/\(name).txt", atomically: true, encoding: .utf8)
++    }
++
++    func button(_ label: String) -> XCUIElement { app.buttons[label].firstMatch }
++
++    func allowSystemAlert() {
++        let sb = XCUIApplication(bundleIdentifier: "com.apple.springboard")
++        for label in ["허용", "Allow", "Allow While Using App"] where sb.buttons[label].firstMatch.waitForExistence(timeout: 2) {
++            sb.buttons[label].firstMatch.tap()
++            return
++        }
++    }
++
++    func reachMain() {
++        app.launchEnvironment["MULIMI_QA_SEED_AUTH"] = "1"
++        app.launch()
++        for step in 0..<15 {
++            sleep(2)
++            if app.tabBars.firstMatch.exists { return }
++            if app.navigationBars["Health Access"].exists {
++                let switches = app.switches.matching(NSPredicate(format: "identifier BEGINSWITH 'UIA.Health'"))
++                for i in 0..<switches.count where (switches.element(boundBy: i).value as? String) != "1" {
++                    switches.element(boundBy: i).tap()
++                }
++                app.buttons["UIA.Health.Allow.Button"].tap()
++                continue
++            }
++            if app.buttons["UIA.Health.Allow.Button"].exists {
++                app.buttons["UIA.Health.Allow.Button"].tap()
++                continue
++            }
++            if app.staticTexts["All Recorded Data and Future Data"].exists {
++                app.staticTexts["All Recorded Data and Future Data"].tap()
++                sleep(1)
++                button("Allow").tap()
++                continue
++            }
++            if button("건강 권한 허용하기").exists { button("건강 권한 허용하기").tap(); continue }
++            if button("나중에 할게요").exists { button("나중에 할게요").tap(); continue }
++            if button("다음").exists { button("다음").tap(); continue }
++            shot("unknown-\(step)")
++            let last = app.buttons.element(boundBy: max(app.buttons.count - 1, 0))
++            if last.exists { last.tap() }
++        }
++        shot("reach-main-failed")
++        XCTFail("main not reached")
++    }
++
++    func openProfile() {
++        let tabs = app.tabBars.firstMatch.buttons
++        tabs.element(boundBy: tabs.count - 1).tap()
++        sleep(2)
++    }
++
++    func openRoutines() {
++        app.buttons.matching(NSPredicate(format: "label BEGINSWITH '루틴,'")).firstMatch.tap()
++        sleep(2)
++    }
++
++    func testWithdrawalScenario() throws {
++        reachMain()
++        openProfile()
++        openRoutines()
++        if button("알림 권한 요청").exists {
++            button("알림 권한 요청").tap()
++            allowSystemAlert()
++            sleep(2)
++        }
++        if app.staticTexts["QA 루틴"].exists == false {
++            button("루틴 추가").tap()
++            sleep(1)
++            let field = app.textFields.firstMatch
++            field.tap()
++            field.typeText("QA 루틴")
++            button("월").tap()
++            button("적용").tap()
++            sleep(2)
++        }
++        shot("01-routine-saved")
++        app.buttons["BackButton"].firstMatch.tap()
++        sleep(1)
++        shot("02-profile")
++        app.buttons.matching(NSPredicate(format: "label BEGINSWITH '회원 탈퇴,'")).firstMatch.tap()
++        sleep(2)
++        shot("03-withdrawal-detail")
++        app.buttons.matching(NSPredicate(format: "label == '회원 탈퇴하기'")).firstMatch.tap()
++        sleep(1)
++        shot("04-withdrawal-confirm")
++        app.alerts.firstMatch.buttons["탈퇴"].tap()
++        sleep(3)
++        shot("05-after-withdrawal")
++
++        app.terminate()
++        reachMain()
++        openProfile()
++        openRoutines()
++        shot("06-relogin-routines")
++    }
++
++    func testExplore() throws {
++        reachMain()
++        shot("main")
++        let tabs = app.tabBars.firstMatch.buttons
++        tabs.element(boundBy: tabs.count - 1).tap()
++        sleep(2)
++        shot("profile")
++        app.buttons.matching(NSPredicate(format: "label BEGINSWITH '루틴,'")).firstMatch.tap()
++        sleep(2)
++        shot("routine-1")
++        if button("알림 권한 요청").exists {
++            button("알림 권한 요청").tap()
++            allowSystemAlert()
++            sleep(2)
++        }
++        button("루틴 추가").tap()
++        sleep(2)
++        shot("routine-2")
++    }
++}
+diff --git a/Project/Features/Account/Data/Sources/Repository/AuthenticationRepositoryImpl.swift b/Project/Features/Account/Data/Sources/Repository/AuthenticationRepositoryImpl.swift
+index 3e0d2bb..6a5e4d2 100644
+--- a/Project/Features/Account/Data/Sources/Repository/AuthenticationRepositoryImpl.swift
++++ b/Project/Features/Account/Data/Sources/Repository/AuthenticationRepositoryImpl.swift
+@@ -23,6 +23,11 @@ public struct AuthenticationRepositoryImpl: AuthenticationRepository {
+     ) {
+         self.appleSignInDataSource = appleSignInDataSource
+         self.keyChainDataSource = keyChainDataSource
++
++        if ProcessInfo.processInfo.environment["MULIMI_QA_SEED_AUTH"] == "1" {
++            keyChainDataSource.save(property: .accessToken, value: "qa-token")
++            keyChainDataSource.save(property: .userIdentifier, value: "qa-user")
++        }
+     }
+ 
+     // MARK: - Authentication Status

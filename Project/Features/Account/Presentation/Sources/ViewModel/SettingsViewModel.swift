@@ -121,6 +121,10 @@ public final class SettingsViewModel {
         withdrawalError = nil
 
         do {
+            // 루틴 알람 정리가 실패하면 계정을 남겨 같은 확인으로 재시도할 수 있게 한다.
+            for routine in routineUseCase.fetchRoutines() {
+                try await routineUseCase.deleteRoutine(id: routine.id)
+            }
             try await signInUseCase.deleteAccount()
             await hydrationReminderUseCase.cancelReminders()
             analyticsUseCase.reset()

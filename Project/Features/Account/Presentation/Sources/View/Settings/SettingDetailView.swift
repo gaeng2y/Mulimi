@@ -771,9 +771,10 @@ private struct WithdrawalSettingView: View {
                 .padding(.top, 40)
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Label(L10n.tr("withdrawalDeleteRecordsItem"), systemImage: "drop.fill")
-                    Label(L10n.tr("withdrawalDeletePreferencesItem"), systemImage: "gearshape.fill")
                     Label(L10n.tr("withdrawalDeleteAccountItem"), systemImage: "person.fill")
+                    Label(L10n.tr("withdrawalDeleteRoutinesItem"), systemImage: "alarm.fill")
+                    Label(L10n.tr("withdrawalKeepHealthRecordsItem"), systemImage: "heart.fill")
+                    Label(L10n.tr("withdrawalKeepPreferencesItem"), systemImage: "gearshape.fill")
                 }
                 .font(.subheadline)
                 .foregroundColor(.secondary)
