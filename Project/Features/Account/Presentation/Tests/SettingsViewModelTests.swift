@@ -2,6 +2,7 @@ import AccountDomain
 import MulimiAnalytics
 import MulimiPlatform
 import HydrationReminderDomain
+import RoutineDomain
 import Foundation
 import Testing
 
@@ -15,6 +16,32 @@ struct SettingsViewModelTests {
         func reloadAllTimelines() {
             onReload()
         }
+    }
+
+    private final class SpyRoutineUseCase: RoutineUseCase, @unchecked Sendable {
+        var routines: [HydrationRoutine]
+        var deleteError: Error?
+
+        init(routines: [HydrationRoutine] = []) {
+            self.routines = routines
+        }
+
+        func fetchRoutines() -> [HydrationRoutine] { routines }
+        func notificationAuthorizationStatus() async -> RoutineNotificationAuthorizationStatus { .authorized }
+        func requestNotificationAuthorization() async throws -> RoutineNotificationAuthorizationStatus { .authorized }
+        func saveRoutine(_ routine: HydrationRoutine) async throws {}
+
+        func deleteRoutine(id: UUID) async throws {
+            if let deleteError { throw deleteError }
+            routines.removeAll { $0.id == id }
+        }
+    }
+
+    private static func makeRoutines() -> [HydrationRoutine] {
+        [
+            HydrationRoutine(title: "아침", hour: 8, minute: 0, weekdays: [.monday], isEnabled: true),
+            HydrationRoutine(title: "저녁", hour: 20, minute: 0, weekdays: [.friday], isEnabled: false)
+        ]
     }
 
     private enum MockError: LocalizedError {
@@ -41,6 +68,7 @@ struct SettingsViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: signInUseCase,
             hydrationReminderUseCase: MockHydrationReminderUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -66,6 +94,7 @@ struct SettingsViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
             hydrationReminderUseCase: MockHydrationReminderUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: SpyWidgetTimelineReloader {
                 counter.count += 1
@@ -93,6 +122,7 @@ struct SettingsViewModelTests {
             userPreferencesUseCase: userPreferencesUseCase,
             signInUseCase: MockSignInUseCase(),
             hydrationReminderUseCase: MockHydrationReminderUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: SpyWidgetTimelineReloader {
                 counter.count += 1
@@ -115,6 +145,7 @@ struct SettingsViewModelTests {
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: MockSignInUseCase(),
             hydrationReminderUseCase: MockHydrationReminderUseCase(),
+            routineUseCase: SpyRoutineUseCase(),
             appSession: AppSession(),
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -136,11 +167,13 @@ struct SettingsViewModelTests {
         signInUseCase.isAuthenticatedValue = true
         let analyticsUseCase = MockAnalyticsUseCase()
         let hydrationReminderUseCase = MockHydrationReminderUseCase()
+        let routineUseCase = SpyRoutineUseCase(routines: Self.makeRoutines())
         let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
             hydrationReminderUseCase: hydrationReminderUseCase,
+            routineUseCase: routineUseCase,
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15"),
@@ -150,6 +183,7 @@ struct SettingsViewModelTests {
 
         await viewModel.confirmWithdrawal()
 
+        #expect(routineUseCase.routines.isEmpty)
         #expect(signInUseCase.deleteAccountCallCount == 1)
         #expect(hydrationReminderUseCase.cancelRemindersCallCount == 1)
         #expect(analyticsUseCase.resetCallCount == 1)
@@ -165,11 +199,13 @@ struct SettingsViewModelTests {
         let signInUseCase = MockSignInUseCase()
         signInUseCase.deleteAccountError = MockError.deleteFailed
         let hydrationReminderUseCase = MockHydrationReminderUseCase()
+        let routineUseCase = SpyRoutineUseCase()
         let appSession = AppSession(isAuthenticated: true)
         let viewModel = SettingsViewModel(
             userPreferencesUseCase: MockUserPreferencesUseCase(),
             signInUseCase: signInUseCase,
             hydrationReminderUseCase: hydrationReminderUseCase,
+            routineUseCase: routineUseCase,
             appSession: appSession,
             widgetTimelineReloader: NoOpWidgetTimelineReloader(),
             appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
@@ -184,5 +220,40 @@ struct SettingsViewModelTests {
         #expect(viewModel.showWithdrawalConfirmation == true)
         #expect(viewModel.withdrawalError == MockError.deleteFailed.localizedDescription)
         #expect(appSession.isAuthenticated == true)
+    }
+
+    @MainActor
+    @Test("루틴 정리에 실패하면 계정을 유지하고 재시도로 탈퇴를 마친다")
+    func confirmWithdrawalRoutineFailureKeepsAccountUntilRetry() async {
+        let signInUseCase = MockSignInUseCase()
+        let hydrationReminderUseCase = MockHydrationReminderUseCase()
+        let routineUseCase = SpyRoutineUseCase(routines: Self.makeRoutines())
+        routineUseCase.deleteError = MockError.deleteFailed
+        let appSession = AppSession(isAuthenticated: true)
+        let viewModel = SettingsViewModel(
+            userPreferencesUseCase: MockUserPreferencesUseCase(),
+            signInUseCase: signInUseCase,
+            hydrationReminderUseCase: hydrationReminderUseCase,
+            routineUseCase: routineUseCase,
+            appSession: appSession,
+            widgetTimelineReloader: NoOpWidgetTimelineReloader(),
+            appInfoProvider: StaticAppInfoProvider(appVersion: "1.2.0", appBuildNumber: "15")
+        )
+        viewModel.requestWithdrawal()
+
+        await viewModel.confirmWithdrawal()
+
+        #expect(routineUseCase.routines.count == 2)
+        #expect(signInUseCase.deleteAccountCallCount == 0)
+        #expect(hydrationReminderUseCase.cancelRemindersCallCount == 0)
+        #expect(viewModel.withdrawalError == MockError.deleteFailed.localizedDescription)
+        #expect(appSession.isAuthenticated == true)
+
+        routineUseCase.deleteError = nil
+        await viewModel.confirmWithdrawal()
+
+        #expect(routineUseCase.routines.isEmpty)
+        #expect(signInUseCase.deleteAccountCallCount == 1)
+        #expect(appSession.isAuthenticated == false)
     }
 }
