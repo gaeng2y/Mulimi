@@ -125,6 +125,24 @@ ci_scripts/ci_post_clone.sh -> Xcode Cloud post-clone 준비
 - 민감 데이터 저장소, 권한, 외부 SDK, App Store privacy label 영향 검토 기준
 - 광고/IAP/서버 연동 전 확인할 개인정보 체크리스트
 
+## 선별한 에이전트 절차
+
+모든 판단·완료 보고의 증거 기준은 [품질 게이트](quality-gates.md#검증-증거)에 둔다. 앱 버그는 수정 전 시뮬레이터 재현·캡처 후 같은 경로를 수정한 빌드에서 다시 확인한다. 재현 불가·환경 차단·실기기 미검증은 완료와 구분한다.
+
+| 진입 스킬 | 절차의 원본 |
+| --- | --- |
+| [mulimi-verify](../.agents/skills/mulimi-verify/SKILL.md) | [시뮬레이터 검증](skills/xcode-build-test.md#시뮬레이터-버그-검증), [증거·버그 완료 기준](quality-gates.md#버그-재현과-수정-검증) |
+| [mulimi-blast-radius](../.agents/skills/mulimi-blast-radius/SKILL.md) | [변경 영향 분석](skills/architecture-boundary.md#변경-영향-분석-blast-radius) |
+| [mulimi-architect](../.agents/skills/mulimi-architect/SKILL.md) | [구현 전 설계](skills/architecture-boundary.md#구현-전-설계-architect) |
+
+스킬은 저장소 문서를 연결하며 공통 규칙을 복제하지 않는다. 필요한 작업에서 명시적으로 호출하거나 설명에 맞춰 선택한다. 스킬 사용이 커밋·PR·머지·배포나 외부 메시지 전송의 권한을 추가하지 않는다. 브랜치와 PR은 기존 [전달 흐름](delivery-workflow.md)을 따른다.
+
+2026-10-29에 pstack의 [blast-radius](https://github.com/cursor/plugins/blob/1ba91fc25c0977741dd0e267849e6234b037ed0a/pstack/skills/blast-radius/SKILL.md), [architect](https://github.com/cursor/plugins/blob/1ba91fc25c0977741dd0e267849e6234b037ed0a/pstack/skills/architect/SKILL.md), [검증 스킬 생성 원칙](https://github.com/cursor/plugins/blob/1ba91fc25c0977741dd0e267849e6234b037ed0a/pstack/skills/create-verification-skill/SKILL.md)을 참고해 Mulimi 절차로 작성했다. 원본 플러그인 전체·모델 지정·PR 자동화는 설치하지 않는다. 기능별 UI 자동화나 전체 feature map을 생성한 상태도 아니다.
+
+증거 수집은 에이전트가 실행하는 절차다. 아래 `make verify`·커밋 훅·CI가 스크린샷이나 재현 기록의 존재·내용까지 자동 판정하는 것은 아니다. 기존 운영 구조도의 구현·로컬 검증 단계 안에서 적용하며 자동화 실행 지점은 유지한다.
+
+도입 시 확인한 형식·링크·시나리오 검토와 미검증 범위는 [검증 기록](validation/2026-10-29-pstack-selection/README.md)에 남긴다.
+
 ## Automation Harness
 
 하네스 자동화는 로컬, GitHub Actions, Xcode Cloud의 책임을 분리한다.

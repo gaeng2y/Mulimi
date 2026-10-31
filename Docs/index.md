@@ -51,6 +51,9 @@ Mulimi 문서 허브다. 코드와 문서가 충돌하면 코드를 먼저 확�
 
 ## Skills
 
+- [mulimi-verify](../.agents/skills/mulimi-verify/SKILL.md): 시뮬레이터 재현·수정 전후 증거와 검증
+- [mulimi-blast-radius](../.agents/skills/mulimi-blast-radius/SKILL.md): 호출자·저장 계약·앱/위젯/Watch 변경 영향 분석
+- [mulimi-architect](../.agents/skills/mulimi-architect/SKILL.md): 인터페이스·상태 소유권·레이어 경계 설계
 - [architecture-boundary](skills/architecture-boundary.md)
 - [healthkit-flow](skills/healthkit-flow.md)
 - [navigation-coordinator](skills/navigation-coordinator.md)

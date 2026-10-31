@@ -240,6 +240,8 @@ make verify
 
 `make verify`는 SwiftLint와 UI 모듈을 포함한 아키텍처 경계 검사를 실행합니다. 테스트·앱 빌드·문서 링크·구조도 검증은 [변경 유형별 품질 게이트](Docs/quality-gates.md)를 따라 별도로 확인합니다.
 
+에이전트는 `mulimi-verify`로 시뮬레이터 재현·수정 전후 증거를 남기고, `mulimi-blast-radius`로 변경 영향을, `mulimi-architect`로 인터페이스·레이어 설계를 확인합니다. [프로젝트 스킬과 적용 기준](Docs/harness-engineering.md#선별한-에이전트-절차)을 따릅니다.
+
 작업 시작부터 검증·PR·머지 후 정리까지는 [하네스 운영 구조도](Docs/harness-engineering.md#operating-map)에서 근거 파일과 함께 볼 수 있습니다.
 
 ### Tuist Builds와 캐시

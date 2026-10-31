@@ -25,6 +25,8 @@ Mulimi에서 반복되는 검증 순서를 표준화한다.
 
 `make verify`는 `make lint`와 `make arch-check`만 실행하는 lightweight gate다. Unit test나 앱 빌드까지 끝났다는 의미로 사용하지 않는다.
 
+버그 수정은 코드를 바꾸기 전에 [버그 재현과 수정 검증](../quality-gates.md#버그-재현과-수정-검증)을 시작한다. 아래 빌드·테스트 순서는 수정 전 재현과 수정 후 사용자 경로 확인을 대체하지 않는다.
+
 ## Commands
 
 ```bash
@@ -91,6 +93,32 @@ xcrun simctl list devices available
 ```
 
 동일한 기기 이름이 여러 OS runtime에 있으면 `id`를 골라 `-destination 'platform=iOS Simulator,id=<SIM_ID>'` 형식으로 실행한다.
+
+## 시뮬레이터 버그 검증
+
+완료 조건은 [품질 게이트](../quality-gates.md#버그-재현과-수정-검증), 기록할 항목과 격리 규칙은 [증거 보관](../quality-gates.md#증거-보관)을 따른다.
+
+1. 사용 가능한 XcodeBuildMCP 도구가 있으면 먼저 `session_show_defaults`로 workspace·scheme·담당 simulator를 확인하고 필요한 값만 설정한다. 기기 조회, 빌드·설치·실행, UI 스냅샷과 `screenshot`을 우선 사용한다. 도구가 반환한 임시 캡처는 증거 폴더로 복사하고 직접 연다. UI 조작은 현재 세션에서 지원하는 도구의 실제 접근성 라벨·식별자를 확인해 수행한다.
+2. 담당 시뮬레이터 UUID와 실행 빌드를 확인한 후 수정 전 재현 경로를 수행한다. 재현 시점에 아래 명령이나 도구로 화면을 저장한다.
+3. 수정·필수 검사·테스트 후 새 앱을 빌드·설치한다. 시작 조건을 복원하고 같은 경로를 수행한 뒤 수정 후 화면을 저장한다. 설치하지 않은 이전 앱의 캡처를 수정 결과로 사용하지 않는다.
+4. 두 캡처를 직접 열어 차이를 확인하고 동작별 로그·재조회·테스트 결과를 연결한다. 인스턴스를 정리한 뒤에도 증거가 남아 있는지 확인한다.
+
+CLI 캡처는 조회한 UUID를 `SIM_ID`에, 이 작업의 새 `Docs/validation/<task>` 경로를 `mulimi_evidence_dir`에 설정한 뒤 실행한다. 현재 부팅 기기를 암묵적으로 고르는 `booted` 대신 담당 UUID를 사용한다.
+
+```sh
+: "${SIM_ID:?담당 시뮬레이터 UUID를 설정하세요}"
+: "${mulimi_evidence_dir:?이 작업의 증거 폴더 경로를 설정하세요}"
+mkdir -p "$mulimi_evidence_dir"
+xcrun simctl io "$SIM_ID" screenshot "$mulimi_evidence_dir/before.png"
+```
+
+수정된 앱을 설치하고 같은 재현 경로를 수행한 후 캡처한다.
+
+```sh
+xcrun simctl io "$SIM_ID" screenshot "$mulimi_evidence_dir/after.png"
+```
+
+시간에 따라 발생하는 문제는 화면 녹화와 시간 정보가 있는 로그를 추가한다. `snapshot_ui`의 접근성 트리와 단위 테스트 결과만으로 실제 화면을 확인했다고 보고하지 않는다. 시뮬레이터에서 검증할 수 없는 동작은 실기기 확인 항목으로 남긴다.
 
 ## Toolchain Troubleshooting
 

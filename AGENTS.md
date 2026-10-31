@@ -55,6 +55,9 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 ## Do
 
+- 모든 판단·완료 보고에 확인 가능한 증거를 남긴다. 검증 수준과 미검증 항목은 `Docs/quality-gates.md`의 증거 기준을 따른다.
+- 앱 버그는 수정 전에 시뮬레이터에서 재현·캡처하고, 수정한 빌드로 같은 경로를 다시 실행해 수정 후 증거를 남긴다. 재현 불가를 수정 완료로 보고하지 않는다.
+- 변경 영향은 `mulimi-blast-radius`, 인터페이스·상태 소유권·레이어 경계 설계는 `mulimi-architect`, 재현·수정 검증은 `mulimi-verify` 절차를 사용한다.
 - 변경 전에 관련 모듈의 `Project.swift`와 의존성을 확인한다.
 - 타깃·의존성·소스 공유 경계가 바뀌면 `Docs/project-architecture-and-dependencies.md`와 관련 구조도를 함께 갱신한다. 산출물 절차는 `Docs/harness-engineering.md#architecture-artifacts`를 따른다.
 - 비즈니스 규칙은 `Domain`, 시스템 연동은 `Data`, 화면 조합은 `Presentation`에 둔다.
@@ -76,10 +79,10 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 1. 이슈와 관련 문서를 읽는다.
 2. `Docs/delivery-workflow.md` 기준으로 작업 브랜치와 PR base를 정한다.
 3. 수정 대상 기능과 레이어를 고른다.
-4. 경계를 먼저 확인한다.
+4. 호출자·공유 데이터·앱/위젯/Watch 영향과 경계를 확인한다. 경계가 바뀌면 구현 전에 설계를 정하고, 버그라면 수정 전 재현 증거를 먼저 남긴다.
 5. 코드 변경 후 `make lint`와 `make arch-check`를 우선 통과시킨다.
 6. `tuist generate`가 필요한지 판단한다.
-7. 최소 검증을 수행한다.
+7. 변경에 맞는 검증을 실행하고 증거를 보관한다. 앱 버그는 같은 시뮬레이터 재현 경로를 수정한 빌드로 다시 확인한다.
 8. 구조가 바뀌면 문서까지 같이 반영한다.
 
 ## Lint Harness
@@ -139,6 +142,12 @@ Mulimi에 새로 들어온 AI 에이전트를 위한 온보딩 문서다. 이 �
 
 ## Skills Index
 
+- `mulimi-verify` — `.agents/skills/mulimi-verify/SKILL.md`
+  - 앱 버그의 시뮬레이터 재현·수정 전후 캡처와 동작 검증 시 사용한다. 기준은 `Docs/quality-gates.md`, 실행 절차는 `Docs/skills/xcode-build-test.md`에 둔다.
+- `mulimi-blast-radius` — `.agents/skills/mulimi-blast-radius/SKILL.md`
+  - 변경 전 또는 리뷰에서 호출자, 데이터 계약, 앱/위젯/Watch 영향을 추적하고 안전성을 검증한다.
+- `mulimi-architect` — `.agents/skills/mulimi-architect/SKILL.md`
+  - 새 인터페이스·상태 소유권·레이어 경계를 설계할 때 사용한다. 작은 구현 수정에는 기존 설계를 재사용한다.
 - `architecture-boundary`
   - 레이어 이동, 새 UseCase/Repository 추가, ViewModel 경계 점검 시 읽는다.
 - `xcode-build-test`
