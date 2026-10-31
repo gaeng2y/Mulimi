@@ -11,6 +11,7 @@ import MulimiAnalytics
 import MulimiPlatform
 import HydrationDomain
 import HydrationPresentation
+import RoutineDomain
 import RoutinePresentation
 import HydrationReminderDomain
 import SwiftUI
@@ -20,6 +21,7 @@ public final class SettingsViewModel {
     private let userPreferencesUseCase: UserPreferencesUseCase
     private let signInUseCase: SignInUseCase
     private let hydrationReminderUseCase: HydrationReminderUseCase
+    private let routineUseCase: RoutineUseCase
     private let appSession: AppSession
     private let widgetTimelineReloader: any WidgetTimelineReloading
     private let analyticsUseCase: AnalyticsUseCase
@@ -37,6 +39,7 @@ public final class SettingsViewModel {
         userPreferencesUseCase: UserPreferencesUseCase,
         signInUseCase: SignInUseCase,
         hydrationReminderUseCase: HydrationReminderUseCase,
+        routineUseCase: RoutineUseCase,
         appSession: AppSession,
         widgetTimelineReloader: any WidgetTimelineReloading,
         appInfoProvider: any AppInfoProviding,
@@ -45,6 +48,7 @@ public final class SettingsViewModel {
         self.userPreferencesUseCase = userPreferencesUseCase
         self.signInUseCase = signInUseCase
         self.hydrationReminderUseCase = hydrationReminderUseCase
+        self.routineUseCase = routineUseCase
         self.appSession = appSession
         self.widgetTimelineReloader = widgetTimelineReloader
         self.analyticsUseCase = analyticsUseCase
@@ -117,6 +121,10 @@ public final class SettingsViewModel {
         withdrawalError = nil
 
         do {
+            // 루틴 알람 정리가 실패하면 계정을 남겨 같은 확인으로 재시도할 수 있게 한다.
+            for routine in routineUseCase.fetchRoutines() {
+                try await routineUseCase.deleteRoutine(id: routine.id)
+            }
             try await signInUseCase.deleteAccount()
             await hydrationReminderUseCase.cancelReminders()
             analyticsUseCase.reset()

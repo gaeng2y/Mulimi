@@ -254,6 +254,7 @@ public final class PresentationAssembly: Assembly {
                 userPreferencesUseCase: resolver.resolve(UserPreferencesUseCase.self)!,
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
                 hydrationReminderUseCase: resolver.resolve(HydrationReminderUseCase.self)!,
+                routineUseCase: resolver.resolve(RoutineUseCase.self)!,
                 appSession: resolver.resolve(AppSession.self)!,
                 widgetTimelineReloader: resolver.resolve((any WidgetTimelineReloading).self)!,
                 appInfoProvider: resolver.resolve((any AppInfoProviding).self)!,
