@@ -69,6 +69,7 @@ PR은 `.github/pull_request_template.md`를 기준으로 작성한다.
 - GitHub Actions와 Xcode Cloud 결과는 `자동화 결과`에 로컬 검증과 분리해서 적는다.
 - Xcode, simulator/device, Tuist 같은 재현 정보는 `검증 환경`에 적는다.
 - 시뮬레이터 문제로 재실행했다면 실패한 조건과 성공한 조건을 모두 남긴다.
+- 앱 버그 PR에는 같은 경로의 수정 전·후 시뮬레이터 캡처, 재현 절차와 실행 결과를 연결한다. 증거·미검증 상태의 기준은 [품질 게이트](quality-gates.md#검증-증거)를 따른다.
 - 문서 전용 변경이라도 `git diff --check`는 확인한다.
 - 코드 변경이면 최소한 `make lint`와 `make arch-check`를 먼저 본다.
 
